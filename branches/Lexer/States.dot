@@ -1,0 +1,89 @@
+digraph States {
+	OuterScope -> OuterScopeLT [ label="<" ];
+	OuterScope -> OuterScope [ label="ws" ];
+	
+	/* http://www.w3.org/TR/xml11/#sec-comments */
+	OuterScopeLT -> OSComment0 [ label="!" ];
+	OSComment0 -> OSComment1 [ label="-" ];
+	OSComment1 -> OSComment [ label="-" ];
+	OSComment -> OSComment2 [ label="-" ];
+	OSComment2 -> OSComment [ label="S-{-}" ];
+	OSComment2 -> OSComment3 [ label="-" ];
+	OSComment3 -> OuterScope [ label=">" ];
+	
+	/* http://www.w3.org/TR/xml11/#sec-pi */
+	OuterScopeLT -> OSProcessingInstruction0 [ label="?" ];
+	OSProcessingInstruction0 -> OSProcessingInstruction [ label="id" ];
+	OSProcessingInstruction -> OSProcessingInstruction [ label="ws" ];
+	OSProcessingInstruction -> OSProcessingInstruction1 [ label="?" ];
+	OSProcessingInstruction1 -> OuterScope [ label=">" ];
+	OSProcessingInstruction1 -> OSProcessingInstruction1 [ label="?" ];
+	OSProcessingInstruction1 -> OSProcessingInstruction [ label="S-{?}" ];
+	OSProcessingInstruction -> OSPIStringQuot [ label="\"" ];
+	OSPIStringQuot -> OSProcessingInstruction [ label="\"" ];
+	OSPIStringQuot -> OSPIStringQuot [ label="S-{\"}" ];
+	OSProcessingInstruction -> OSPIStringApos [ label="'" ];
+	OSPIStringApos -> OSProcessingInstruction [ label="'" ];
+	OSPIStringApos -> OSPIStringApos [ label="S-{'}" ];
+	
+	XmlOuter -> XmlOuterLT [ label="<" ];
+	
+	/* Texte sind Kommentare */
+	XmlOuter -> XmlOuter [ label="S-{<}" ];
+	
+	/* http://www.w3.org/TR/xml11/#IDAMMIS */
+	XmlOuterLT -> XOClose0 [ label="/" ];
+	XOClose0 -> XmlOuter [ label=">" ];
+	XOClose0 -> XOClose [ label="id" ];
+	XOClose -> XmlOuter [ label=">" ];
+	XOClose -> XOClose [ label="ws" ];
+	
+	/* http://www.w3.org/TR/xml11/#sec-comments */
+	XmlOuterLT -> XOComment0 [ label="!" ];
+	XOComment0 -> XOComment1 [ label="-" ];
+	XOComment1 -> XOComment [ label="-" ];
+	XOComment -> XOComment2 [ label="-" ];
+	XOComment2 -> XOComment [ label="S-{-}" ];
+	XOComment2 -> XOComment3 [ label="-" ];
+	XOComment3 -> XmlOuterLT [ label=">" ];
+	
+	/* http://www.w3.org/TR/xml11/#sec-pi */
+	XmlOuterLT -> XOProcessingInstruction0 [ label="?" ];
+	XOProcessingInstruction0 -> XOProcessingInstruction [ label="id" ];
+	XOProcessingInstruction -> XOProcessingInstruction [ label="ws" ];
+	XOProcessingInstruction -> XOProcessingInstruction1 [ label="?" ];
+	XOProcessingInstruction1 -> XmlOuter [ label=">" ];
+	XOProcessingInstruction1 -> XOProcessingInstruction1 [ label="?" ];
+	XOProcessingInstruction1 -> XOProcessingInstruction [ label="S-{?}" ];
+	XOProcessingInstruction -> XOPIStringQuot [ label="\"" ];
+	XOPIStringQuot -> XOProcessingInstruction [ label="\"" ];
+	XOPIStringQuot -> XOPIStringQuot [ label="S-{\"}" ];
+	XOProcessingInstruction -> XOPIStringApos [ label="'" ];
+	XOPIStringApos -> XOProcessingInstruction [ label="'" ];
+	XOPIStringApos -> XOPIStringApos [ label="S-{'}" ];
+	
+	OuterScopeLT -> XmlTag [ label="id" ];
+	XmlOuterLT -> XmlTag [ label="id" ];
+	XmlTag -> XmlTag [ label="ws" ];
+	XmlTag -> XmlOuter [ label=">" ];
+	XmlTag -> XTNET [ label="/" ];
+	XTNET -> XmlOuter [ label=">" ]; /* null end tag */
+	XmlTag -> XTAttr0 [ label="id" ];
+	XTAttr0 -> XmlTag [ label="ws" ];
+	XTAttr0 -> XTAttr1 [ label="=" ];
+	XTAttr1 -> XTAttr2 [ label="real" ];
+	XTAttr1 -> XTAttr2 [ label="int" ];
+	XTAttr1 -> XTAttr2 [ label="id" ];
+	XTAttr1 -> XTAttrQuot [ label="\"" ];
+	XTAttr1 -> XTAttrApos [ label="'" ];
+	XTAttr2 -> XTAttr2 [ label="real" ];
+	XTAttr2 -> XTAttr2 [ label="int" ];
+	XTAttr2 -> XTAttr2 [ label="id" ];
+	XTAttr2 -> XTAttrQuot [ label="\"" ];
+	XTAttr2 -> XTAttrApos [ label="'" ];
+	XTAttr2 -> XmlTag [ label="ws" ];
+	XTAttrQuot -> XTAttr2 [ label="\"" ];
+	XTAttrQuot -> XTAttrQuot [ label="S-{\"}" ];
+	XTAttrApos -> XTAttr2 [ label="'" ];
+	XTAttrApos -> XTAttrApos [ label="S-{'}" ];
+}
