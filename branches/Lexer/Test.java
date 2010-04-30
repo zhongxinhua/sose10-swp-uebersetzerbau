@@ -1,6 +1,6 @@
 public class Test {
 	public static void main(String[] args) throws Throwable {
-		BasicTokenInputStream strm = new BasicTokenInputStream();
+		TokenInputStream strm = new TokenInputStream();
 		for(;;) {
 			Token token = strm.readNextToken();
 			System.out.println(token);

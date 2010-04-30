@@ -20,9 +20,9 @@ public class Token {
 	/**
 	 * stream the token was read from
 	 */
-	public final BasicTokenInputStream stream;
+	public final TokenInputStream stream;
 	
-	public Token(TokenType type, BasicTokenInputStream stream, CharSequence string, int start, int end) {
+	public Token(TokenType type, TokenInputStream stream, CharSequence string, int start, int end) {
 		this.type = type;
 		this.stream = stream;
 		this.string = string;
