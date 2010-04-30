@@ -3,7 +3,7 @@ import java.nio.*;
 import java.util.*;
 import java.util.regex.*;
 
-class BasicTokenInputStream implements Closeable {
+public class BasicTokenInputStream implements Closeable {
 	
 	protected static final int MAX_LINE_LENGTH = 1 << 16;
 	

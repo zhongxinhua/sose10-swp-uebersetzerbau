@@ -1,4 +1,4 @@
-enum TokenType {
+public enum TokenType {
 	LINEBREAK,        // \n\r | \n | \r
 	WHITESPACE,       // \0 - \x20
 	

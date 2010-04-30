@@ -1,4 +1,4 @@
-class Token {
+public class Token {
 	
 	public final TokenType type;
 	
@@ -55,6 +55,21 @@ class Token {
 	
 	public boolean isError() {
 		return type == TokenType.ERROR;
+	}
+	
+	/**
+	 * @throws IllegalArgumentException Left and right weren't consecutive in the same {@link #stream}.
+	 */
+	public static Token concat(TokenType type, Token left, Token right) throws IllegalArgumentException {
+		if(left.stream != right.stream) {
+			throw new IllegalArgumentException("Left stream is not the right stream.");
+		} else if(left.start > right.start || left.end > right.end) {
+			throw new IllegalArgumentException("Left and right overlap.");
+		} else if(left.end != right.start) {
+			throw new IllegalArgumentException("Left end was not right start.");
+		} else {
+			return new Token(type, left.stream, left.string.toString()+right.string, left.start, right.end);
+		}
 	}
 	
 }
