@@ -75,6 +75,7 @@ public class TokenInputStream implements Closeable {
 		this.currentIndex = currentIndex;
 	}
 	
+	@Override
 	public void close() throws IOException {
 		in.close();
 	}

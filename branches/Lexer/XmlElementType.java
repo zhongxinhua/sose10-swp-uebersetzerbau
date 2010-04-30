@@ -1,0 +1,13 @@
+public enum XmlElementType {
+	ELEMENT,
+	CLOSING,
+	PROCESSING_INSTRUCTION,
+	
+	ATTR_INT,
+	ATTR_REAL,
+	ATTR_TEXT,
+	ATTR_NULL,
+	
+	EOF,
+	ERROR
+}
