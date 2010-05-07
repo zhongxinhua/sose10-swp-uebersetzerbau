@@ -1,0 +1,31 @@
+IOurStAX st benutzen mit:
+	for(INode node : st) {
+		...
+	}
+oder
+	Iterator<INode> i = st.iterator();
+	while(i.hasNext()) {
+		INode node = i.next();
+		...
+	}
+
+Für die Eingabe:
+	<xml test="bl&lt;ub">
+		<i/>
+		text
+		<a b="c"></a>
+		<!-- kommentar -->
+	</xml>
+	<!!!FEHLER
+Werden diese Nodes zurückgegeben ({type,key,value}, s. INode.java):
+	NT_TAG,     xml,  NULL
+	NT_ATTR,    test, bl<ub
+	NT_TAG,     i,    NULL
+	NT_END_TAG, NULL, NULL
+	NT_TEXT,    NULL, text
+	NT_TAG,     a,    NULL
+	NT_ATTR,    b,    c
+	NT_END_TAG, a,    NULL
+	NT_COMMENT, null, kommentar
+	NT_END_TAG, xml,  NULL
+	NT_ERROR,   NULL, NULL
