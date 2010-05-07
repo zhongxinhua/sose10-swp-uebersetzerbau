@@ -34,13 +34,13 @@ class OurStAX extends Position implements IOurStAX {
 	protected Node next = null;
 	
 	boolean hasNext() throws IOException {
-		if(state == State.ERROR) {
+		if(next != null) {
+			return true;
+		} else if(state == State.ERROR) {
 			return false;
-		} else if(next == null) {
+		} else {
 			next = fetchNext();
 			return next != null;
-		} else {
-			return true;
 		}
 	}
 	
@@ -196,7 +196,8 @@ class OurStAX extends Position implements IOurStAX {
 				
 				case CLOSE: {
 					if(c == '>') {
-						return new Node(start, line, character, NodeType.NT_ATTR, key.toString(), null);
+						state = State.START;
+						return new Node(start, line, character, NodeType.NT_END_TAG, key.toString(), null);
 					} else if(c >= 0 && (c=='.' || c==':' || c=='-' || c=='_' || Character.isLetterOrDigit(c))) {
 						key.append((char)c);
 						break;
@@ -211,6 +212,7 @@ class OurStAX extends Position implements IOurStAX {
 				
 				case CLOSE1: {
 					if(c == '>') {
+						state = State.START;
 						return new Node(start, line, character, NodeType.NT_END_TAG, key.toString(), null);
 					} else if(Character.isWhitespace(c)) {
 						break; // NOOP;
@@ -254,8 +256,12 @@ class OurStAX extends Position implements IOurStAX {
 				case INNER: {
 					if(c == '/') {
 						state = State.INNER_CLOSE;
+						break;
+					} else if(c == '>') {
+						state = State.START;
+						break;
 					} else if(c >= 0 && Character.isWhitespace(c)) {
-						// NOOP
+						break; // NOOP
 					} else if(c >= 0 && (c=='_' || Character.isLetter(c))) {
 						this.state = State.ATTR;
 						key = new StringBuffer();
@@ -265,7 +271,6 @@ class OurStAX extends Position implements IOurStAX {
 						state = State.ERROR;
 						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
 					}
-					break;
 				}
 				
 				case INNER_CLOSE: {
@@ -332,7 +337,14 @@ class OurStAX extends Position implements IOurStAX {
 				}
 				
 				case ATTR2: {
-					if(c == '/' || c >= 0 && Character.isWhitespace(c)) {
+					if(c == '/') {
+						state = State.INNER;
+						pushCharCharacter('/');
+						return new Node(start, line, character, NodeType.NT_ATTR, key.toString(), value.toString());
+					} else if(c == '>') {
+						state = State.START;
+						return new Node(start, line, character, NodeType.NT_ATTR, key.toString(), value.toString());
+					} else if(c >= 0 && Character.isWhitespace(c)) {
 						state = State.INNER;
 						if(c == '/') {
 							pushCharCharacter('/');
