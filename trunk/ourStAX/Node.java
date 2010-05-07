@@ -5,7 +5,7 @@ class Node extends Position implements INode {
 	private final NodeType type;
 	private final String key, value;
 	
-	Node(int start, int line, int character, NodeType type, String key, String value) {
+	public Node(int start, int line, int character, NodeType type, String key, String value) {
 		super(start, line, character);
 		this.type = type;
 		this.key = key;
