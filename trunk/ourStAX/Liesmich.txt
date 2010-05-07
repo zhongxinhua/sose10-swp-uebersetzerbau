@@ -1,3 +1,8 @@
+Bitte beachten:
+	Die Interfaces (INode, IOurStAX, IPosition) sind jetzt final.
+	Ansonsten wird nur noch eine Factory (OurStAXFactory) nach außen gegeben.
+	Bitte nicht auf die konkreten Interna Bezug nehmen, da sie jederzeit abänderbar sein sollen.
+
 IOurStAX st benutzen mit:
 	for(INode node : st) {
 		...

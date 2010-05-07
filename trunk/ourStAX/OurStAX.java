@@ -3,25 +3,17 @@ package ourStAX;
 import java.io.*;
 import java.util.*;
 
-public class OurStAX extends Position implements IOurStAX, Closeable {
+class OurStAX extends Position implements IOurStAX {
 	
-	private final BufferedReader reader;
+	protected final BufferedReader reader;
 	
-	public OurStAX(Reader reader) throws IOException {
+	OurStAX(Reader reader) throws IOException {
 		super(1,1,1);
 		if(reader instanceof BufferedReader) {
 			this.reader = (BufferedReader)reader;
 		} else {
 			this.reader = new BufferedReader(reader);
 		}
-	}
-	
-	public OurStAX(File input) throws IOException {
-		this(new FileReader(input));
-	}
-	
-	public OurStAX(InputStream input) throws IOException {
-		this(new InputStreamReader(input));
 	}
 	
 	public Iterator<INode> iterator() {
@@ -63,7 +55,7 @@ public class OurStAX extends Position implements IOurStAX, Closeable {
 	/////////////////////////////////////////////////////////////////////////////
 	
 	protected enum State {
-		ERROR, START, TEXT, OPEN, COMMENT0, CLOSE, TAG, INNER, INNER_CLOSE
+		ERROR, START, TEXT, OPEN, COMMENT0, CLOSE, TAG, INNER, INNER_CLOSE, ATTR
 	}
 	
 	protected Character nextChar = null;
@@ -129,6 +121,7 @@ public class OurStAX extends Position implements IOurStAX, Closeable {
 							break;
 						}
 						case '>': {
+							state = State.ERROR;
 							this.next = new Node(start, line, character, NodeType.NT_ERROR, null, null);
 							return; // ERROR
 						}
@@ -152,6 +145,7 @@ public class OurStAX extends Position implements IOurStAX, Closeable {
 						value.append((char)c);
 						continue;
 					}
+					state = State.START;
 					this.next = new Node(start, line, character, NodeType.NT_TEXT, null, value.toString());
 					return;
 				}
@@ -173,6 +167,7 @@ public class OurStAX extends Position implements IOurStAX, Closeable {
 								key = new StringBuffer((char)c);
 								break;
 							} else {
+								state = State.ERROR;
 								this.next = new Node(start, line, character, NodeType.NT_ERROR, null, null);
 								return;
 							}
@@ -192,36 +187,69 @@ public class OurStAX extends Position implements IOurStAX, Closeable {
 				}
 				
 				case TAG: {
-					if(c < 0) {
-						this.next = new Node(start, line, character, NodeType.NT_ERROR, null, null);
-						return;
-					} if(c == '>') {
-						this.next = new Node(start, line, character, NodeType.NT_TAG, key.toString(), null);
-						return;
-					} if(c == '/') {
-						pushChar('/');
-						state = State.INNER_CLOSE;
-						this.next = new Node(start, line, character, NodeType.NT_TAG, key.toString(), null);
-						return;
-					} if(c=='.' || c==':' || c=='-' || c=='_' || Character.isLetterOrDigit(c)) {
-						key.append((char)c);
-						break;
+					switch(c) {
+						case('>'): {
+							state = State.START;
+							this.next = new Node(start, line, character, NodeType.NT_TAG, key.toString(), null);
+							return;
+						}
+						case('/'): {
+							pushChar('/');
+							state = State.INNER_CLOSE;
+							this.next = new Node(start, line, character, NodeType.NT_TAG, key.toString(), null);
+							return;
+						}
+						case('.'): case(':'): case('-'): case('_'): {
+							key.append((char)c);
+							break;
+						}
+						default: {
+							if(c >= 0 && Character.isLetterOrDigit(c)) {
+								key.append((char)c);
+								break;
+							} else {
+								state = State.ERROR;
+								this.next = new Node(start, line, character, NodeType.NT_ERROR, null, null);
+								return;
+							} 
+						}
 					}
 					break;
 				}
 				
 				case INNER: {
-					// TODO
+					if(c == '/') {
+						state = State.INNER_CLOSE;
+					} else if(c >= 0 && Character.isWhitespace(c)) {
+						// NOOP
+					} else if(c >= 0 && (c=='_' || Character.isLetter(c))) {
+						this.state = State.ATTR;
+						resultType = NodeType.NT_ATTR;
+						key = new StringBuffer((char)c);
+						break;
+					} else {
+						state = State.ERROR;
+						this.next = new Node(start, line, character, NodeType.NT_ERROR, null, null);
+						return;
+					}
 					break;
 				}
 				
 				case INNER_CLOSE: {
 					if(c == '>') {
+						state = State.START;
 						this.next = new Node(start, line, character, NodeType.NT_END_TAG, null, null);
+						return;
 					} else {
+						state = State.ERROR;
 						this.next = new Node(start, line, character, NodeType.NT_ERROR, null, null);
+						return;
 					}
-					return;
+				}
+				
+				case ATTR: {
+					// TODO
+					break;
 				}
 				
 				default: {
