@@ -1,4 +1,4 @@
-package OurStAX;
+package ourStAX;
 
 public interface INode extends IPosition {
 	/**
