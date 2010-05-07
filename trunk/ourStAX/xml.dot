@@ -28,8 +28,9 @@ digraph XML {
 	cdata3 -> start [ label=">" ];
 	cdata3 -> error [ label="[^>]" ];
 	
-	open -> close [ label="/" ];
-	close -> close [ label="[^\\w>]" ];
+	open -> close0 [ label="/" ];
+	close0 -> close [ label="[^\\w>]" ];
+	close0 -> error [ label="[\\w>]" ];
 	close -> close1 [ label="\\w" ];
 	close1 -> close1 [ label="\\w" ];
 	close -> start [ label=">" ];
@@ -44,7 +45,7 @@ digraph XML {
 	tag -> inner_close [ label="/" ];
 	tag -> tag [ label="{sonst}" ];
 	
-	inner -> error [ label="[<>\"()=?{\\[\\]},;.:\\-#'+*~]" ];
+	inner -> error [ label="[<\"()=?{\\[\\]},;.:\\-#'+*~]" ];
 	inner -> inner [ label="\\w" ];
 	
 	inner -> start [ label=">" ];
@@ -59,15 +60,13 @@ digraph XML {
 	
 	attr1 -> attrQuot [ label="\"" ];
 	attrQuot -> attrQuot [ label="[^\"]" ];
-	attrQuot -> attrQuot1 [ label="\"" ];
-	attrQuot1 -> inner_close [ label="/" ];
-	attrQuot1 -> inner [ label="\\s" ];
-	attrQuot1 -> error [ label="[^\\s/]" ];
+	attrQuot -> attr2 [ label="\"" ];
 	
 	attr1 -> attrApos [ label="'" ];
 	attrApos -> attrApos [ label="[^']" ];
-	attrApos -> attrApos1 [ label="'" ];
-	attrApos1 -> inner_close [ label="/" ];
-	attrApos1 -> inner [ label="\\s" ];
-	attrApos1 -> error [ label="[^\\s/]" ];
+	attrApos -> attr2 [ label="'" ];
+	
+	attr2 -> inner_close [ label="/" ];
+	attr2 -> inner [ label="\\w" ];
+	attr2 -> error [ label="[^\\w/]" ];
 }

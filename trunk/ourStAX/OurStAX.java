@@ -16,10 +16,12 @@ class OurStAX extends Position implements IOurStAX {
 		}
 	}
 	
+	@Override
 	public Iterator<INode> iterator() {
 		return new NodeIterator(this);
 	}
 	
+	@Override
 	public void close() throws IOException {
 		reader.close();
 	}
@@ -32,8 +34,10 @@ class OurStAX extends Position implements IOurStAX {
 	protected Node next = null;
 	
 	boolean hasNext() throws IOException {
-		if(next == null) {
-			fetchNext();
+		if(state == State.ERROR) {
+			return false;
+		} else if(next == null) {
+			next = fetchNext();
 			return next != null;
 		} else {
 			return true;
@@ -55,17 +59,19 @@ class OurStAX extends Position implements IOurStAX {
 	/////////////////////////////////////////////////////////////////////////////
 	
 	protected enum State {
-		ERROR, START, TEXT, OPEN, COMMENT0, CLOSE, TAG, INNER, INNER_CLOSE, ATTR
+		ERROR, START, TEXT, OPEN, COMMENT0, TAG, INNER, INNER_CLOSE, ATTR,
+		ATTR1, ATTR_APOS, ATTR_QUOT, ATTR2, CLOSE0, CLOSE, CLOSE1
 	}
 	
 	protected Character nextChar = null;
-	protected int readNext() throws IOException {
+	protected int readNextCharacter() throws IOException {
 		if(nextChar == null) {
 			final int result = reader.read();
 			if(result < 0) {
 				new EOFException();
 			}
 			++this.start;
+			++this.character;
 			if(result == '\n') {
 				this.character = 1;
 				++this.line;
@@ -77,7 +83,7 @@ class OurStAX extends Position implements IOurStAX {
 				if(next >= 0) {
 					++this.start;
 					if(next != '\n') {
-						pushChar((char)next);
+						pushCharCharacter((char)next);
 					}
 				}
 				return '\n';
@@ -91,7 +97,7 @@ class OurStAX extends Position implements IOurStAX {
 		}
 	}
 	
-	protected void pushChar(char c) throws IllegalStateException {
+	protected void pushCharCharacter(char c) throws IllegalStateException {
 		if(nextChar == null) {
 			nextChar = Character.valueOf(c);
 		} else {
@@ -104,15 +110,13 @@ class OurStAX extends Position implements IOurStAX {
 	 * Reads the next {@link Node} into {@link #state}.
 	 * {@link #state} remains null, if EOF was reached.
 	 */
-	protected void fetchNext() throws IOException {
-		NodeType resultType = null;
-		final State initialState = state;
+	protected Node fetchNext() throws IOException {
 		StringBuffer key = null, value = null;
 		
 		final int start = this.start, line = this.line, character = this.character;
 		
 		for(;;) {
-			final int c = readNext();
+			final int c = readNextCharacter();
 			switch(state) {
 				case START: {
 					switch(c) {
@@ -122,16 +126,15 @@ class OurStAX extends Position implements IOurStAX {
 						}
 						case '>': {
 							state = State.ERROR;
-							this.next = new Node(start, line, character, NodeType.NT_ERROR, null, null);
-							return; // ERROR
+							return new Node(start, line, character, NodeType.NT_ERROR, null, null);
 						}
 						default: {
 							if(c >= 0) {
-								resultType = NodeType.NT_TEXT;
 								state = State.TEXT;
-								value = new StringBuffer(c);
+								value = new StringBuffer();
+								value.append((char)c);
 							} else {
-								return; // EOF
+								return null; // EOF
 							}
 						} 
 					}
@@ -140,14 +143,13 @@ class OurStAX extends Position implements IOurStAX {
 				
 				case TEXT: {
 					if(c == '<' || c == '>') {
-						pushChar((char)c);
+						pushCharCharacter((char)c);
 					} else if(c >= 0) {
 						value.append((char)c);
 						continue;
 					}
 					state = State.START;
-					this.next = new Node(start, line, character, NodeType.NT_TEXT, null, value.toString());
-					return;
+					return new Node(start, line, character, NodeType.NT_TEXT, null, value.toString());
 				}
 				
 				case OPEN: {
@@ -157,19 +159,18 @@ class OurStAX extends Position implements IOurStAX {
 							break;
 						}
 						case('/'): {
-							state = State.CLOSE;
+							state = State.CLOSE0;
 							break;
 						}
 						default: {
 							if(c >= 0 && (c=='_' || Character.isLetter(c))) {
 								this.state = State.TAG;
-								resultType = NodeType.NT_TAG;
-								key = new StringBuffer((char)c);
+								key = new StringBuffer();
+								key.append((char)c);
 								break;
 							} else {
 								state = State.ERROR;
-								this.next = new Node(start, line, character, NodeType.NT_ERROR, null, null);
-								return;
+								return new Node(start, line, character, NodeType.NT_ERROR, null, null);
 							}
 						}
 					}
@@ -178,26 +179,57 @@ class OurStAX extends Position implements IOurStAX {
 				
 				case COMMENT0: {
 					// TODO
-					break;
+					throw new RuntimeException("Nicht implementiert!");
+				}
+				
+				case CLOSE0: {
+					if(c >= 0 && (c=='_' || Character.isLetter(c))) {
+						this.state = State.CLOSE;
+						key = new StringBuffer();
+						key.append((char)c);
+						break;
+					} else {
+						state = State.ERROR;
+						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+					}
 				}
 				
 				case CLOSE: {
-					// TODO
-					break;
+					if(c == '>') {
+						return new Node(start, line, character, NodeType.NT_ATTR, key.toString(), null);
+					} else if(c >= 0 && (c=='.' || c==':' || c=='-' || c=='_' || Character.isLetterOrDigit(c))) {
+						key.append((char)c);
+						break;
+					} else if(Character.isWhitespace(c)) {
+						state = State.CLOSE1;
+						break;
+					} else {
+						state = State.ERROR;
+						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+					}
+				}
+				
+				case CLOSE1: {
+					if(c == '>') {
+						return new Node(start, line, character, NodeType.NT_END_TAG, key.toString(), null);
+					} else if(Character.isWhitespace(c)) {
+						break; // NOOP;
+					} else {
+						state = State.ERROR;
+						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+					}
 				}
 				
 				case TAG: {
 					switch(c) {
 						case('>'): {
 							state = State.START;
-							this.next = new Node(start, line, character, NodeType.NT_TAG, key.toString(), null);
-							return;
+							return new Node(start, line, character, NodeType.NT_TAG, key.toString(), null);
 						}
 						case('/'): {
-							pushChar('/');
-							state = State.INNER_CLOSE;
-							this.next = new Node(start, line, character, NodeType.NT_TAG, key.toString(), null);
-							return;
+							pushCharCharacter('/');
+							state = State.INNER;
+							return new Node(start, line, character, NodeType.NT_TAG, key.toString(), null);
 						}
 						case('.'): case(':'): case('-'): case('_'): {
 							key.append((char)c);
@@ -207,10 +239,12 @@ class OurStAX extends Position implements IOurStAX {
 							if(c >= 0 && Character.isLetterOrDigit(c)) {
 								key.append((char)c);
 								break;
+							} else if(c >= 0 && Character.isWhitespace(c)){
+								state = State.INNER;
+								return new Node(start, line, character, NodeType.NT_TAG, key.toString(), null);
 							} else {
 								state = State.ERROR;
-								this.next = new Node(start, line, character, NodeType.NT_ERROR, null, null);
-								return;
+								return new Node(start, line, character, NodeType.NT_ERROR, null, null);
 							} 
 						}
 					}
@@ -224,13 +258,12 @@ class OurStAX extends Position implements IOurStAX {
 						// NOOP
 					} else if(c >= 0 && (c=='_' || Character.isLetter(c))) {
 						this.state = State.ATTR;
-						resultType = NodeType.NT_ATTR;
-						key = new StringBuffer((char)c);
+						key = new StringBuffer();
+						key.append((char)c);
 						break;
 					} else {
 						state = State.ERROR;
-						this.next = new Node(start, line, character, NodeType.NT_ERROR, null, null);
-						return;
+						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
 					}
 					break;
 				}
@@ -238,18 +271,77 @@ class OurStAX extends Position implements IOurStAX {
 				case INNER_CLOSE: {
 					if(c == '>') {
 						state = State.START;
-						this.next = new Node(start, line, character, NodeType.NT_END_TAG, null, null);
-						return;
+						return new Node(start, line, character, NodeType.NT_END_TAG, null, null);
 					} else {
 						state = State.ERROR;
-						this.next = new Node(start, line, character, NodeType.NT_ERROR, null, null);
-						return;
+						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
 					}
 				}
 				
 				case ATTR: {
-					// TODO
-					break;
+					if(c == '=') {
+						state = State.ATTR1;
+						value = new StringBuffer();
+						break;
+					} else if(c >= 0 && (c=='.' || c==':' || c=='-' || c=='_' || Character.isLetterOrDigit(c))) {
+						key.append((char)c);
+						break;
+					} else {
+						state = State.ERROR;
+						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+					}
+				}
+				
+				case ATTR1: {
+					if(c == '"') {
+						state = State.ATTR_QUOT;
+						break;
+					} else if(c == '\'') {
+						state = State.ATTR_APOS;
+						break;
+					} else {
+						state = State.ERROR;
+						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+					}
+				}
+				
+				case ATTR_QUOT: {
+					if(c == '"') {
+						state = State.ATTR2;
+						break;
+					} else if(c >= 0) {
+						value.append((char)c);
+						break;
+					} else {
+						state = State.ERROR;
+						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+					}
+				}
+				
+				case ATTR_APOS: {
+					if(c == '\'') {
+						state = State.ATTR2;
+						break;
+					} else if(c >= 0) {
+						value.append((char)c);
+						break;
+					} else {
+						state = State.ERROR;
+						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+					}
+				}
+				
+				case ATTR2: {
+					if(c == '/' || c >= 0 && Character.isWhitespace(c)) {
+						state = State.INNER;
+						if(c == '/') {
+							pushCharCharacter('/');
+						}
+						return new Node(start, line, character, NodeType.NT_ATTR, key.toString(), value.toString());
+					} else {
+						state = State.ERROR;
+						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+					}
 				}
 				
 				default: {

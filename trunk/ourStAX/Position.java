@@ -10,10 +10,6 @@ class Position implements IPosition {
 		this.character = character;
 	}
 	
-	Position() {
-		this(0,0,0);
-	}
-	
 	public int getStart() {
 		return start;
 	}
