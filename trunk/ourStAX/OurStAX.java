@@ -60,11 +60,12 @@ class OurStAX extends Position implements IOurStAX {
 	
 	protected enum State {
 		ERROR, START, TEXT, OPEN, COMMENT0, TAG, INNER, INNER_CLOSE, ATTR,
-		ATTR1, ATTR_APOS, ATTR_QUOT, ATTR2, CLOSE0, CLOSE, CLOSE1
+		ATTR1, ATTR_APOS, ATTR_QUOT, ATTR2, CLOSE0, CLOSE, CLOSE1, COMMENT1,
+		COMMENT, COMMENT2, COMMENT3, CDATA1, CDATA, CDATA2, CDATA3
 	}
 	
 	protected Character nextChar = null;
-	protected int readNextCharacter() throws IOException {
+	protected int readNext() throws IOException {
 		if(nextChar == null) {
 			final int result = reader.read();
 			if(result < 0) {
@@ -101,7 +102,7 @@ class OurStAX extends Position implements IOurStAX {
 		if(nextChar == null) {
 			nextChar = Character.valueOf(c);
 		} else {
-			throw new IllegalStateException();
+			throw new IllegalStateException("(Internal) lookahead already fed");
 		}
 	}
 	
@@ -111,12 +112,12 @@ class OurStAX extends Position implements IOurStAX {
 	 * {@link #state} remains null, if EOF was reached.
 	 */
 	protected Node fetchNext() throws IOException {
-		StringBuffer key = null, value = null;
+		StringBuilder key = null, value = null;
 		
 		final int start = this.start, line = this.line, character = this.character;
 		
 		for(;;) {
-			final int c = readNextCharacter();
+			final int c = readNext();
 			switch(state) {
 				case START: {
 					switch(c) {
@@ -131,7 +132,7 @@ class OurStAX extends Position implements IOurStAX {
 						default: {
 							if(c >= 0) {
 								state = State.TEXT;
-								value = new StringBuffer();
+								value = new StringBuilder();
 								value.append((char)c);
 							} else {
 								return null; // EOF
@@ -165,7 +166,7 @@ class OurStAX extends Position implements IOurStAX {
 						default: {
 							if(c >= 0 && (c=='_' || Character.isLetter(c))) {
 								this.state = State.TAG;
-								key = new StringBuffer();
+								key = new StringBuilder();
 								key.append((char)c);
 								break;
 							} else {
@@ -178,14 +179,125 @@ class OurStAX extends Position implements IOurStAX {
 				}
 				
 				case COMMENT0: {
-					// TODO
-					throw new RuntimeException("Nicht implementiert!");
+					switch(c) {
+						case('['): {
+							state = State.CDATA1;
+							break;
+						}
+						case('-'): {
+							state = State.COMMENT1;
+							break;
+						}
+						default: {
+							state = State.ERROR;
+							return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+						}
+					}
+					break;
+				}
+				
+				case COMMENT1: {
+					if(c == '-') {
+						state = State.COMMENT;
+						value = new StringBuilder();
+						break;
+					} else {
+						state = State.ERROR;
+						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+					}
+				}
+				
+				case COMMENT: {
+					if(c == '-') {
+						state = State.COMMENT2;
+						break;
+					} else if(c >= 0) {
+						value.append((char)c);
+						break;
+					} else {
+						state = State.ERROR;
+						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+					}
+				}
+				
+				case COMMENT2: {
+					if(c == '-') {
+						state = State.COMMENT3;
+						break;
+					} else if(c >= 0) {
+						value.append('-');
+						value.append((char)c);
+						state = State.COMMENT;
+						break;
+					} else {
+						state = State.ERROR;
+						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+					}
+				}
+				
+				case COMMENT3: {
+					if(c == '>') {
+						state = State.START;
+						return new Node(start, line, character, NodeType.NT_COMMENT, null, value.toString());
+					} else {
+						state = State.ERROR;
+						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+					}
+				}
+				
+				case CDATA1: {
+					if(c == 'C' && readNext() == 'D' && readNext() == 'A' && readNext() == 'T' && readNext() == 'A' && readNext() == '[') {
+						state = State.CDATA;
+						value = new StringBuilder();
+						break;
+					} else {
+						state = State.ERROR;
+						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+					}
+				}
+				
+				case CDATA: {
+					if(c == ']') {
+						state = State.CDATA2;
+						break;
+					} else if(c >= 0) {
+						value.append((char)c);
+						break;
+					} else {
+						state = State.ERROR;
+						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+					}
+				}
+				
+				case CDATA2: {
+					if(c == ']') {
+						state = State.CDATA3;
+						break;
+					} else if(c >= 0) {
+						value.append(']');
+						value.append((char)c);
+						state = State.CDATA;
+						break;
+					} else {
+						state = State.ERROR;
+						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+					}
+				}
+				
+				case CDATA3: {
+					if(c == '>') {
+						state = State.START;
+						return new Node(start, line, character, NodeType.NT_TEXT, null, value.toString());
+					} else {
+						state = State.ERROR;
+						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+					}
 				}
 				
 				case CLOSE0: {
 					if(c >= 0 && (c=='_' || Character.isLetter(c))) {
 						this.state = State.CLOSE;
-						key = new StringBuffer();
+						key = new StringBuilder();
 						key.append((char)c);
 						break;
 					} else {
@@ -264,7 +376,7 @@ class OurStAX extends Position implements IOurStAX {
 						break; // NOOP
 					} else if(c >= 0 && (c=='_' || Character.isLetter(c))) {
 						this.state = State.ATTR;
-						key = new StringBuffer();
+						key = new StringBuilder();
 						key.append((char)c);
 						break;
 					} else {
@@ -286,7 +398,7 @@ class OurStAX extends Position implements IOurStAX {
 				case ATTR: {
 					if(c == '=') {
 						state = State.ATTR1;
-						value = new StringBuffer();
+						value = new StringBuilder();
 						break;
 					} else if(c >= 0 && (c=='.' || c==':' || c=='-' || c=='_' || Character.isLetterOrDigit(c))) {
 						key.append((char)c);
@@ -357,7 +469,7 @@ class OurStAX extends Position implements IOurStAX {
 				}
 				
 				default: {
-					throw new IllegalStateException("state == " + state);
+					throw new IllegalStateException("(Internal) state == " + state);
 				}
 			}
 		}

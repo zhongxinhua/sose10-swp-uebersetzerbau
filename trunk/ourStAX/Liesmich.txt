@@ -1,7 +1,9 @@
 Bitte beachten:
 	Die Interfaces (INode, IOurStAX, IPosition) sind jetzt final.
-	Ansonsten wird nur noch eine Factory (OurStAXFactory) nach außen gegeben.
-	Bitte nicht auf die konkreten Interna Bezug nehmen, da sie jederzeit abänderbar sein sollen.
+	Ansonsten wird nur noch eine Factory (OurStAXFactory) und NodeType nach außen gegeben.
+	
+	Das einzige, worüber man noch nachdenke könnte, wäre, Processiong Instructions zu
+	unterstützen, damit man <?xml ...?> angeben kann.
 
 IOurStAX st benutzen mit:
 	for(INode node : st) {
