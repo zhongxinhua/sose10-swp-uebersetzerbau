@@ -1,0 +1,1 @@
+Hier liegt nur die Starterklasse, welche später in der Jar aufgerufen wird und den Compilerprozess in gang setzt

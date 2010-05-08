@@ -5,7 +5,7 @@ Bitte beachten:
 IOurStAX st benutzen mit:
 	for(INode node : st) {
 		...
-	}
+	} 
 oder
 	Iterator<INode> i = st.iterator();
 	while(i.hasNext()) {

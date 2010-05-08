@@ -1,4 +1,4 @@
-package ourStAX;
+package de.fu_berlin.compilerbau.ourStAX;
 
 class Position implements IPosition {
 	
