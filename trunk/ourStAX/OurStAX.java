@@ -61,7 +61,8 @@ class OurStAX extends Position implements IOurStAX {
 	protected enum State {
 		ERROR, START, TEXT, OPEN, COMMENT0, TAG, INNER, INNER_CLOSE, ATTR,
 		ATTR1, ATTR_APOS, ATTR_QUOT, ATTR2, CLOSE0, CLOSE, CLOSE1, COMMENT1,
-		COMMENT, COMMENT2, COMMENT3, CDATA1, CDATA, CDATA2, CDATA3
+		COMMENT, COMMENT2, COMMENT3, CDATA1, CDATA, CDATA2, CDATA3, PI_TARGET0,
+		PI_TARGET,PI_INNER, PI_INNER1
 	}
 	
 	protected Character nextChar = null;
@@ -161,6 +162,10 @@ class OurStAX extends Position implements IOurStAX {
 						}
 						case('/'): {
 							state = State.CLOSE0;
+							break;
+						}
+						case('?'): {
+							state = State.PI_TARGET0;
 							break;
 						}
 						default: {
@@ -465,6 +470,67 @@ class OurStAX extends Position implements IOurStAX {
 					} else {
 						state = State.ERROR;
 						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+					}
+				}
+				
+				case PI_TARGET0: {
+					if(c >= 0 && (c=='_' || Character.isLetter(c))) {
+						this.state = State.PI_TARGET;
+						key = new StringBuilder();
+						key.append((char)c);
+						break;
+					} else {
+						state = State.ERROR;
+						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+					}
+				}
+				
+				case PI_TARGET: {
+					if(c == '?') {
+						if(readNext() == '>') {
+							state = State.START;
+							return new Node(start, line, character, NodeType.NT_PI, key.toString(), "");
+						} else {
+							state = State.ERROR;
+							return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+						}
+					} else if(c >= 0 && Character.isLetterOrDigit(c)) {
+						key.append((char)c);
+						break;
+					} else if(c=='.' || c==':' || c=='-' || c=='_' || (c >= 0 && Character.isWhitespace(c))) {
+						value = new StringBuilder();
+						state = State.PI_INNER;
+						break;
+					} else {
+						state = State.ERROR;
+						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+					}
+				}
+				
+				case PI_INNER: {
+					if(c < 0) {
+						state = State.ERROR;
+						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+					} else if(c == '?') {
+						state = State.PI_INNER1;
+						break;
+					} else {
+						value.append((char)c);
+						break;
+					}
+				}
+				
+				case PI_INNER1: {
+					if(c < 0) {
+						state = State.ERROR;
+						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+					} else if(c == '>') {
+						state = State.START;
+						return new Node(start, line, character, NodeType.NT_PI, key.toString(), value.toString());
+					} else {
+						value.append('?');
+						value.append((char)c);
+						break;
 					}
 				}
 				

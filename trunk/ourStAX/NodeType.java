@@ -7,12 +7,12 @@ public enum NodeType {
 	NT_ERROR,
 	
 	/**
-	 * text node / CDATA section
+	 * text node / <a href="http://www.w3.org/TR/REC-xml/#sec-cdata-sect">CDATA section</a>
 	 */
 	NT_TEXT,
 	
 	/**
-	 * comment node
+	 * <a href="http://www.w3.org/TR/REC-xml/#sec-comments">comment node</a>
 	 */
 	NT_COMMENT,
 	
@@ -27,7 +27,12 @@ public enum NodeType {
 	NT_END_TAG,
 	
 	/**
-	 * attribute node
+	 * <a href="http://www.w3.org/TR/REC-xml/#attdecls">attribute node</a>
 	 */
-	NT_ATTR
+	NT_ATTR,
+	
+	/**
+	 * <a href="http://www.w3.org/TR/REC-xml/#sec-pi">processing instruction</a>
+	 */
+	NT_PI
 }
