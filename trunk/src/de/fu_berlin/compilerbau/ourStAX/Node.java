@@ -12,14 +12,17 @@ class Node extends Position implements INode {
 		this.value = value;
 	}
 	
+	@Override
 	public NodeType getType() {
 		return type;
 	}
 	
+	@Override
 	public String getKey() {
 		return key;
 	}
 	
+	@Override
 	public String getValue() {
 		return value;
 	}
