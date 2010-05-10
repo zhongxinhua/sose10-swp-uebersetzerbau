@@ -1,0 +1,370 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="en-us" />
+<title>/swp</title>
+<style type="text/css">h1,h2,h3,h4,h5,h6 { display: inline; }</style>
+</head>
+<body><h2>Variablen</h2><br
+/><br
+/><b>Bezeichner:</b><br
+/><ul><li>Unicode-Zeichen, nicht mit Zahl beginnend<br/><br
+/></li></ul
+><b>Schlüsselwörter (unvollständig):</b><br
+/><ul><li>break</li
+><li>choose</li
+><li>class</li
+><li>continue</li
+><li>do</li
+><li>extends</li
+><li>final</li
+><li>float</li
+><li>function</li
+><li>implements</li
+><li>import</li
+><li>int</li
+><li>interface</li
+><li>module</li
+><li>new</li
+><li>ref</li
+><li>return</li
+><li>set</li
+><li>super</li
+><li>this</li
+><li>void</li
+><li>while<br/><br
+/><br/><br
+/></li></ul
+><b>Typen:</b><br
+/><ul><li>int</li
+><li>float</li
+><li>string</li
+><li>reference/objekte (implizit)<br/><br
+/></li></ul
+><b>Boolean true ersetzt durch:</b><br
+/><ul><li>genau dann wenn(int!=0)&nbsp;&nbsp;&nbsp; //'!=0' kann dann weggelassen werden :-)</li
+><li>genau dann wenn(float!=0)</li
+><li>genau dann wenn(str!="")</li
+><li>genau dann wenn(ref!=null)<br/><br
+/></li></ul
+><b>Arrays:</b><br
+/><ul><li>man kann optional eine Dimension angeben, siehe unten</li
+><li>intern werden Array mit einer Map realisiert</li
+><li>wenn ein Index noch nicht belegt, wird eine Referenz null zurückgegeben<br/><br
+/></li></ul
+><b>Null-Werte:</b><br
+/><ul><li>int i&nbsp;&nbsp;&nbsp; = null wird in Ausdrücken ausgewertet zu 0.</li
+><li>float f&nbsp; = null wird in Ausdrücken ausgewertet zu 0.</li
+><li>string s = null wird in Ausdrücken ausgewertet zu "".</li
+><li>ref r&nbsp;&nbsp;&nbsp; = null bleibt null.<br/><br
+/></li></ul
+><h2>Ausdrücke</h2><br
+/><h4>Variablendeklaration:</h4><br
+/>&lt;decl name="<u>name</u>" type="int" value="<u>Inner_Op</u>" [dim="<u>Int</u>"] [static="yes"] [final="yes"]/&gt;<br
+/><br
+/><i>Bsp</i>1: einer Variablen "i" vom Typ int mit Wert 10*2 deklarieren:<br
+/>&lt;decl type="int" name="i" value="10*2"/&gt;<br
+/><br
+/><i>Bsp2</i>: eindimensionales float-Array mit dem Namen "field" und zwei Einträgen<br
+/>&lt;decl type="float" name="field" dim="1" value="{1.0, 2.4}"/&gt;<br
+/><br
+/><h4>Zuweisung:</h4><br
+/>&lt;set name="<u>name</u>" [index="<u>Inner_Op</u>,<u>Inner_Op</u>,<u>Inner_Op</u>"] value="<u>Inner_Op</u>"/&gt;<br
+/><br
+/><i>Bsp3</i>: Wertzuweisung für das zweite Element des in Bsp2 definierten Arrays<br
+/>&lt;set name="field" value="3.14" index="1"/&gt;<br
+/><br
+/>&lt;--! Mögliches Feature für Arrays? Funktion keys() liefert alle belegten Indizis des Arrays<br
+/>a = new int[];<br
+/>a[12]=1223<br
+/>a[7]=13<br
+/>[....,13,...,1223,...] == [7-&gt;13,12-&gt;1223]<br
+/>a.keys() = [7,12]<br
+/>--&gt;<br
+/><h4>Innere Grammatik</h4><br
+/>Inner_Op ::= Inner_Op [+|-] Inner_Op<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Inner_Op [*|/|%] Inner_Op<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Inner_Op<br
+/>siehe Operatorprioritätstabelle<br
+/>siehe Java-Sprachspezifikation<br
+/><br
+/><b><h3>Operatorpriorität</h3></b><br
+/><ul><li>.</li
+><li>() {function call},[],_++,_--</li
+><li>!_,++_,--_,+_,-_, new</li
+><li>*,/,%</li
+><li>+,-</li
+><li>&lt;=, &gt;=, &lt;, &gt;</li
+><li>!=, ==</li
+><li>&amp;</li
+><li>^</li
+><li>|</li
+><li>&amp;&amp;</li
+><li>||</li
+><li>,<br/><br
+/></li></ul
+><h2>Anweisungen</h2><br
+/><b>Zuweisung</b><br
+/><ul><li>siehe &lt;set ...&gt;<br/><br
+/></li></ul
+><b>Fallunterscheidung</b><br
+/>&lt;choose&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;case test="<u>Inner_Op</u>"&gt;<u>Anweisungen</u>&lt;/case&gt; &lt;!-- "<u>Anweisungen</u>" ist ein Baum --&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;case test="<u>Inner_Op</u>"&gt;<u>Anweisungen</u>&lt;/case&gt;<br
+/>&nbsp;&nbsp;&nbsp; ...<br
+/>&lt;/choose&gt;<br
+/><br
+/><b>While-Schleife</b><br
+/>&lt;do test="<u>Inner_Op</u>"&gt;<br
+/>&nbsp; <u>Anweisungen</u><br
+/>&lt;/do&gt;<br
+/><br
+/><b>For-Schleife</b><br
+/>durch &lt;do/&gt; realisiert<br
+/><br
+/><b>Blöcke</b><br
+/>&lt;scope&gt;<u>Anweisungen</u>&lt;/scope&gt;<br
+/><br
+/><b>Break/Continue</b><br
+/>&lt;break/&gt;, &lt;continue/&gt;<br
+/><br
+/><b>Return</b><br
+/>&lt;return [value="<u>Inner_Op</u>"]/&gt;<br
+/><br
+/><b>Throw (Optional)</b><br
+/>&lt;throw value="<u>Inner_Op</u>"/&gt;<br
+/><br
+/><b>Try-Catch (Optional)</b><br
+/>&lt;try&gt;<br
+/>&nbsp;&nbsp;&nbsp; <u>Anweisungen</u><br
+/>&nbsp;&nbsp;&nbsp; <u>[</u>&lt;catch name="<u>name</u>" type="<u>type</u>"&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <u>Anweisungen</u><br
+/>&nbsp;&nbsp;&nbsp; &lt;/catch&gt;<u>]*</u><br
+/>&nbsp;&nbsp;&nbsp; <u>[</u>&lt;finally&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <u>Anweisungen</u><br
+/>&nbsp;&nbsp;&nbsp; &lt;/finally&gt;<u>]?</u><br
+/>&lt;/try&gt;<br
+/><br
+/><h2>Methoden</h2><br
+/>&lt;function name="<u>Bezeichner</u>" returns="<u>type</u>" [static="yes"] [final="yes"]&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;arguments&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <u>Variablendeklarationen</u><br
+/>&nbsp;&nbsp;&nbsp; &lt;/arguments&gt;<br
+/>&nbsp;&nbsp;&nbsp; <u>Anweisungen</u><br
+/>&lt;/function&gt;<br
+/><br
+/><i>Bsp1</i> - eine Methode "foo" die zwei Integer als Parameter erwartet und das Ergebnis zurückliefert. Anschließend erfolgt ein Aufruf der Methode.<br
+/><br
+/>Methodendefinition:<br
+/>&lt;function name="foo" returns="int"&gt;<br
+/>&nbsp; &lt;arguments&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;decl name="a" type="int"/&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;decl name="b" type="int"/&gt;<br
+/>&nbsp; &lt;/arguments&gt;<br
+/>&nbsp; &lt;decl name="c" type="int" value="a+b+42"/&gt;<br
+/>&nbsp; &lt;return value="c"/&gt;<br
+/>&lt;/function&gt;<br
+/><br
+/>Methodenaufruf:<br
+/>&lt;call exec="foo(10,20)"/&gt;<br
+/><br
+/>&lt;set name="z" value="this.foo(10,20)"/&gt;<br
+/><br
+/><h2>Datei</h2><br
+/><b><h3>Klassen</h3></b><br
+/>&lt;class name="<i>name</i>" [super="<i>name</i>"]&gt;<br
+/>&nbsp;&nbsp;&nbsp; <u>[</u>&lt;import name="<i>name</i>"/&gt;<u>]*</u><br
+/>&nbsp;&nbsp;&nbsp; <u>[</u>&lt;implements name="<i>name</i>"/&gt;<u>]*</u><br
+/>&nbsp;&nbsp;&nbsp; <u>[Variablendeklaration|Method]*</u><br
+/>&nbsp;&nbsp;&nbsp; <u>[</u>&lt;static&gt;<u>Anweisungen*</u>&lt;/static&gt;]<br
+/>&lt;/class&gt;<br
+/><h3>Interface</h3><br
+/>&lt;interface name="name"&gt;<br
+/>&nbsp;&nbsp;&nbsp; <u>[</u>&lt;extends name="<i>name</i>"/&gt;<u>]*</u><br
+/>&nbsp;&nbsp;&nbsp; <u>[leere Methoden]*</u><br
+/>&lt;/interface&gt;<br
+/><br
+/><b>Modul</b><br
+/>&lt;module name="packagename"&gt;<br
+/>&nbsp; &lt;import name="<i>name</i>" [as="<i>name</i>"]/&gt;<br
+/>&nbsp; [<u>Klassendeklaration</u>|<u>Interfacedeklaration</u>]*<br
+/>&lt;/module&gt;<br
+/><br
+/><h2>Beispiele</h2><br
+/><h3>Beispiel für Arithmetik</h3><br
+/><h4>Euklidischer Algorithmus:</h4><br
+/>&lt;function name="ggt" returns="int"&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;arguments&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;decl type="int" name="a"/&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;decl type="int" name="b"/&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;/arguments&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;do test="b != 0"&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;decl type="int" name="h" value="a%b"/&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;--! Vorschlag: Deklaration durch Elemente anstatt Attribute<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int i=0; vs. &lt;decl type="int" name="i"/&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;decl type="int" name="i"/&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;int&gt;&lt;a&gt;10&lt;/a&gt;&lt;/int&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;decl int="10" name="a"/&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;int&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;a&gt;10&lt;/a&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; asdhafjdkfjs&nbsp;&nbsp;&nbsp; &lt;-- wäre ein Kommentar<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;b&gt;20&lt;/b&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/int&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;set name="a" value="b"/&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;set name="b" value="h"/&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;/do&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;return value="a"/&gt;<br
+/>&lt;/function&gt;<br
+/><br
+/><h4>Bubblesort:</h4><br
+/>&lt;function name="bubblesort"&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;arguments&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;decl type="int" dim="1" name="field"/&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;/arguments&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;decl type="int" name="i" value="0"/&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;do test="i&lt;field.length-2"&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;decl type="int" name="j" value="i+1"/&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;do test="j&lt;field.length-1"&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;choose&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;case test="field[i]&gt;field[j]"&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;decl type="int" name="temp" value="field[i]"/&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;set name="field" index="i" value="field[j]"/&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;set name="field" index="j" value="temp"/&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/case&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/choose&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/do&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;/do&gt;<br
+/>&lt;/function&gt;<br
+/><br
+/><h3>Beispiel für Klassenvererbung</h3><br
+/>&lt;module name="personenverwaltung"&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;interface name="Lebewesen"&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;extends name="Molekülgruppe"/&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;/interface&gt;<br
+/><br
+/>&nbsp;&nbsp;&nbsp; &lt;class name="Person"&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;implements name="Lebewesen"/&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;decl type="int"&nbsp;&nbsp;&nbsp; name="age"/&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;decl type="string" name="name"/&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;decl type="int"&nbsp;&nbsp;&nbsp; name="male"/&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;decl type="string" name="phone"/&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;function name="toString()" returns="string"&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;return value="name + '(' + age + ')'"/&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/function&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;/class&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; &lt;class name="Student" super="Person"&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;decl type="int"&nbsp; name="matrikelnr"/&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;function name="toString()" returns="string"&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;return value="name + '(' + matrikelnr + ',' + age + ')'"/&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/function&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; &lt;/class&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; &lt;class name="Mitarbeiter" super="Person"&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;decl type="int"&nbsp; name="personalnr"/&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;/class&gt;<br
+/>&lt;/module&gt;<br
+/><br
+/><h3>Beispiel für Break/Continue und Klasse instanziieren, Methode aufrufen</h3><br
+/><br
+/>&lt;class name="PrimeTest"&gt;<br
+/>...<br
+/>&nbsp; &lt;function name="isPrime()" returns="int"&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;arguments&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;decl type="int" name="i"/&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;/arguments&gt;&nbsp;&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; ...<br
+/>&nbsp;&nbsp;&nbsp; ..<br
+/>&nbsp;&nbsp;&nbsp; .<br
+/>&nbsp;&nbsp;&nbsp; &lt;return value="i"/&gt;<br
+/>&nbsp; &lt;/function&gt;<br
+/>..<br
+/>.<br
+/>&lt;/class&gt;<br
+/><br
+/>&lt;class name="test"&gt;<br
+/>&nbsp; &lt;decl type="int" name="i" value="3" /&gt;<br
+/>&nbsp; &lt;decl type="PrimeTest" name="pt" value="new PrimeTest(2)"/&gt;<br
+/>&nbsp;&nbsp;<br
+/>&nbsp; Endlosschleife<br
+/>&nbsp; &lt;do test="true"&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;set name="i" value="i+1"/&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;choose&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;case test="i%2==0"&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;continue/&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/case&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;case test="true"&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;choose&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;case test="i&lt;100"&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;call exec="pt.isPrime(i)"/&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/case&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;case test="true"&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;break/&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/case&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/choose&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/case&gt;&nbsp;&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; &lt;/choose&gt;<br
+/>&nbsp; &lt;/do&gt;<br
+/>&lt;/class&gt;<br
+/><br
+/><br
+/><h2>Aufteilung/Modularisierung</h2><br
+/><ul><li>XML-Parser<ul><li>bietet sich an, wenn wir uns zumindest an die XML-Syntax halten (würde ich aber bevorzugen).</li></ul
+></li
+><li>Validierer<ul><li>Dieses XML müsste man validieren und dabei einen abstrakten Syntaxbaum aufbauen.</li></ul
+></li
+><li>abstrakten Syntaxbaum (Composite-Pattern?)<ul><li>man bräuchte vorher eine Grammatik oder besser ein Übersetzungsschema.</li
+><li>Der Syntaxbaum könnte dann um die semantischen Attribute erweitert werden.&nbsp;</li
+><li>Und eben um eine Methode die die einzelnen Knoten im Baum auswertet.&nbsp;</li
+><li>Dabei könnte auch gleich Zwischencode ausgegeben werden (ich denke hier kann man noch einiges modularisieren, ist mir zu viel auf einmal).</li></ul
+></li
+><li>baumartige Symboltabelle (Composite-Pattern?)</li
+><li>Für den Zwischencode brauchen wir auch Strukturen, da wir ja Klassen und Funktionen haben wollen. Konkret heißt das: Es muss irgendwie eine „Zwischenklasse“ geben mit einer Sammlung von Methoden und Attributen. Die Symboltabelle wird Baumartig sein, da wir ja geschachtelte Scopes haben.</li
+><li>Man könnte jetzt noch zwei Phasen „Optimierung“ einführen. Oder mehrere Optimierer die man dazwischen schaltet (zB als Liste von Commands (Pattern), ähnlich wie Filter). Optimieren kann man am Syntaxbaum und am Zwischencode.&nbsp;</li
+><li>Optimierungen:<ul><li>Eliminierung redundanter Ausdrücke (@Syntaxbaum)</li
+><li>Konstantenfaltung (Konstante Ausdrücke werden zusammengefasst, @Syntaxbaum)</li
+><li>Eliminierung von toten Programmcodes (@Syntaxbaum/Zwischencode)</li
+><li>Vereinfachung von Berechnungen mithilfe von Rechengesetzen</li
+><li>Schleifenoptimierungen (Ausdrücke in der Schleife, die sich nicht ändern, können rausgezogen werden,@Syntaxbaum/Zwischencode)</li
+><li>Erkennung ungenutzter und uninitialisierter Variablen (@Syntaxbaum)</li
+><li>Kopienverbreitung (manche Variablen überreichen nur einen Wert und haben sonst keine Funktion, diese kann man eliminieren, @Zwischencode)</li
+><li>Kontrollflussoptimierungen (man kann die Anzahl der Sprünge reduzieren, @Zwischencode)</li></ul
+></li
+><li>Zum Schluss bräuchte man noch einen Klassenschreiber, der den Zwischencode zu Sourcecode schreibt. Da wir vielleicht noch Bytecode produzieren wollen, würde sich das Pattern „Builder“ vorteilhaft.</li
+><li>Und ganz zum Schluss muss dann noch der Java-Compiler aufgerufen werden ^^.</li></ul
+><h2>Hardcore (OPTIONAL!!!)</h2><br
+/><h3>Blockreferenzierung</h3><br
+/>repeat<br
+/>&nbsp;i += 1<br
+/>until i &gt; 10<br
+/><br
+/>&lt;ref name="inc"/&gt;<br
+/>&lt;do test="i&lt;=10"&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;set i="i+1" ref="inc"/&gt;<br
+/>&lt;/do&gt;<br
+/><br
+/><h3>Methodenaufrufe</h3><br
+/>Deklaration:<br
+/>bla(v=1,a=2,h=3,b:4)<br
+/><br
+/>Aufruf:&nbsp;<br
+/>bla(a=2,b=3)<br
+/><br
+/><b>Exception</b><br
+/>try/catch<br
+/><br
+/><br
+/>Ablauf:<br
+/>Eingabe → (René) → StAX → (Stefan, Michael) → DOM → (Alex, Markus) → Java Objekten → {soll bis zum 21.05 nahezu fertig sein}() → Ziel&nbsp;<br
+/><br
+/></body>
+</html>
