@@ -10,6 +10,7 @@ class NodeIterator implements Iterator<INode> {
 		this.parent = parent;
 	}
 	
+	@Override
 	public boolean hasNext() {
 		try {
 			return parent.hasNext();
@@ -19,6 +20,7 @@ class NodeIterator implements Iterator<INode> {
 		}
 	}
 	
+	@Override
 	public Node next() throws NoSuchElementException {
 		try {
 			return parent.getNext();
@@ -28,6 +30,7 @@ class NodeIterator implements Iterator<INode> {
 		}
 	}
 	
+	@Override
 	public void remove() throws UnsupportedOperationException {
 		throw new UnsupportedOperationException();
 	}

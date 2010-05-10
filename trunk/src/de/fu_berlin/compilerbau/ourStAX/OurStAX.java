@@ -31,9 +31,19 @@ class OurStAX extends Position implements IOurStAX {
 		return reader.toString() + super.toString();
 	}
 	
+	/**
+	 * Next Node to be returned by {@link #getNext()}.
+	 */
 	protected Node next = null;
 	
-	boolean hasNext() throws IOException {
+	/**
+	 * Can a {@link Node} be read by {@link #getNext()}?
+	 * 
+	 * @return true if a {@link Node} can be read
+	 * @throws IOException The underlying {@link #reader} threw an Exception.
+	 * @throws IllegalStateException already returned an {@link Node} indication an error.
+	 */
+	boolean hasNext() throws IOException, IllegalStateException {
 		if(next != null) {
 			return true;
 		} else if(state == State.ERROR) {
@@ -44,7 +54,15 @@ class OurStAX extends Position implements IOurStAX {
 		}
 	}
 	
-	Node getNext() throws IOException, NoSuchElementException {
+	/**
+	 * Retrieves next read XML node.
+	 * 
+	 * @return XML node read
+	 * @throws IOException The underlying {@link #reader} threw an Exception.
+	 * @throws NoSuchElementException {@link #hasNext()} returned false
+	 * @throws IllegalStateException already returned an {@link Node} indication an error.
+	 */
+	Node getNext() throws IOException, NoSuchElementException, IllegalStateException {
 		if(hasNext()) {
 			Node next = this.next;
 			this.next = null;
@@ -59,13 +77,26 @@ class OurStAX extends Position implements IOurStAX {
 	/////////////////////////////////////////////////////////////////////////////
 	
 	protected enum State {
-		ERROR, START, TEXT, OPEN, COMMENT0, TAG, INNER, INNER_CLOSE, ATTR,
+		ERROR,
+		
+		START, TEXT, OPEN, COMMENT0, TAG, INNER, INNER_CLOSE, ATTR,
 		ATTR1, ATTR_APOS, ATTR_QUOT, ATTR2, CLOSE0, CLOSE, CLOSE1, COMMENT1,
 		COMMENT, COMMENT2, COMMENT3, CDATA1, CDATA, CDATA2, CDATA3, PI_TARGET0,
 		PI_TARGET,PI_INNER, PI_INNER1
 	}
 	
+	/**
+	 * one character lookahead ...
+	 */
 	protected Character nextChar = null;
+	
+	/**
+	 * Returns and purges {@link #nextChar} or reads next character from {@link #reader}, if nextChar
+	 * was empty.
+	 * 
+	 * @return character read
+	 * @throws IOException The underlying {@link #reader} threw an Exception.
+	 */
 	protected int readNext() throws IOException {
 		if(nextChar == null) {
 			final int result = reader.read();
@@ -99,6 +130,12 @@ class OurStAX extends Position implements IOurStAX {
 		}
 	}
 	
+	/**
+	 * Pushes a character to be read by {@link #fetchNext()}.
+	 * 
+	 * @param c character to push
+	 * @throws IllegalStateException there can only be one character in chain
+	 */
 	protected void pushCharCharacter(char c) throws IllegalStateException {
 		if(nextChar == null) {
 			nextChar = Character.valueOf(c);
@@ -107,13 +144,21 @@ class OurStAX extends Position implements IOurStAX {
 		}
 	}
 	
-	protected State state = State.START;
 	/**
-	 * Reads the next {@link Node} into {@link #state}.
-	 * {@link #state} remains null, if EOF was reached.
+	 * Current State
 	 */
-	protected Node fetchNext() throws IOException {
-		StringBuilder key = null, value = null;
+	protected State state = State.START;
+
+	/**
+	 * Reads the next {@link Node} into {@link #state}. {@link #state} remains null, if EOF was
+	 * reached.
+	 * 
+	 * @return Node read
+	 * @throws IOException The underlying {@link #reader} threw an Exception.
+	 * @throws IllegalStateException {@link #state} was ERROR.
+	 */
+	protected Node fetchNext() throws IOException, IllegalStateException {
+		Appendable key = null, value = null;
 		
 		final int start = this.start, line = this.line, character = this.character;
 		

@@ -10,14 +10,17 @@ class Position implements IPosition {
 		this.character = character;
 	}
 	
+	@Override
 	public int getStart() {
 		return start;
 	}
 	
+	@Override
 	public int getLine() {
 		return line;
 	}
 	
+	@Override
 	public int getCharacter() {
 		return character;
 	}
