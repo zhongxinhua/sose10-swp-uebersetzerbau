@@ -1,10 +1,12 @@
-package de.fu_berlin.compilerbau.ourStAX;
+package de.fu_berlin.compilerbau.xmlNodeStream.impl;
 
-class Position implements IPosition {
+import de.fu_berlin.compilerbau.xmlNodeStream.StreamPosition;
+
+class StreamPositionImpl implements StreamPosition {
 	
 	protected int start, line, character;
 	
-	Position(int start, int line, int character) {
+	StreamPositionImpl(int start, int line, int character) {
 		this.start = start;
 		this.line = line;
 		this.character = character;

@@ -1,5 +1,10 @@
-package de.fu_berlin.compilerbau.ourStAX;
+package de.fu_berlin.compilerbau.xmlNodeStream;
 
+/**
+ * Content type of the {@link XmlNode}.
+ * 
+ * @author rene
+ */
 public enum NodeType {
 	/**
 	 * an error occurred (wrong data or broken input)

@@ -1,6 +1,11 @@
-package de.fu_berlin.compilerbau.ourStAX;
+package de.fu_berlin.compilerbau.xmlNodeStream;
 
-public interface IPosition {
+/**
+ * Stores the position in stream of a read element.
+ * 
+ * @author rene
+ */
+public interface StreamPosition {
 	/**
 	 * n'th character in data stream
 	 */

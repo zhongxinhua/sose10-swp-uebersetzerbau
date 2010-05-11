@@ -1,13 +1,17 @@
-package de.fu_berlin.compilerbau.ourStAX;
+package de.fu_berlin.compilerbau.xmlNodeStream.impl;
 
 import java.io.*;
 import java.util.*;
 
-class OurStAX extends Position implements IOurStAX {
+import de.fu_berlin.compilerbau.xmlNodeStream.NodeType;
+import de.fu_berlin.compilerbau.xmlNodeStream.XmlNode;
+import de.fu_berlin.compilerbau.xmlNodeStream.XmlNodeStream;
+
+class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
 	
 	protected final BufferedReader reader;
 	
-	OurStAX(Reader reader) throws IOException {
+	XmlNodeStreamImpl(Reader reader) throws IOException {
 		super(1,1,1);
 		if(reader instanceof BufferedReader) {
 			this.reader = (BufferedReader)reader;
@@ -17,8 +21,8 @@ class OurStAX extends Position implements IOurStAX {
 	}
 	
 	@Override
-	public Iterator<INode> iterator() {
-		return new NodeIterator(this);
+	public Iterator<XmlNode> iterator() {
+		return new XmlNodeIterator(this);
 	}
 	
 	@Override
@@ -34,14 +38,14 @@ class OurStAX extends Position implements IOurStAX {
 	/**
 	 * Next Node to be returned by {@link #getNext()}.
 	 */
-	protected Node next = null;
+	protected XmlNodeImpl next = null;
 	
 	/**
-	 * Can a {@link Node} be read by {@link #getNext()}?
+	 * Can a {@link XmlNodeImpl} be read by {@link #getNext()}?
 	 * 
-	 * @return true if a {@link Node} can be read
+	 * @return true if a {@link XmlNodeImpl} can be read
 	 * @throws IOException The underlying {@link #reader} threw an Exception.
-	 * @throws IllegalStateException already returned an {@link Node} indication an error.
+	 * @throws IllegalStateException already returned an {@link XmlNodeImpl} indication an error.
 	 */
 	boolean hasNext() throws IOException, IllegalStateException {
 		if(next != null) {
@@ -60,11 +64,11 @@ class OurStAX extends Position implements IOurStAX {
 	 * @return XML node read
 	 * @throws IOException The underlying {@link #reader} threw an Exception.
 	 * @throws NoSuchElementException {@link #hasNext()} returned false
-	 * @throws IllegalStateException already returned an {@link Node} indication an error.
+	 * @throws IllegalStateException already returned an {@link XmlNodeImpl} indication an error.
 	 */
-	Node getNext() throws IOException, NoSuchElementException, IllegalStateException {
+	XmlNodeImpl getNext() throws IOException, NoSuchElementException, IllegalStateException {
 		if(hasNext()) {
-			Node next = this.next;
+			XmlNodeImpl next = this.next;
 			this.next = null;
 			return next;
 		} else {
@@ -150,14 +154,14 @@ class OurStAX extends Position implements IOurStAX {
 	protected State state = State.START;
 
 	/**
-	 * Reads the next {@link Node} into {@link #state}. {@link #state} remains null, if EOF was
+	 * Reads the next {@link XmlNodeImpl} into {@link #state}. {@link #state} remains null, if EOF was
 	 * reached.
 	 * 
 	 * @return Node read
 	 * @throws IOException The underlying {@link #reader} threw an Exception.
 	 * @throws IllegalStateException {@link #state} was ERROR.
 	 */
-	protected Node fetchNext() throws IOException, IllegalStateException {
+	protected XmlNodeImpl fetchNext() throws IOException, IllegalStateException {
 		Appendable key = null, value = null;
 		
 		final int start = this.start, line = this.line, character = this.character;
@@ -173,7 +177,7 @@ class OurStAX extends Position implements IOurStAX {
 						}
 						case '>': {
 							state = State.ERROR;
-							return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+							return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
 						}
 						default: {
 							if(c >= 0) {
@@ -196,7 +200,7 @@ class OurStAX extends Position implements IOurStAX {
 						continue;
 					}
 					state = State.START;
-					return new Node(start, line, character, NodeType.NT_TEXT, null, value.toString());
+					return new XmlNodeImpl(start, line, character, NodeType.NT_TEXT, null, value.toString());
 				}
 				
 				case OPEN: {
@@ -221,7 +225,7 @@ class OurStAX extends Position implements IOurStAX {
 								break;
 							} else {
 								state = State.ERROR;
-								return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+								return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
 							}
 						}
 					}
@@ -240,7 +244,7 @@ class OurStAX extends Position implements IOurStAX {
 						}
 						default: {
 							state = State.ERROR;
-							return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+							return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
 						}
 					}
 					break;
@@ -253,7 +257,7 @@ class OurStAX extends Position implements IOurStAX {
 						break;
 					} else {
 						state = State.ERROR;
-						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+						return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
 					}
 				}
 				
@@ -266,7 +270,7 @@ class OurStAX extends Position implements IOurStAX {
 						break;
 					} else {
 						state = State.ERROR;
-						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+						return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
 					}
 				}
 				
@@ -281,17 +285,17 @@ class OurStAX extends Position implements IOurStAX {
 						break;
 					} else {
 						state = State.ERROR;
-						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+						return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
 					}
 				}
 				
 				case COMMENT3: {
 					if(c == '>') {
 						state = State.START;
-						return new Node(start, line, character, NodeType.NT_COMMENT, null, value.toString());
+						return new XmlNodeImpl(start, line, character, NodeType.NT_COMMENT, null, value.toString());
 					} else {
 						state = State.ERROR;
-						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+						return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
 					}
 				}
 				
@@ -302,7 +306,7 @@ class OurStAX extends Position implements IOurStAX {
 						break;
 					} else {
 						state = State.ERROR;
-						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+						return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
 					}
 				}
 				
@@ -315,7 +319,7 @@ class OurStAX extends Position implements IOurStAX {
 						break;
 					} else {
 						state = State.ERROR;
-						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+						return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
 					}
 				}
 				
@@ -330,17 +334,17 @@ class OurStAX extends Position implements IOurStAX {
 						break;
 					} else {
 						state = State.ERROR;
-						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+						return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
 					}
 				}
 				
 				case CDATA3: {
 					if(c == '>') {
 						state = State.START;
-						return new Node(start, line, character, NodeType.NT_TEXT, null, value.toString());
+						return new XmlNodeImpl(start, line, character, NodeType.NT_TEXT, null, value.toString());
 					} else {
 						state = State.ERROR;
-						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+						return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
 					}
 				}
 				
@@ -352,14 +356,14 @@ class OurStAX extends Position implements IOurStAX {
 						break;
 					} else {
 						state = State.ERROR;
-						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+						return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
 					}
 				}
 				
 				case CLOSE: {
 					if(c == '>') {
 						state = State.START;
-						return new Node(start, line, character, NodeType.NT_END_TAG, key.toString(), null);
+						return new XmlNodeImpl(start, line, character, NodeType.NT_END_TAG, key.toString(), null);
 					} else if(c >= 0 && (c=='.' || c==':' || c=='-' || c=='_' || Character.isLetterOrDigit(c))) {
 						key.append((char)c);
 						break;
@@ -368,19 +372,19 @@ class OurStAX extends Position implements IOurStAX {
 						break;
 					} else {
 						state = State.ERROR;
-						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+						return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
 					}
 				}
 				
 				case CLOSE1: {
 					if(c == '>') {
 						state = State.START;
-						return new Node(start, line, character, NodeType.NT_END_TAG, key.toString(), null);
+						return new XmlNodeImpl(start, line, character, NodeType.NT_END_TAG, key.toString(), null);
 					} else if(Character.isWhitespace(c)) {
 						break; // NOOP;
 					} else {
 						state = State.ERROR;
-						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+						return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
 					}
 				}
 				
@@ -388,12 +392,12 @@ class OurStAX extends Position implements IOurStAX {
 					switch(c) {
 						case('>'): {
 							state = State.START;
-							return new Node(start, line, character, NodeType.NT_TAG, key.toString(), null);
+							return new XmlNodeImpl(start, line, character, NodeType.NT_TAG, key.toString(), null);
 						}
 						case('/'): {
 							pushCharCharacter('/');
 							state = State.INNER;
-							return new Node(start, line, character, NodeType.NT_TAG, key.toString(), null);
+							return new XmlNodeImpl(start, line, character, NodeType.NT_TAG, key.toString(), null);
 						}
 						case('.'): case(':'): case('-'): case('_'): {
 							key.append((char)c);
@@ -405,10 +409,10 @@ class OurStAX extends Position implements IOurStAX {
 								break;
 							} else if(c >= 0 && Character.isWhitespace(c)){
 								state = State.INNER;
-								return new Node(start, line, character, NodeType.NT_TAG, key.toString(), null);
+								return new XmlNodeImpl(start, line, character, NodeType.NT_TAG, key.toString(), null);
 							} else {
 								state = State.ERROR;
-								return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+								return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
 							} 
 						}
 					}
@@ -431,17 +435,17 @@ class OurStAX extends Position implements IOurStAX {
 						break;
 					} else {
 						state = State.ERROR;
-						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+						return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
 					}
 				}
 				
 				case INNER_CLOSE: {
 					if(c == '>') {
 						state = State.START;
-						return new Node(start, line, character, NodeType.NT_END_TAG, null, null);
+						return new XmlNodeImpl(start, line, character, NodeType.NT_END_TAG, null, null);
 					} else {
 						state = State.ERROR;
-						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+						return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
 					}
 				}
 				
@@ -455,7 +459,7 @@ class OurStAX extends Position implements IOurStAX {
 						break;
 					} else {
 						state = State.ERROR;
-						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+						return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
 					}
 				}
 				
@@ -468,7 +472,7 @@ class OurStAX extends Position implements IOurStAX {
 						break;
 					} else {
 						state = State.ERROR;
-						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+						return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
 					}
 				}
 				
@@ -481,7 +485,7 @@ class OurStAX extends Position implements IOurStAX {
 						break;
 					} else {
 						state = State.ERROR;
-						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+						return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
 					}
 				}
 				
@@ -494,7 +498,7 @@ class OurStAX extends Position implements IOurStAX {
 						break;
 					} else {
 						state = State.ERROR;
-						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+						return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
 					}
 				}
 				
@@ -502,19 +506,19 @@ class OurStAX extends Position implements IOurStAX {
 					if(c == '/') {
 						state = State.INNER;
 						pushCharCharacter('/');
-						return new Node(start, line, character, NodeType.NT_ATTR, key.toString(), value.toString());
+						return new XmlNodeImpl(start, line, character, NodeType.NT_ATTR, key.toString(), value.toString());
 					} else if(c == '>') {
 						state = State.START;
-						return new Node(start, line, character, NodeType.NT_ATTR, key.toString(), value.toString());
+						return new XmlNodeImpl(start, line, character, NodeType.NT_ATTR, key.toString(), value.toString());
 					} else if(c >= 0 && Character.isWhitespace(c)) {
 						state = State.INNER;
 						if(c == '/') {
 							pushCharCharacter('/');
 						}
-						return new Node(start, line, character, NodeType.NT_ATTR, key.toString(), value.toString());
+						return new XmlNodeImpl(start, line, character, NodeType.NT_ATTR, key.toString(), value.toString());
 					} else {
 						state = State.ERROR;
-						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+						return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
 					}
 				}
 				
@@ -526,7 +530,7 @@ class OurStAX extends Position implements IOurStAX {
 						break;
 					} else {
 						state = State.ERROR;
-						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+						return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
 					}
 				}
 				
@@ -534,10 +538,10 @@ class OurStAX extends Position implements IOurStAX {
 					if(c == '?') {
 						if(readNext() == '>') {
 							state = State.START;
-							return new Node(start, line, character, NodeType.NT_PI, key.toString(), "");
+							return new XmlNodeImpl(start, line, character, NodeType.NT_PI, key.toString(), "");
 						} else {
 							state = State.ERROR;
-							return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+							return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
 						}
 					} else if(c >= 0 && Character.isLetterOrDigit(c)) {
 						key.append((char)c);
@@ -548,14 +552,14 @@ class OurStAX extends Position implements IOurStAX {
 						break;
 					} else {
 						state = State.ERROR;
-						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+						return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
 					}
 				}
 				
 				case PI_INNER: {
 					if(c < 0) {
 						state = State.ERROR;
-						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+						return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
 					} else if(c == '?') {
 						state = State.PI_INNER1;
 						break;
@@ -568,10 +572,10 @@ class OurStAX extends Position implements IOurStAX {
 				case PI_INNER1: {
 					if(c < 0) {
 						state = State.ERROR;
-						return new Node(start, line, character, NodeType.NT_ERROR, null, null);
+						return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
 					} else if(c == '>') {
 						state = State.START;
-						return new Node(start, line, character, NodeType.NT_PI, key.toString(), value.toString());
+						return new XmlNodeImpl(start, line, character, NodeType.NT_PI, key.toString(), value.toString());
 					} else {
 						value.append('?');
 						value.append((char)c);
