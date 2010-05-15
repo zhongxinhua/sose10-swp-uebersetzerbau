@@ -3,7 +3,13 @@ package de.fu_berlin.compilerbau.xmlNodeStream.impl;
 import de.fu_berlin.compilerbau.xmlNodeStream.NodeType;
 import de.fu_berlin.compilerbau.xmlNodeStream.XmlNode;
 
+/**
+ * A found node.
+ * @author rene
+ */
 class XmlNodeImpl extends StreamPositionImpl implements XmlNode {
+	
+	private static final long serialVersionUID = -7485085468103238711L;
 	
 	private final NodeType type;
 	private final String key, value;

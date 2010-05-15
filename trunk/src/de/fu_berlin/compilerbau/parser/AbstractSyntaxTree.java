@@ -1,3 +1,5 @@
+package de.fu_berlin.compilerbau.parser;
+
 import java.util.*;
 
 public class AbstractSyntaxTree {

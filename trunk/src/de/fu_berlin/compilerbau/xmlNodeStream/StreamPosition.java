@@ -1,11 +1,12 @@
 package de.fu_berlin.compilerbau.xmlNodeStream;
 
+import java.io.Serializable;
+
 /**
  * Stores the position in stream of a read element.
- * 
  * @author rene
  */
-public interface StreamPosition {
+public interface StreamPosition extends Serializable {
 	/**
 	 * n'th character in data stream
 	 */

@@ -7,7 +7,13 @@ import de.fu_berlin.compilerbau.xmlNodeStream.NodeType;
 import de.fu_berlin.compilerbau.xmlNodeStream.XmlNode;
 import de.fu_berlin.compilerbau.xmlNodeStream.XmlNodeStream;
 
+/**
+ * The actual class that parses the XML input.
+ * @author rene
+ */
 class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
+	
+	private static final long serialVersionUID = 8245550611478586672L;
 	
 	protected final BufferedReader reader;
 	

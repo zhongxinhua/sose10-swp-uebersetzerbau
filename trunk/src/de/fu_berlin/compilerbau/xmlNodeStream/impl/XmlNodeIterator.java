@@ -6,6 +6,10 @@ import java.util.*;
 import de.fu_berlin.compilerbau.xmlNodeStream.NodeType;
 import de.fu_berlin.compilerbau.xmlNodeStream.XmlNode;
 
+/**
+ * A class to match the {@link java.util.Iterator} interface.
+ * @author rene
+ */
 class XmlNodeIterator implements Iterator<XmlNode> {
 	protected final XmlNodeStreamImpl parent;
 	

@@ -1,17 +1,13 @@
 package de.fu_berlin.compilerbau.dom;
 
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 
 import de.fu_berlin.compilerbau.dom.impl.DomAttributeImpl;
 import de.fu_berlin.compilerbau.dom.impl.DomNodeImpl;
 import de.fu_berlin.compilerbau.xmlNodeStream.NodeType;
 import de.fu_berlin.compilerbau.xmlNodeStream.XmlNode;
 import de.fu_berlin.compilerbau.xmlNodeStream.XmlNodeStream;
-import de.fu_berlin.compilerbau.xmlNodeStream.impl.XmlNodeStreamFactory;
 
 /*
  * TODO: 

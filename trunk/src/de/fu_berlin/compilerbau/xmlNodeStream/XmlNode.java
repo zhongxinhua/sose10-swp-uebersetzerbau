@@ -1,11 +1,13 @@
 package de.fu_berlin.compilerbau.xmlNodeStream;
 
+import java.io.Serializable;
+
 /**
  * Raw representation of an XML node.
  * 
  * @author rene
  */
-public interface XmlNode extends StreamPosition {
+public interface XmlNode extends StreamPosition, Serializable {
 	/**
 	 * type of node
 	 */

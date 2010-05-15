@@ -4,6 +4,8 @@ import de.fu_berlin.compilerbau.xmlNodeStream.StreamPosition;
 
 class StreamPositionImpl implements StreamPosition {
 	
+	private static final long serialVersionUID = 415486574181634261L;
+	
 	protected int start, line, character;
 	
 	StreamPositionImpl(int start, int line, int character) {
