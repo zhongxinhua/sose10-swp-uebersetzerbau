@@ -11,6 +11,7 @@ import de.fu_berlin.compilerbau.xmlNodeStream.XmlNode;
  * @author rene
  */
 class XmlNodeIterator implements Iterator<XmlNode> {
+	
 	protected final XmlNodeStreamImpl parent;
 	
 	XmlNodeIterator(XmlNodeStreamImpl parent) {
@@ -22,17 +23,23 @@ class XmlNodeIterator implements Iterator<XmlNode> {
 		try {
 			return parent.hasNext();
 		} catch(IOException e) {
-			e.printStackTrace();
+			e.printStackTrace(); // could be re-thrown as a RuntimeException ...
 			return false;
 		}
 	}
+	
+	/*
+	 * Q: What about the IllegalStateExceptions?
+	 * A: As an IllegalStateException can only be thrown if the implementation of xmlNodeStreamImpl.hasNext() is
+	 *    flawed, we can ignore it in here.
+	 */
 	
 	@Override
 	public XmlNodeImpl next() throws NoSuchElementException {
 		try {
 			return parent.getNext();
 		} catch(IOException e) {
-			e.printStackTrace();
+			e.printStackTrace(); // could be re-thrown as a RuntimeException ...
 			return new XmlNodeImpl(parent.getStart(), parent.getLine(), parent.getCharacter(), NodeType.NT_ERROR, null, null);
 		}
 	}
@@ -41,4 +48,5 @@ class XmlNodeIterator implements Iterator<XmlNode> {
 	public void remove() throws UnsupportedOperationException {
 		throw new UnsupportedOperationException();
 	}
+	
 }

@@ -55,12 +55,12 @@ class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
 	 */
 	boolean hasNext() throws IOException, IllegalStateException {
 		if(next != null) {
-			return true;
+			return true; // a cached Node
 		} else if(state == State.ERROR) {
-			return false;
+			return false; // there cannot be any Nodes to read, once an ERROR was detected
 		} else {
 			next = fetchNext();
-			return next != null;
+			return next != null; // the ERROR should be propagated once
 		}
 	}
 	
@@ -77,7 +77,7 @@ class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
 			XmlNodeImpl next = this.next;
 			this.next = null;
 			return next;
-		} else {
+		} else { // the contract of Java's iterators was broken!
 			throw new NoSuchElementException();
 		}
 	}
@@ -102,30 +102,31 @@ class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
 	
 	/**
 	 * Returns and purges {@link #nextChar} or reads next character from {@link #reader}, if nextChar
-	 * was empty.
+	 * was empty. This function maintains the {@link de.fu_berlin.compilerbau.xmlNodeStream.StreamPosition}.
+	 * Any (ASCII based) EOL representaion will be normalized to the UNIX variant ("\n").
 	 * 
 	 * @return character read
 	 * @throws IOException The underlying {@link #reader} threw an Exception.
 	 */
 	protected int readNext() throws IOException {
-		if(nextChar == null) {
+		if(nextChar == null) { // no character in chain
 			final int result = reader.read();
 			if(result < 0) {
 				new EOFException();
 			}
 			++this.start;
 			++this.character;
-			if(result == '\n') {
+			if(result == '\n') { // UNIX line break
 				this.character = 1;
 				++this.line;
 				return '\n';
-			} else if(result == '\r') {
+			} else if(result == '\r') { // either Windows or MAC line break
 				this.character = 1;
 				++this.line;
 				final int next = reader.read();
 				if(next >= 0) {
 					++this.start;
-					if(next != '\n') {
+					if(next != '\n') { // not a Windows line break
 						pushCharCharacter((char)next);
 					}
 				}
@@ -133,7 +134,7 @@ class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
 			} else {
 				return result;
 			}
-		} else {
+		} else { // use enchained character
 			final char result = nextChar.charValue();
 			nextChar = null;
 			return result;
@@ -174,7 +175,7 @@ class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
 		
 		for(;;) {
 			final int c = readNext();
-			switch(state) {
+			switch(state) { // a simple state machine, not employing a bitmap as Igor did not want any ;)
 				case START: {
 					switch(c) {
 						case '<': {
@@ -307,6 +308,7 @@ class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
 				
 				case CDATA1: {
 					if(c == 'C' && readNext() == 'D' && readNext() == 'A' && readNext() == 'T' && readNext() == 'A' && readNext() == '[') {
+						// I did not want to make it 6 states ...
 						state = State.CDATA;
 						value = new StringBuilder();
 						break;
@@ -589,7 +591,7 @@ class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
 					}
 				}
 				
-				default: {
+				default: { // holds for ERROR, too (once an ERROR was detected, fetchNext() should not be called again)
 					throw new IllegalStateException("(Internal) state == " + state);
 				}
 			}
