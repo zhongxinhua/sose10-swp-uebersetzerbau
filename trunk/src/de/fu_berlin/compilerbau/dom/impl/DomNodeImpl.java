@@ -1,4 +1,9 @@
 package de.fu_berlin.compilerbau.dom.impl;
+
+/**
+ * @author stefan
+ */
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,6 +18,13 @@ public class DomNodeImpl implements DomNode {
 	
 	private DomNodeImpl _parent;
 	private String _nodeName;
+	
+	public DomNodeImpl() {
+		_attributes = new LinkedList<DomAttribute>();
+		_childList = new LinkedList<DomNode>();
+		_parent = null;
+		_nodeName = "";
+	}
 	
 	@Override
 	public List<DomAttribute> getAttributes() {
@@ -46,6 +58,10 @@ public class DomNodeImpl implements DomNode {
 
 	public void setName(String nodeName) {
 		_nodeName = nodeName;		
+	}
+	
+	public void setParent(DomNodeImpl parent) {
+		_parent = parent;		
 	}
 
 	public void addAttribute(DomAttributeImpl attr) {

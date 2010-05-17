@@ -1,5 +1,9 @@
 package de.fu_berlin.compilerbau.start;
 
+/**
+ * @author rene, stefan
+ */
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.InputStreamReader;
@@ -7,6 +11,8 @@ import java.io.PrintStream;
 import java.io.Reader;
 import java.util.Arrays;
 import java.util.Iterator;
+
+import de.fu_berlin.compilerbau.dom.DomCreator;
 
 /**
  * Starts the Compiler process
@@ -86,8 +92,16 @@ class Start {
 		} catch(FileNotFoundException e) {
 			throw new RuntimeException("Could not open source.", e);
 		}
+				
+		System.out.print("Init DomCreator...");
+		DomCreator.init(in);
+		System.out.println("done.");
 		
-		// TODO das Eigentliche ;)
+		System.out.print("Create DOM...");
+		DomCreator.createDOM();
+		System.out.println("done.");
+		
+		// TODO naechste Schritte
 	}
 	
 }
