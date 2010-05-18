@@ -15,7 +15,7 @@ public class XmlNodeStreamFactory {
 	 * create new instance
 	 * @param reader Text stream to read from
 	 * @return an instance of an XmlNodeStream
-	 * @throws IOException the {@link #reader} throw an Exception.
+	 * @throws IOException the {@link #reader} threw an Exception.
 	 */
 	public static XmlNodeStream createNewInstance(Reader reader) throws IOException {
 		return new XmlNodeStreamImpl(reader);

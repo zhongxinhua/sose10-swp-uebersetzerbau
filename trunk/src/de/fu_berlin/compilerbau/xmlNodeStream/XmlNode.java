@@ -2,6 +2,8 @@ package de.fu_berlin.compilerbau.xmlNodeStream;
 
 import java.io.Serializable;
 
+import de.fu_berlin.compilerbau.util.StreamPosition;
+
 /**
  * Raw representation of an XML node.
  * 

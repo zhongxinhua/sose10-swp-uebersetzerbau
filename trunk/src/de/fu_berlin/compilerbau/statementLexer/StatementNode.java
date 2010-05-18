@@ -1,6 +1,8 @@
 package de.fu_berlin.compilerbau.statementLexer;
 
-public class StatementNode extends StreamPosition {
+import de.fu_berlin.compilerbau.util.StreamPosition;
+
+public interface StatementNode extends StreamPosition {
 	
 	TokenType getType();
 	

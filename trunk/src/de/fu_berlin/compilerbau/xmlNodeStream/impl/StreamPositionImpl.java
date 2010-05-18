@@ -1,6 +1,6 @@
 package de.fu_berlin.compilerbau.xmlNodeStream.impl;
 
-import de.fu_berlin.compilerbau.xmlNodeStream.StreamPosition;
+import de.fu_berlin.compilerbau.util.StreamPosition;
 
 class StreamPositionImpl implements StreamPosition {
 	

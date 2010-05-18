@@ -102,7 +102,7 @@ class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
 	
 	/**
 	 * Returns and purges {@link #nextChar} or reads next character from {@link #reader}, if nextChar
-	 * was empty. This function maintains the {@link de.fu_berlin.compilerbau.xmlNodeStream.StreamPosition}.
+	 * was empty. This function maintains the {@link de.fu_berlin.compilerbau.util.StreamPosition}.
 	 * Any (ASCII based) EOL representaion will be normalized to the UNIX variant ("\n").
 	 * 
 	 * @return character read

@@ -1,4 +1,4 @@
-package de.fu_berlin.compilerbau.xmlNodeStream;
+package de.fu_berlin.compilerbau.util;
 
 import java.io.Serializable;
 
