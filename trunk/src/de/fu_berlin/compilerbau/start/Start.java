@@ -13,6 +13,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import de.fu_berlin.compilerbau.dom.DomCreator;
+import de.fu_berlin.compilerbau.dom.DomNode;
+import de.fu_berlin.compilerbau.parser.AbstractSyntaxTree;
 
 /**
  * Starts the Compiler process
@@ -45,7 +47,7 @@ class Start {
 		String source = null;
 		String destPath = null;
 		
-		while(i.hasNext()) {
+		while(i.hasNext()) { 
 			String arg = i.next();
 			if("-cp".equals(arg) || "-classpath".equals(arg)) {
 				if(i.hasNext()) {
@@ -98,10 +100,11 @@ class Start {
 		System.out.println("done.");
 		
 		System.out.print("Create DOM...");
-		DomCreator.createDOM();
+		DomNode node = DomCreator.createDOM();
 		System.out.println("done.");
 		
 		// TODO naechste Schritte
+		AbstractSyntaxTree stree = new AbstractSyntaxTree(node);
 	}
 	
 }
