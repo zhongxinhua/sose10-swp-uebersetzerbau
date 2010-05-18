@@ -80,4 +80,21 @@ public class DomNodeImpl implements DomNode {
 		_attributes.addAll(attr);
 	}
 
+	@Override
+	public String getAttributeValue(String attributeName) {	
+		for (DomAttribute attr : _attributes) {
+			if (attr.getName().equals(attributeName)) return attr.getValue();
+		}
+		
+		return "";
+	}
+
+	@Override
+	public boolean hasAttribute(String attributeName) {
+		for (DomAttribute attr : _attributes) {
+			if (attr.getName().equals(attributeName)) return true;
+		}
+		return false;
+	}
+
 }

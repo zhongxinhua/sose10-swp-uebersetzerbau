@@ -52,5 +52,18 @@ public interface DomNode {
 	 * 
 	 * @return
 	 */
-	List<DomAttribute> getAttributes();	
+	List<DomAttribute> getAttributes();
+	
+	/**
+	 * @param attributeName - The Name of the Attribute
+	 * @return The Value for the Attribute attributeName or "" if there is no such Attribute
+	 */	
+	String getAttributeValue(String attributeName);
+	
+	/**
+	 * 
+	 * @param attributeName - The Name of the Attribute
+	 * @return true, if there is an Attribute with the Name attributeName
+	 */
+	boolean hasAttribute(String attributeName);
 }
