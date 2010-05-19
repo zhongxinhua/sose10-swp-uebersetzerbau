@@ -19,9 +19,9 @@ public enum TokenType {
 	
 	INCR,
 	
-	NOT,
-	
 	DECR,
+	
+	NOT,
 	
 	NEW,
 	

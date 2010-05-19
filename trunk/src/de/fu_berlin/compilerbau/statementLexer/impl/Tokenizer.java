@@ -4,9 +4,10 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import de.fu_berlin.compilerbau.statementLexer.StatementNode;
+import de.fu_berlin.compilerbau.statementLexer.TokenType;
 import de.fu_berlin.compilerbau.util.PositionCharacterStream;
 
-public class Tokenizer implements Iterator<StatementNode> {
+class Tokenizer implements Iterator<StatementNode> {
 	
 	protected StatementNode nextNodeToRead;
 	protected PositionCharacterStream stream;
@@ -31,11 +32,46 @@ public class Tokenizer implements Iterator<StatementNode> {
 			return null;
 		}
 		
-		final int line = stream.getLine();
 		final int start = stream.getStart();
+		final int line = stream.getLine();
 		final int character = stream.getCharacter();
 		
-		// TODO
+		/* TODO: mehr als ein Zeichen / als ein Zeichen nicht eindeutig 
+			INCR,
+			DECR,
+			NEW,
+			PLUS,
+			MINUS,
+			LE,
+			GE,
+			LT,
+			GT,
+			NE,
+			EQ,
+			BIT_AND,
+			BIT_XOR,
+			BIT_OR,
+			AND,
+			OR,
+			COMMA,
+		 */
+		TokenType type = null;
+		char next = stream.next();
+		switch(next) {
+			case '.': type = TokenType.DOT; break;
+			case '(': type = TokenType.PAREN_OPEN; break;
+			case ')': type = TokenType.PARENT_CLOSE; break;
+			case '[': type = TokenType.BRACKET_OPEN; break;
+			case ']': type = TokenType.BRACKET_CLOSE; break;
+			case '!': type = TokenType.NOT; break;
+			case '*': type = TokenType.TIMES; break;
+			case '/': type = TokenType.SLASH; break;
+			case '%': type = TokenType.MOD; break;
+			case ',': type = TokenType.COMMA; break;
+		}
+		if(type != null) {
+			return new StatementNodeImpl(start, line, character, type, null);
+		}
 		
 		return null;
 	}
