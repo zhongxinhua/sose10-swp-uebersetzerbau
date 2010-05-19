@@ -3,9 +3,10 @@ package de.fu_berlin.compilerbau.parser;
 import java.util.List;
 
 import de.fu_berlin.compilerbau.dom.DomNode;
+import de.fu_berlin.compilerbau.util.PositionString;
 
 public class Function {
-	String name;
+	PositionString name;
 	Type returns;
 	
 	//default: NO
@@ -19,13 +20,13 @@ public class Function {
 	public Function(DomNode node) {
 		//TODO: Eintrag in Symboltabelle
 		//
-		if (node.hasAttribute("name") && !node.getAttribute("name").equals("")) {
-			name = node.getAttribute("name");
+		if (node.hasAttribute("name") && node.getAttributeValue("name").length()>0) {
+			name = node.getAttributeValue("name");
 		} else
 			ErrorHandler.error(node, "'name' attribute expected at function head");
 		
-		if (node.hasAttribute("returns") && !node.getAttribute("returns").equals("")) {
-			returns = Type.get(node.getAttribute("returns"));
+		if (node.hasAttribute("returns") && node.getAttributeValue("returns").length()>0) {
+			returns = Type.get(node.getAttributeValue("returns"));
 		} 
 		
 		/*TODO:	SPEZIFIKATION? KEIN "RETURNS" -> Type = Void??
@@ -33,14 +34,14 @@ public class Function {
 			ErrorHandler.error(node, "'returns' attribute expected at function head");
 		*/
 		
-		if (node.hasAttribute("static") && !node.getAttribute("static").equals("")) {
-			if(node.getAttribute("static").equals("yes")){
+		if (node.hasAttribute("static") && !node.getAttributeValue("static").equals("")) {
+			if(node.getAttributeValue("static").equals("yes")){
 				isStatic = true;
 			}
 		} 
 		
-		if (node.hasAttribute("final") && !node.getAttribute("final").equals("")) {
-			if(node.getAttribute("final").equals("yes")){
+		if (node.hasAttribute("final") && !node.getAttributeValue("final").equals("")) {
+			if(node.getAttributeValue("final").equals("yes")){
 				isFinal = true;
 			}
 		}

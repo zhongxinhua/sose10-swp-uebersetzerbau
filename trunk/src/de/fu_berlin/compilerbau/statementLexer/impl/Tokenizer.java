@@ -1,6 +1,7 @@
 package de.fu_berlin.compilerbau.statementLexer.impl;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import de.fu_berlin.compilerbau.statementLexer.StatementNode;
 import de.fu_berlin.compilerbau.util.PositionCharacterStream;

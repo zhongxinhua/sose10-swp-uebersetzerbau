@@ -12,20 +12,19 @@ import java.util.Stack;
  * 
  * @author Kijewski
  */
-public class PositionCharacterStream implements Iterator<Character>,
-		StreamPosition, Closeable {
+public class PositionCharacterStream extends PositionBean
+		implements Iterator<Character>, StreamPosition, Closeable {
 
 	private static final long serialVersionUID = 2988361231152015517L;
 	
 	protected final Reader reader;
-	
-	protected int start, line, character;
 
 	private Stack<Character> nextChar = new Stack<Character>();
 	
 	protected static final StreamPosition DEFAULT_POSITION = PositionBean.ONE_ONE_ONE;
 	
 	public PositionCharacterStream(final Reader reader, StreamPosition start) {
+		super(start);
 		if(reader instanceof BufferedReader) {
 			this.reader = reader;
 		} else {
@@ -53,7 +52,7 @@ public class PositionCharacterStream implements Iterator<Character>,
 	/**
 	 * @see #pushback(Character)
 	 */
-	public void pushCharCharacter(char c) {
+	public void pushback(char c) {
 		pushback(Character.valueOf(c));
 	}
 	
@@ -72,7 +71,7 @@ public class PositionCharacterStream implements Iterator<Character>,
 				final int next = reader.read();
 				if(next >= 0) { // ignore EOF
 					++this.start;
-					pushCharCharacter((char)next);
+					pushback((char)next);
 				}
 			}
 		}
@@ -111,21 +110,6 @@ public class PositionCharacterStream implements Iterator<Character>,
 	@Override
 	public void remove() throws UnsupportedOperationException {
 		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int getCharacter() {
-		return character;
-	}
-
-	@Override
-	public int getLine() {
-		return line;
-	}
-
-	@Override
-	public int getStart() {
-		return start;
 	}
 
 	@Override

@@ -13,12 +13,12 @@ public class Class extends ClassOrInterface {
 	
 	public Class(DomNode node) {
 		//name
-		if (node.hasAttribute("name") && !node.getAttribute("name").equals("")) {
-			name = node.getAttribute("name");
+		if (node.hasAttribute("name") && node.getAttributeValue("name").length()>0) {
+			name = node.getAttributeValue("name");
 		} else
 			ErrorHandler.error(node, "'name' attribute expected");
 		
-		if (node.hasAttribute("super") && !node.getAttribute("super").equals("")) {
+		if (node.hasAttribute("super") && !node.getAttributeValue("super").equals("")) {
 			//TODO parent ermitteln 
 			//parent = node.getAttribute("super");
 		} 

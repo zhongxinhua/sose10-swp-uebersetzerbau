@@ -13,8 +13,6 @@ import java.io.Reader;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import javax.management.RuntimeErrorException;
-
 import de.fu_berlin.compilerbau.dom.DomCreator;
 import de.fu_berlin.compilerbau.dom.DomNode;
 import de.fu_berlin.compilerbau.parser.AbstractSyntaxTree;
@@ -46,9 +44,9 @@ class Start {
 	public static void main(final String[] args) {
 		final Iterator<String> i = Arrays.asList(args).iterator();
 		
-		String classpath = null;
+		@SuppressWarnings("unused") String classpath = null; // XXX
 		String source = null;
-		String destPath = null;
+		@SuppressWarnings("unused") String destPath = null; // XXX
 		
 		while(i.hasNext()) { 
 			String arg = i.next();

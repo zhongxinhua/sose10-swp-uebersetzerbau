@@ -2,52 +2,42 @@ package de.fu_berlin.compilerbau.util;
 
 import java.io.IOException;
 
-public class PositionStringBuilder implements Appendable, StreamPosition {
+public class PositionStringBuilder extends PositionBean
+		implements Appendable, StreamPosition {
 
 	private static final long serialVersionUID = -5035361425725441705L;
 	
-	protected final int start, line, character;
-	
 	public PositionStringBuilder(StreamPosition pos) {
-		start = pos.getStart();
-		line = pos.getLine();
-		character = pos.getCharacter();
+		super(pos);
 	}
 	
 	protected final StringBuilder builder = new StringBuilder();
 
 	@Override
 	public Appendable append(CharSequence sq) throws IOException {
-		return builder.append(sq);
+		builder.append(sq);
+		return this;
 	}
 
 	@Override
 	public Appendable append(char c) throws IOException {
-		return builder.append(c);
+		builder.append(c);
+		return this;
 	}
 
 	@Override
 	public Appendable append(CharSequence sq, int start, int end) throws IOException {
-		return builder.append(sq, start, end);
-	}
-
-	@Override
-	public int getCharacter() {
-		return character;
-	}
-
-	@Override
-	public int getLine() {
-		return line;
-	}
-
-	@Override
-	public int getStart() {
-		return start;
+		builder.append(sq, start, end);
+		return this;
 	}
 	
 	public PositionString toPositionString() {
 		return new PositionString(builder.toString(), this);
+	}
+	
+	@Override
+	public String toString() {
+		return builder.toString();
 	}
 
 }

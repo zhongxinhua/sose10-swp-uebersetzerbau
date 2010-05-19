@@ -157,7 +157,7 @@ class XmlNodeStreamImpl implements XmlNodeStream {
 				
 				case TEXT: {
 					if(c == '<' || c == '>') {
-						stream.pushCharCharacter((char)c);
+						stream.pushback((char)c);
 					} else if(c >= 0) {
 						value.append((char)c);
 						continue;
@@ -359,7 +359,7 @@ class XmlNodeStreamImpl implements XmlNodeStream {
 							return new XmlNodeImpl(start, line, character, NodeType.NT_TAG, key.toPositionString(), null);
 						}
 						case('/'): {
-							stream.pushCharCharacter('/');
+							stream.pushback('/');
 							state = State.INNER;
 							return new XmlNodeImpl(start, line, character, NodeType.NT_TAG, key.toPositionString(), null);
 						}
@@ -469,7 +469,7 @@ class XmlNodeStreamImpl implements XmlNodeStream {
 				case ATTR2: {
 					if(c == '/') {
 						state = State.INNER;
-						stream.pushCharCharacter('/');
+						stream.pushback('/');
 						return new XmlNodeImpl(start, line, character, NodeType.NT_ATTR, key.toPositionString(), value.toPositionString());
 					} else if(c == '>') {
 						state = State.START;
@@ -477,7 +477,7 @@ class XmlNodeStreamImpl implements XmlNodeStream {
 					} else if(c >= 0 && Character.isWhitespace(c)) {
 						state = State.INNER;
 						if(c == '/') {
-							stream.pushCharCharacter('/');
+							stream.pushback('/');
 						}
 						return new XmlNodeImpl(start, line, character, NodeType.NT_ATTR, key.toPositionString(), value.toPositionString());
 					} else {
