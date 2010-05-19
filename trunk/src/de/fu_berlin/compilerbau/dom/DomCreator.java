@@ -8,9 +8,11 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
 
 import de.fu_berlin.compilerbau.dom.impl.DomAttributeImpl;
 import de.fu_berlin.compilerbau.dom.impl.DomNodeImpl;
+import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.xmlNodeStream.NodeType;
 import de.fu_berlin.compilerbau.xmlNodeStream.XmlNode;
 import de.fu_berlin.compilerbau.xmlNodeStream.XmlNodeStream;
@@ -19,53 +21,123 @@ import de.fu_berlin.compilerbau.xmlNodeStream.impl.XmlNodeStreamFactory;
 
 public class DomCreator {
 	static private Iterator<XmlNode> _iter;
-	static private XmlNodeStream _stax;
-	static private XmlNode _currNode;
-	static private LinkedList<String> _validationStack;
+	
+	static private XmlNode _nextNodeToRead;
+	static private void unreadNode(XmlNode node) throws IllegalStateException {
+		if(_nextNodeToRead == null) {
+			_nextNodeToRead = node;
+		} else {
+			throw new IllegalStateException("_nextNodeToRead != null");
+		}
+	}
+	static private boolean hasNextNode() {
+		return _nextNodeToRead != null || _iter.hasNext();
+	}
+	static private XmlNode readNode() throws NoSuchElementException {
+		XmlNode result;
+		if(_nextNodeToRead == null) {
+			result = _iter.next();
+		} else {
+			result = _nextNodeToRead;
+			_nextNodeToRead = null;
+		}
+		return result;
+	}
 	
 	/**
 	 * Use this method to initialize or reset the DomCreator.
 	 * 
 	 * @param file - the source File
+	 * @throws IOException the reader threw an Exception
 	 */
-	static public void init(Reader file) {
-		try {
-			_stax = XmlNodeStreamFactory.createNewInstance(file);
-		} catch (IOException e) {
-			e.printStackTrace();
+	static public void init(Reader file) throws IOException {
+		XmlNodeStream stax = XmlNodeStreamFactory.createNewInstance(file);
+		_iter = stax.iterator();
+	}
+	
+	static private DomNode readChild(boolean piAllowed) {
+		// get first Tag
+		XmlNode currNode;
+		first:for (;;) {
+			if (!hasNextNode()) {
+				return null;
+			}
+			currNode = readNode();
+			switch (currNode.getType()) {
+				case NT_ERROR: throw new RuntimeException(currNode.toString()); // TODO: proper type
+				case NT_TEXT: {
+					if (isAllWhiteSpace(currNode.getValue())) {
+						 continue; // skip over
+					} else {
+						throw new RuntimeException(currNode.toString()); // TODO: proper type
+					}
+				}
+				case NT_COMMENT: continue; // skip over
+				case NT_TAG: break first;
+				case NT_END_TAG: throw new RuntimeException(currNode.toString()); // TODO: proper type
+				case NT_ATTR: throw new IllegalStateException(currNode.toString()); // cannot happen
+				case NT_PI: {
+					if (piAllowed) {
+						continue; // skip over
+					} else {
+						throw new RuntimeException(currNode.toString()); // TODO: proper type
+					}
+				}
+				default: throw new IllegalStateException(currNode.toString()); // there isn't another case 
+			}
 		}
-		_iter = _stax.iterator();
-		_currNode = null;
-		_validationStack = new LinkedList<String>();
-	} 
 
+		DomNodeImpl root = new DomNodeImpl();
+		final PositionString rootName = currNode.getKey();
+		root.setName(rootName);
+		
+		final LinkedList<DomAttribute> rootAttr = getAttributes();
+		final LinkedList<DomNode> rootChilds = getChildrenForElement(root);
+		
+		end:for (;;) {
+			if (!hasNextNode()) {
+				throw new RuntimeException("Missing </" + rootName + ">"); // TODO: proper type
+			}
+			currNode = readNode();
+			switch (currNode.getType()) {
+				case NT_ERROR: throw new RuntimeException(currNode.toString()); // TODO: proper type
+				case NT_TEXT: continue; // skip over
+				case NT_COMMENT: continue; // skip over
+				case NT_TAG: throw new RuntimeException("Multiple elements in root!"); // TODO: proper type
+				case NT_END_TAG: break end;
+				case NT_ATTR: throw new IllegalStateException(currNode.toString()); // cannot happen
+				case NT_PI: throw new RuntimeException(currNode.toString()); // TODO: proper type
+				default: throw new IllegalStateException(currNode.toString()); // there isn't another case 
+			}
+		}
+		
+		if (currNode.getKey() != null && !currNode.getKey().equals(rootName)) {
+			throw new RuntimeException("Invalid </" + currNode.getKey() + ">"); // TODO: proper type
+		}
+
+		root.addChilds(rootChilds);
+		root.addAttributes(rootAttr);
+		return root;
+	}
+
+	private static boolean isAllWhiteSpace(CharSequence string) {
+		for (int i = 0; i < string.length(); ++i) {
+			if (!Character.isWhitespace(string.charAt(i))) {
+				return false;
+			}
+		}
+		return true;
+	}
 	/**
 	 * Create the whole DOM-Tree if the XML Structure is valid.
 	 * Otherwise the compiler ends with a short error Report.
 	 * <p>
 	 * Caution: The DomCreator have to be initialized first.
 	 * 
-	 * @return DOM-Tree
+	 * @return DOM-Tree or null, if input was empty
 	 */
 	static public DomNode createDOM() {
-		DomNodeImpl root = new DomNodeImpl();
-
-		// get first Tag
-		while (_iter.hasNext()
-				&& (_currNode = getNextXmlNode()).getType() != NodeType.NT_TAG) {
-		}
-
-		String rootName = _currNode.getKey();
-		_validationStack.push(rootName);
-		
-		LinkedList<DomAttribute> rootAttr = getAttributes();
-		LinkedList<DomNode> rootChilds = getChildsForElement(root);
-		
-		root.setName(rootName);
-		root.addChilds(rootChilds);
-		root.addAttributes(rootAttr);
-		
-		return root;
+		return readChild(true);
 	}
 
 	/**
@@ -75,14 +147,19 @@ public class DomCreator {
 		LinkedList<DomAttribute> attrList = new LinkedList<DomAttribute>();
 		
 		// we want all attributes
-		while ((_currNode = getNextXmlNode()).getType() == NodeType.NT_ATTR) {
-			DomAttributeImpl attr = new DomAttributeImpl();
-			
-			attr.setName(_currNode.getKey());
-			attr.setValue(_currNode.getValue());
-
-			attrList.add(attr);
+		while (hasNextNode()) {
+			XmlNode currNode = readNode();
+			if (currNode.getType() == NodeType.NT_ATTR) {
+				DomAttributeImpl attr = new DomAttributeImpl();
+				attr.setName(currNode.getKey());
+				attr.setValue(currNode.getValue());
+				attrList.add(attr);
+			} else {
+				unreadNode(currNode);
+				break;
+			}
 		}
+		
 		return attrList;
 	}
 
@@ -90,56 +167,34 @@ public class DomCreator {
 	 * @param elem - parent for the childs
 	 * @return Childlist for the Element elem
 	 */
-	static private LinkedList<DomNode> getChildsForElement(DomNodeImpl elem) {
-		LinkedList<DomNode> childs = new LinkedList<DomNode>();
+	static private LinkedList<DomNode> getChildrenForElement(DomNodeImpl elem) {
+		LinkedList<DomNode> children = new LinkedList<DomNode>();
 		
-		if( _currNode.getType() == NodeType.NT_END_TAG ) {
-			_validationStack.pop();
-			return childs;
-		}
-		
-		// we want all child's
-		while ( _currNode.getType() != NodeType.NT_END_TAG ) {
-			
-			// we are only interested in Tags
-			if( _currNode.getType() == NodeType.NT_TAG) {
-				DomNodeImpl child = new DomNodeImpl();
-				
-				String childName = _currNode.getKey();
-				
-				_validationStack.push(childName);
-				child.setName(childName);
-				child.setParent(elem);
-				/* int charPos = _stax.getCharacter();
-				int linePos = _stax.getLine();
-				int startPos = _stax.getStart(); */
-				
-				LinkedList<DomAttribute> childAttr = getAttributes();
-				LinkedList<DomNode> childChilds = getChildsForElement(child);
-				
-				// TODO: little weird
-				child.addChilds(childChilds);
-				child.addAttributes(childAttr);
-				
-				childs.add(child);
+		while (hasNextNode()) {
+			XmlNode currNode = readNode();
+			switch (currNode.getType()) {
+				case NT_ERROR: throw new RuntimeException(currNode.toString()); // TODO: proper type
+				case NT_TEXT: continue; // skip over
+				case NT_COMMENT: continue; // skip over
+				case NT_TAG: {
+					unreadNode(currNode);
+					DomNode child = readChild(false);
+					if (child == null) {
+						throw new IllegalStateException("child == null"); // cannot happen
+					}
+					children.push(child);
+					break;
+				}
+				case NT_END_TAG: {
+					unreadNode(currNode);
+					return children;
+				}
+				case NT_ATTR: throw new IllegalStateException(currNode.toString()); // cannot happen
+				case NT_PI: throw new RuntimeException(currNode.toString()); // TODO: proper type
+				default: throw new IllegalStateException(currNode.toString()); // there isn't another case 
 			}
-			_currNode = getNextXmlNode();
 		}
 		
-		if(!_validationStack.pop().equals(_currNode.getKey())) {
-			System.err.println("XML Validation Error\n\tThere may unclosed Tags");
-			System.exit(-1);
-		}
-		
-		return childs;
-	}
-	
-	static private XmlNode getNextXmlNode() {
-		if (!_iter.hasNext()) {
-			System.err.println("XML Validation Error\n\tThere is at least one Tag missing");
-			System.exit(-1);
-		}
-			
-		return _iter.next();
+		throw new RuntimeException("Missing </" + elem.getName() + ">"); // TODO: proper type
 	}
 }

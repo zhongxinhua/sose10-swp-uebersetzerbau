@@ -1,5 +1,7 @@
 package de.fu_berlin.compilerbau.dom;
 
+import de.fu_berlin.compilerbau.util.PositionString;
+
 /**
  * DomAttribute.java
  * <p>
@@ -17,7 +19,7 @@ public interface DomAttribute {
 	 * 
 	 * @return name of the attribute or null
 	 */
-	String getName();
+	PositionString getName();
 	
 	/*
 	 * The Value of the Attribute
@@ -26,5 +28,5 @@ public interface DomAttribute {
 	 * 
 	 * @return value of the attribute or null
 	 */
-	String getValue();
+	PositionString getValue();
 }

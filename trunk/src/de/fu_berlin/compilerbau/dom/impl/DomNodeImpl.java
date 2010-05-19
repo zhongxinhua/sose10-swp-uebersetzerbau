@@ -9,7 +9,7 @@ import java.util.List;
 
 import de.fu_berlin.compilerbau.dom.DomAttribute;
 import de.fu_berlin.compilerbau.dom.DomNode;
-
+import de.fu_berlin.compilerbau.util.PositionString;
 
 public class DomNodeImpl implements DomNode {
 
@@ -17,13 +17,13 @@ public class DomNodeImpl implements DomNode {
 	private LinkedList<DomNode> _childList;
 	
 	private DomNodeImpl _parent;
-	private String _nodeName;
+	private PositionString _nodeName;
 	
 	public DomNodeImpl() {
 		_attributes = new LinkedList<DomAttribute>();
 		_childList = new LinkedList<DomNode>();
 		_parent = null;
-		_nodeName = "";
+		_nodeName = null;
 	}
 	
 	@Override
@@ -37,7 +37,7 @@ public class DomNodeImpl implements DomNode {
 	}
 
 	@Override
-	public String getName() {
+	public PositionString getName() {
 		return _nodeName;
 	}
 
@@ -56,8 +56,8 @@ public class DomNodeImpl implements DomNode {
 		return !_childList.isEmpty();
 	}
 
-	public void setName(String nodeName) {
-		_nodeName = nodeName;		
+	public void setName(PositionString rootName) {
+		_nodeName = rootName;		
 	}
 	
 	public void setParent(DomNodeImpl parent) {
@@ -81,12 +81,14 @@ public class DomNodeImpl implements DomNode {
 	}
 
 	@Override
-	public String getAttributeValue(String attributeName) {	
+	public PositionString getAttributeValue(String attributeName) {	
 		for (DomAttribute attr : _attributes) {
-			if (attr.getName().equals(attributeName)) return attr.getValue();
+			if (attr.getName().equals(attributeName)) {
+				return attr.getValue();
+			}
 		}
 		
-		return "";
+		return null;
 	}
 
 	@Override

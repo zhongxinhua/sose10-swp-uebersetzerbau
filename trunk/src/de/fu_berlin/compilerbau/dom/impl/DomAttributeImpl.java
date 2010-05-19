@@ -5,32 +5,32 @@ package de.fu_berlin.compilerbau.dom.impl;
  */
 
 import de.fu_berlin.compilerbau.dom.DomAttribute;
+import de.fu_berlin.compilerbau.util.PositionString;
 
 public class DomAttributeImpl implements DomAttribute {
 
-	private String _name;
-	private String _value;
+	private PositionString _name, _value;
 	
 	public DomAttributeImpl() {
-		_name = "";
-		_value = "";
+		_name = null;
+		_value = null;
 	}
 	
 	@Override
-	public String getName() {
+	public PositionString getName() {
 		return _name;
 	}
 
 	@Override
-	public String getValue() {
+	public PositionString getValue() {
 		return _value;
 	}
 
-	public void setName(String value) {
+	public void setName(PositionString value) {
 		_name = value;
 	}
 
-	public void setValue(String value) {
+	public void setValue(PositionString value) {
 		_value = value;
 	}
 }

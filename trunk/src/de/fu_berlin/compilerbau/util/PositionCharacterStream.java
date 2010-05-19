@@ -23,18 +23,7 @@ public class PositionCharacterStream implements Iterator<Character>,
 
 	private Stack<Character> nextChar = new Stack<Character>();
 	
-	protected static final StreamPosition DEFAULT_POSITION = new StreamPosition() {
-		private static final long serialVersionUID = 1L;
-		public final int getCharacter() {
-			return 1;
-		}
-		public final int getLine() {
-			return 1;
-		}
-		public final int getStart() {
-			return 1;
-		}
-	};
+	protected static final StreamPosition DEFAULT_POSITION = PositionBean.ONE_ONE_ONE;
 	
 	public PositionCharacterStream(final Reader reader, StreamPosition start) {
 		if(reader instanceof BufferedReader) {
@@ -79,18 +68,13 @@ public class PositionCharacterStream implements Iterator<Character>,
 		if(result == '\n' || result == '\r') {
 			this.character = DEFAULT_POSITION.getCharacter();
 			++this.line;
-			
 			if(result == '\r') {
 				final int next = reader.read();
 				if(next >= 0) { // ignore EOF
 					++this.start;
-					if(next != '\n') { // not a Windows line break
-						pushCharCharacter((char)next);
-					}
+					pushCharCharacter((char)next);
 				}
 			}
-			
-			return '\n';
 		}
 		
 		return Character.valueOf((char)result);
@@ -118,9 +102,7 @@ public class PositionCharacterStream implements Iterator<Character>,
 	@Override
 	public Character next() throws NoSuchElementException {
 		if(hasNext()) { // no character in chain
-			final Character result = nextChar.pop();
-			nextChar = null;
-			return result;
+			return nextChar.pop();
 		} else { // use enchained character
 			throw new NoSuchElementException();
 		}

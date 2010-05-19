@@ -10,6 +10,8 @@ package de.fu_berlin.compilerbau.dom;
 
 import java.util.List;
 
+import de.fu_berlin.compilerbau.util.PositionString;
+
 public interface DomNode {
 	
 	/**
@@ -46,7 +48,7 @@ public interface DomNode {
 	 * 
 	 * @return
 	 */
-	String getName();
+	PositionString getName();
 	
 	/**
 	 * 
@@ -58,7 +60,7 @@ public interface DomNode {
 	 * @param attributeName - The Name of the Attribute
 	 * @return The Value for the Attribute attributeName or "" if there is no such Attribute
 	 */	
-	String getAttributeValue(String attributeName);
+	PositionString getAttributeValue(String attributeName);
 	
 	/**
 	 * 

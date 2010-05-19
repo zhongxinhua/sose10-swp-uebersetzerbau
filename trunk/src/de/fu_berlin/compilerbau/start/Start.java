@@ -6,11 +6,14 @@ package de.fu_berlin.compilerbau.start;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.util.Arrays;
 import java.util.Iterator;
+
+import javax.management.RuntimeErrorException;
 
 import de.fu_berlin.compilerbau.dom.DomCreator;
 import de.fu_berlin.compilerbau.dom.DomNode;
@@ -96,7 +99,11 @@ class Start {
 		}
 				
 		System.out.print("Init DomCreator...");
-		DomCreator.init(in);
+		try {
+			DomCreator.init(in);
+		} catch(IOException e) {
+			throw new RuntimeException("Could not initialize DOM.", e);
+		}
 		System.out.println("done.");
 		
 		System.out.print("Create DOM...");
