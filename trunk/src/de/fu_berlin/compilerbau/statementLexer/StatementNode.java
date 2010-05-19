@@ -16,4 +16,16 @@ public interface StatementNode extends StreamPosition {
 	 */
 	Object getValue();
 	
+	/**
+	 * @return same as {@link #getType()}
+	 * @throws IllegalAccessException if invalid type
+	 */
+	Number getNumber() throws IllegalAccessException;
+	
+	/**
+	 * @return same as {@link #getType()}
+	 * @throws IllegalAccessException if invalid type
+	 */
+	CharSequence getString() throws IllegalAccessException;
+	
 }

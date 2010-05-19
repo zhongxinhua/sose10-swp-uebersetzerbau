@@ -3,34 +3,59 @@ package de.fu_berlin.compilerbau.statementLexer.impl;
 import java.util.*;
 
 import de.fu_berlin.compilerbau.statementLexer.StatementNode;
-import de.fu_berlin.compilerbau.util.StreamPosition;
+import de.fu_berlin.compilerbau.util.PositionCharacterStream;
 
 public class Tokenizer implements Iterator<StatementNode> {
 	
 	protected StatementNode nextNodeToRead;
+	protected PositionCharacterStream stream;
 	
-	protected int start, line, character;
-	
-	Tokenizer(CharSequence statement, StreamPosition startPosition) {
-		this.start = startPosition.getStart();
-		this.line = startPosition.getLine();
-		this.character = startPosition.getCharacter();
+	Tokenizer(PositionCharacterStream stream) {
+		this.stream = stream;
 	}
 	
 	public void remove() throws UnsupportedOperationException {
 		throw new UnsupportedOperationException();
 	}
-
-	@Override
-	public boolean hasNext() {
-		// TODO Auto-generated method stub
-		return false;
+	
+	protected StatementNode primitiveGetNext() {
+		while(stream.hasNext()) {
+			Character next = stream.next();
+			if(!Character.isWhitespace(next)) {
+				stream.pushback(next);
+				break;
+			}
+		}
+		if(!stream.hasNext()) {
+			return null;
+		}
+		
+		final int line = stream.getLine();
+		final int start = stream.getStart();
+		final int character = stream.getCharacter();
+		
+		// TODO
+		
+		return null;
 	}
 
 	@Override
-	public StatementNode next() {
-		// TODO Auto-generated method stub
-		return null;
+	public boolean hasNext() {
+		if(nextNodeToRead != null) {
+			return true;
+		}
+		nextNodeToRead = primitiveGetNext();
+		return nextNodeToRead != null;
+	}
+
+	@Override
+	public StatementNode next() throws NoSuchElementException {
+		if(hasNext()) {
+			final StatementNode result = nextNodeToRead;
+			nextNodeToRead = null;
+			return result;
+		}
+		throw new NoSuchElementException();
 	}
 	
 }
