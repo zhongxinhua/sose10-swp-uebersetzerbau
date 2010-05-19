@@ -1,8 +1,12 @@
 package de.fu_berlin.compilerbau.xmlNodeStream.impl;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
+import de.fu_berlin.compilerbau.util.PositionCharacterStream;
+import de.fu_berlin.compilerbau.util.PositionStringBuilder;
 import de.fu_berlin.compilerbau.xmlNodeStream.NodeType;
 import de.fu_berlin.compilerbau.xmlNodeStream.XmlNode;
 import de.fu_berlin.compilerbau.xmlNodeStream.XmlNodeStream;
@@ -11,19 +15,14 @@ import de.fu_berlin.compilerbau.xmlNodeStream.XmlNodeStream;
  * The actual class that parses the XML input.
  * @author rene
  */
-class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
+class XmlNodeStreamImpl implements XmlNodeStream {
 	
 	private static final long serialVersionUID = 8245550611478586672L;
 	
-	protected final BufferedReader reader;
+	protected final PositionCharacterStream stream;
 	
 	XmlNodeStreamImpl(Reader reader) throws IOException {
-		super(1,1,1);
-		if(reader instanceof BufferedReader) {
-			this.reader = (BufferedReader)reader;
-		} else {
-			this.reader = new BufferedReader(reader);
-		}
+		stream = new PositionCharacterStream(reader);
 	}
 	
 	@Override
@@ -33,12 +32,27 @@ class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
 	
 	@Override
 	public void close() throws IOException {
-		reader.close();
+		stream.close();
+	}
+
+	@Override
+	public int getCharacter() {
+		return stream.getCharacter();
+	}
+
+	@Override
+	public int getLine() {
+		return stream.getLine();
+	}
+
+	@Override
+	public int getStart() {
+		return stream.getStart();
 	}
 	
 	@Override
 	public String toString() {
-		return reader.toString() + super.toString();
+		return stream.toString();
 	}
 	
 	/**
@@ -96,66 +110,6 @@ class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
 	}
 	
 	/**
-	 * one character lookahead ...
-	 */
-	protected Character nextChar = null;
-	
-	/**
-	 * Returns and purges {@link #nextChar} or reads next character from {@link #reader}, if nextChar
-	 * was empty. This function maintains the {@link de.fu_berlin.compilerbau.util.StreamPosition}.
-	 * Any (ASCII based) EOL representaion will be normalized to the UNIX variant ("\n").
-	 * 
-	 * @return character read
-	 * @throws IOException The underlying {@link #reader} threw an Exception.
-	 */
-	protected int readNext() throws IOException {
-		if(nextChar == null) { // no character in chain
-			final int result = reader.read();
-			if(result < 0) {
-				new EOFException();
-			}
-			++this.start;
-			++this.character;
-			if(result == '\n') { // UNIX line break
-				this.character = 1;
-				++this.line;
-				return '\n';
-			} else if(result == '\r') { // either Windows or MAC line break
-				this.character = 1;
-				++this.line;
-				final int next = reader.read();
-				if(next >= 0) {
-					++this.start;
-					if(next != '\n') { // not a Windows line break
-						pushCharCharacter((char)next);
-					}
-				}
-				return '\n';
-			} else {
-				return result;
-			}
-		} else { // use enchained character
-			final char result = nextChar.charValue();
-			nextChar = null;
-			return result;
-		}
-	}
-	
-	/**
-	 * Pushes a character to be read by {@link #fetchNext()}.
-	 * 
-	 * @param c character to push
-	 * @throws IllegalStateException there can only be one character in chain
-	 */
-	protected void pushCharCharacter(char c) throws IllegalStateException {
-		if(nextChar == null) {
-			nextChar = Character.valueOf(c);
-		} else {
-			throw new IllegalStateException("(Internal) lookahead already fed");
-		}
-	}
-	
-	/**
 	 * Current State
 	 */
 	protected State state = State.START;
@@ -169,12 +123,14 @@ class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
 	 * @throws IllegalStateException {@link #state} was ERROR.
 	 */
 	protected XmlNodeImpl fetchNext() throws IOException, IllegalStateException {
-		Appendable key = null, value = null;
+		PositionStringBuilder key = null, value = null;
 		
-		final int start = this.start, line = this.line, character = this.character;
+		final int start = stream.getStart();
+		final int line = stream.getLine();
+		final int character = stream.getCharacter();
 		
 		for(;;) {
-			final int c = readNext();
+			final int c = stream.next();
 			switch(state) { // a simple state machine, not employing a bitmap as Igor did not want any ;)
 				case START: {
 					switch(c) {
@@ -189,7 +145,7 @@ class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
 						default: {
 							if(c >= 0) {
 								state = State.TEXT;
-								value = new StringBuilder();
+								value = new PositionStringBuilder(stream);
 								value.append((char)c);
 							} else {
 								return null; // EOF
@@ -201,13 +157,13 @@ class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
 				
 				case TEXT: {
 					if(c == '<' || c == '>') {
-						pushCharCharacter((char)c);
+						stream.pushCharCharacter((char)c);
 					} else if(c >= 0) {
 						value.append((char)c);
 						continue;
 					}
 					state = State.START;
-					return new XmlNodeImpl(start, line, character, NodeType.NT_TEXT, null, value.toString());
+					return new XmlNodeImpl(start, line, character, NodeType.NT_TEXT, null, value.toPositionString());
 				}
 				
 				case OPEN: {
@@ -227,7 +183,7 @@ class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
 						default: {
 							if(c >= 0 && (c=='_' || Character.isLetter(c))) {
 								this.state = State.TAG;
-								key = new StringBuilder();
+								key = new PositionStringBuilder(stream);
 								key.append((char)c);
 								break;
 							} else {
@@ -260,7 +216,7 @@ class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
 				case COMMENT1: {
 					if(c == '-') {
 						state = State.COMMENT;
-						value = new StringBuilder();
+						value = new PositionStringBuilder(stream);
 						break;
 					} else {
 						state = State.ERROR;
@@ -299,7 +255,7 @@ class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
 				case COMMENT3: {
 					if(c == '>') {
 						state = State.START;
-						return new XmlNodeImpl(start, line, character, NodeType.NT_COMMENT, null, value.toString());
+						return new XmlNodeImpl(start, line, character, NodeType.NT_COMMENT, null, value.toPositionString());
 					} else {
 						state = State.ERROR;
 						return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
@@ -307,10 +263,10 @@ class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
 				}
 				
 				case CDATA1: {
-					if(c == 'C' && readNext() == 'D' && readNext() == 'A' && readNext() == 'T' && readNext() == 'A' && readNext() == '[') {
+					if(c == 'C' && stream.next() == 'D' && stream.next() == 'A' && stream.next() == 'T' && stream.next() == 'A' && stream.next() == '[') {
 						// I did not want to make it 6 states ...
 						state = State.CDATA;
-						value = new StringBuilder();
+						value = new PositionStringBuilder(stream);
 						break;
 					} else {
 						state = State.ERROR;
@@ -349,7 +305,7 @@ class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
 				case CDATA3: {
 					if(c == '>') {
 						state = State.START;
-						return new XmlNodeImpl(start, line, character, NodeType.NT_TEXT, null, value.toString());
+						return new XmlNodeImpl(start, line, character, NodeType.NT_TEXT, null, value.toPositionString());
 					} else {
 						state = State.ERROR;
 						return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
@@ -359,7 +315,7 @@ class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
 				case CLOSE0: {
 					if(c >= 0 && (c=='_' || Character.isLetter(c))) {
 						this.state = State.CLOSE;
-						key = new StringBuilder();
+						key = new PositionStringBuilder(stream);
 						key.append((char)c);
 						break;
 					} else {
@@ -371,7 +327,7 @@ class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
 				case CLOSE: {
 					if(c == '>') {
 						state = State.START;
-						return new XmlNodeImpl(start, line, character, NodeType.NT_END_TAG, key.toString(), null);
+						return new XmlNodeImpl(start, line, character, NodeType.NT_END_TAG, key.toPositionString(), null);
 					} else if(c >= 0 && (c=='.' || c==':' || c=='-' || c=='_' || Character.isLetterOrDigit(c))) {
 						key.append((char)c);
 						break;
@@ -387,7 +343,7 @@ class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
 				case CLOSE1: {
 					if(c == '>') {
 						state = State.START;
-						return new XmlNodeImpl(start, line, character, NodeType.NT_END_TAG, key.toString(), null);
+						return new XmlNodeImpl(start, line, character, NodeType.NT_END_TAG, key.toPositionString(), null);
 					} else if(Character.isWhitespace(c)) {
 						break; // NOOP;
 					} else {
@@ -400,12 +356,12 @@ class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
 					switch(c) {
 						case('>'): {
 							state = State.START;
-							return new XmlNodeImpl(start, line, character, NodeType.NT_TAG, key.toString(), null);
+							return new XmlNodeImpl(start, line, character, NodeType.NT_TAG, key.toPositionString(), null);
 						}
 						case('/'): {
-							pushCharCharacter('/');
+							stream.pushCharCharacter('/');
 							state = State.INNER;
-							return new XmlNodeImpl(start, line, character, NodeType.NT_TAG, key.toString(), null);
+							return new XmlNodeImpl(start, line, character, NodeType.NT_TAG, key.toPositionString(), null);
 						}
 						case('.'): case(':'): case('-'): case('_'): {
 							key.append((char)c);
@@ -417,7 +373,7 @@ class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
 								break;
 							} else if(c >= 0 && Character.isWhitespace(c)){
 								state = State.INNER;
-								return new XmlNodeImpl(start, line, character, NodeType.NT_TAG, key.toString(), null);
+								return new XmlNodeImpl(start, line, character, NodeType.NT_TAG, key.toPositionString(), null);
 							} else {
 								state = State.ERROR;
 								return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
@@ -438,7 +394,7 @@ class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
 						break; // NOOP
 					} else if(c >= 0 && (c=='_' || Character.isLetter(c))) {
 						this.state = State.ATTR;
-						key = new StringBuilder();
+						key = new PositionStringBuilder(stream);
 						key.append((char)c);
 						break;
 					} else {
@@ -460,7 +416,7 @@ class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
 				case ATTR: {
 					if(c == '=') {
 						state = State.ATTR1;
-						value = new StringBuilder();
+						value = new PositionStringBuilder(stream);
 						break;
 					} else if(c >= 0 && (c=='.' || c==':' || c=='-' || c=='_' || Character.isLetterOrDigit(c))) {
 						key.append((char)c);
@@ -513,17 +469,17 @@ class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
 				case ATTR2: {
 					if(c == '/') {
 						state = State.INNER;
-						pushCharCharacter('/');
-						return new XmlNodeImpl(start, line, character, NodeType.NT_ATTR, key.toString(), value.toString());
+						stream.pushCharCharacter('/');
+						return new XmlNodeImpl(start, line, character, NodeType.NT_ATTR, key.toPositionString(), value.toPositionString());
 					} else if(c == '>') {
 						state = State.START;
-						return new XmlNodeImpl(start, line, character, NodeType.NT_ATTR, key.toString(), value.toString());
+						return new XmlNodeImpl(start, line, character, NodeType.NT_ATTR, key.toPositionString(), value.toPositionString());
 					} else if(c >= 0 && Character.isWhitespace(c)) {
 						state = State.INNER;
 						if(c == '/') {
-							pushCharCharacter('/');
+							stream.pushCharCharacter('/');
 						}
-						return new XmlNodeImpl(start, line, character, NodeType.NT_ATTR, key.toString(), value.toString());
+						return new XmlNodeImpl(start, line, character, NodeType.NT_ATTR, key.toPositionString(), value.toPositionString());
 					} else {
 						state = State.ERROR;
 						return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
@@ -533,7 +489,7 @@ class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
 				case PI_TARGET0: {
 					if(c >= 0 && (c=='_' || Character.isLetter(c))) {
 						this.state = State.PI_TARGET;
-						key = new StringBuilder();
+						key = new PositionStringBuilder(stream);
 						key.append((char)c);
 						break;
 					} else {
@@ -544,9 +500,9 @@ class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
 				
 				case PI_TARGET: {
 					if(c == '?') {
-						if(readNext() == '>') {
+						if(stream.next() == '>') {
 							state = State.START;
-							return new XmlNodeImpl(start, line, character, NodeType.NT_PI, key.toString(), "");
+							return new XmlNodeImpl(start, line, character, NodeType.NT_PI, key.toPositionString(), null);
 						} else {
 							state = State.ERROR;
 							return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
@@ -555,7 +511,7 @@ class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
 						key.append((char)c);
 						break;
 					} else if(c=='.' || c==':' || c=='-' || c=='_' || (c >= 0 && Character.isWhitespace(c))) {
-						value = new StringBuilder();
+						value = new PositionStringBuilder(stream);
 						state = State.PI_INNER;
 						break;
 					} else {
@@ -583,7 +539,7 @@ class XmlNodeStreamImpl extends StreamPositionImpl implements XmlNodeStream {
 						return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
 					} else if(c == '>') {
 						state = State.START;
-						return new XmlNodeImpl(start, line, character, NodeType.NT_PI, key.toString(), value.toString());
+						return new XmlNodeImpl(start, line, character, NodeType.NT_PI, key.toPositionString(), value.toPositionString());
 					} else {
 						value.append('?');
 						value.append((char)c);
