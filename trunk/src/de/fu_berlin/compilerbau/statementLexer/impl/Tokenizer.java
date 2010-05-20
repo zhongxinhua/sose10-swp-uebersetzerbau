@@ -1,11 +1,14 @@
 package de.fu_berlin.compilerbau.statementLexer.impl;
 
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import de.fu_berlin.compilerbau.statementLexer.StatementNode;
 import de.fu_berlin.compilerbau.statementLexer.TokenType;
 import de.fu_berlin.compilerbau.util.PositionCharacterStream;
+import de.fu_berlin.compilerbau.util.PositionStringBuilder;
 
 class Tokenizer implements Iterator<StatementNode> {
 	
@@ -20,7 +23,7 @@ class Tokenizer implements Iterator<StatementNode> {
 		throw new UnsupportedOperationException();
 	}
 	
-	protected StatementNode primitiveGetNext() {
+	protected StatementNode primitiveGetNext() throws IOException {
 		while(stream.hasNext()) {
 			Character next = stream.next();
 			if(!Character.isWhitespace(next)) {
@@ -215,8 +218,49 @@ class Tokenizer implements Iterator<StatementNode> {
 		if(type != null) {
 			return new StatementNodeImpl(start, line, character, type, null);
 		}
+		
+		if(Character.isLetter(next)) {
+			// ID
+			PositionStringBuilder builder = new PositionStringBuilder(start, line, character);
+			builder.append(next);
+			while(stream.hasNext()) {
+				char char1 = stream.next();
+				if(Character.isLetterOrDigit(char1)) {
+					builder.append(char1);
+				} else {
+					stream.pushback(char1);
+					return new StatementNodeImpl(start, line, character, TokenType.ID, builder.toPositionString());
+				}
+			}
+		} else if(Character.isDigit(next)) {
+			// INT / REAL
+			final StringBuffer string = new StringBuffer();
+			string.append(next);
+			while(stream.hasNext()) {
+				char char1 = stream.next();
+				if(Character.isWhitespace(char1)) {
+					break; // no need to pushback a whitespace
+				} else if(char1 == '.' && Character.isDigit(char1)) {
+					string.append(char1);
+				} else if(char1 == 'e' || char1 == 'E') {
+					// TODO: Scale mitnehmen
+				} else if(Character.isLetter(char1)) {
+					return new StatementNodeImpl(start, line, character, TokenType.ERROR, null);
+				} else {
+					stream.pushback(char1);
+					break;
+				}
+			}
+			final BigDecimal result = new BigDecimal(string.toString());
+			if(result.scale() <= 0) {
+				type = TokenType.INT;
+			} else {
+				type = TokenType.REAL;
+			}
+			return new StatementNodeImpl(start, line, character, type, result);
+		}
 
-		// TODO: ID / INT / REAL / STRING
+		// TODO: STRING
 		
 		return new StatementNodeImpl(start, line, character, TokenType.ERROR, null);
 	}
@@ -226,7 +270,11 @@ class Tokenizer implements Iterator<StatementNode> {
 		if(nextNodeToRead != null) {
 			return true;
 		}
-		nextNodeToRead = primitiveGetNext();
+		try {
+			nextNodeToRead = primitiveGetNext();
+		} catch (IOException e) {
+			throw new RuntimeException(e); // *should not* throw
+		}
 		return nextNodeToRead != null;
 	}
 

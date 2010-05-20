@@ -21,7 +21,7 @@ public class PositionString implements CharSequence, StreamPosition {
 	}
 
 	/**
-	 * @param string Data string (*should* be immutable, *may not* contain '\r's)
+	 * @param string Data string (*should* be immutable)
 	 */
 	public PositionString(CharSequence string, StreamPosition position) {
 		this(string, position.getCharacter(), position.getLine(), position.getStart());

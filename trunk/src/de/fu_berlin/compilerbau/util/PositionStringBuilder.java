@@ -7,6 +7,10 @@ public class PositionStringBuilder extends PositionBean
 
 	private static final long serialVersionUID = -5035361425725441705L;
 	
+	public PositionStringBuilder(int start, int line, int character) {
+		super(start, line, character);
+	}
+	
 	public PositionStringBuilder(StreamPosition pos) {
 		super(pos);
 	}
