@@ -36,4 +36,9 @@ public class PositionBean implements StreamPosition {
 		return start;
 	}
 	
+	@Override
+	public String toString() {
+		return "[" + line + ":" + character + "=@" + start + "]";
+	}
+	
 }

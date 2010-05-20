@@ -1,25 +1,31 @@
 package de.fu_berlin.compilerbau.xmlNodeStream.impl;
 
+import de.fu_berlin.compilerbau.util.PositionBean;
 import de.fu_berlin.compilerbau.util.PositionString;
+import de.fu_berlin.compilerbau.util.StreamPosition;
 import de.fu_berlin.compilerbau.xmlNodeStream.NodeType;
 import de.fu_berlin.compilerbau.xmlNodeStream.XmlNode;
 
 /**
  * A found node.
- * @author rene
+ * @author kijewski
  */
-class XmlNodeImpl implements XmlNode {
+class XmlNodeImpl extends PositionBean implements XmlNode {
 	
 	private static final long serialVersionUID = -7485085468103238711L;
 	
 	private final NodeType type;
 	private final PositionString key, value;
-	private final int start, line, character;
 	
 	public XmlNodeImpl(int start, int line, int character, NodeType type, PositionString key, PositionString value) {
-		this.start = start;
-		this.line = line;
-		this.character = character;
+		super(start, line, character);
+		this.type = type;
+		this.key = key;
+		this.value = value;
+	}
+	
+	public XmlNodeImpl(StreamPosition pos, NodeType type, PositionString key, PositionString value) {
+		super(pos);
 		this.type = type;
 		this.key = key;
 		this.value = value;
@@ -43,21 +49,6 @@ class XmlNodeImpl implements XmlNode {
 	@Override
 	public String toString() {
 		return "[" + type + "|" + key + "=" + value + "]@" + super.toString();
-	}
-
-	@Override
-	public int getCharacter() {
-		return character;
-	}
-
-	@Override
-	public int getLine() {
-		return line;
-	}
-
-	@Override
-	public int getStart() {
-		return start;
 	}
 	
 }

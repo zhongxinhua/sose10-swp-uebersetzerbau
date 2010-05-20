@@ -25,6 +25,8 @@ public enum TokenType {
 	
 	NEW,
 	
+	NULL,
+	
 	TIMES,
 	
 	SLASH,
@@ -46,6 +48,8 @@ public enum TokenType {
 	NE,
 	
 	EQ,
+	
+	ASSIGN,
 	
 	BIT_AND,
 	

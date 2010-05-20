@@ -36,44 +36,125 @@ class Tokenizer implements Iterator<StatementNode> {
 		final int line = stream.getLine();
 		final int character = stream.getCharacter();
 		
-		/* TODO: mehr als ein Zeichen / als ein Zeichen nicht eindeutig 
-			INCR,
-			DECR,
-			NEW,
-			PLUS,
-			MINUS,
-			LE,
-			GE,
-			LT,
-			GT,
-			NE,
-			EQ,
-			BIT_AND,
-			BIT_XOR,
-			BIT_OR,
-			AND,
-			OR,
-			COMMA,
-		 */
 		TokenType type = null;
-		char next = stream.next();
+		int next = stream.next();
 		switch(next) {
 			case '.': type = TokenType.DOT; break;
 			case '(': type = TokenType.PAREN_OPEN; break;
 			case ')': type = TokenType.PARENT_CLOSE; break;
 			case '[': type = TokenType.BRACKET_OPEN; break;
 			case ']': type = TokenType.BRACKET_CLOSE; break;
-			case '!': type = TokenType.NOT; break;
 			case '*': type = TokenType.TIMES; break;
 			case '/': type = TokenType.SLASH; break;
 			case '%': type = TokenType.MOD; break;
 			case ',': type = TokenType.COMMA; break;
 		}
-		if(type != null) {
-			return new StatementNodeImpl(start, line, character, type, null);
-		}
 		
-		return null;
+		if(type == null) {
+			// TODO
+			switch(next) {
+				case '-':
+					if(stream.hasNext()) {
+						next = stream.next();
+						if(next != '-') {
+							type = TokenType.MINUS;
+							stream.pushback((char)next);
+						} else {
+							type = TokenType.DECR;
+						}
+					}
+					break;
+					
+				case '+':
+					if(stream.hasNext()) {
+						next = stream.next();
+						if(next != '+') {
+							type = TokenType.PLUS;
+							stream.pushback((char)next);
+						} else {
+							type = TokenType.INCR;
+						}
+					}
+					break;
+					
+				case 'n':
+					break; // TODO
+				
+				case '<':
+					if(stream.hasNext()) {
+						next = stream.next();
+						if(next != '=') {
+							type = TokenType.LT;
+							stream.pushback((char)next);
+						} else {
+							type = TokenType.LE;
+						}
+					}
+					break;
+					
+				case '>':
+					if(stream.hasNext()) {
+						next = stream.next();
+						if(next != '=') {
+							type = TokenType.GT;
+							stream.pushback((char)next);
+						} else {
+							type = TokenType.GE;
+						}
+					}
+					break;
+					
+				case '!':
+					if(stream.hasNext()) {
+						next = stream.next();
+						if(next != '=') {
+							type = TokenType.NOT;
+							stream.pushback((char)next);
+						} else {
+							type = TokenType.NE;
+						}
+					}
+					break;
+					
+				case '=':
+					if(stream.hasNext()) {
+						next = stream.next();
+						if(next != '=') {
+							type = TokenType.ASSIGN;
+							stream.pushback((char)next);
+						} else {
+							type = TokenType.EQ;
+						}
+					}
+					break;
+					
+				case '&':
+					if(stream.hasNext()) {
+						next = stream.next();
+						if(next != '&') {
+							type = TokenType.AND;
+							stream.pushback((char)next);
+						} else {
+							type = TokenType.BIT_AND;
+						}
+					}
+					break;
+					
+				case '|':
+					if(stream.hasNext()) {
+						next = stream.next();
+						if(next != '&') {
+							type = TokenType.OR;
+							stream.pushback((char)next);
+						} else {
+							type = TokenType.BIT_OR;
+						}
+					}
+					break;
+			}
+		}
+
+		return new StatementNodeImpl(start, line, character, type, null);
 	}
 
 	@Override
