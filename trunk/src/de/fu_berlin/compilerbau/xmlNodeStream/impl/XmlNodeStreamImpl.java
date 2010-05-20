@@ -130,7 +130,12 @@ class XmlNodeStreamImpl implements XmlNodeStream {
 		final int character = stream.getCharacter();
 		
 		for(;;) {
-			final int c = stream.next();
+			final int c;
+			if(stream.hasNext()) {
+				c = stream.next();
+			} else {
+				c = -1;
+			}
 			switch(state) { // a simple state machine, not employing a bitmap as Igor did not want any ;)
 				case START: {
 					switch(c) {
