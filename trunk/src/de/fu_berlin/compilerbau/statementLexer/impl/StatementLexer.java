@@ -7,8 +7,14 @@ import de.fu_berlin.compilerbau.util.PositionCharacterStream;
 
 public class StatementLexer {
 	
-	public static Iterator<StatementNode> tokenize(PositionCharacterStream stream) {
-		return new Tokenizer(stream);
+	public static Iterable<StatementNode> tokenize(PositionCharacterStream stream) {
+		final StatementNodeIterator result = new StatementNodeIterator(stream);
+		return new Iterable<StatementNode>() {
+			@Override
+			public Iterator<StatementNode> iterator() {
+				return result;
+			}
+		};
 	}
 	
 }

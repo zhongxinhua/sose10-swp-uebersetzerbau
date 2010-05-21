@@ -10,12 +10,12 @@ import de.fu_berlin.compilerbau.statementLexer.TokenType;
 import de.fu_berlin.compilerbau.util.PositionCharacterStream;
 import de.fu_berlin.compilerbau.util.PositionStringBuilder;
 
-class Tokenizer implements Iterator<StatementNode> {
+class StatementNodeIterator implements Iterator<StatementNode> {
 	
 	protected StatementNode nextNodeToRead;
 	protected PositionCharacterStream stream;
 	
-	Tokenizer(PositionCharacterStream stream) {
+	StatementNodeIterator(PositionCharacterStream stream) {
 		this.stream = stream;
 	}
 	
