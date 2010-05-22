@@ -3,7 +3,7 @@ package de.fu_berlin.compilerbau.util;
 /**
  * @author kijewski
  */
-public class PositionString extends PositionBean implements CharSequence {
+public class PositionString extends PositionBean implements CharSequence, Comparable<Object> {
 
 	private static final long serialVersionUID = 2796008060686529862L;
 	
@@ -28,19 +28,49 @@ public class PositionString extends PositionBean implements CharSequence {
 	}
 
 	@Override
-	public CharSequence subSequence(int start, int end) throws IndexOutOfBoundsException {
-		final CharSequence sq = string.subSequence(0, end);
-		if(start == 0) {
-			return new PositionString(sq, this);
+	public PositionString subSequence(int start, int end) throws IndexOutOfBoundsException {
+		if(start < 0 || end > length()) {
+			throw new IndexOutOfBoundsException();
 		}
 		
-		final PositionCharacterStream stream = new PositionCharacterStream(new CharSequenceReader(sq));
-		for(int i = 0; i < start && stream.hasNext(); ++i) {
-			stream.next();
+		final StreamPosition pos;
+		if(start == 0) {
+			pos = this;
+		} else {
+			final PositionCharacterStream stream = new PositionCharacterStream(new CharSequenceReader(string));
+			for(int i = 0; i < start; ++i) {
+				stream.next();
+			}
+			pos = stream;
 		}
+		return new PositionString(string.subSequence(start, end), pos);
+	}
 
-		// TODO Auto-generated method stub
-		return null;
+	@Override
+	public int compareTo(Object o) throws NullPointerException, ClassCastException {
+		if(o == this) {
+			return 0;
+		} else if(o == null) {
+			throw new NullPointerException("o is null!");
+		} else if(o instanceof CharSequence) {
+			final CharSequence r = (CharSequence)o;
+			int i = 0;
+			final int lLen = length(), rLen = r.length();
+			for(;;) {
+				if(lLen <= i) {
+					return rLen <= i ? 0 : -1;
+				} else if(rLen <= i) {
+					return +1;
+				}
+				final int v = charAt(i) -r.charAt(i);
+				if(v != 0) {
+					return v;
+				}
+			}
+		} else {
+			throw new ClassCastException("Cannot compare " + o.getClass().getName() +
+					" against " + getClass().getName());
+		}
 	}
 
 }
