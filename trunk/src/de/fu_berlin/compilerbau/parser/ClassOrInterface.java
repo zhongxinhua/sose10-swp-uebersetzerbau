@@ -1,10 +1,17 @@
 package de.fu_berlin.compilerbau.parser;
 
 import java.util.List;
-
 import de.fu_berlin.compilerbau.dom.DomNode;
 import de.fu_berlin.compilerbau.util.PositionString;
 
+/**
+ * {@link ClassOrInterface} is a superclass for {@link Class} or
+ * {@link Interface} objects representing &ltclass/&gt or &ltinterface/&gt statements.
+ * <p>
+ * 
+ * @author Sam
+ * 
+ */
 public class ClassOrInterface {
 	static ClassOrInterface build(DomNode node) {
 		if (node.getName().equals("class")) {

@@ -1,5 +1,7 @@
 package de.fu_berlin.compilerbau.parser;
 
+import de.fu_berlin.compilerbau.util.PositionString;
+
 public class Type {
 	static final Type TYPE_STRING = new Type() {
 		{
@@ -17,4 +19,8 @@ public class Type {
 		}
 	};
 	String name;
+	public static Type get(PositionString attributeValue) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
