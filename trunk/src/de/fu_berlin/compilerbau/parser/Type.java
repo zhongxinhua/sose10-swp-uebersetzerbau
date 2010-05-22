@@ -3,6 +3,8 @@ package de.fu_berlin.compilerbau.parser;
 import de.fu_berlin.compilerbau.util.PositionString;
 
 public class Type {
+	String name;
+
 	static final Type TYPE_STRING = new Type() {
 		{
 			this.name = "string";
@@ -18,9 +20,24 @@ public class Type {
 			this.name = "float";
 		}
 	};
-	String name;
-	public static Type get(PositionString attributeValue) {
-		// TODO Auto-generated method stub
-		return null;
+	static final Type TYPE_REF = new Type() {
+		{
+			this.name = "ref";
+		}
+	};
+
+	public static Type get(PositionString type) {
+		if (type.toString().equals("string")) {
+			return TYPE_STRING;
+		} else if (type.toString().equals("int")) {
+			return TYPE_INT;
+		} else if (type.toString().equals("float")) {
+			return TYPE_FLOAT;
+		} else if (type.toString().equals("ref")){
+			return TYPE_REF;
+		}else {
+			//Prüfung auf null erforderlich 
+			return null;
+		}
 	}
 }

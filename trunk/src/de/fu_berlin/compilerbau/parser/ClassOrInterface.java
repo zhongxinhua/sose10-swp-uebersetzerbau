@@ -15,7 +15,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
  * 
  */
 public class ClassOrInterface {
-	//TODO:Wozu dieser Name? Wird doch in Class oder Interface abgelegt
+	//Wird in Class oder Interface belegt
 	PositionString name;
 	
 	//TODO:Wozu diese Liste? 
