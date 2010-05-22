@@ -3,28 +3,18 @@ package de.fu_berlin.compilerbau.util;
 /**
  * @author kijewski
  */
-public class PositionString implements CharSequence, StreamPosition {
+public class PositionString extends PositionBean implements CharSequence {
 
 	private static final long serialVersionUID = 2796008060686529862L;
 	
 	protected final CharSequence string;
-	protected final int start, line, character;
-	
-	/**
-	 * @see #PositionString(CharSequence, StreamPosition)
-	 */
-	public PositionString(CharSequence string, int character, int line, int start) {
-		this.string = string;
-		this.character = character;
-		this.line = line;
-		this.start = start;
-	}
 
 	/**
 	 * @param string Data string (*should* be immutable)
 	 */
 	public PositionString(CharSequence string, StreamPosition position) {
-		this(string, position.getCharacter(), position.getLine(), position.getStart());
+		super(position);
+		this.string = string;
 	}
 
 	@Override
@@ -51,26 +41,6 @@ public class PositionString implements CharSequence, StreamPosition {
 
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public int getCharacter() {
-		return character;
-	}
-
-	@Override
-	public int getLine() {
-		return line;
-	}
-
-	@Override
-	public int getStart() {
-		return start;
-	}
-	
-	@Override
-	public String toString() {
-		return string.toString();
 	}
 
 }

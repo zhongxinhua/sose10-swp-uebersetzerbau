@@ -252,6 +252,8 @@ class StatementNodeIterator implements Iterator<StatementNode> {
 				}
 			}
 			final BigDecimal result = new BigDecimal(string.toString());
+			
+			// TODO: Das ist nicht wirklich die richtige Definition. Man bearchte: 0.0 ist REAL!
 			if(result.scale() <= 0) {
 				type = TokenType.INT;
 			} else {

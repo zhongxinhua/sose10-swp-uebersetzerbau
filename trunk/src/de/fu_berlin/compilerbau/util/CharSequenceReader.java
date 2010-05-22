@@ -5,6 +5,7 @@ import java.io.Reader;
 public class CharSequenceReader extends Reader {
 	
 	protected final CharSequence data;
+	protected int position = 0;
 
 	public CharSequenceReader(CharSequence data) {
 		this.data = data;
@@ -21,7 +22,7 @@ public class CharSequenceReader extends Reader {
 			len = data.length();
 		}
 		for(int i = 0; i < len; ++i) {
-			cbuf[i+off] = data.charAt(i);
+			cbuf[i+off] = data.charAt(position++);
 		}
 		return len;
 	}

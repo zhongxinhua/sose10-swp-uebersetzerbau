@@ -13,18 +13,19 @@ public interface StatementNode extends StreamPosition {
 	 *   <li>INT, REAL: Number</li>
 	 *   <li>otherwise: null</li>
 	 * </ul>
+	 * @throws IllegalAccessException called for an invalid type
 	 */
-	Object getValue();
+	Object getValue() throws IllegalAccessException;
 	
 	/**
 	 * @return same as {@link #getType()}
-	 * @throws IllegalAccessException if invalid type
+	 * @throws IllegalAccessException called for an invalid type
 	 */
 	Number getNumber() throws IllegalAccessException;
 	
 	/**
 	 * @return same as {@link #getType()}
-	 * @throws IllegalAccessException if invalid type
+	 * @throws IllegalAccessException called for an invalid type
 	 */
 	CharSequence getString() throws IllegalAccessException;
 	
