@@ -83,4 +83,9 @@ public class Class extends ClassOrInterface {
 		}
 	}
 
+	public void printJavaCode() {
+		System.out.println();
+		
+	}
+
 }

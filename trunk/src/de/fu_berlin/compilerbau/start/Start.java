@@ -4,6 +4,7 @@ package de.fu_berlin.compilerbau.start;
  * @author rene, stefan
  */
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -16,6 +17,7 @@ import java.util.Iterator;
 import de.fu_berlin.compilerbau.dom.DomCreator;
 import de.fu_berlin.compilerbau.dom.DomNode;
 import de.fu_berlin.compilerbau.parser.AbstractSyntaxTree;
+import de.fu_berlin.compilerbau.parser.Printer;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
 
 /**
@@ -69,7 +71,7 @@ class Start {
 				}
 			} else if("-d".equals(arg) || "-dest".equals(arg)) {
 				if(i.hasNext()) {
-					destPath = i.next();
+					destPath = i.next();					
 				} else {
 					System.err.println(arg + " awaits an argument!");
 					System.exit(1);
@@ -111,8 +113,12 @@ class Start {
 		DomNode node = DomCreator.createDOM();
 		System.out.println("done.");
 		
+		Printer.init(new File(destPath));
+		
 		// TODO naechste Schritte
 		AbstractSyntaxTree stree = new AbstractSyntaxTree(node);
+		
+		Printer.close();
 		
 		if(ErrorHandler.errorOccured()) {
 			System.out.println("Some errors occured. I can't compile!");

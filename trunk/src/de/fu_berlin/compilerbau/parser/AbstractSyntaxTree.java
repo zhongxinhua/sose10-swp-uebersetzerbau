@@ -39,5 +39,8 @@ public class AbstractSyntaxTree {
 		} else {
 			ErrorHandler.error(node, "'module' expected");
 		}
+	
+		root.printJavaCode();
+		
 	}
 }

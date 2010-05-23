@@ -26,6 +26,11 @@ public class PositionString extends PositionBean implements CharSequence, Compar
 	public int length() {
 		return string.length();
 	}
+	
+	@Override
+	public String toString() {
+		return string.toString();
+	}
 
 	@Override
 	public PositionString subSequence(int start, int end) throws IndexOutOfBoundsException {
