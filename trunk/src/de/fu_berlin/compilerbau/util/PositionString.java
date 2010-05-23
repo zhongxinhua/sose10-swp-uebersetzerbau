@@ -3,7 +3,7 @@ package de.fu_berlin.compilerbau.util;
 /**
  * @author kijewski
  */
-public class PositionString extends PositionBean implements CharSequence, Comparable<Object> {
+public class PositionString extends PositionBean implements CharSequence, Comparable<CharSequence> {
 
 	private static final long serialVersionUID = 2796008060686529862L;
 	
@@ -52,29 +52,36 @@ public class PositionString extends PositionBean implements CharSequence, Compar
 	}
 
 	@Override
-	public int compareTo(Object o) throws NullPointerException, ClassCastException {
-		if(o == this) {
+	public int compareTo(CharSequence right) throws NullPointerException {
+		if(right == this) {
 			return 0;
-		} else if(o == null) {
+		} else if(right == null) {
 			throw new NullPointerException("o is null!");
-		} else if(o instanceof CharSequence) {
-			final CharSequence r = (CharSequence)o;
-			int i = 0;
-			final int lLen = length(), rLen = r.length();
-			for(;;) {
-				if(lLen <= i) {
-					return rLen <= i ? 0 : -1;
-				} else if(rLen <= i) {
-					return +1;
-				}
-				final int v = charAt(i) -r.charAt(i);
-				if(v != 0) {
-					return v;
-				}
-				++i;
+		}
+		
+		final int lLen = length(), rLen = right.length();
+		for(int i = 0; /*void*/; ++i) {
+			if(lLen <= i) {
+				return rLen <= i ? 0 : -1;
+			} else if(rLen <= i) {
+				return +1;
 			}
+			
+			final int v = charAt(i) -right.charAt(i);
+			if(v != 0) {
+				return v;
+			}
+		}
+	}
+	
+	@Override
+	public boolean equals(Object right) throws ClassCastException {
+		if(right == null) {
+			return false;
+		} else if(right instanceof ClassCastException) {
+			return compareTo((CharSequence)right) == 0;
 		} else {
-			throw new ClassCastException("Cannot compare " + o.getClass().getName() +
+			throw new ClassCastException("Cannot compare " + right.getClass().getName() +
 					" against " + getClass().getName());
 		}
 	}
