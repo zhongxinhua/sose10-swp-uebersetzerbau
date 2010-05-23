@@ -24,7 +24,7 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
  */
 
 public class AbstractSyntaxTree {
-	Module root;
+	private Module root;
 
 	/**
 	 * default constructor called by startprocess after the DOM creation is
@@ -38,9 +38,8 @@ public class AbstractSyntaxTree {
 			root = new Module(node);
 		} else {
 			ErrorHandler.error(node, "'module' expected");
-		}
-	
-		root.printJavaCode();
-		
+		}		
 	}
+	
+	public Module getRoot() { return root; }
 }

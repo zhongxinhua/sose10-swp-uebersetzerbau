@@ -36,7 +36,7 @@ public class Module {
 	/**
 	 * name of the module
 	 */
-	PositionString name;
+	private PositionString name;
 	/**
 	 * list of &ltimport/&gt statements
 	 */
@@ -84,9 +84,7 @@ public class Module {
 
 	}
 
-	public void printJavaCode() {
-		Printer.append("package "+ name +";");
-		// for(Class _class : classes);
-			// _class.printJavaCode();
+	public PositionString getName() {
+		return name;
 	}
 }

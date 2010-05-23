@@ -14,10 +14,12 @@ import java.io.Reader;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import de.fu_berlin.compilerbau.builder.Builder;
+import de.fu_berlin.compilerbau.builder.Director;
+import de.fu_berlin.compilerbau.builder.JavaBuilder;
 import de.fu_berlin.compilerbau.dom.DomCreator;
 import de.fu_berlin.compilerbau.dom.DomNode;
 import de.fu_berlin.compilerbau.parser.AbstractSyntaxTree;
-import de.fu_berlin.compilerbau.parser.Printer;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
 
 /**
@@ -51,7 +53,7 @@ class Start {
 		
 		@SuppressWarnings("unused") String classpath = null; // XXX
 		String source = null;
-		@SuppressWarnings("unused") String destPath = null; // XXX
+		String destPath = null; // XXX
 		
 		while(i.hasNext()) { 
 			String arg = i.next();
@@ -112,13 +114,17 @@ class Start {
 		System.out.print("Create DOM...");
 		DomNode node = DomCreator.createDOM();
 		System.out.println("done.");
-		
-		Printer.init(new File(destPath));
-		
-		// TODO naechste Schritte
+				
 		AbstractSyntaxTree stree = new AbstractSyntaxTree(node);
 		
-		Printer.close();
+		Builder build = new JavaBuilder();
+		
+		build.setAbstractSyntaxTree(stree);
+		
+		Director director = new Director();
+		director.setBuilder(build);
+		director.construct();
+		director.print(new File(destPath));
 		
 		if(ErrorHandler.errorOccured()) {
 			System.out.println("Some errors occured. I can't compile!");
