@@ -1,6 +1,7 @@
 package de.fu_berlin.compilerbau.parser;
 
 import de.fu_berlin.compilerbau.dom.DomNode;
+import de.fu_berlin.compilerbau.parser.expressions.Expression;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
 
 /**
@@ -80,7 +81,7 @@ public class DeclarationStatement extends Statement {
 		// check optional attribute: value
 		if (node.hasAttribute("value")
 				&& !node.getAttributeValue("value").equals("")) {
-			this.value = new Expression(node.getAttributeValue("value"));
+			this.value = Expression.build(node.getAttribute("value"));
 		}
 
 		// check optional attribute: static

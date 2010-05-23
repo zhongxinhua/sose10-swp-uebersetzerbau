@@ -1,4 +1,5 @@
-package de.fu_berlin.compilerbau.parser;
+package de.fu_berlin.compilerbau.parser.expressions;
+
 
 public class UnaryOperation {
 	enum UnaryOperator {

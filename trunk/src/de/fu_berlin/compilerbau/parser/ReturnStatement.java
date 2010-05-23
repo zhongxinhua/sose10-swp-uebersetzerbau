@@ -1,6 +1,7 @@
 package de.fu_berlin.compilerbau.parser;
 
 import de.fu_berlin.compilerbau.dom.DomNode;
+import de.fu_berlin.compilerbau.parser.expressions.Expression;
 
 /**
  * <b>*********** Not implemented yet! ***********</b>
