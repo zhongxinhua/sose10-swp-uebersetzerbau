@@ -3,7 +3,7 @@ package de.fu_berlin.compilerbau.parser;
 import java.util.LinkedList;
 import java.util.List;
 import de.fu_berlin.compilerbau.dom.DomNode;
-
+import de.fu_berlin.compilerbau.util.ErrorHandler;
 /**
  * {@link Class} is a subclass of {@link ClassOrInterface} representing a
  * &ltclass/&gt statement forming a node in the parse tree.<br>

@@ -16,6 +16,7 @@ import java.util.Iterator;
 import de.fu_berlin.compilerbau.dom.DomCreator;
 import de.fu_berlin.compilerbau.dom.DomNode;
 import de.fu_berlin.compilerbau.parser.AbstractSyntaxTree;
+import de.fu_berlin.compilerbau.util.ErrorHandler;
 
 /**
  * Starts the Compiler process
@@ -42,6 +43,8 @@ class Start {
 	}
 
 	public static void main(final String[] args) {
+		ErrorHandler.init();
+		
 		final Iterator<String> i = Arrays.asList(args).iterator();
 		
 		@SuppressWarnings("unused") String classpath = null; // XXX
@@ -110,6 +113,11 @@ class Start {
 		
 		// TODO naechste Schritte
 		AbstractSyntaxTree stree = new AbstractSyntaxTree(node);
+		
+		if(ErrorHandler.errorOccured()) {
+			System.out.println("Some errors occured. I can't compile!");
+			System.exit(1);
+		}
 	}
 	
 }

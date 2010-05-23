@@ -1,6 +1,7 @@
 package de.fu_berlin.compilerbau.parser;
 import java.util.List;
 import de.fu_berlin.compilerbau.dom.DomNode;
+import de.fu_berlin.compilerbau.util.ErrorHandler;
 import de.fu_berlin.compilerbau.util.PositionString;
 
 /**
