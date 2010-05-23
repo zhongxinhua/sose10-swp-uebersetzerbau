@@ -42,7 +42,7 @@ public class PositionString extends PositionBean implements CharSequence, Compar
 		if(start == 0) {
 			pos = this;
 		} else {
-			final PositionCharacterStream stream = new PositionCharacterStream(new CharSequenceReader(string));
+			final PositionCharacterStream stream = new PositionCharacterStream(string, this);
 			for(int i = 0; i < start; ++i) {
 				stream.next();
 			}

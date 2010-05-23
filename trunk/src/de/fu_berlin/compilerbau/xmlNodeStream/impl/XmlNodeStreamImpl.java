@@ -6,7 +6,9 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import de.fu_berlin.compilerbau.util.PositionCharacterStream;
+import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.PositionStringBuilder;
+import de.fu_berlin.compilerbau.util.StreamPosition;
 import de.fu_berlin.compilerbau.xmlNodeStream.NodeType;
 import de.fu_berlin.compilerbau.xmlNodeStream.XmlNode;
 import de.fu_berlin.compilerbau.xmlNodeStream.XmlNodeStream;
@@ -21,8 +23,12 @@ class XmlNodeStreamImpl implements XmlNodeStream {
 	
 	protected final PositionCharacterStream stream;
 	
-	XmlNodeStreamImpl(Reader reader) throws IOException {
-		stream = new PositionCharacterStream(reader);
+	XmlNodeStreamImpl(PositionString str) throws IOException {
+		stream = new PositionCharacterStream(str);
+	}
+	
+	XmlNodeStreamImpl(Reader reader, StreamPosition pos) throws IOException {
+		stream = new PositionCharacterStream(reader, pos);
 	}
 	
 	@Override

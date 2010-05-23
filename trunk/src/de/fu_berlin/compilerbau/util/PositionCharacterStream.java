@@ -23,7 +23,7 @@ public class PositionCharacterStream extends PositionBean
 	
 	protected static final StreamPosition DEFAULT_POSITION = PositionBean.ONE_ONE_ONE;
 	
-	public PositionCharacterStream(final Reader reader, StreamPosition start) {
+	public PositionCharacterStream(Reader reader, StreamPosition start) {
 		super(start);
 		if(reader instanceof BufferedReader) {
 			this.reader = reader;
@@ -32,8 +32,12 @@ public class PositionCharacterStream extends PositionBean
 		}
 	}
 	
-	public PositionCharacterStream(final Reader reader) {
-		this(reader, DEFAULT_POSITION);
+	public PositionCharacterStream(PositionString str) {
+		this(new CharSequenceReader(str), str);
+	}
+	
+	public PositionCharacterStream(CharSequence str, StreamPosition start) {
+		this(new CharSequenceReader(str), start);
 	}
 	
 	@Override
