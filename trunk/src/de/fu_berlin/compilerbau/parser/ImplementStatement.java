@@ -3,6 +3,8 @@ package de.fu_berlin.compilerbau.parser;
 import de.fu_berlin.compilerbau.dom.DomNode;
 
 /**
+ * <b>*********** Not implemented yet! ***********</b>
+ * <p/>
  * {@link ImplementStatement} is a subclass of {@link Statement} representing a
  * &ltimplement/&gt statement forming a node in the parse tree.<br>
  * 

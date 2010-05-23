@@ -14,7 +14,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
  * @author Sam
  * 
  */
-public class ClassOrInterface {
+public abstract class ClassOrInterface {
 	//Wird in Class oder Interface belegt
 	PositionString name;
 	
@@ -25,6 +25,7 @@ public class ClassOrInterface {
 	 * Calling the  correct constructor it returns a {@link Class} or {@link Interface} object.
 	 * @param node {@link DomNode} representing &ltclass/&gt or &ltinterface/&gt statement
 	 * @return {@link Class} or {@link Interface} object
+	 * @deprecated should be deleted with confirmation of Markus
 	 */
 	static ClassOrInterface build(DomNode node) {
 		if (node.getName().equals("class")) {
@@ -32,7 +33,7 @@ public class ClassOrInterface {
 		} else if (node.getName().equals("interface")) {
 			return new Interface(node);
 		} else
-			ErrorHandler.error(node, "'module' expected");
+			ErrorHandler.error(node, "'calss' or 'interface' expected");
 		return null;
 	}
 

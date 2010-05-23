@@ -45,10 +45,12 @@ public class DeclarationStatement extends Statement {
 		// check needed attribute: type
 		if (node.hasAttribute("type")
 				&& node.getAttributeValue("type").length() > 0) {
-			type = Type.get(node.getAttributeValue("type"));
-			//nicht besonders schön, aber funzt
+			this.type = Type.get(node.getAttributeValue("type"));
+			// nicht besonders schön, aber funzt
 			if (type == null) {
-				ErrorHandler.error(node, "'type' attribute parse error: unknown type: "+node.getAttributeValue("type"));
+				ErrorHandler.error(node,
+						"'type' attribute parse error: unknown type: "
+								+ node.getAttributeValue("type"));
 			}
 		} else {
 			ErrorHandler.error(node, "'type' attribute expected");
@@ -57,7 +59,7 @@ public class DeclarationStatement extends Statement {
 		// check needed attribute: name
 		if (node.hasAttribute("name")
 				&& node.getAttributeValue("name").length() > 0) {
-			name = node.getAttributeValue("name");
+			this.name = node.getAttributeValue("name");
 		} else {
 			ErrorHandler.error(node, "'name' attribute expected");
 		}
@@ -66,7 +68,7 @@ public class DeclarationStatement extends Statement {
 		if (node.hasAttribute("dim")
 				&& !node.getAttributeValue("dim").equals("")) {
 			try {
-				dimension = Integer.parseInt(node.getAttributeValue("dim")
+				this.dimension = Integer.parseInt(node.getAttributeValue("dim")
 						.toString());
 			} catch (Exception e) {
 				ErrorHandler.error(node, "'dim' attribute parse error: "
@@ -78,14 +80,14 @@ public class DeclarationStatement extends Statement {
 		// check optional attribute: value
 		if (node.hasAttribute("value")
 				&& !node.getAttributeValue("value").equals("")) {
-			value = new Expression(node.getAttributeValue("value"));
+			this.value = new Expression(node.getAttributeValue("value"));
 		}
 
 		// check optional attribute: static
 		if (node.hasAttribute("static")
 				&& !node.getAttributeValue("static").equals("")) {
 			if (node.getAttributeValue("static").equals("yes")) {
-				isStatic = true;
+				this.isStatic = true;
 			} else {
 				ErrorHandler.error(node,
 						"'static' attribute parse error: 'yes' expected");

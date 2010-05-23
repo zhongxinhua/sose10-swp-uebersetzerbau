@@ -18,7 +18,7 @@ import de.fu_berlin.compilerbau.dom.DomNode;
  * <li>super - the name of the superclass</li>
  * </ul>
  * <p>
- * The &ltclass/&gt body may have:
+ * The &ltclass/&gt statement body has:
  * <ul>
  * <li>arbitrary &ltimport/&gt statements</li>
  * <li>arbitrary &ltimplements/&gt statements</li>
