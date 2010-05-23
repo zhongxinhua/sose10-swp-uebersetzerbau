@@ -79,12 +79,23 @@ public class DomNodeImpl implements DomNode {
 	public void addAttributes(LinkedList<DomAttribute> attr) {
 		_attributes.addAll(attr);
 	}
+	
+	@Override
+	public PositionString getAttribute(String attributeName) {
+		for (DomAttribute attr : _attributes) {
+			if (attr.getName().compareTo(attributeName) == 0) {
+				return attr.getValue();
+			}
+		}
+		
+		return null;
+	}
 
 	@Override
-	public PositionString getAttributeValue(String attributeName) {	
+	public String getAttributeValue(String attributeName) {	
 		for (DomAttribute attr : _attributes) {
-			if (attr.getName().equals(attributeName)) {
-				return attr.getValue();
+			if (attr.getName().compareTo(attributeName) == 0) {
+				return attr.getValue().toString();
 			}
 		}
 		
@@ -94,7 +105,7 @@ public class DomNodeImpl implements DomNode {
 	@Override
 	public boolean hasAttribute(String attributeName) {
 		for (DomAttribute attr : _attributes) {
-			if (attr.getName().equals(attributeName)) return true;
+			if (attr.getName().compareTo(attributeName) == 0) return true;
 		}
 		return false;
 	}

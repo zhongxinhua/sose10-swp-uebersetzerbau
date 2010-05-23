@@ -56,11 +56,13 @@ public interface DomNode {
 	 */
 	List<DomAttribute> getAttributes();
 	
+	PositionString getAttribute(String attributeName);
+	
 	/**
 	 * @param attributeName - The Name of the Attribute
 	 * @return The Value for the Attribute attributeName or "" if there is no such Attribute
 	 */	
-	PositionString getAttributeValue(String attributeName);
+	String getAttributeValue(String attributeName);
 	
 	/**
 	 * 

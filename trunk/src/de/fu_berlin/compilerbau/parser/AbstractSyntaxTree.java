@@ -34,7 +34,7 @@ public class AbstractSyntaxTree {
 	 *            {@link DomNode} representing the whole program
 	 */
 	public AbstractSyntaxTree(DomNode node) {
-		if (node.getName().equals("module")) {
+		if (node.getName().compareTo("module") == 0) {
 			root = new Module(node);
 		} else {
 			ErrorHandler.error(node, "'module' expected");

@@ -2,6 +2,7 @@ package de.fu_berlin.compilerbau.parser;
 
 import java.util.LinkedList;
 import java.util.List;
+
 import de.fu_berlin.compilerbau.dom.DomNode;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
 import de.fu_berlin.compilerbau.util.PositionString;
@@ -60,8 +61,7 @@ public class Module {
 		// check needed attribute: name
 		if (node.hasAttribute("name")
 				&& node.getAttributeValue("name").length() > 0) {
-			name = node.getAttributeValue("name");
-
+			name = node.getAttribute("name");
 		} else {
 			ErrorHandler.error(node, "'name' attribute expected");
 		}
