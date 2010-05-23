@@ -58,20 +58,21 @@ public class Class extends ClassOrInterface {
 		}
 
 		// process child nodes
+		
 		for (DomNode child : node.getChilds()) {
-			if (child.getName().equals("import")) {
+			if (child.getName().compareTo("import")==0) {
 				imports.add(new ImportStatement(child));
 				continue;
-			} else if (child.getName().equals("implements")) {
+			} else if (child.getName().compareTo("implements")==0) {
 				implementations.add(new ImplementStatement(child));
 				continue;
-			} else if (child.getName().equals("decl")) {
+			} else if (child.getName().compareTo("decl")==0) {
 				declarations.add(new DeclarationStatement(child));
 				continue;
-			} else if (child.getName().equals("function")) {
+			} else if (child.getName().compareTo("function")==0) {
 				functions.add(new Function(child));
 				continue;
-			} else if (child.getName().equals("static")) {
+			} else if (child.getName().compareTo("static")==0) {
 				statics.add(new StaticStatement(child));
 				continue;
 			} else {

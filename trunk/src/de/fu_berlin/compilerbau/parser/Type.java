@@ -1,7 +1,5 @@
 package de.fu_berlin.compilerbau.parser;
 
-import de.fu_berlin.compilerbau.util.PositionString;
-
 public class Type {
 	String name;
 
@@ -26,7 +24,7 @@ public class Type {
 		}
 	};
 
-	public static Type get(PositionString type) {
+	public static Type get(String type) {
 		if (type.toString().equals("string")) {
 			return TYPE_STRING;
 		} else if (type.toString().equals("int")) {

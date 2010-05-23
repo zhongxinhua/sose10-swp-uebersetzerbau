@@ -6,10 +6,12 @@ import de.fu_berlin.compilerbau.dom.DomNode;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
 
 public class Interface extends ClassOrInterface {
+	List<Function> functions;
+	
 	public Interface(DomNode node) {
 
 		for (DomNode child : node.getChilds()) {
-			if (child.getName().equals("function")) {
+			if (child.getName().compareTo("function")==0) {
 				Function tmp = new Function(child);
 
 				functions.add(tmp);
@@ -22,5 +24,5 @@ public class Interface extends ClassOrInterface {
 
 	}
 
-	List<Function> functions;
+	
 }

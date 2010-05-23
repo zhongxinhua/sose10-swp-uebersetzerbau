@@ -1,9 +1,7 @@
 package de.fu_berlin.compilerbau.parser;
 
-import de.fu_berlin.compilerbau.util.PositionString;
-
 public class BinaryOperation extends Expression { // a+b
-	public BinaryOperation(PositionString attributeValue) {
+	public BinaryOperation(String attributeValue) {
 		super(attributeValue);
 		// TODO Auto-generated constructor stub
 	}

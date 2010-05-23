@@ -1,7 +1,5 @@
 package de.fu_berlin.compilerbau.parser;
 
-import de.fu_berlin.compilerbau.util.PositionString;
-
 /**
  * * <b>*********** Not implemented yet! ***********</b>
  * <p/>
@@ -20,7 +18,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
  */
 public class Expression {
 
-	public Expression(PositionString attributeValue) {
+	public Expression(String attributeValue) {
 		// TODO Auto-generated constructor stub
 	}
 

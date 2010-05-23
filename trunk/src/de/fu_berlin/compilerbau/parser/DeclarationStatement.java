@@ -2,7 +2,6 @@ package de.fu_berlin.compilerbau.parser;
 
 import de.fu_berlin.compilerbau.dom.DomNode;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
-import de.fu_berlin.compilerbau.util.PositionString;
 
 /**
  * {@link DeclarationStatement} is a subclass of {@link Statement} representing
@@ -36,7 +35,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
 public class DeclarationStatement extends Statement {
 
 	Type type;
-	PositionString name;
+	String name;
 	int dimension = 1;
 	Expression value = null;
 	boolean isStatic = false;
@@ -86,8 +85,8 @@ public class DeclarationStatement extends Statement {
 
 		// check optional attribute: static
 		if (node.hasAttribute("static")
-				&& !node.getAttributeValue("static").equals("")) {
-			if (node.getAttributeValue("static").equals("yes")) {
+				&& !(node.getAttributeValue("static").compareTo("")==0)) {
+			if (node.getAttributeValue("static").compareTo("yes")==0) {
 				this.isStatic = true;
 			} else {
 				ErrorHandler.error(node,
@@ -97,8 +96,8 @@ public class DeclarationStatement extends Statement {
 
 		// check optional attribute: final
 		if (node.hasAttribute("final")
-				&& !node.getAttributeValue("final").equals("")) {
-			if (node.getAttributeValue("final").equals("yes")) {
+				&& !(node.getAttributeValue("final").compareTo("")==0)) {
+			if (node.getAttributeValue("final").compareTo("yes")==0) {
 				isFinal = true;
 			} else {
 				ErrorHandler.error(node,

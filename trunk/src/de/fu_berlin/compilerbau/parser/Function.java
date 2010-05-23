@@ -4,7 +4,6 @@ import java.util.List;
 
 import de.fu_berlin.compilerbau.dom.DomNode;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
-import de.fu_berlin.compilerbau.util.PositionString;
 
 /**
  * {@link Function} is representing a &ltfunction/&gt statement forming a node
@@ -37,7 +36,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
  * 
  */
 public class Function {
-	PositionString name;
+	String name;
 	Type return_type;
 	// default: NO
 	boolean isStatic = false;
@@ -68,8 +67,8 @@ public class Function {
 		}
 		// check optional attribute: static
 		if (node.hasAttribute("static")
-				&& !node.getAttributeValue("static").equals("")) {
-			if (node.getAttributeValue("static").equals("yes")) {
+				&& !(node.getAttributeValue("static").compareTo("")==0)) {
+			if (node.getAttributeValue("static").compareTo("yes")==0) {
 				this.isStatic = true;
 			} else {
 				ErrorHandler.error(node,
@@ -78,8 +77,8 @@ public class Function {
 		}
 		// check optional attribute: final
 		if (node.hasAttribute("final")
-				&& !node.getAttributeValue("final").equals("")) {
-			if (node.getAttributeValue("final").equals("yes")) {
+				&& !(node.getAttributeValue("final").compareTo("")==0)) {
+			if (node.getAttributeValue("final").compareTo("yes")==0) {
 				isFinal = true;
 			} else {
 				ErrorHandler.error(node,
@@ -89,14 +88,14 @@ public class Function {
 
 		// process child nodes
 		for (DomNode child : node.getChilds()) {
-			if (child.getName().equals("arguments")) {
+			if (child.getName().compareTo("arguments")==0) {
 				arguments = new ArgumentStatement(child);
 				continue;
-			} else if (child.getName().equals("decl")) {
+			} else if (child.getName().compareTo("decl")==0) {
 				body.add(new DeclarationStatement(child));
 				continue;
 
-			} else if (child.getName().equals("returns")) {
+			} else if (child.getName().compareTo("returns")==0) {
 				returns = new ReturnStatement(child);
 				continue;
 
