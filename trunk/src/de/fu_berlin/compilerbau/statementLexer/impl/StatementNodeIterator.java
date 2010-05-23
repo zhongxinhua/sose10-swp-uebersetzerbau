@@ -10,6 +10,8 @@ import de.fu_berlin.compilerbau.statementLexer.TokenType;
 import de.fu_berlin.compilerbau.util.PositionCharacterStream;
 import de.fu_berlin.compilerbau.util.PositionStringBuilder;
 
+import static de.fu_berlin.compilerbau.util.CharacterType.*;
+
 class StatementNodeIterator implements Iterator<StatementNode> {
 	
 	protected StatementNode nextNodeToRead;
@@ -26,7 +28,7 @@ class StatementNodeIterator implements Iterator<StatementNode> {
 	protected StatementNode primitiveGetNext() throws IOException {
 		while(stream.hasNext()) {
 			Character next = stream.next();
-			if(!Character.isWhitespace(next)) {
+			if(!isWhitespace(next)) {
 				stream.pushback(next);
 				break;
 			}
@@ -101,7 +103,7 @@ class StatementNodeIterator implements Iterator<StatementNode> {
 						break;
 					}
 					final char char3 = stream.next();
-					if(Character.isLetterOrDigit(char3)) {
+					if(isValidSecondLeterForIdentifier(char3)) {
 						stream.pushback(char3);
 						stream.pushback('w');
 						stream.pushback('e');
@@ -128,7 +130,7 @@ class StatementNodeIterator implements Iterator<StatementNode> {
 						break;
 					}
 					final char char4 = stream.next();
-					if(Character.isLetterOrDigit(char4)) {
+					if(isValidSecondLeterForIdentifier(char4)) {
 						stream.pushback(char4);
 						stream.pushback('l');
 						stream.pushback('l');
@@ -219,32 +221,32 @@ class StatementNodeIterator implements Iterator<StatementNode> {
 			return new StatementNodeImpl(start, line, character, type, null);
 		}
 		
-		if(Character.isLetter(next)) {
+		if(isValidFirstLeterForIdentifier(next)) {
 			// ID
 			PositionStringBuilder builder = new PositionStringBuilder(start, line, character);
 			builder.append(next);
 			while(stream.hasNext()) {
 				char char1 = stream.next();
-				if(Character.isLetterOrDigit(char1)) {
+				if(isValidSecondLeterForIdentifier(char1)) {
 					builder.append(char1);
 				} else {
 					stream.pushback(char1);
 					return new StatementNodeImpl(start, line, character, TokenType.ID, builder.toPositionString());
 				}
 			}
-		} else if(Character.isDigit(next)) {
+		} else if(isDigit(next)) {
 			// INT / REAL
 			final StringBuffer string = new StringBuffer();
 			string.append(next);
 			while(stream.hasNext()) {
 				char char1 = stream.next();
-				if(Character.isWhitespace(char1)) {
+				if(isWhitespace(char1)) {
 					break; // no need to pushback a whitespace
-				} else if(char1 == '.' && Character.isDigit(char1)) {
+				} else if(char1 == '.' && isDigit(char1)) {
 					string.append(char1);
 				} else if(char1 == 'e' || char1 == 'E') {
 					// TODO: Scale mitnehmen
-				} else if(Character.isLetter(char1)) {
+				} else if(isValidSecondLeterForIdentifier(char1)) {
 					return new StatementNodeImpl(start, line, character, TokenType.ERROR, null);
 				} else {
 					stream.pushback(char1);
