@@ -66,6 +66,7 @@ public class PositionString extends PositionBean implements CharSequence, Compar
 				if(v != 0) {
 					return v;
 				}
+				++i;
 			}
 		} else {
 			throw new ClassCastException("Cannot compare " + o.getClass().getName() +

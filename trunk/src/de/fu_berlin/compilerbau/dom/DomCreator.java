@@ -111,7 +111,7 @@ public class DomCreator {
 			}
 		}
 		
-		if (currNode.getKey() != null && !currNode.getKey().equals(rootName)) {
+		if (currNode.getKey() != null && currNode.getKey().compareTo(rootName) != 0) {
 			throw new RuntimeException("Invalid </" + currNode.getKey() + ">"); // TODO: proper type
 		}
 
