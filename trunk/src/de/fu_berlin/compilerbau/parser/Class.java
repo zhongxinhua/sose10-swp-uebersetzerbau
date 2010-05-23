@@ -38,15 +38,15 @@ public class Class extends ClassOrInterface {
 	 * ausgetauscht durch neue Klasse ImplementStatemnt List<Reference>
 	 * interfaces = new LinkedList<Reference>();
 	 */
-	List<DeclarationStatement> declarations = new LinkedList<DeclarationStatement>();
-	List<Function> functions = new LinkedList<Function>();
+	private List<DeclarationStatement> declarations = new LinkedList<DeclarationStatement>();
+	private List<Function> functions = new LinkedList<Function>();
 	List<StaticStatement> statics = new LinkedList<StaticStatement>();
 
 	public Class(DomNode node) {
 		// check needed attribute: name
 		if (node.hasAttribute("name")
 				&& node.getAttributeValue("name").length() > 0) {
-			name = node.getAttributeValue("name");
+			name = node.getAttribute("name");
 		} else {
 			ErrorHandler.error(node, "'name' attribute expected");
 		}
@@ -83,9 +83,6 @@ public class Class extends ClassOrInterface {
 		}
 	}
 
-	public void printJavaCode() {
-		System.out.println();
-		
-	}
-
+	public List<DeclarationStatement> getDeclerations() { return declarations; }
+	public List<Function> getFunctions() { return functions; }
 }

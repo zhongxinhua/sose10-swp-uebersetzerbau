@@ -3,22 +3,22 @@ package de.fu_berlin.compilerbau.parser;
 public class Type {
 	String name;
 
-	static final Type TYPE_STRING = new Type() {
+	static final public Type TYPE_STRING = new Type() {
 		{
 			this.name = "string";
 		}
 	};
-	static final Type TYPE_INT = new Type() {
+	static final public Type TYPE_INT = new Type() {
 		{
 			this.name = "int";
 		}
 	};
-	static final Type TYPE_FLOAT = new Type() {
+	static final public Type TYPE_FLOAT = new Type() {
 		{
 			this.name = "float";
 		}
 	};
-	static final Type TYPE_REF = new Type() {
+	static final public Type TYPE_REF = new Type() {
 		{
 			this.name = "ref";
 		}

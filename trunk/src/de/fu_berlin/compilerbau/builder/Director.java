@@ -1,9 +1,12 @@
 package de.fu_berlin.compilerbau.builder;
 
+/**
+ * @author stefan
+ */
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-
 
 public class Director {
 	Builder _builder;
@@ -14,7 +17,7 @@ public class Director {
 	
 	public void construct() {
 		_builder.buildModule();
-		_builder.buildClass();
+		// _builder.buildClass();
 	}
 	
 	public void print (File out) {

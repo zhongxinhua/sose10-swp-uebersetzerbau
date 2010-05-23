@@ -4,6 +4,7 @@ import java.util.List;
 
 import de.fu_berlin.compilerbau.dom.DomNode;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
+import de.fu_berlin.compilerbau.util.PositionString;
 
 /**
  * {@link Function} is representing a &ltfunction/&gt statement forming a node
@@ -36,21 +37,21 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
  * 
  */
 public class Function {
-	String name;
-	Type return_type;
+	private PositionString name;
+	private Type return_type;
 	// default: NO
 	boolean isStatic = false;
 	// default: NO
 	boolean isFinal = false;
-	ArgumentStatement arguments;
-	List<Statement> body;
+	private ArgumentStatement arguments;
+	private List<Statement> body;
 	ReturnStatement returns;
 
 	public Function(DomNode node) {
 		// check needed attribute: name
 		if (node.hasAttribute("name")
 				&& node.getAttributeValue("name").length() > 0) {
-			name = node.getAttributeValue("name");
+			name = node.getAttribute("name");
 		} else {
 			ErrorHandler.error(node,
 					"'name' attribute expected at function head");
@@ -113,8 +114,10 @@ public class Function {
 	}
 
 	public boolean hasBody() {
-
 		return !body.isEmpty();
-
 	}
+	
+	public Type getReturnType() { return return_type; }
+	public PositionString getName() { return name; }
+	public ArgumentStatement getArgumentStatement() { return arguments; }
 }

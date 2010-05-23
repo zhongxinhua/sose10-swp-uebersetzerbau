@@ -2,6 +2,7 @@ package de.fu_berlin.compilerbau.parser;
 import java.util.List;
 import de.fu_berlin.compilerbau.dom.DomNode;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
+import de.fu_berlin.compilerbau.util.PositionString;
 
 /**
  * {@link ClassOrInterface} is a superclass for {@link Class} or
@@ -16,7 +17,7 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
  */
 public abstract class ClassOrInterface {
 	//Wird in Class oder Interface belegt
-	String name;
+	protected PositionString name;
 	
 	//TODO:Wozu diese Liste? 
 	List<Interface> interfaces;
@@ -37,4 +38,7 @@ public abstract class ClassOrInterface {
 		return null;
 	}
 
+	public PositionString getName() {
+		return name;
+	}
 }

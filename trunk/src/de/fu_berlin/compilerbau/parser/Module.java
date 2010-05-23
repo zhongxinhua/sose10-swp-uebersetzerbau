@@ -29,7 +29,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
  * 
  * 
  * 
- * @author Sam
+ * @author Sam, stefan
  * 
  */
 public class Module {
@@ -40,15 +40,15 @@ public class Module {
 	/**
 	 * list of &ltimport/&gt statements
 	 */
-	List<ImportStatement> imports = new LinkedList<ImportStatement>();
+	private List<ImportStatement> imports = new LinkedList<ImportStatement>();
 	/**
 	 * list of &ltclass/&gt statements
 	 */
-	List<Class> classes = new LinkedList<Class>();
+	private List<Class> classes = new LinkedList<Class>();
 	/**
 	 * list of &ltinterface/&gt statements
 	 */
-	List<Interface> interfaces = new LinkedList<Interface>();
+	private List<Interface> interfaces = new LinkedList<Interface>();
 
 	/**
 	 * default constructor called by {@link AbstractSyntaxTree}, asserting a
@@ -86,5 +86,9 @@ public class Module {
 
 	public PositionString getName() {
 		return name;
+	}
+	
+	public List<Class> getClasses() {
+		return classes;
 	}
 }

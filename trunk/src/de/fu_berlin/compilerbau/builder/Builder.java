@@ -1,6 +1,13 @@
 package de.fu_berlin.compilerbau.builder;
 
+/**
+ * @author stefan
+ */
+
 import de.fu_berlin.compilerbau.parser.AbstractSyntaxTree;
+import de.fu_berlin.compilerbau.parser.Class;
+import de.fu_berlin.compilerbau.parser.DeclarationStatement;
+import de.fu_berlin.compilerbau.parser.Function;
 
 public abstract class Builder {
 	
@@ -16,8 +23,9 @@ public abstract class Builder {
 	}
 
 	public abstract void buildModule();
-	
-	public abstract void buildClass();
+	protected abstract void buildClass(Class theclass);
+	protected abstract void buildDecleration(DeclarationStatement decl);
+	protected abstract void buildFunction(Function func);
 	
 	public StringBuffer getCode() { return _code; }
 }

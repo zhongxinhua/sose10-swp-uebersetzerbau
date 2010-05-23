@@ -3,6 +3,7 @@ package de.fu_berlin.compilerbau.parser;
 import de.fu_berlin.compilerbau.dom.DomNode;
 import de.fu_berlin.compilerbau.parser.expressions.Expression;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
+import de.fu_berlin.compilerbau.util.PositionString;
 
 /**
  * {@link DeclarationStatement} is a subclass of {@link Statement} representing
@@ -35,8 +36,8 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
 
 public class DeclarationStatement extends Statement {
 
-	Type type;
-	String name;
+	private Type type;
+	private PositionString name;
 	int dimension = 1;
 	Expression value = null;
 	boolean isStatic = false;
@@ -60,7 +61,7 @@ public class DeclarationStatement extends Statement {
 		// check needed attribute: name
 		if (node.hasAttribute("name")
 				&& node.getAttributeValue("name").length() > 0) {
-			this.name = node.getAttributeValue("name");
+			this.name = node.getAttribute("name");
 		} else {
 			ErrorHandler.error(node, "'name' attribute expected");
 		}
@@ -105,7 +106,9 @@ public class DeclarationStatement extends Statement {
 						"'final' attribute parse error: 'yes' expected");
 			}
 		}
-
 	}
+	
+	public Type getType() { return type; }
+	public PositionString getName() { return name; }
 
 }
