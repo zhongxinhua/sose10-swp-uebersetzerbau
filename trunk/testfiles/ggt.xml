@@ -1,0 +1,25 @@
+<module name="mathe">
+<class name="Math">
+  <function name="ggt"  returns="int" static="yes">
+      <arguments>
+          <decl type="int"  name="a"/>
+          <decl type="int" name="b"/>
+      </arguments>
+      <do test="b != 0">
+          <decl type="int"  name="h" value="a%b"/>
+          <set name="a" value="b"/>
+          <set name="b" value="h"/>
+      </do>
+      <return value="a"/>
+  </function>
+</class>
+
+<class name="Test">
+  <function name="main" static="yes">
+      <arguements>
+          <decl type="string" name="args" dim="1"/>
+      </arguements>
+      <call exec="print(Math.ggt(100,201))"/>
+  </function>
+</class>
+</module>
