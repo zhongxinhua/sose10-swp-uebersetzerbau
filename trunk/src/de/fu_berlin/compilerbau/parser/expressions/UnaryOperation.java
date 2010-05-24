@@ -1,10 +1,27 @@
 package de.fu_berlin.compilerbau.parser.expressions;
 
-
-public class UnaryOperation {
-	enum UnaryOperator {
+public class UnaryOperation extends Expression {
+	public enum UnaryOperator {
 		NOT, PLUS, MINUS, PREINC, PREDEC, POSTINC, POSTDEC
 	}
-    UnaryOperator operator;
-    Expression expr;
+	
+	private UnaryOperator operator;
+    private Expression expression;
+    
+    public UnaryOperation(UnaryOperator op, Expression arg) {
+		operator = op;
+		expression = arg;
+	}
+    
+	@Override
+	public Type getType() {
+		return expression.getType();
+	}
+
+	@Override
+	public void printTree(int deep) {
+		for(int d=deep; d>0; d--) System.out.print("  ");
+		System.out.println(operator);
+		expression.printTree(deep+1);
+	}
 }

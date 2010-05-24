@@ -8,7 +8,7 @@ import de.fu_berlin.compilerbau.parser.Class;
 import de.fu_berlin.compilerbau.parser.DeclarationStatement;
 import de.fu_berlin.compilerbau.parser.Function;
 import de.fu_berlin.compilerbau.parser.Module;
-import de.fu_berlin.compilerbau.parser.Type;
+import de.fu_berlin.compilerbau.parser.expressions.Type;
 
 public class JavaBuilder extends Builder {
 
@@ -40,13 +40,13 @@ public class JavaBuilder extends Builder {
 	@Override
 	protected void buildDecleration(DeclarationStatement decl) {
 		Type type = decl.getType();
-		if(type == Type.TYPE_STRING) {
+		if(type == Type.STRING) {
 			_code.append("\tString " + decl.getName().toString() + ";\n");
 		}
-		else if (type == Type.TYPE_INT) {
+		else if (type == Type.INTEGER) {
 			_code.append("\tint " + decl.getName().toString() + ";\n");
 		}
-		else if (type == Type.TYPE_FLOAT) {
+		else if (type == Type.FLOAT) {
 			_code.append("\tfloat " + decl.getName().toString() + ";\n");
 		}
 	}
@@ -56,13 +56,13 @@ public class JavaBuilder extends Builder {
 		_code.append("public ");
 		
 		Type type = func.getReturnType();
-		if(type == Type.TYPE_STRING) {
+		if(type == Type.STRING) {
 			_code.append("String ");
 		}
-		else if (type == Type.TYPE_INT) {
+		else if (type == Type.INTEGER) {
 			_code.append("int ");
 		}
-		else if (type == Type.TYPE_FLOAT) {
+		else if (type == Type.FLOAT) {
 			_code.append("float ");
 		}
 		

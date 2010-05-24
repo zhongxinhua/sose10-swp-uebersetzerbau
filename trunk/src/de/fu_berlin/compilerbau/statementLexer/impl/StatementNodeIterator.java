@@ -50,9 +50,10 @@ class StatementNodeIterator implements Iterator<StatementNode> {
 			case '[': type = TokenType.BRACKET_OPEN; break;
 			case ']': type = TokenType.BRACKET_CLOSE; break;
 			case '*': type = TokenType.TIMES; break;
-			case '/': type = TokenType.SLASH; break;
+			case '/': type = TokenType.DIVIDES; break;
 			case '%': type = TokenType.MOD; break;
 			case ',': type = TokenType.COMMA; break;
+			case '^': type = TokenType.BIT_XOR; break;
 		}
 		if(type != null) {
 			return new StatementNodeImpl(start, line, character, type, null);
@@ -197,10 +198,10 @@ class StatementNodeIterator implements Iterator<StatementNode> {
 				if(stream.hasNext()) {
 					char char1 = stream.next();
 					if(char1 != '&') {
-						type = TokenType.AND;
+						type = TokenType.BIT_AND;
 						stream.pushback(char1);
 					} else {
-						type = TokenType.BIT_AND;
+						type = TokenType.AND;
 					}
 				}
 				break;
@@ -208,11 +209,11 @@ class StatementNodeIterator implements Iterator<StatementNode> {
 			case '|':
 				if(stream.hasNext()) {
 					char char1 = stream.next();
-					if(char1 != '&') {
-						type = TokenType.OR;
+					if(char1 != '|') {
+						type = TokenType.BIT_OR;
 						stream.pushback(char1);
 					} else {
-						type = TokenType.BIT_OR;
+						type = TokenType.OR;
 					}
 				}
 				break;

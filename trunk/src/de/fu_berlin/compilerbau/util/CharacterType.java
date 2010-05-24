@@ -15,11 +15,11 @@ public final class CharacterType {
 	}
 	
 	public static boolean isValidFirstLeterForIdentifier(char ch) {
-		return ch=='ยง' || ch=='$' || ch=='_' || Character.isLetter(ch);
+		return ch=='ง' || ch=='$' || ch=='_' || Character.isLetter(ch);
 	}
 	
 	public static boolean isValidSecondLeterForIdentifier(char ch) {
-		return ch=='ยง' || ch=='$' || ch=='_' || Character.isLetterOrDigit(ch);
+		return ch=='ง' || ch=='$' || ch=='_' || Character.isLetterOrDigit(ch);
 	}
 
 	public static boolean isValidFirstLeterForTag(char ch) {

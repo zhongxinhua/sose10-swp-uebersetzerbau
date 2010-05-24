@@ -2,17 +2,21 @@ package de.fu_berlin.compilerbau.parser.expressions;
 
 import de.fu_berlin.compilerbau.util.PositionString;
 
-public class NullLiteral extends Literal {
-	public static final NullLiteral NULL = new NullLiteral();
+public class FloatLiteral extends Literal {
+	private float value;
 	
+	public FloatLiteral(Number value) {
+		this.value = value.floatValue();
+	}
+
 	@Override
 	public Type getType() {
-		return Type.NULL;
+		return Type.FLOAT;
 	}
 	
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
-		return "null";
+		return super.toString();
 	}
 }

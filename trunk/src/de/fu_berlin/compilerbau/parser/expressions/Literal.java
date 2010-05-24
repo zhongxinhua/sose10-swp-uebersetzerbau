@@ -1,13 +1,11 @@
 package de.fu_berlin.compilerbau.parser.expressions;
 
-import de.fu_berlin.compilerbau.parser.Type;
 
-public class Literal extends Expression {
-
+public abstract class Literal extends Expression {
 	@Override
-	public Type getType() {
+	public void printTree(int deep) {
 		// TODO Auto-generated method stub
-		return null;
+		for(int d=deep; d>0; d--) System.out.print("  ");
+		System.out.println(this);
 	}
-	
 }

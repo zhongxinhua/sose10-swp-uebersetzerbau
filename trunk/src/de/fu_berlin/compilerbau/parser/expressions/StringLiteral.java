@@ -8,4 +8,14 @@ public class StringLiteral extends Literal {
 	public StringLiteral(CharSequence value) {
 		this.value = value;
 	}
+
+	@Override
+	public Type getType() {
+		return Type.STRING;
+	}
+
+	@Override
+	public String toString() {
+		return "string("+value+")";
+	}
 }

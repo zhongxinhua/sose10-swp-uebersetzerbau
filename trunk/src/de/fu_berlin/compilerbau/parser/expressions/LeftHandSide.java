@@ -1,7 +1,5 @@
 package de.fu_berlin.compilerbau.parser.expressions;
 
-import de.fu_berlin.compilerbau.parser.Type;
-import de.fu_berlin.compilerbau.util.PositionString;
 
 public interface LeftHandSide {
 	LHSTail getNext();
@@ -23,6 +21,12 @@ class SuperHead extends Expression implements LeftHandSide {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public void printTree(int deep) {
+		// TODO Auto-generated method stub
+		
+	}
 }
 
 class ThisHead extends Expression implements LeftHandSide {
@@ -37,6 +41,12 @@ class ThisHead extends Expression implements LeftHandSide {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public void printTree(int deep) {
+		// TODO Auto-generated method stub
+		
+	}
 }
 
 class FunctionCallTail extends Expression  implements LeftHandSide,LHSTail {
@@ -49,6 +59,11 @@ class FunctionCallTail extends Expression  implements LeftHandSide,LHSTail {
 	public Type getType() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	@Override
+	public void printTree(int deep) {
+		// TODO Auto-generated method stub
+		
 	}
 }
 
@@ -63,6 +78,11 @@ class NameTail extends Expression implements LeftHandSide,LHSTail {
 	public Type getType() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	@Override
+	public void printTree(int deep) {
+		// TODO Auto-generated method stub
+		
 	}	
 }
 //class ExpressionName extends LeftHandside {
