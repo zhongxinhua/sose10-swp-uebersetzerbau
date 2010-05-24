@@ -52,5 +52,10 @@ public class StatementNodeImpl extends PositionBean implements StatementNode {
 		}
 		throw new IllegalAccessException();
 	}
+	
+	@Override
+	public String toString() {
+		return "[" + type + "=" + value + "]@" + super.toString();
+	}
 
 }

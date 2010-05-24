@@ -18,9 +18,11 @@ public class CharSequenceReader extends Reader {
 
 	@Override
 	public int read(char[] cbuf, int off, int len) {
-		if(len > data.length()) {
-			len = data.length();
+		final int MAX_LEN = data.length();
+		if(MAX_LEN == position) {
+			return -1;
 		}
+		len = Math.min(len, MAX_LEN - position);
 		for(int i = 0; i < len; ++i) {
 			cbuf[i+off] = data.charAt(position++);
 		}
