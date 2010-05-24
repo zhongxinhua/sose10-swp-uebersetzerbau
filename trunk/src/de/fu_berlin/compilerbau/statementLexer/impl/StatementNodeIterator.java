@@ -222,6 +222,7 @@ class StatementNodeIterator implements Iterator<StatementNode> {
 		}
 		
 		if(isValidFirstLeterForIdentifier(next)) {
+			
 			// ID
 			PositionStringBuilder builder = new PositionStringBuilder(start, line, character);
 			builder.append(next);
@@ -231,42 +232,110 @@ class StatementNodeIterator implements Iterator<StatementNode> {
 					builder.append(char1);
 				} else {
 					stream.pushback(char1);
-					return new StatementNodeImpl(start, line, character, TokenType.ID, builder.toPositionString());
+					break;
 				}
 			}
+			return new StatementNodeImpl(start, line, character, TokenType.ID, builder.toPositionString());
+			
 		} else if(isDigit(next)) {
+			
 			// INT / REAL
-			final StringBuffer string = new StringBuffer();
+			
+			// 0 = no | 1 = '.' was last read character | 2 = yes
+			int hasDot = 0;
+			
+			// 0 = no | 1 = '.' was last read character | 2 = '+'/'-' was last read character | 3 = yes
+			int hasScale = 0;
+			
+			final StringBuilder string = new StringBuilder();
 			string.append(next);
 			while(stream.hasNext()) {
 				char char1 = stream.next();
 				if(isWhitespace(char1)) {
-					break; // no need to pushback a whitespace
-				} else if(char1 == '.' && isDigit(char1)) {
-					string.append(char1);
-				} else if(char1 == 'e' || char1 == 'E') {
-					// TODO: Scale mitnehmen
-				} else if(isValidSecondLeterForIdentifier(char1)) {
-					return new StatementNodeImpl(start, line, character, TokenType.ERROR, null);
+					break; // no need to push back a whitespace
+				} else if(isDigit(char1)) {
+					if(hasDot == 1) {
+						hasDot = 2;
+					} else if(hasScale == 1 || hasScale == 2) {
+						hasScale = 3;
+					}
+				} else if(hasDot == 0 && (char1 == '.' && isDigit(char1))) {
+					hasDot = 1;
+				} else if(hasScale == 0 && (char1 == 'e' || char1 == 'E')) {
+					hasScale = 1;
+				} else if(hasScale == 1 && (char1 == '+' || char1 == '-')) {
+					hasScale = 2;
 				} else {
+					// I have read something that was not part of this very number.
 					stream.pushback(char1);
 					break;
 				}
+				string.append(char1);
 			}
-			final BigDecimal result = new BigDecimal(string.toString());
 			
-			// TODO: Das ist nicht wirklich die richtige Definition. Man bearchte: 0.0 ist REAL!
-			if(result.scale() <= 0) {
+			// awaited more?
+			if(hasDot == 1 || hasScale == 1 || hasScale == 2) {
+				return new StatementNodeImpl(stream, TokenType.ERROR, null);
+			}
+			
+			final BigDecimal result = new BigDecimal(string.toString());
+			if(hasDot == 0 && hasScale == 0) {
 				type = TokenType.INT;
 			} else {
 				type = TokenType.REAL;
 			}
 			return new StatementNodeImpl(start, line, character, type, result);
-		}
+			
+		} else if(next == '"') {
 
-		// TODO: STRING
+			boolean escaped = false;
+			final StringBuilder string = new StringBuilder();
+			string.append(next);
+			for(;;) {
+				if(!stream.hasNext()) {
+					return new StatementNodeImpl(stream, TokenType.ERROR, null);
+				}
+				final char char1 = stream.next();
+				if(escaped) {
+					escaped = false;
+				} else if(char1 == '\\') {
+					escaped = true;
+				} else if(char1 == '"') {
+					string.append(char1);
+					break;
+				}
+				string.append(char1);
+			}
+			return new StatementNodeImpl(start, line, character, TokenType.STRING, string.toString());
+			
+		} else if(next == '\'') {
+
+			boolean escaped = false;
+			final StringBuilder string = new StringBuilder();
+			string.append(next);
+			for(;;) {
+				if(!stream.hasNext()) {
+					return new StatementNodeImpl(stream, TokenType.ERROR, null);
+				}
+				final char char1 = stream.next();
+				if(escaped) {
+					escaped = false;
+				} else if(char1 == '\\') {
+					escaped = true;
+				} else if(char1 == '\'') {
+					string.append(char1);
+					break;
+				}
+				string.append(char1);
+			}
+			return new StatementNodeImpl(start, line, character, TokenType.STRING, string.toString());
+			
+		} else {
 		
-		return new StatementNodeImpl(start, line, character, TokenType.ERROR, null);
+			return new StatementNodeImpl(start, line, character, TokenType.ERROR, null);
+		
+		}
+		
 	}
 
 	@Override
