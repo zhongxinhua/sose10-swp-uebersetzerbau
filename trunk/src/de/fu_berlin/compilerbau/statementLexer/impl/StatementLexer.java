@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import de.fu_berlin.compilerbau.statementLexer.StatementNode;
 import de.fu_berlin.compilerbau.util.PositionCharacterStream;
+import de.fu_berlin.compilerbau.util.PositionString;
 
 public class StatementLexer {
 	
@@ -15,6 +16,10 @@ public class StatementLexer {
 				return result;
 			}
 		};
+	}
+	
+	public static Iterable<StatementNode> tokenize(PositionString string) {
+		return tokenize(new PositionCharacterStream(string));
 	}
 	
 }
