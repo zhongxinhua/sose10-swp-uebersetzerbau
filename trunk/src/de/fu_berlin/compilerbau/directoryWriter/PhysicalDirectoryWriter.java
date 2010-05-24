@@ -15,19 +15,29 @@ public class PhysicalDirectoryWriter implements DirectoryWriter {
 	
 	private final File root;
 
+	/**
+	 * Ensures existence of root.
+	 * @param root
+	 */
 	public PhysicalDirectoryWriter(File root) {
 		this.root = root;
 		root.mkdirs();
 	}
 	
+	/**
+	 * Does nothing.
+	 */
 	@Override
 	public void close() throws IOException {
 		// ignore
 	}
 
+	/**
+	 * There may be more than one file open at a time.
+	 * @see DirectoryWriter#openFile(CharSequence, CharSequence)
+	 */
 	@Override
-	public OutputStream openFile(CharSequence fileName, CharSequence folder) throws IOException,
-			IllegalAccessException {
+	public OutputStream openFile(CharSequence fileName, CharSequence folder) throws IOException {
 		final File path = new File(root, folder.toString());
 		path.mkdirs();
 		final File dest = new File(path, fileName.toString());
@@ -36,7 +46,7 @@ public class PhysicalDirectoryWriter implements DirectoryWriter {
 
 	@Override
 	public void writeFile(final int contentLength, final InputStream stream, CharSequence fileName,
-			CharSequence folder) throws IOException, IllegalAccessException, SyncFailedException {
+			CharSequence folder) throws IOException, SyncFailedException {
 		final File path = new File(root, folder.toString());
 		path.mkdirs();
 		final File dest = new File(path, fileName.toString());
@@ -52,7 +62,7 @@ public class PhysicalDirectoryWriter implements DirectoryWriter {
 	
 	@Override
 	public void writeFile(byte[] input, CharSequence fileName, CharSequence folder)
-			throws IOException, IllegalAccessException {
+			throws IOException {
 		final File path = new File(root, folder.toString());
 		path.mkdirs();
 		final File dest = new File(path, fileName.toString());

@@ -9,6 +9,10 @@ import java.nio.channels.WritableByteChannel;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+/**
+ * Writes content into a ZIP file (remember: JARs are ZIPs)
+ * @author rene
+ */
 public class ZipDirectoryWriter extends ArchiveDirectoryWriter {
 
 	protected final ZipOutputStream zip;
@@ -19,8 +23,7 @@ public class ZipDirectoryWriter extends ArchiveDirectoryWriter {
 	
 	@Override
 	protected void closeFile() throws IOException {
-		// TODO Auto-generated method stub
-		
+		zip.closeEntry();
 	}
 	
 	@Override
@@ -38,12 +41,7 @@ public class ZipDirectoryWriter extends ArchiveDirectoryWriter {
 	protected void writeFileContent(byte[] input) throws IOException {
 		final WritableByteChannel outChannel = Channels.newChannel(zip);
 		outChannel.write(ByteBuffer.wrap(input));
-		// outChannel.close(); // closes stream just as well
-	}
-	
-	@Override
-	protected void writeFooter() throws IOException {
-		zip.closeEntry();
+		// outChannel does not need to be closed
 	}
 	
 	@Override

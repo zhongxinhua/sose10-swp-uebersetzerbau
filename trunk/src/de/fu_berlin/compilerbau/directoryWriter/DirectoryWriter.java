@@ -6,6 +6,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.SyncFailedException;
 
+/**
+ * Interface for directories.
+ * @author rene
+ */
 public interface DirectoryWriter extends Closeable {
 	
 	/**
