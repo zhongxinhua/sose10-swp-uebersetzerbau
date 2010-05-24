@@ -28,7 +28,7 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
 class Start {
 	
 	/** The name of the generated JAR file */
-	private static final String JAR_NAME = "compiler.jar"; // XXX
+	private static final String JAR_NAME = "compiler.jar";
 	
 	/**
 	 * Does not return.
@@ -53,7 +53,7 @@ class Start {
 		
 		@SuppressWarnings("unused") String classpath = null; // XXX
 		String source = null;
-		String destPath = null; // XXX
+		String destPath = null;
 		
 		while(i.hasNext()) { 
 			String arg = i.next();
@@ -127,7 +127,8 @@ class Start {
 		director.print(new File(destPath));
 		
 		if(ErrorHandler.errorOccured()) {
-			System.out.println("Some errors occured. I can't compile!");
+			System.out.println(ErrorHandler.getErrorCount() + " error(s) and " +
+					ErrorHandler.getWarningCount() + " warning(s) occured. Cannot compile!");
 			System.exit(1);
 		}
 	}
