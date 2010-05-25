@@ -6,6 +6,7 @@ package de.fu_berlin.compilerbau.builder;
 
 import java.io.IOException;
 
+import de.fu_berlin.compilerbau.parser.AbstractSyntaxTree;
 import de.fu_berlin.compilerbau.parser.ArgumentStatement;
 import de.fu_berlin.compilerbau.parser.AssignStatement;
 import de.fu_berlin.compilerbau.parser.BreakStatement;
@@ -28,6 +29,10 @@ import de.fu_berlin.compilerbau.parser.expressions.Type;
 
 public class JavaBuilder extends Builder {
 	
+	public JavaBuilder(AbstractSyntaxTree astree, String classpath) {
+		super(astree, classpath);
+	}
+
 	@Override
 	protected void buildClass(Class theclass) throws IOException {
 		Module root = _astree.getRoot();

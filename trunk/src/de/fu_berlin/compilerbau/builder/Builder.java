@@ -5,6 +5,7 @@ package de.fu_berlin.compilerbau.builder;
  */
 
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 import de.fu_berlin.compilerbau.parser.AbstractSyntaxTree;
 import de.fu_berlin.compilerbau.parser.ArgumentStatement;
@@ -28,11 +29,19 @@ import de.fu_berlin.compilerbau.parser.StaticStatement;
 
 public abstract class Builder {
 	
-	protected AbstractSyntaxTree _astree;
+	protected final AbstractSyntaxTree _astree;
+	protected final String[] _classpath;
+	
 	protected Appendable _code = null;
 	
-	public void setAbstractSyntaxTree(AbstractSyntaxTree val) {
-		_astree = val;
+	public Builder(AbstractSyntaxTree astree, String classpath) {
+		_astree = astree;
+		
+		if(classpath == null || classpath.isEmpty()) {
+			_classpath = new String[0];
+		} else {
+			_classpath = Pattern.compile(":").split(classpath);
+		}
 	}
 
 	protected abstract void buildClass(Class theclass) throws IOException;

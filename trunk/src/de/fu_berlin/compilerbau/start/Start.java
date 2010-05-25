@@ -54,7 +54,7 @@ class Start {
 		
 		final Iterator<String> i = Arrays.asList(args).iterator();
 		
-		@SuppressWarnings("unused") String classpath = null; // XXX
+		String classpath = null;
 		String source = null;
 		String destPath = null;
 		
@@ -105,19 +105,13 @@ class Start {
 		} catch(FileNotFoundException e) {
 			throw new RuntimeException("Could not open source.", e);
 		}
-				
-		System.out.print("Init DomCreator...");
+		
 		try {
 			DomCreator.init(in);
 		} catch(IOException e) {
 			throw new RuntimeException("Could not initialize DOM.", e);
 		}
-		System.out.println("done.");
-		
-		System.out.print("Create DOM...");
 		DomNode node = DomCreator.createDOM();
-		System.out.println("done.");
-				
 		AbstractSyntaxTree stree = new AbstractSyntaxTree(node);
 		
 		DirectoryWriter directoryWriter;
@@ -131,8 +125,7 @@ class Start {
 			directoryWriter = new PhysicalDirectoryWriter(new File(destPath));
 		}
 		
-		Builder builder = new JavaBuilder();
-		builder.setAbstractSyntaxTree(stree);
+		Builder builder = new JavaBuilder(stree, classpath);
 		try {
 			Director.build(builder, directoryWriter);
 		} catch(IOException e) {
@@ -145,9 +138,11 @@ class Start {
 		}
 		
 		if(ErrorHandler.errorOccured()) {
-			System.out.println(ErrorHandler.getErrorCount() + " error(s) and " +
+			System.err.println(ErrorHandler.getErrorCount() + " error(s) and " +
 					ErrorHandler.getWarningCount() + " warning(s) occured. Cannot compile!");
 			System.exit(1);
+		} else if(ErrorHandler.getWarningCount() > 0) {
+			System.err.println(ErrorHandler.getWarningCount() + " warning(s) occured.");
 		}
 	}
 	
