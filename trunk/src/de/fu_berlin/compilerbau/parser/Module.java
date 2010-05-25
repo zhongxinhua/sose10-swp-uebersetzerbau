@@ -91,4 +91,8 @@ public class Module {
 	public List<Class> getClasses() {
 		return classes;
 	}
+	
+	public List<Interface> getInterfaces() {
+		return interfaces;
+	}
 }

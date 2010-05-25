@@ -17,6 +17,9 @@ import java.util.Iterator;
 import de.fu_berlin.compilerbau.builder.Builder;
 import de.fu_berlin.compilerbau.builder.Director;
 import de.fu_berlin.compilerbau.builder.JavaBuilder;
+import de.fu_berlin.compilerbau.directoryWriter.DirectoryWriter;
+import de.fu_berlin.compilerbau.directoryWriter.PhysicalDirectoryWriter;
+import de.fu_berlin.compilerbau.directoryWriter.ZipDirectoryWriter;
 import de.fu_berlin.compilerbau.dom.DomCreator;
 import de.fu_berlin.compilerbau.dom.DomNode;
 import de.fu_berlin.compilerbau.parser.AbstractSyntaxTree;
@@ -40,7 +43,7 @@ class Start {
 		out.println("java -jar " + JAR_NAME + " [options] [source]");
 		out.println("Options:");
 		out.println("  -source      -f    Source file (\"-\" means STDIN)");
-		out.println("  -dest        -d    Destination folder (\"-\" means STDOUT [tar'd])");
+		out.println("  -dest        -d    Destination folder (\"-\" means STDOUT [zipped])");
 		out.println("  -classpath   -cp   Classpath");
 		
 		System.exit(isError ? 1 : 0);
@@ -117,14 +120,29 @@ class Start {
 				
 		AbstractSyntaxTree stree = new AbstractSyntaxTree(node);
 		
-		Builder build = new JavaBuilder();
+		DirectoryWriter directoryWriter;
+		if("-".equals(destPath)) {
+			try {
+				directoryWriter = new ZipDirectoryWriter(System.out);
+			} catch(IOException e) {
+				throw new RuntimeException("Could not open STDOUT for writing.");
+			}
+		} else {
+			directoryWriter = new PhysicalDirectoryWriter(new File(destPath));
+		}
 		
-		build.setAbstractSyntaxTree(stree);
-		
-		Director director = new Director();
-		director.setBuilder(build);
-		director.construct();
-		director.print(new File(destPath));
+		Builder builder = new JavaBuilder();
+		builder.setAbstractSyntaxTree(stree);
+		try {
+			Director.build(builder, directoryWriter);
+		} catch(IOException e) {
+			throw new RuntimeException("Could not write compiled code.", e);
+		}
+		try {
+			directoryWriter.close();
+		} catch(IOException e) {
+			throw new RuntimeException("Could not close output.", e);
+		}
 		
 		if(ErrorHandler.errorOccured()) {
 			System.out.println(ErrorHandler.getErrorCount() + " error(s) and " +

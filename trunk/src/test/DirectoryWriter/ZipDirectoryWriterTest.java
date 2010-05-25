@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import de.fu_berlin.compilerbau.directoryWriter.ZipDirectoryWriter;
 
-public class ZipDirectoryWriterTest extends Test {
+class ZipDirectoryWriterTest extends Test {
 	
 	public static void main(String[] args) throws IOException, IllegalAccessException {
 		if(args.length == 0) {
