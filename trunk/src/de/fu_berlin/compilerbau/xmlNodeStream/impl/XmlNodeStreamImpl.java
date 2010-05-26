@@ -194,7 +194,7 @@ class XmlNodeStreamImpl implements XmlNodeStream {
 							break;
 						}
 						default: {
-							if(c >= 0 && isValidFirstLeterForTag((char)c)) {
+							if(c >= 0 && isValidFirstLetterForTag((char)c)) {
 								this.state = State.TAG;
 								key = new PositionStringBuilder(stream);
 								key.append((char)c);
@@ -326,7 +326,7 @@ class XmlNodeStreamImpl implements XmlNodeStream {
 				}
 				
 				case CLOSE0: {
-					if(c >= 0 && isValidFirstLeterForTag((char)c)) {
+					if(c >= 0 && isValidFirstLetterForTag((char)c)) {
 						this.state = State.CLOSE;
 						key = new PositionStringBuilder(stream);
 						key.append((char)c);
@@ -341,7 +341,7 @@ class XmlNodeStreamImpl implements XmlNodeStream {
 					if(c == '>') {
 						state = State.START;
 						return new XmlNodeImpl(start, line, character, NodeType.NT_END_TAG, key.toPositionString(), null);
-					} else if(c >= 0 && isValidSecondLeterForTag((char)c)) {
+					} else if(c >= 0 && isValidSecondLetterForTag((char)c)) {
 						key.append((char)c);
 						break;
 					} else if(isWhitespace((char)c)) {
@@ -377,7 +377,7 @@ class XmlNodeStreamImpl implements XmlNodeStream {
 							return new XmlNodeImpl(start, line, character, NodeType.NT_TAG, key.toPositionString(), null);
 						}
 						default: {
-							if(c >= 0 && isValidSecondLeterForTag((char)c)) {
+							if(c >= 0 && isValidSecondLetterForTag((char)c)) {
 								key.append((char)c);
 								break;
 							} else if(c >= 0 && isWhitespace((char)c)){
@@ -401,7 +401,7 @@ class XmlNodeStreamImpl implements XmlNodeStream {
 						break;
 					} else if(c >= 0 && isWhitespace((char)c)) {
 						break; // NOOP
-					} else if(c >= 0 && isValidFirstLeterForTag((char)c)) {
+					} else if(c >= 0 && isValidFirstLetterForTag((char)c)) {
 						this.state = State.ATTR;
 						key = new PositionStringBuilder(stream);
 						key.append((char)c);
@@ -427,7 +427,7 @@ class XmlNodeStreamImpl implements XmlNodeStream {
 						state = State.ATTR1;
 						value = new PositionStringBuilder(stream);
 						break;
-					} else if(c >= 0 && isValidSecondLeterForTag((char)c)) {
+					} else if(c >= 0 && isValidSecondLetterForTag((char)c)) {
 						key.append((char)c);
 						break;
 					} else {
@@ -496,7 +496,7 @@ class XmlNodeStreamImpl implements XmlNodeStream {
 				}
 				
 				case PI_TARGET0: {
-					if(c >= 0 && isValidFirstLeterForTag((char)c)) {
+					if(c >= 0 && isValidFirstLetterForTag((char)c)) {
 						this.state = State.PI_TARGET;
 						key = new PositionStringBuilder(stream);
 						key.append((char)c);
@@ -516,7 +516,7 @@ class XmlNodeStreamImpl implements XmlNodeStream {
 							state = State.ERROR;
 							return new XmlNodeImpl(start, line, character, NodeType.NT_ERROR, null, null);
 						}
-					} else if(c >= 0 && isValidSecondLeterForTag((char)c)) {
+					} else if(c >= 0 && isValidSecondLetterForTag((char)c)) {
 						key.append((char)c);
 						break;
 					} else if(c >= 0 && isWhitespace((char)c)) {

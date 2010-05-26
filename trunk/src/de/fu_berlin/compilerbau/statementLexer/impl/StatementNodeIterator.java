@@ -104,7 +104,7 @@ class StatementNodeIterator implements Iterator<StatementNode> {
 						break;
 					}
 					final char char3 = stream.next();
-					if(isValidSecondLeterForIdentifier(char3)) {
+					if(isValidSecondLetterForIdentifier(char3)) {
 						stream.pushback(char3);
 						stream.pushback('w');
 						stream.pushback('e');
@@ -131,7 +131,7 @@ class StatementNodeIterator implements Iterator<StatementNode> {
 						break;
 					}
 					final char char4 = stream.next();
-					if(isValidSecondLeterForIdentifier(char4)) {
+					if(isValidSecondLetterForIdentifier(char4)) {
 						stream.pushback(char4);
 						stream.pushback('l');
 						stream.pushback('l');
@@ -222,14 +222,14 @@ class StatementNodeIterator implements Iterator<StatementNode> {
 			return new StatementNodeImpl(start, line, character, type, null);
 		}
 		
-		if(isValidFirstLeterForIdentifier(next)) {
+		if(isValidFirstLetterForIdentifier(next)) {
 			
 			// ID
 			PositionStringBuilder builder = new PositionStringBuilder(start, line, character);
 			builder.append(next);
 			while(stream.hasNext()) {
 				char char1 = stream.next();
-				if(isValidSecondLeterForIdentifier(char1)) {
+				if(isValidSecondLetterForIdentifier(char1)) {
 					builder.append(char1);
 				} else {
 					stream.pushback(char1);

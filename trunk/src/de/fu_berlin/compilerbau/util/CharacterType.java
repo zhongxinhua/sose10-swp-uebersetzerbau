@@ -14,19 +14,19 @@ public final class CharacterType {
 		return Character.isDigit(ch);
 	}
 	
-	public static boolean isValidFirstLeterForIdentifier(char ch) {
+	public static boolean isValidFirstLetterForIdentifier(char ch) {
 		return ch=='$' || ch=='_' || Character.isLetter(ch);
 	}
 	
-	public static boolean isValidSecondLeterForIdentifier(char ch) {
+	public static boolean isValidSecondLetterForIdentifier(char ch) {
 		return ch=='$' || ch=='_' || Character.isLetterOrDigit(ch);
 	}
 
-	public static boolean isValidFirstLeterForTag(char ch) {
+	public static boolean isValidFirstLetterForTag(char ch) {
 		return ch=='_' || Character.isLetter(ch);
 	}
 	
-	public static boolean isValidSecondLeterForTag(char ch) {
+	public static boolean isValidSecondLetterForTag(char ch) {
 		return ch=='_' || ch==':' || ch=='-' || ch=='.' || Character.isLetterOrDigit(ch);
 	}
 	
