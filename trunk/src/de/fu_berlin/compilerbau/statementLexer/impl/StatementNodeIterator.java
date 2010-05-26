@@ -34,7 +34,7 @@ class StatementNodeIterator implements Iterator<StatementNode> {
 			}
 		}
 		if(!stream.hasNext()) {
-			return new StatementNodeImpl(0, 0, 0, TokenType.EOF, null);
+			return null;
 		}
 		
 		final int start = stream.getStart();
@@ -260,7 +260,7 @@ class StatementNodeIterator implements Iterator<StatementNode> {
 					} else if(hasScale == 1 || hasScale == 2) {
 						hasScale = 3;
 					}
-				} else if(hasDot == 0 && (char1 == '.' && isDigit(char1))) {
+				} else if(hasDot == 0 && char1 == '.') {
 					hasDot = 1;
 				} else if(hasScale == 0 && (char1 == 'e' || char1 == 'E')) {
 					hasScale = 1;
@@ -338,6 +338,8 @@ class StatementNodeIterator implements Iterator<StatementNode> {
 		}
 		
 	}
+	
+	protected boolean hitEof = false;
 
 	@Override
 	public boolean hasNext() {
@@ -348,6 +350,10 @@ class StatementNodeIterator implements Iterator<StatementNode> {
 			nextNodeToRead = primitiveGetNext();
 		} catch (IOException e) {
 			throw new RuntimeException(e); // *should not* throw
+		}
+		if(nextNodeToRead == null && !hitEof) {
+			hitEof = true;
+			nextNodeToRead = new StatementNodeImpl(stream, TokenType.EOF, null);
 		}
 		return nextNodeToRead != null;
 	}
