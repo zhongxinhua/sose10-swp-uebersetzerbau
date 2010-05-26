@@ -3,7 +3,7 @@ package de.fu_berlin.compilerbau.parser.expressions;
 
 public class BinaryOperation extends Expression { // a+b
 	public enum BinaryOperator {
-		ADD, MINUS, MUL, DIV, MOD, GREATER_THAN, LESS_THAN, GREATER_EQUAL,
+		ADD, SUBSTRACT, TIMES, DIVIDES, MODULOS, GREATER_THAN, LESS_THAN, GREATER_EQUAL,
 		LESS_EQUAL, NOTEQUAL, EQUAL, AND, OR, BITWISE_XOR, BITWISE_AND, BITWISE_OR
 	}
 	
@@ -32,5 +32,10 @@ public class BinaryOperation extends Expression { // a+b
 		System.out.println(operator);
 		
 		right.printTree(newDeep);
+	}
+	
+	@Override
+	public String toString() {
+		return left.toString()+" "+operator.toString()+" "+right.toString();
 	}
 }

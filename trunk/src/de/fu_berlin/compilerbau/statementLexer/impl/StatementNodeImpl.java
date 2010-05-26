@@ -31,7 +31,7 @@ public class StatementNodeImpl extends PositionBean implements StatementNode {
 	@Override
 	public Object getValue() throws IllegalAccessException {
 		if(TokenType.ID.equals(type) || TokenType.STRING.equals(type) ||
-				TokenType.INT.equals(type) || TokenType.REAL.equals(type)) {
+				TokenType.INT.equals(type) || TokenType.FLOAT.equals(type)) {
 			return value;
 		}
 		throw new IllegalAccessException();
@@ -47,7 +47,7 @@ public class StatementNodeImpl extends PositionBean implements StatementNode {
 
 	@Override
 	public Number getNumber() throws IllegalAccessException {
-		if(TokenType.INT.equals(type) || TokenType.REAL.equals(type)) {
+		if(TokenType.INT.equals(type) || TokenType.FLOAT.equals(type)) {
 			return (Number)value;
 		}
 		throw new IllegalAccessException();

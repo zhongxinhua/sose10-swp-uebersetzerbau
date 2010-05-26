@@ -34,7 +34,7 @@ class StatementNodeIterator implements Iterator<StatementNode> {
 			}
 		}
 		if(!stream.hasNext()) {
-			return null;
+			return new StatementNodeImpl(0, 0, 0, TokenType.EOF, null);
 		}
 		
 		final int start = stream.getStart();
@@ -283,7 +283,7 @@ class StatementNodeIterator implements Iterator<StatementNode> {
 			if(hasDot == 0 && hasScale == 0) {
 				type = TokenType.INT;
 			} else {
-				type = TokenType.REAL;
+				type = TokenType.FLOAT;
 			}
 			return new StatementNodeImpl(start, line, character, type, result);
 			

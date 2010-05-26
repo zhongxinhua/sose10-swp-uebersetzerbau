@@ -1,6 +1,8 @@
 package de.fu_berlin.compilerbau.statementLexer;
 
 public enum TokenType {
+	EOF,
+	
 	ERROR,
 
 	DOT,
@@ -61,6 +63,6 @@ public enum TokenType {
 
 	ID, 
 	INT, 
-	REAL, 
+	FLOAT, 
 	STRING
 }
