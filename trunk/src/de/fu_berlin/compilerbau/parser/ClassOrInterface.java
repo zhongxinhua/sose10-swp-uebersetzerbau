@@ -20,9 +20,6 @@ import de.fu_berlin.compilerbau.util.PositionString;
 public abstract class ClassOrInterface {
 	//Wird in Class oder Interface belegt
 	protected PositionString name;
-	
-	//TODO:Wozu diese Liste? 
-	List<Interface> interfaces;
 	/**
 	 * Static method awaits a {@link DomNode} representing &ltclass/&gt or &ltinterface/&gt statement.<br>
 	 * Calling the  correct constructor it returns a {@link Class} or {@link Interface} object.

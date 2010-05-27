@@ -192,7 +192,7 @@ public class StatementParser {
 		//letztes Element in der Kette muss ein Funktionsaufruf
 		while(expr instanceof MemberAccess)
 			expr = ((MemberAccess) expr).getChild();
-		return expr instanceof FunctionCall;
+		return expr.getClass() == FunctionCall.class;
 	}
 
 	/**
@@ -434,8 +434,24 @@ public class StatementParser {
 		case PLUS:
 			op = UnaryOperator.PLUS;
 			break;
-		// case NEW: op = UnaryOperator.MOD; break;
-		// TODO: spezialfall NEW behandeln
+		case NEW: 		
+			//Namen der Klasse lesen
+			if(next().getType() != TokenType.ID) {
+				ErrorHandler.error(null, "identifier expected but "+current.getType()+" found.");
+				break;
+			}
+			CharSequence name = null;
+			try {
+				name = current.getString();
+			} catch (IllegalAccessException e) {}
+			//TODO könnte verketteter Namen mit Packages sein
+
+			//Arguemente			
+			if(next().getType() != TokenType.PAREN_OPEN) {
+				ErrorHandler.error(null, "'(' expected but "+current.getType()+" found.");
+				break;
+			}
+			return new ObjectCreation(name, actualArguments());
 		}
 		if (op != null)
 			next();

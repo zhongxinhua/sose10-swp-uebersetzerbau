@@ -1,5 +1,10 @@
 package de.fu_berlin.compilerbau.parser.expressions;
 
+/**
+ * Ein FloatLiteral stellt im abstrakten Syntaxbaum einen 
+ * Fließkommaausdruck dar.
+ * @author Markus
+ */
 public class FloatLiteral extends Literal {
 	private float value;
 	

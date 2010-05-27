@@ -1,5 +1,12 @@
 package de.fu_berlin.compilerbau.parser.expressions;
 
+/**
+ * Ein MemberAccess stellt im abstrakten Syntaxbaum einen 
+ * Mitgliedszugriffs eines Objektes dar. Es gibt zum einen den 
+ * "parent", der Eigentümer des Members und das "child" das 
+ * eigentliche Member.
+ * @author Markus
+ */
 public class MemberAccess extends Expression {	
 	private Expression child;
 	private Expression parent;

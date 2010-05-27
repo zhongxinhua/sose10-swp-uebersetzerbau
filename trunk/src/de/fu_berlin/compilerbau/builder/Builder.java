@@ -25,7 +25,6 @@ import de.fu_berlin.compilerbau.parser.Module;
 import de.fu_berlin.compilerbau.parser.ReturnStatement;
 import de.fu_berlin.compilerbau.parser.ScopeStatement;
 import de.fu_berlin.compilerbau.parser.SetStatement;
-import de.fu_berlin.compilerbau.parser.StaticStatement;
 
 public abstract class Builder {
 	
@@ -62,7 +61,6 @@ public abstract class Builder {
 	protected abstract void buildModule(Module obj) throws IOException;
 	protected abstract void buildReturnStatement(ReturnStatement obj) throws IOException;
 	protected abstract void buildScopeStatement(ScopeStatement obj) throws IOException;
-	protected abstract void buildStaticStatement(StaticStatement obj) throws IOException;
 
 	public void setCode(PrintStream code) {
 		_code = code;

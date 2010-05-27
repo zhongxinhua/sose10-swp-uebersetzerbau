@@ -1,6 +1,10 @@
 package de.fu_berlin.compilerbau.parser.expressions;
 
-
+/**
+ * BinaryOperation stellt im abstrakten Syntaxbaum Ausdrücke dar, die zwei Unterausdrücke mit 
+ * einer binären Operation verbindet. 
+ * @author Markus
+ */
 public class BinaryOperation extends Expression { // a+b
 	public enum BinaryOperator {
 		ADD, SUBSTRACT, TIMES, DIVIDES, MODULOS, GREATER_THAN, LESS_THAN, GREATER_EQUAL,

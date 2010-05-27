@@ -1,6 +1,10 @@
 package de.fu_berlin.compilerbau.parser.expressions;
 
-
+/**
+ * Ein StringLiteral stellt im abstrakten Syntaxbaum einen 
+ * elementaren Stringausdruck dar.
+ * @author Markus
+ */
 public class StringLiteral extends Literal {
 	CharSequence value;
 	

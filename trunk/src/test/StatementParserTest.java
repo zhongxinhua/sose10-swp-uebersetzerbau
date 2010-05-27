@@ -14,7 +14,7 @@ public class StatementParserTest {
 				"1 & 2 | 3 ^ 4",
 				"a && b || c",*/
 				"a[123+456]",
-				"a.b[1+2].c(1) + 2"
+				"a.b[1+2].c(1) + new Klasse(1,2,3)"
 		};
 		String[] lvalue_tests = new String[] { 
 				"a.b[1].c(1)",
@@ -40,7 +40,7 @@ public class StatementParserTest {
 		}
 		
 		for (String str : functioncall_tests) {
-			System.out.println("== testing function calls \"" + str + "\" ===");
+			System.out.println("== testing function call \"" + str + "\" ===");
 			Expression expr = parser.parse(str, ExpressionType.FUNCTIONCALL);
 			expr.printTree(0);
 		}

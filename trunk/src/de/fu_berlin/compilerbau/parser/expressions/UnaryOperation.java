@@ -1,5 +1,10 @@
 package de.fu_berlin.compilerbau.parser.expressions;
 
+/**
+ * UnaryOperation stellt im abstrakten Syntaxbaum einen 
+ * Ausdruck dar auf dem eine unäre Operation ausgeführt wird.
+ * @author Markus
+ */
 public class UnaryOperation extends Expression {
 	public enum UnaryOperator {
 		NOT, PLUS, MINUS, PREINC, PREDEC, POSTINC, POSTDEC

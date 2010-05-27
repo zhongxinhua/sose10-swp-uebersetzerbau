@@ -1,5 +1,10 @@
 package de.fu_berlin.compilerbau.parser.expressions;
 
+/**
+ * Ein Identifier stellt im abstrakten Syntaxbaum einen 
+ * Bezeichner dar. Es wird auch für Memberzugriffe verwendet.
+ * @author Markus
+ */
 public class Identifier extends Expression {
 	private CharSequence name;
 	private Type type;

@@ -2,9 +2,15 @@ package de.fu_berlin.compilerbau.parser.expressions;
 
 import java.util.List;
 
+/**
+ * Ein FunctionCall stellt im abstrakten Syntaxbaum einen 
+ * einen Funktionsaufruf dar. Es enthält den Namen der Funktion 
+ * und alle konkreten Parameter in Form von Ausdrücken.
+ * @author Markus
+ */
 public class FunctionCall extends Expression { // a(b,c)
-	private CharSequence name;
-	private List<Expression> actualArguments;
+	protected CharSequence name;
+	protected List<Expression> actualArguments;
 	
 	public FunctionCall(CharSequence name, List<Expression> actualArguments) {
 		this.name = name;

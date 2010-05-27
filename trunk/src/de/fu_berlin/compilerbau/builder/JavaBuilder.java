@@ -23,7 +23,6 @@ import de.fu_berlin.compilerbau.parser.Module;
 import de.fu_berlin.compilerbau.parser.ReturnStatement;
 import de.fu_berlin.compilerbau.parser.ScopeStatement;
 import de.fu_berlin.compilerbau.parser.SetStatement;
-import de.fu_berlin.compilerbau.parser.StaticStatement;
 import de.fu_berlin.compilerbau.parser.expressions.Type;
 
 public class JavaBuilder extends Builder {
@@ -167,12 +166,6 @@ public class JavaBuilder extends Builder {
 
 	@Override
 	protected void buildScopeStatement(ScopeStatement obj) throws IOException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void buildStaticStatement(StaticStatement obj) throws IOException {
 		// TODO Auto-generated method stub
 		
 	}

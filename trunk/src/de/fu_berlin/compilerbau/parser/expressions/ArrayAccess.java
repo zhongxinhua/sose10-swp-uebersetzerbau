@@ -2,6 +2,12 @@ package de.fu_berlin.compilerbau.parser.expressions;
 
 import java.util.List;
 
+/**
+ * ArrayAccess stellt im abstrakten Syntaxbaum den Array-Zugriff da.
+ * Die Klasse enthält Informationen über Namen und Indizies des 
+ * Arrayzugriffes.
+ * @author Markus
+ */
 public class ArrayAccess extends Expression {
 	private CharSequence name;
 	private List<Expression> indices;

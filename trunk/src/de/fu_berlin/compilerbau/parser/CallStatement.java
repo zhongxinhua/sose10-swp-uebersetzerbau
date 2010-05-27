@@ -2,7 +2,6 @@ package de.fu_berlin.compilerbau.parser;
 
 import de.fu_berlin.compilerbau.dom.DomNode;
 import de.fu_berlin.compilerbau.parser.expressions.Expression;
-import de.fu_berlin.compilerbau.parser.expressions.FunctionCall;
 import de.fu_berlin.compilerbau.statementParser.impl.StatementParser.ExpressionType;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
 
