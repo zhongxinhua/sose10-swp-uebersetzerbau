@@ -6,7 +6,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
 public abstract class Expression {
 
 	public static Expression build(PositionString attributeValue) {
-		return (new StatementParser()).parse(attributeValue);
+		return (new StatementParser()).parse(attributeValue, false);
 	}
 
 	public abstract Type getType();

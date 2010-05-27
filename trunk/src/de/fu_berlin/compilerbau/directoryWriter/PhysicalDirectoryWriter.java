@@ -70,7 +70,6 @@ public class PhysicalDirectoryWriter implements DirectoryWriter {
 		final FileOutputStream outputStream = new FileOutputStream(dest);
 		outputStream.getChannel().write(ByteBuffer.wrap(input));
 		outputStream.close();
-		
 	}
 	
 }

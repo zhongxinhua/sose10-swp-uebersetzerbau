@@ -16,7 +16,6 @@ public class FloatLiteral extends Literal {
 	
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return super.toString();
+		return "float("+Float.toString(value)+")";
 	}
 }

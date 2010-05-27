@@ -1,17 +1,12 @@
 package de.fu_berlin.compilerbau.parser.expressions;
 
-public class ObjectCreation extends Expression {
+import java.util.List;
 
-	@Override
-	public Type getType() {
-		// TODO Auto-generated method stub
-		return null;
+public class ObjectCreation extends FunctionCall {
+
+	public ObjectCreation(CharSequence name, List<Expression> actualArguments) {
+		super(name, actualArguments);
 	}
 
-	@Override
-	public void printTree(int deep) {
-		// TODO Auto-generated method stub
-
-	}
 
 }

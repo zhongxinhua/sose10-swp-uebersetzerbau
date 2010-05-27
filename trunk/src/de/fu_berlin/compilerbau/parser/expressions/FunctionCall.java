@@ -5,18 +5,31 @@ import java.util.List;
 import de.fu_berlin.compilerbau.parser.Function;
 
 public class FunctionCall extends Expression { // a(b,c)
-	Function function;
-	List<Expression> actualParams;
+	private CharSequence name;
+	private List<Expression> actualArguments;
+	
+	public FunctionCall(CharSequence name, List<Expression> actualArguments) {
+		this.name = name;
+		this.actualArguments = actualArguments;
+	}
 	
 	@Override
 	public Type getType() {
-		// TODO Auto-generated method stub
+		//TODO: während der smeantischen Analyse den Typ noch rausfinden
 		return null;
 	}
 
 	@Override
 	public void printTree(int deep) {
-		// TODO Auto-generated method stub
-		
+		for(int d=deep; d>0; d--) System.out.print("  ");
+		System.out.println(this);
+		++deep;
+		for(Expression arg: actualArguments)
+			arg.printTree(deep);
+	}
+	
+	@Override
+	public String toString() {
+		return "functionCall("+name+")";
 	}
 }
