@@ -46,7 +46,6 @@ public class Function {
 	boolean isFinal = false;
 	private List<Statement> body = new LinkedList<Statement>();
 	private List<DeclarationStatement> arguments = new LinkedList<DeclarationStatement>();
-	ReturnStatement return_S;
 
 	public Function(DomNode node) {
 		// check needed attribute: name
@@ -107,22 +106,12 @@ public class Function {
                                                 + " forbidden use: " + node.getName());
                         }
                 }
-				continue;
 			} else if (child.getName().compareTo("return") == 0) {
-				return_S = new ReturnStatement(child);
-				continue;
-
+				body.add(new ReturnStatement(child));
 			} else {
 				body.add(new Statement(child));
-				continue;
 			}
-
 		}
-
-		if (return_S == null) {
-			ErrorHandler.error(node, "returns statement missing");
-		}
-
 	}
 
 	public boolean hasBody() {

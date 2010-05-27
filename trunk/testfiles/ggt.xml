@@ -16,9 +16,9 @@
 
 <class name="Test">
   <function name="main" static="yes">
-      <arguements>
+      <arguments>
           <decl type="string" name="args" dim="1"/>
-      </arguements>
+      </arguments>
       <call exec="print(Math.ggt(100,201))"/>
   </function>
 </class>
