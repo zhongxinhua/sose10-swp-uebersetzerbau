@@ -13,6 +13,8 @@ import de.fu_berlin.compilerbau.util.PositionString;
  * corresponding to program code declaration or throws an error.
  * 
  * @author Sam
+ * @see {@link Class}
+ * @see {@link Interface}
  * 
  */
 public abstract class ClassOrInterface {

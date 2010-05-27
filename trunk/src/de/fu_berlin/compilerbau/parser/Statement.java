@@ -1,30 +1,23 @@
 package de.fu_berlin.compilerbau.parser;
 
 import de.fu_berlin.compilerbau.dom.DomNode;
+import de.fu_berlin.compilerbau.util.ErrorHandler;
 
 /**
- * <b>*********** Not implemented yet! ***********</b>
+ * <b>Description</b><br>{@link Statement} is a superclass of all kind of statements that can appear
+ * in a function body. 
  * <p/>
- * {@link Statement} is a superclass of all kind of statements forming a node in
- * the parse tree.<br>
- * 
- * <p>
  * <b>Specification</b><br>
- * there are following Statements:
+ * There are following subclasses of statement:
  * <ul>
- * <li>{@link ArgumentStatement}</li>
- * <li>{@link AssignStatement}</li>
- * <li>{@link BreakStatement}</li>
- * <li>{@link CallStatement}</li>
- * <li>{@link ChooseStatement}</li>
- * <li>{@link ContinueStatement}</li>
- * <li>{@link DeclarationStatement}</li>
- * <li>{@link DoStatement}</li>
- * <li>{@link ImplementStatement}</li>
- * <li>{@link ImportStatement}</li>
- * <li>{@link ReturnStatement}</li>
- * <li>{@link ScopeStatement}</li>
- * <li>{@link StaticStatement}</li> 
+ * <li>&ltset/&gt statement, see also: {@link SetStatement}</li>
+ * <li>&ltbreak/&gt statement, see also: {@link BreakStatement}</li>
+ * <li>&ltcall/&gt statement, see also: {@link CallStatement}</li>
+ * <li>&ltchoose/&gt statement, see also: {@link ChooseStatement}</li>
+ * <li>&ltcontinue/&gt statement, see also: {@link ContinueStatement}</li>
+ * <li>&ltdecl/&gt statement, see also: {@link DeclarationStatement}</li>
+ * <li>&ltdo/&gt statement, see also: {@link DoStatement}</li>
+ * <li>&ltscope/&gt statement, see also: {@link ScopeStatement}</li>
  * </ul>
  * 
  * 
@@ -32,13 +25,43 @@ import de.fu_berlin.compilerbau.dom.DomNode;
  * 
  */
 public class Statement {
+	Statement statement;
 
 	public Statement() {
 
 	}
 
-	public Statement(DomNode child) {
-		// TODO Auto-generated constructor stub
+	public Statement(DomNode node) {
+		
+		if (node.getName().compareTo("break") == 0) {
+			statement = new BreakStatement(node);
+		}
+		else if (node.getName().compareTo("call") == 0) {
+			statement = new CallStatement(node);
+		}
+		else if (node.getName().compareTo("choose") == 0) {
+			statement = new ChooseStatement(node);
+		}
+		else if (node.getName().compareTo("continue") == 0) {
+			statement = new ContinueStatement(node);
+		}
+		else if (node.getName().compareTo("decl") == 0) {
+			statement = new DeclarationStatement(node);
+		}
+		else if (node.getName().compareTo("do") == 0) {
+			statement = new DoStatement(node);
+		}
+		else if (node.getName().compareTo("scope") == 0) {
+			statement = new ScopeStatement(node);
+		}
+		else if (node.getName().compareTo("set") == 0) {
+			statement = new SetStatement(node);
+		}
+		else{
+			//ERROR
+			ErrorHandler.error(node, this.getClass().toString()
+					+ " unknown statement: " + node.getName());
+		}
 	}
 
 }

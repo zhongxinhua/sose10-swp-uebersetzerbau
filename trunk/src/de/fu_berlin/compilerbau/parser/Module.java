@@ -8,23 +8,23 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
 import de.fu_berlin.compilerbau.util.PositionString;
 
 /**
- * {@link Module} represents a &ltmodule/&gt statement and forms the root of the
+ * <b>Description</b><br>{@link Module} represents a &ltmodule/&gt statement and forms the root of the
  * parse tree.<br>
  * First a check for the requested attributes is performed. Afterwards each
  * child node is processed.
  * <p>
  * <b>Specification</b><br>
- * The &ltmodule/&gt statement needs following attributes:
+ * The &ltmodule/&gt statement <b>needs one</b> attribute:
  * <ul>
  * <li>name - the name of the module</li>
  * </ul>
- * The &ltmodule/&gt statement has no optional attributes.
+ * The &ltmodule/&gt statement <b>has no</b> optional attributes.
  * <p>
  * The &ltmodule/&gt statement body has:
  * <ul>
- * <li>arbitrary &ltimport/&gt statements</li>
- * <li>arbitrary &ltclass/&gt statements</li>
- * <li>arbitrary &ltinterface/&gt statements</li>
+ * <li><b>arbitrary</b> &ltimport/&gt statements</li>
+ * <li><b>arbitrary</b> &ltclass/&gt statements</li>
+ * <li><b>arbitrary</b> &ltinterface/&gt statements</li>
  * </ul>
  * 
  * 

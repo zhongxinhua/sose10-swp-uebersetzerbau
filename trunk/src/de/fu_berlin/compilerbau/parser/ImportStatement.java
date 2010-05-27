@@ -1,34 +1,45 @@
 package de.fu_berlin.compilerbau.parser;
 
 import de.fu_berlin.compilerbau.dom.DomNode;
+import de.fu_berlin.compilerbau.util.ErrorHandler;
+import de.fu_berlin.compilerbau.util.PositionString;
 
 /**
- * <b>*********** Not implemented yet! ***********</b>
- * <p/>
- * {@link ImportStatement} is a subclass of {@link Statement} representing a
- * &ltimport/&gt statement forming a node in the parse tree.<br>
- * 
+ * <b>Description</b><br>{@link ImportStatement} is a subclass of {@link Statement} representing a
+ * &ltimport/&gt statement.
  * <p>
  * <b>Specification</b><br>
- * The &ltimport/&gt statement needs following attributes:
+ * The &ltimport/&gt statement <b>needs one</b> attribute:
  * <ul>
  * <li>name - the name of the class to import</li>
  * </ul>
- * The &ltimport/&gt statement has following optional attributes:
- * <ul>
- * <li>TODO:</li>
- * </ul>
+ * The &ltimport/&gt statement <b>has no</b> optional attributes.
  * <p>
- * The &ltimport/&gt body is forbidden to exist.
+ * The &ltimplement/&gt statement <b>must be</b> a Leaf.
  * 
  * @author Sam
  * 
  */
 public class ImportStatement extends Statement {
 
-	public ImportStatement(DomNode decl) {
+	PositionString name;
 
-		// TODO Auto-generated constructor stub
+	public ImportStatement(DomNode node) {
+		// check needed attribute: name
+		if (node.hasAttribute("name")
+				&& node.getAttributeValue("name").length() > 0) {
+			this.name = node.getAttribute("name");
+		} else {
+			ErrorHandler.error(node, this.getClass().toString()
+					+ " 'name' attribute expected");
+		}
+		
+		
+		
+		//check for body forbidden restriction
+		if (!node.isLeaf()) {
+			ErrorHandler.error(node, this.getClass().toString()+" body forbidden!");
+		}
 	}
 
 }

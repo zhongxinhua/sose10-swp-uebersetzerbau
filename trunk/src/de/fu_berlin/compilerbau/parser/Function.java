@@ -8,32 +8,31 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
 import de.fu_berlin.compilerbau.util.PositionString;
 
 /**
- * {@link Function} is representing a &ltfunction/&gt statement forming a node
- * in the parse tree.<br>
+ * <b>Description</b><br>{@link Function} is representing a &ltfunction/&gt statement.
  * <p/>
  * <b>Specification</b><br>
- * The &ltfunction/&gt statement needs following attributes:
+ * The &ltfunction/&gt statement <b>needs two</b> attributes:
  * <ul>
  * <li>name - the name of the function</li>
  * <li>returns - declares the {@link Type} of the return value
  * </ul>
- * The &ltfunction/&gt statement has following optional attributes:
+ * The &ltfunction/&gt statement <b>has two</b> optional attributes:
  * <ul>
- * <li>static - the {@link String} "yes" turns function static, default="no"</li>
- * <li>final - the {@link String} "yes" turns function final, default="no"</li>
+ * <li>static - determines whether the function is static. The {@link String} "yes" sets the function static (default="no")</li>
+ * <li>final - determines whether the function ist final. The {@link String} "yes" sets the function final (default="no")</li>
  * </ul>
  * <p/>
  * The &ltfunction/&gt statement body has:
  * <ul>
- * <li>exact one &ltarguments/&gt statement</li>
- * <li>arbitrary &ltdecl/&gt statements</li>
- * <li>at least one &ltreturn/&gt statement
+ * <li><b>exact one</b> &ltarguments/&gt statement</li>
+ * <li><b>arbitrary</b> statements</li>
+ * <li><b>at least one</b> &ltreturn/&gt statement
  * </ul>
  * 
  * 
  * @author Sam
  * @see {@link ArgumentStatement}
- * @see {@link DeclarationStatement}
+ * @see {@link Statement}
  * @see {@link ReturnStatement}
  * 
  */
@@ -46,7 +45,7 @@ public class Function {
 	boolean isFinal = false;
 	private ArgumentStatement arguments;
 	private List<Statement> body;
-	ReturnStatement returns;
+	ReturnStatement return_S;
 
 	public Function(DomNode node) {
 		// check needed attribute: name
@@ -69,8 +68,8 @@ public class Function {
 		}
 		// check optional attribute: static
 		if (node.hasAttribute("static")
-				&& !(node.getAttributeValue("static").compareTo("")==0)) {
-			if (node.getAttributeValue("static").compareTo("yes")==0) {
+				&& !(node.getAttributeValue("static").compareTo("") == 0)) {
+			if (node.getAttributeValue("static").compareTo("yes") == 0) {
 				this.isStatic = true;
 			} else {
 				ErrorHandler.error(node,
@@ -79,8 +78,8 @@ public class Function {
 		}
 		// check optional attribute: final
 		if (node.hasAttribute("final")
-				&& !(node.getAttributeValue("final").compareTo("")==0)) {
-			if (node.getAttributeValue("final").compareTo("yes")==0) {
+				&& !(node.getAttributeValue("final").compareTo("") == 0)) {
+			if (node.getAttributeValue("final").compareTo("yes") == 0) {
 				isFinal = true;
 			} else {
 				ErrorHandler.error(node,
@@ -90,25 +89,21 @@ public class Function {
 
 		// process child nodes
 		for (DomNode child : node.getChilds()) {
-			if (child.getName().compareTo("arguments")==0) {
+			if (child.getName().compareTo("arguments") == 0) {
 				arguments = new ArgumentStatement(child);
 				continue;
-			} else if (child.getName().compareTo("decl")==0) {
-				body.add(new DeclarationStatement(child));
-				continue;
-
-			} else if (child.getName().compareTo("returns")==0) {
-				returns = new ReturnStatement(child);
+			} else if (child.getName().compareTo("return") == 0) {
+				return_S = new ReturnStatement(child);
 				continue;
 
 			} else {
-				// ERROR
-				ErrorHandler.error(child, "unknown statement");
+				body.add(new Statement(child));
+				continue;
 			}
 
 		}
-		
-		if(returns==null){
+
+		if (return_S == null) {
 			ErrorHandler.error(node, "returns statement missing");
 		}
 
@@ -117,8 +112,16 @@ public class Function {
 	public boolean hasBody() {
 		return !body.isEmpty();
 	}
-	
-	public Type getReturnType() { return return_type; }
-	public PositionString getName() { return name; }
-	public ArgumentStatement getArgumentStatement() { return arguments; }
+
+	public Type getReturnType() {
+		return return_type;
+	}
+
+	public PositionString getName() {
+		return name;
+	}
+
+	public ArgumentStatement getArgumentStatement() {
+		return arguments;
+	}
 }

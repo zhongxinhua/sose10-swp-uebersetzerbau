@@ -2,34 +2,43 @@ package de.fu_berlin.compilerbau.parser;
 
 import de.fu_berlin.compilerbau.dom.DomNode;
 import de.fu_berlin.compilerbau.parser.expressions.Expression;
+import de.fu_berlin.compilerbau.util.ErrorHandler;
 
 /**
- * <b>*********** Not implemented yet! ***********</b>
+ * <b>Description</b><br>{@link ReturnStatement} is a subclass of {@link Statement} representing a
+ * &ltreturns/&gt statement being a required part of a &ltfunction/&gt
+ * statement.
  * <p/>
- * {@link ReturnStatement} is a subclass of {@link Statement} representing a
- * &ltreturns/&gt statement forming a node in the parse tree.<br>
- * 
- * <p>
  * <b>Specification</b><br>
- * The &ltreturns/&gt statement needs following attributes:
+ * The &ltreturns/&gt statement <b>needs one</b> attribute:
  * <ul>
- * <li>...</li>
+ * <li>value - the value a function returns</li>
  * </ul>
- * The &ltreturns/&gt statement has following optional attributes:
- * <ul>
- * <li>...</li>
- * </ul>
+ * The &ltreturns/&gt statement <b>has no</b> optional attributes.
  * <p>
- * The &ltreturns/&gt statement body is forbidden to exist.
+ * The &ltreturns/&gt statement <b>must be</b> a Leaf.
  * 
  * @author Sam
  * 
  */
 public class ReturnStatement extends Statement {
+	Expression value;
 
-	public ReturnStatement(DomNode child) {
-		// TODO Auto-generated constructor stub
+	public ReturnStatement(DomNode node) {
+		// check needed attribute: name
+		if (node.hasAttribute("value")
+				&& node.getAttributeValue("value").length() > 0) {
+			this.value = Expression.build(node.getAttribute("value"));
+		} else {
+			ErrorHandler.error(node, this.getClass().toString()
+					+ " 'value' attribute expected");
+		}
+
+		// check for body forbidden restriction
+		if (!node.isLeaf()) {
+			ErrorHandler.error(node, this.getClass().toString()
+					+ " body forbidden!");
+		}
 	}
 
-	Expression value;
 }

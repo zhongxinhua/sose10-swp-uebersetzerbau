@@ -7,31 +7,34 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
 import de.fu_berlin.compilerbau.util.PositionString;
 
 /**
- * {@link DeclarationStatement} is a subclass of {@link Statement} representing
- * a &ltdecl/&gt statement forming a node in the parse tree. It is common used
- * as a variable with an explicit type, but may also be declared as an array
- * (with attribute dim="x", where x > 1) or as an objectreference.<br>
+ * <b>Description</b><br> {@link DeclarationStatement} is a subclass of
+ * {@link Statement} representing a &ltdecl/&gt statement. It is common used as
+ * a variable with an explicit type, but may also be declared as an array (with
+ * attribute dim="x", where x > 1) or as an objectreference.<br>
  * 
  * <p>
  * <b>Specification</b><br>
- * The &ltdecl/&gt statement needs following attributes:
+ * The &ltdecl/&gt statement <b>needs two</b> attributes:
  * <ul>
  * <li>type - the type of the variable to declare, must be a subclass of
  * {@link Type}</li>
  * <li>name - the name of the variable to declare, must be unique in the scope</li>
  * </ul>
- * The &ltdecl/&gt statement has following optional attributes:
+ * The &ltdecl/&gt statement <b>has four</b> optional attributes:
  * <ul>
- * <li>dim - an {@link int} &gt= 0 representing the dimension, default=1</li>
- * <li>value - the assigned value of the variable, must be {@link Expression},
- * default={@link null}</li>
- * <li>static - the {@link String} "yes" turns declaration static, default="no"</li>
- * <li>final - the {@link String} "yes" turns declaration final, default="no"</li>
+ * <li>dim - an {@link int} &gt= 0 representing the dimension (default=1)</li>
+ * <li>value - the assigned value of the variable, must be {@link Expression}
+ * (default={@link null})</li>
+ * <li>static - the {@link String} "yes" turns declaration static (default="no")
+ * </li>
+ * <li>final - the {@link String} "yes" turns declaration final (default="no")</li>
  * </ul>
  * <p>
- * The &ltdecl/&gt body is <b>forbidden</b> to exist.
+ * The &ltdecl/&gt statement <b>must be</b> a Leaf.
  * 
  * @author Sam
+ * @see {@link Expression}
+ * @see {@link Type}
  * 
  */
 
@@ -56,7 +59,8 @@ public class DeclarationStatement extends Statement {
 								+ node.getAttributeValue("type"));
 			}
 		} else {
-			ErrorHandler.error(node, "'type' attribute expected");
+			ErrorHandler.error(node, this.getClass().toString()
+					+ " 'type' attribute expected");
 		}
 
 		// check needed attribute: name
@@ -64,7 +68,8 @@ public class DeclarationStatement extends Statement {
 				&& node.getAttributeValue("name").length() > 0) {
 			this.name = node.getAttribute("name");
 		} else {
-			ErrorHandler.error(node, "'name' attribute expected");
+			ErrorHandler.error(node, this.getClass().toString()
+					+ " 'name' attribute expected");
 		}
 
 		// check optional attribute: dim
@@ -88,8 +93,8 @@ public class DeclarationStatement extends Statement {
 
 		// check optional attribute: static
 		if (node.hasAttribute("static")
-				&& !(node.getAttributeValue("static").compareTo("")==0)) {
-			if (node.getAttributeValue("static").compareTo("yes")==0) {
+				&& !(node.getAttributeValue("static").compareTo("") == 0)) {
+			if (node.getAttributeValue("static").compareTo("yes") == 0) {
 				this.isStatic = true;
 			} else {
 				ErrorHandler.error(node,
@@ -99,17 +104,28 @@ public class DeclarationStatement extends Statement {
 
 		// check optional attribute: final
 		if (node.hasAttribute("final")
-				&& !(node.getAttributeValue("final").compareTo("")==0)) {
-			if (node.getAttributeValue("final").compareTo("yes")==0) {
+				&& !(node.getAttributeValue("final").compareTo("") == 0)) {
+			if (node.getAttributeValue("final").compareTo("yes") == 0) {
 				isFinal = true;
 			} else {
 				ErrorHandler.error(node,
 						"'final' attribute parse error: 'yes' expected");
 			}
 		}
+		
+		// check if statement is a Leaf
+		if (!node.isLeaf()) {
+			ErrorHandler.error(node, this.getClass().toString()
+					+ " has to be a Leaf!");
+		}
 	}
-	
-	public Type getType() { return type; }
-	public PositionString getName() { return name; }
+
+	public Type getType() {
+		return type;
+	}
+
+	public PositionString getName() {
+		return name;
+	}
 
 }
