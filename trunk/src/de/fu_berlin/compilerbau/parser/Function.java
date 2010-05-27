@@ -1,5 +1,6 @@
 package de.fu_berlin.compilerbau.parser;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import de.fu_berlin.compilerbau.dom.DomNode;
@@ -43,8 +44,8 @@ public class Function {
 	boolean isStatic = false;
 	// default: NO
 	boolean isFinal = false;
-	private ArgumentStatement arguments;
-	private List<Statement> body;
+	private List<Statement> body = new LinkedList<Statement>();
+	private List<DeclarationStatement> arguments = new LinkedList<DeclarationStatement>();
 	ReturnStatement return_S;
 
 	public Function(DomNode node) {
@@ -90,7 +91,22 @@ public class Function {
 		// process child nodes
 		for (DomNode child : node.getChilds()) {
 			if (child.getName().compareTo("arguments") == 0) {
-				arguments = new ArgumentStatement(child);
+				 // check for empty attribute list
+                if (!child.getAttributes().isEmpty()) {
+                        ErrorHandler.error(child, this.getClass().toString()
+                                        + " attributes forbidden!");
+                }
+                // process childs
+                for (DomNode arg : child.getChilds()) {
+                        // arbitrary decl statements
+                        if (arg.getName().compareTo("decl") == 0) {
+                                arguments.add(new DeclarationStatement(arg));
+                        } else {
+                                // ERROR
+                                ErrorHandler.error(child, this.getClass().toString()
+                                                + " forbidden use: " + node.getName());
+                        }
+                }
 				continue;
 			} else if (child.getName().compareTo("return") == 0) {
 				return_S = new ReturnStatement(child);
@@ -119,9 +135,5 @@ public class Function {
 
 	public PositionString getName() {
 		return name;
-	}
-
-	public ArgumentStatement getArgumentStatement() {
-		return arguments;
 	}
 }

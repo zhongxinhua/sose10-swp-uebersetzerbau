@@ -7,8 +7,6 @@ package de.fu_berlin.compilerbau.builder;
 import java.io.IOException;
 
 import de.fu_berlin.compilerbau.parser.AbstractSyntaxTree;
-import de.fu_berlin.compilerbau.parser.ArgumentStatement;
-import de.fu_berlin.compilerbau.parser.AssignStatement;
 import de.fu_berlin.compilerbau.parser.BreakStatement;
 import de.fu_berlin.compilerbau.parser.CallStatement;
 import de.fu_berlin.compilerbau.parser.Case;
@@ -24,6 +22,7 @@ import de.fu_berlin.compilerbau.parser.Interface;
 import de.fu_berlin.compilerbau.parser.Module;
 import de.fu_berlin.compilerbau.parser.ReturnStatement;
 import de.fu_berlin.compilerbau.parser.ScopeStatement;
+import de.fu_berlin.compilerbau.parser.SetStatement;
 import de.fu_berlin.compilerbau.parser.StaticStatement;
 import de.fu_berlin.compilerbau.parser.expressions.Type;
 
@@ -89,13 +88,7 @@ public class JavaBuilder extends Builder {
 	}
 
 	@Override
-	protected void buildArgumentStatement(ArgumentStatement obj) throws IOException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void buildAssignStatement(AssignStatement obj) throws IOException {
+	protected void buildAssignStatement(SetStatement obj) throws IOException {
 		// TODO Auto-generated method stub
 		
 	}

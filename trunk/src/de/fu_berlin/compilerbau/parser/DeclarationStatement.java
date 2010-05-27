@@ -3,6 +3,7 @@ package de.fu_berlin.compilerbau.parser;
 import de.fu_berlin.compilerbau.dom.DomNode;
 import de.fu_berlin.compilerbau.parser.expressions.Expression;
 import de.fu_berlin.compilerbau.parser.expressions.Type;
+import de.fu_berlin.compilerbau.statementParser.impl.StatementParser.ExpressionType;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
 import de.fu_berlin.compilerbau.util.PositionString;
 
@@ -52,7 +53,7 @@ public class DeclarationStatement extends Statement {
 		if (node.hasAttribute("type")
 				&& node.getAttributeValue("type").length() > 0) {
 			this.type = Type.get(node.getAttributeValue("type"));
-			// nicht besonders schön, aber funzt
+			// nicht besonders schï¿½n, aber funzt
 			if (type == null) {
 				ErrorHandler.error(node,
 						"'type' attribute parse error: unknown type: "
@@ -88,7 +89,7 @@ public class DeclarationStatement extends Statement {
 		// check optional attribute: value
 		if (node.hasAttribute("value")
 				&& !node.getAttributeValue("value").equals("")) {
-			this.value = Expression.build(node.getAttribute("value"));
+			this.value = Expression.build(node.getAttribute("value"), ExpressionType.RVALUE);
 		}
 
 		// check optional attribute: static

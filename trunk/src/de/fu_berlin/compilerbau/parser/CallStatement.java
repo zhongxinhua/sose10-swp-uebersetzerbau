@@ -1,7 +1,9 @@
 package de.fu_berlin.compilerbau.parser;
 
 import de.fu_berlin.compilerbau.dom.DomNode;
+import de.fu_berlin.compilerbau.parser.expressions.Expression;
 import de.fu_berlin.compilerbau.parser.expressions.FunctionCall;
+import de.fu_berlin.compilerbau.statementParser.impl.StatementParser.ExpressionType;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
 
 /**
@@ -25,13 +27,13 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
 
 public class CallStatement extends Statement {
 
-	FunctionCall call;
+	Expression call;
 
 	public CallStatement(DomNode node) {
 		// check needed attribute: exec
 		if (node.hasAttribute("exec")
 				&& node.getAttributeValue("exec").length() > 0) {
-			call = new FunctionCall(node.getAttribute("exec"));
+			call = Expression.build(node.getAttribute("exec"), ExpressionType.FUNCTIONCALL);
 		} else {
 			ErrorHandler.error(node, this.getClass().toString()
 					+ " 'exec' attribute expected");

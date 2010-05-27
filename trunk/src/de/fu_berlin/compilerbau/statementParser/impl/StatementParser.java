@@ -84,20 +84,31 @@ import de.fu_berlin.compilerbau.util.*;
 public class StatementParser {
 	private Iterator<StatementNode> tokens;
 	private StatementNode current;
+	
+	/**
+	 * Dieser Typ dient als Auswahlparameter für den Parser, 
+	 * da dieser verschiedene Ausdrücke parst. 
+	 * @author Markus
+	 */
+	public enum ExpressionType {
+		RVALUE,
+		LVALUE,
+		FUNCTIONCALL
+	}
 
 	public StatementParser() {
 	}
 
 	/**
 	 * siehe parse(Iterable&lt;StatementNode&gt; nodes)
-	 * 
+	 * Diese Methode wird nur zum Testen verwendet!
 	 * @param str
 	 *            ein String, der einen Ausdruck enthält
-	 * @param needLValue
+	 * @param type
 	 *            siehe parse(Iterable&lt;StatementNode&gt; nodes)
 	 * @return siehe parse(Iterable&lt;StatementNode&gt; nodes)
 	 */
-	public Expression parse(String str, boolean needLValue) {
+	public Expression parse(String str, ExpressionType type) {
 		return parse(new PositionString(str, new StreamPosition() {
 			private static final long serialVersionUID = 1L;
 
@@ -112,7 +123,7 @@ public class StatementParser {
 			public int getCharacter() {
 				return 0;
 			}
-		}), needLValue);
+		}), type);
 	}
 
 	/**
@@ -120,12 +131,12 @@ public class StatementParser {
 	 * 
 	 * @param str
 	 *            ein PositionString, der einen Ausdruck enthält
-	 * @param needLValue
+	 * @param type
 	 *            siehe parse(Iterable&lt;StatementNode&gt; nodes)
 	 * @return siehe parse(Iterable&lt;StatementNode&gt; nodes)
 	 */
-	public Expression parse(PositionString str, boolean needLValue) {
-		return parse(StatementLexer.tokenize(str), needLValue);
+	public Expression parse(PositionString str, ExpressionType type) {
+		return parse(StatementLexer.tokenize(str), type);
 	}
 
 	/**
@@ -134,34 +145,54 @@ public class StatementParser {
 	 * 
 	 * @param nodes
 	 *            ein Token-Strom des StatementLexer
-	 * @param needLValue
-	 *            gibt an ob ein L-Wert gefordert ist
+	 * @param type
+	 *            gibt an was für ein Unterausdruck geparst werden soll
 	 * @return gibt einen Syntaxbaum wieder, der den Ausdruck repräsentiert
 	 */
-	public Expression parse(Iterable<StatementNode> nodes, boolean needLValue) {
+	public Expression parse(Iterable<StatementNode> nodes, ExpressionType type) {
 		tokens = nodes.iterator();
 		next();
-		if(needLValue) {
-			Expression result = factor();
-			if(!checkForLValue(result))
+		Expression result;
+		switch(type) {
+		case LVALUE:
+			result = factor();
+			if(!isLValue(result))
 				ErrorHandler.error(null, "the expression is not a valid lvalue!");
 			return result;
-		} else
+		case FUNCTIONCALL:
+			result = factor();
+			if(!isFunctionCall(result))
+				ErrorHandler.error(null, "the expression is not a valid function call!");
+			return result;
+		default: //RVALUE
 		  return expression();
+		}
 	}
 
 	/**
 	 * überprüft ob ein gegebener Audruck ein L-Wert ist.
-	 * Diese Funktion ist unausgereift und wird nur auf Ergebnisse von factor() angewendet!
 	 * @param expr
 	 * @return true wenn der Ausdruck ein gültiger L-Wert ist, sonst false
 	 */
-	private boolean checkForLValue(Expression expr) {
-		//letztes Element in der Kette darf kein Funktionsaufruf sein!
-		while(expr instanceof MemberAccess) {
+	private boolean isLValue(Expression expr) {
+		//letztes Element in der Kette muss ein Bezeichner oder 
+		//ein Array-Zugriff sein!
+		while(expr instanceof MemberAccess)
 			expr = ((MemberAccess) expr).getChild();
-		}
-		return !(expr instanceof FunctionCall);
+		return expr instanceof ArrayAccess ||
+		       expr instanceof Identifier;
+	}
+	
+	/**
+	 * überprüft ob ein gegebener Audruck ein Funktionsaufruf ist.
+	 * @param expr
+	 * @return true wenn der Ausdruck ein gültiger L-Wert ist, sonst false
+	 */
+	private boolean isFunctionCall(Expression expr) {
+		//letztes Element in der Kette muss ein Funktionsaufruf
+		while(expr instanceof MemberAccess)
+			expr = ((MemberAccess) expr).getChild();
+		return expr instanceof FunctionCall;
 	}
 
 	/**

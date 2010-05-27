@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.util.regex.Pattern;
 
 import de.fu_berlin.compilerbau.parser.AbstractSyntaxTree;
-import de.fu_berlin.compilerbau.parser.ArgumentStatement;
-import de.fu_berlin.compilerbau.parser.AssignStatement;
 import de.fu_berlin.compilerbau.parser.BreakStatement;
 import de.fu_berlin.compilerbau.parser.CallStatement;
 import de.fu_berlin.compilerbau.parser.Case;
@@ -25,6 +23,7 @@ import de.fu_berlin.compilerbau.parser.Interface;
 import de.fu_berlin.compilerbau.parser.Module;
 import de.fu_berlin.compilerbau.parser.ReturnStatement;
 import de.fu_berlin.compilerbau.parser.ScopeStatement;
+import de.fu_berlin.compilerbau.parser.SetStatement;
 import de.fu_berlin.compilerbau.parser.StaticStatement;
 
 public abstract class Builder {
@@ -48,8 +47,7 @@ public abstract class Builder {
 	protected abstract void buildDecleration(DeclarationStatement decl) throws IOException;
 	protected abstract void buildFunction(Function func) throws IOException;
 
-	protected abstract void buildArgumentStatement(ArgumentStatement obj) throws IOException;
-	protected abstract void buildAssignStatement(AssignStatement obj) throws IOException;
+	protected abstract void buildAssignStatement(SetStatement obj) throws IOException;
 	protected abstract void buildBreakStatement(BreakStatement obj) throws IOException;
 	protected abstract void buildCallStatement(CallStatement obj) throws IOException;
 	protected abstract void buildCase(Case obj) throws IOException;

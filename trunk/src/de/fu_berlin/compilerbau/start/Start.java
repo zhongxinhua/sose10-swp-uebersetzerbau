@@ -111,9 +111,14 @@ class Start {
 		} catch(IOException e) {
 			throw new RuntimeException("Could not initialize DOM.", e);
 		}
+		
+		//XML parsen
 		DomNode node = DomCreator.createDOM();
+		
+		//Syntaxbaum erstellen
 		AbstractSyntaxTree stree = new AbstractSyntaxTree(node);
 		
+		//Ausgabe
 		DirectoryWriter directoryWriter;
 		if("-".equals(destPath)) {
 			try {

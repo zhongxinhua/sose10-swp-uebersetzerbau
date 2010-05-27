@@ -2,6 +2,7 @@ package de.fu_berlin.compilerbau.parser;
 
 import de.fu_berlin.compilerbau.dom.DomNode;
 import de.fu_berlin.compilerbau.parser.expressions.Expression;
+import de.fu_berlin.compilerbau.statementParser.impl.StatementParser.ExpressionType;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
 
 /**
@@ -28,7 +29,7 @@ public class ReturnStatement extends Statement {
 		// check needed attribute: name
 		if (node.hasAttribute("value")
 				&& node.getAttributeValue("value").length() > 0) {
-			this.value = Expression.build(node.getAttribute("value"));
+			this.value = Expression.build(node.getAttribute("value"), ExpressionType.RVALUE);
 		} else {
 			ErrorHandler.error(node, this.getClass().toString()
 					+ " 'value' attribute expected");

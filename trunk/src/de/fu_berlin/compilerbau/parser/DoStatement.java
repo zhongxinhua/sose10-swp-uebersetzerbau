@@ -1,9 +1,11 @@
 package de.fu_berlin.compilerbau.parser;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import de.fu_berlin.compilerbau.dom.DomNode;
 import de.fu_berlin.compilerbau.parser.expressions.Expression;
+import de.fu_berlin.compilerbau.statementParser.impl.StatementParser.ExpressionType;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
 
 /**
@@ -31,13 +33,13 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
  */
 public class DoStatement extends Statement {
 	Expression test;
-	List<Statement> body;
+	List<Statement> body = new LinkedList<Statement>();
 
 	public DoStatement(DomNode node) {
 		// check needed attribute: test
 		if (node.hasAttribute("test")
 				&& node.getAttributeValue("test").length() > 0) {
-			test = Expression.build(node.getAttribute("test"));
+			test = Expression.build(node.getAttribute("test"), ExpressionType.RVALUE);
 		} else {
 			ErrorHandler.error(node, this.getClass().toString()
 					+ " 'test' attribute expected");

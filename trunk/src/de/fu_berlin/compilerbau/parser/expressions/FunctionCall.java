@@ -2,8 +2,6 @@ package de.fu_berlin.compilerbau.parser.expressions;
 
 import java.util.List;
 
-import de.fu_berlin.compilerbau.parser.Function;
-
 public class FunctionCall extends Expression { // a(b,c)
 	private CharSequence name;
 	private List<Expression> actualArguments;

@@ -2,7 +2,7 @@ package de.fu_berlin.compilerbau.parser;
 
 import de.fu_berlin.compilerbau.dom.DomNode;
 import de.fu_berlin.compilerbau.parser.expressions.Expression;
-import de.fu_berlin.compilerbau.parser.expressions.LeftHandSide;
+import de.fu_berlin.compilerbau.statementParser.impl.StatementParser.ExpressionType;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
 
 /**
@@ -25,15 +25,14 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
  */
 
 public class SetStatement extends Statement {
-	LeftHandSide lvalue;
+	Expression lvalue;
 	Expression rvalue;
 
 	public SetStatement(DomNode node) {
 		// check needed attribute: name
 		if (node.hasAttribute("name")
 				&& node.getAttributeValue("name").length() > 0) {
-			System.out.println("DEBUG: UNIMPLEMENTED: SetStatement");
-			System.err.println("DEBUG: UNIMPLEMENTED: SetStatement");
+			lvalue = Expression.build(node.getAttribute("value"), ExpressionType.LVALUE);
 		} else {
 			ErrorHandler.error(node, this.getClass().toString()
 					+ " 'name' attribute expected");
@@ -41,7 +40,7 @@ public class SetStatement extends Statement {
 		// check needed attribute: value
 		if (node.hasAttribute("value")
 				&& node.getAttributeValue("value").length() > 0) {
-			rvalue = Expression.build(node.getAttribute("value"));
+			rvalue = Expression.build(node.getAttribute("value"), ExpressionType.RVALUE);
 		} else {
 			ErrorHandler.error(node, this.getClass().toString()
 					+ " 'value' attribute expected");
