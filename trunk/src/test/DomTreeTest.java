@@ -18,7 +18,7 @@ public class DomTreeTest {
 	
 	public static void main(String args[]) {
 		DomTreeTest test = new DomTreeTest();
-		System.out.println("Test done.");
+		System.out.println("Test done: " + test);
 	}
 	
 	public DomTreeTest() {

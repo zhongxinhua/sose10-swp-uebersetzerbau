@@ -5,6 +5,7 @@ package de.fu_berlin.compilerbau.builder;
  */
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.regex.Pattern;
 
 import de.fu_berlin.compilerbau.parser.AbstractSyntaxTree;
@@ -31,7 +32,7 @@ public abstract class Builder {
 	protected final AbstractSyntaxTree _astree;
 	protected final String[] _classpath;
 	
-	protected Appendable _code = null;
+	protected PrintStream _code = null;
 	
 	public Builder(AbstractSyntaxTree astree, String classpath) {
 		_astree = astree;
@@ -63,7 +64,7 @@ public abstract class Builder {
 	protected abstract void buildScopeStatement(ScopeStatement obj) throws IOException;
 	protected abstract void buildStaticStatement(StaticStatement obj) throws IOException;
 
-	public void setCode(Appendable code) {
+	public void setCode(PrintStream code) {
 		_code = code;
 	}
 	

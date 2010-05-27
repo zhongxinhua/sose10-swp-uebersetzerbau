@@ -6,7 +6,7 @@ package de.fu_berlin.compilerbau.builder;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.util.regex.Pattern;
 
 import de.fu_berlin.compilerbau.directoryWriter.DirectoryWriter;
@@ -33,13 +33,13 @@ public class Director {
 			} catch(IllegalAccessException e) {
 				throw new RuntimeException("This cannot happen.", e);
 			}
-			final OutputStreamWriter writer = new OutputStreamWriter(file);
+			final PrintStream stream = new PrintStream(file);
 			
-			builder.setCode(writer);
+			builder.setCode(stream);
 			builder.buildInterface(interfaze);
 			builder.setCode(null);
 			
-			writer.close();
+			stream.close();
 		}
 		
 		// write each class
@@ -50,13 +50,13 @@ public class Director {
 			} catch(IllegalAccessException e) {
 				throw new RuntimeException("This cannot happen.", e);
 			}
-			final OutputStreamWriter writer = new OutputStreamWriter(file);
-			
-			builder.setCode(writer);
+			final PrintStream stream = new PrintStream(file);
+
+			builder.setCode(stream);
 			builder.buildClass(clazz);
 			builder.setCode(null);
 			
-			writer.close();
+			stream.close();
 		}
 		
 	}
