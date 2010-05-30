@@ -38,17 +38,17 @@ public class ShadowedIdentifierException extends SymbolTableException implements
 
 	@Override
 	public int getCharacter() {
-		return newSymbol.getDeclarationPosition().getCharacter();
+		return newSymbol.getPosition().getCharacter();
 	}
 
 	@Override
 	public int getLine() {
-		return newSymbol.getDeclarationPosition().getLine();
+		return newSymbol.getPosition().getLine();
 	}
 
 	@Override
 	public int getStart() {
-		return newSymbol.getDeclarationPosition().getStart();
+		return newSymbol.getPosition().getStart();
 	}
 	
 }

@@ -8,21 +8,48 @@ public enum SymbolType {
 	/**
 	 * The type of this symbol is still unknown. When the symbol tree is fully
 	 * populated, there should not be any unqualified symbols left!
+	 * @see UnqualifiedSymbol
 	 */
 	UNQUALIFIED,
 
+	/**
+	 * @see Class
+	 */
 	CLASS,
-	
+
+	/**
+	 * @see Constructor
+	 */
 	CONSTRUCTOR,
-	
+
+	/**
+	 * @see Interface
+	 */
 	INTERFACE,
-	
+
+	/**
+	 * @see Member
+	 */
 	MEMBER,
-	
+
+	/**
+	 * @see Package
+	 */
 	PACKAGE,
-	
+
+	/**
+	 * @see Runtime
+	 */
 	RUNTIME,
-	
-	VARIABLE
+
+	/**
+	 * @see Variable
+	 */
+	VARIABLE,
+
+	/**
+	 * @see Scope
+	 */
+	SCOPE
 	
 }

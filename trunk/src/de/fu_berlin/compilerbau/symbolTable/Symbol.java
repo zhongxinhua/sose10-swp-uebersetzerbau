@@ -12,20 +12,24 @@ public interface Symbol {
 	String getJavaSignature();
 	
 	/**
-	 * Returns the position where the symbol was declared, i.e. an interface.
-	 * @return null if position is unknown
-	 */
-	StreamPosition getDeclarationPosition();
-	
-	/**
 	 * Returns the position where the symbol was implemented.
 	 * @return null if position is unknown
 	 */
-	StreamPosition getImplementationPosition();
+	StreamPosition getPosition();
 	
 	/**
+	 * Where and by whom was this symbol mentioned. (For circular dependencies.)
 	 * @return immutable list [(who,where)]
 	 */
 	List<Pair<Symbol,StreamPosition>> getMentions();
+	
+	void addMention(Symbol who,StreamPosition where);
+	
+	/**
+	 * Immediately parent of this symbol.
+	 * @return null if this is an {@link UnqualifiedSymbol unqualified symbol} or
+	 * 	the {@link Runtime}.
+	 */
+	SymbolContainer getParent();
 	
 }
