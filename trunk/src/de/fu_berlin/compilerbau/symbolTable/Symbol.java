@@ -1,50 +1,31 @@
 package de.fu_berlin.compilerbau.symbolTable;
 
-import java.util.Collection;
+import java.util.List;
+
+import de.fu_berlin.compilerbau.util.Pair;
+import de.fu_berlin.compilerbau.util.StreamPosition;
 
 public interface Symbol {
 	
-	/**
-	 * Every non-abstract Symbol has a parent scope.
-	 * @return parent {@link SymbolTable} or null
-	 */
-	SymbolTable getParent();
+	String getCanonicalName();
+	
+	String getJavaSignature();
 	
 	/**
-	 * Some Symbols 
-	 * @return null or this very element {@code Symbol}
+	 * Returns the position where the symbol was declared, i.e. an interface.
+	 * @return null if position is unknown
 	 */
-	SymbolTable isSymbolTable();
+	StreamPosition getDeclarationPosition();
 	
 	/**
-	 * Every non-abstract Symbol has a signature.
-	 * @return signature or null
+	 * Returns the position where the symbol was implemented.
+	 * @return null if position is unknown
 	 */
-	String getSignature();
+	StreamPosition getImplementationPosition();
 	
 	/**
-	 * Every element has a name.
+	 * @return immutable list [(who,where)]
 	 */
-	String getName();
-	
-	/**
-	 * Is there evidence that this Symbol belongs to a ctor?
-	 */
-	TernaryBool isConstructor();
-	
-	/**
-	 * Is there evidence that this Symbol belongs to a typename?
-	 */
-	TernaryBool isTypename();
-
-	/**
-	 * Is there evidence that this Symbol belongs to a variable?
-	 */
-	TernaryBool isVariable();
-	
-	/**
-	 * A list of the Symbols this very Symbol shadows.
-	 */
-	Collection<Symbol> getShadowedSymbols();
+	List<Pair<Symbol,StreamPosition>> getMentions();
 	
 }
