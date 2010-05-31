@@ -1,6 +1,6 @@
 package de.fu_berlin.compilerbau.symbolTable.java;
 
-import java.util.List;
+import java.util.Set;
 
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
@@ -31,7 +31,7 @@ class SymbolImpl implements Symbol {
 	}
 	
 	@Override
-	public List<Pair<Symbol, StreamPosition>> getMentions() {
+	public Set<Pair<Symbol, StreamPosition>> getMentions() {
 		// TODO Auto-generated method stub
 		return null;
 	}

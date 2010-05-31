@@ -1,6 +1,7 @@
 package de.fu_berlin.compilerbau.symbolTable;
 
-import java.util.List;
+import java.util.Iterator;
+import java.util.Set;
 
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
@@ -17,22 +18,22 @@ public interface Package extends SymbolContainer {
 	/**
 	 * @return immutable list
 	 */
-	List<ClassOrInterface> getClassesAndInterfaces();
+	Set<ClassOrInterface> getClassesAndInterfaces();
 	
 	/**
 	 * @return immutable list
 	 */
-	List<Class> getClasses();
+	Set<Class> getClasses();
 	
 	/**
 	 * @return immutable list
 	 */
-	List<Interface> getInterfaces();
+	Set<Interface> getInterfaces();
 
-	Interface addInterface(PositionString name, List<Symbol> extends_, Modifier modifier) throws
+	Interface addInterface(PositionString name, Iterator<Symbol> extends_, Modifier modifier) throws
 			DuplicateIdentifierException, ShadowedIdentifierException, WrongModifierException;
 
-	Class addClass(PositionString name, Symbol extends_, List<Symbol> implements_, Modifier modifier) throws
+	Class addClass(PositionString name, Symbol extends_, Iterator<Symbol> implements_, Modifier modifier) throws
 			DuplicateIdentifierException, ShadowedIdentifierException, WrongModifierException;
 	
 }

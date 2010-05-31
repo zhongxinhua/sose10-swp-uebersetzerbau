@@ -9,6 +9,12 @@ import static java.lang.reflect.Modifier.STATIC;
 import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.util.Visibility;
 
+/**
+ * This class takes a bitmap representation of
+ * {@link java.lang.reflect.Modifier modifier of Java} and lets it be read like
+ * a {@link Modifier SymbolType modifier}.
+ * @author kijewski
+ */
 final class NativeModifier implements Modifier {
 
 	protected final int modifiers;

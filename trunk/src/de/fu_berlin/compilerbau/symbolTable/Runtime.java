@@ -1,7 +1,7 @@
 package de.fu_berlin.compilerbau.symbolTable;
 
 import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
 
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
@@ -20,7 +20,7 @@ public interface Runtime extends SymbolContainer {
 	/**
 	 * @return (immutable) list
 	 */
-	List<Package> getPackages();
+	Set<Package> getPackages();
 	
 	/**
 	 * If set, an {@link ShadowedIdentifierException exception} is thrown when a symbol gets shadowed.

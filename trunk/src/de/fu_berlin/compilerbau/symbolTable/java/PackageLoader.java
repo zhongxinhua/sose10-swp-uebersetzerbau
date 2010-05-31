@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
+/**
+ * Basically it unhides super methods. :)
+ * @author kijewski
+ */
 class PackageLoader extends URLClassLoader {
 	
 	protected static URL[] concatUrls(URL rtJar, URL[] classpath) {

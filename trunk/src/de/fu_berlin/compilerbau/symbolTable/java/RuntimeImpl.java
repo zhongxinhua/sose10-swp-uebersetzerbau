@@ -1,8 +1,9 @@
 package de.fu_berlin.compilerbau.symbolTable.java;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.TreeSet;
 
 import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.Package;
@@ -19,6 +20,8 @@ import de.fu_berlin.compilerbau.util.PositionString;
 
 public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	
+	protected final Set<Package> packages = new TreeSet<Package>();
+	
 	@Override
 	public Package addPackage(PositionString name, Modifier modifier)
 			throws DuplicateIdentifierException, ShadowedIdentifierException, WrongModifierException {
@@ -27,9 +30,8 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	}
 	
 	@Override
-	public List<Package> getPackages() {
-		// TODO Auto-generated method stub
-		return null;
+	public Set<Package> getPackages() {
+		return packages;
 	}
 	
 	protected boolean throwsAtShadowing = false;

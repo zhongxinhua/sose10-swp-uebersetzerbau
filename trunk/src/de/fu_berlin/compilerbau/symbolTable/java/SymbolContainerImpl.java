@@ -1,7 +1,6 @@
 package de.fu_berlin.compilerbau.symbolTable.java;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
@@ -13,7 +12,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
 class SymbolContainerImpl extends SymbolImpl implements SymbolContainer {
 	
 	@Override
-	public List<Symbol> getContainedSymbols() {
+	public Set<Symbol> getContainedSymbols() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -25,13 +24,13 @@ class SymbolContainerImpl extends SymbolImpl implements SymbolContainer {
 	}
 	
 	@Override
-	public Collection<Collection<Symbol>> getShadowedSymbols() {
+	public Set<Set<Symbol>> getShadowedSymbols() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
-	public List<UnqualifiedSymbol> getUnqualifiedSymbols() {
+	public Set<UnqualifiedSymbol> getUnqualifiedSymbols() {
 		// TODO Auto-generated method stub
 		return null;
 	}

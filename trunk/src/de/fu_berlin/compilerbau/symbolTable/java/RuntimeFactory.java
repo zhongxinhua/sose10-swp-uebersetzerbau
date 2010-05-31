@@ -2,6 +2,7 @@ package de.fu_berlin.compilerbau.symbolTable.java;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Iterator;
@@ -101,16 +102,31 @@ public class RuntimeFactory {
 			throw new SymbolTableException("Could not lookup a package that should be already known.");
 		}
 		Package pkg = (Package)pkgSymbol;
+
+		final Symbol extends_;
+		Class<?> superclass = clazz.getSuperclass();
+		if(superclass != null) {
+			PositionString name = new PositionString(superclass.getName(), PositionBean.ZERO);
+			extends_ = result.getUniqualifiedSymbol(name, SymbolType.CLASS);
+		} else {
+			extends_ = null;
+		}
 		
-		Symbol extends_ = null; // TODO: Super-Klasse raussuchen
 		List<Symbol> implements_ = null; // TODO: Interfaces raussuchen
 
 		PositionString classLookupName = new PositionString(pkgName, PositionBean.ZERO);
-		Modifier clazzModifier = new NativeModifier(clazz.getModifiers());
+		Modifier clazzModifiers = new NativeModifier(clazz.getModifiers());
 		de.fu_berlin.compilerbau.symbolTable.Class clazzSymbol =
-				pkg.addClass(classLookupName, extends_, implements_, clazzModifier);
+				pkg.addClass(classLookupName, extends_, implements_.iterator(), clazzModifiers);
 		
-		// TODO: Methoden und Members hinzufügen
+		for(Field field : clazz.getDeclaredFields()) {
+			NativeModifier fieldModifiers = new NativeModifier(field.getModifiers());
+			PositionString name = new PositionString(field.getName(), PositionBean.ZERO);
+			Symbol type = result.getUniqualifiedSymbol(name, SymbolType.CLASS_OR_INTERFACE);
+			clazzSymbol.addMember(name, type, fieldModifiers);
+		}
+		
+		// TODO: Methoden und Ctors hinzufügen
 	}
 	
 }

@@ -1,7 +1,6 @@
 package de.fu_berlin.compilerbau.symbolTable;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
 import de.fu_berlin.compilerbau.util.PositionString;
 
@@ -10,13 +9,13 @@ import de.fu_berlin.compilerbau.util.PositionString;
  */
 public interface SymbolContainer extends Symbol {
 	
-	List<Symbol> getContainedSymbols();
+	Set<Symbol> getContainedSymbols();
 	
 	/**
 	 * recursively
 	 * @return immutable list
 	 */
-	List<UnqualifiedSymbol> getUnqualifiedSymbols();
+	Set<UnqualifiedSymbol> getUnqualifiedSymbols();
 	
 	/**
 	 * recursively
@@ -27,7 +26,7 @@ public interface SymbolContainer extends Symbol {
 	 * Returns a list of all symbols occurring twice in the same scope of visibility.
 	 * @return immutable list
 	 */
-	Collection<Collection<Symbol>> getShadowedSymbols();
+	Set<Set<Symbol>> getShadowedSymbols();
 	
 	/**
 	 * Looks up this {@link UnqualifiedSymbol unqualified symbol}.

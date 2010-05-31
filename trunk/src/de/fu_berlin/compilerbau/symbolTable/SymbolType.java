@@ -18,6 +18,13 @@ public enum SymbolType {
 	CLASS,
 
 	/**
+	 * Either {@link Class} or {@link Interface}. Cannot be the type of a qualified symbol.
+	 * @see Class
+	 * @see Interface
+	 */
+	CLASS_OR_INTERFACE,
+
+	/**
 	 * @see Constructor
 	 */
 	CONSTRUCTOR,
