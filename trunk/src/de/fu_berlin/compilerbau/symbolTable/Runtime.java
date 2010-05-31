@@ -30,7 +30,7 @@ public interface Runtime extends SymbolContainer {
 	/**
 	 * @see #getThrowsAtShadowing()
 	 */
-	void setThrowsAtShadowing();
+	void setThrowsAtShadowing(boolean throwsAtShadowing);
 	
 	/**
 	 * Adds a new package.

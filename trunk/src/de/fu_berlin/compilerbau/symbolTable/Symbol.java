@@ -7,9 +7,13 @@ import de.fu_berlin.compilerbau.util.StreamPosition;
 
 public interface Symbol {
 	
+	Runtime getRuntime();
+	
 	String getCanonicalName();
 	
 	String getJavaSignature();
+	
+	SymbolType getType();
 	
 	/**
 	 * Returns the position where the symbol was implemented.
