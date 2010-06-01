@@ -43,10 +43,10 @@ public class DeclarationStatement extends Statement {
 
 	private Type type;
 	private PositionString name;
-	int dimension = 1;
-	Expression value = null;
-	boolean isStatic = false;
-	boolean isFinal = false;
+	private int dimension = 0;
+	private Expression value = null;
+	private boolean isStatic = false;
+	private boolean isFinal = false;
 
 	public DeclarationStatement(DomNode node) {
 		// check needed attribute: type
@@ -121,12 +121,12 @@ public class DeclarationStatement extends Statement {
 		}
 	}
 
-	public Type getType() {
-		return type;
-	}
-
-	public PositionString getName() {
-		return name;
-	}
+	public Type getType() {	return type; }
+	public PositionString getName() { return name;	}
+	public int getDimension() { return dimension; }
+	public Expression getValue() { return value; }
+	public boolean isStatic() { return isStatic; }
+	public boolean isFinal() { return isFinal; }
+	public boolean isArray() { return dimension > 0; }
 
 }

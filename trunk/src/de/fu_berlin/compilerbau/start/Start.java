@@ -118,7 +118,19 @@ class Start {
 		//Syntaxbaum erstellen
 		AbstractSyntaxTree stree = new AbstractSyntaxTree(node);
 		
-		//Ausgabe
+		// Ausgabe von Fehlern und ggf. Abbruch
+		if(ErrorHandler.errorOccured()) {
+			System.err.println(ErrorHandler.getErrorCount() + " error(s) and " +
+					ErrorHandler.getWarningCount() + " warning(s) occured. Cannot compile!");
+			
+			// Schlecht!
+			// sollte evtl. der ErrorHandler uebernehmen
+			System.exit(1);
+		} else if(ErrorHandler.getWarningCount() > 0) {
+			System.err.println(ErrorHandler.getWarningCount() + " warning(s) occured.");
+		}
+		
+		//Ausgabe, wenn keine Fehler aufgetreten sind
 		DirectoryWriter directoryWriter;
 		if("-".equals(destPath)) {
 			try {
@@ -140,14 +152,6 @@ class Start {
 			directoryWriter.close();
 		} catch(IOException e) {
 			throw new RuntimeException("Could not close output.", e);
-		}
-		
-		if(ErrorHandler.errorOccured()) {
-			System.err.println(ErrorHandler.getErrorCount() + " error(s) and " +
-					ErrorHandler.getWarningCount() + " warning(s) occured. Cannot compile!");
-			System.exit(1);
-		} else if(ErrorHandler.getWarningCount() > 0) {
-			System.err.println(ErrorHandler.getWarningCount() + " warning(s) occured.");
 		}
 	}
 	

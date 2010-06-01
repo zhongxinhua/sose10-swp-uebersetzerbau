@@ -34,9 +34,16 @@ public class JavaBuilder extends Builder {
 	@Override
 	protected void buildClass(Class theclass) throws IOException {
 		Module root = _astree.getRoot();
-		_code.append("package " + root.getName().toString() + ";\n");
+		_code.append("package " + root.getName() + ";\n");
 		
-		_code.append("class " + theclass.getName().toString() + " {\n");
+		_code.append("class " + theclass.getName() + " ");
+		
+		// TODO: super auswerten, wenn irgendwann im SyntaxBaum vorhanden
+		/*if (theclass.getSuper() != null) {
+			_code.append("extends " + theclass.getSuper());
+		}*/
+		
+		_code.append(" {\n");
 		
 		for(DeclarationStatement decl : theclass.getDeclerations()) {
 			buildDecleration(decl);
@@ -51,16 +58,43 @@ public class JavaBuilder extends Builder {
 	
 	@Override
 	protected void buildDecleration(DeclarationStatement decl) throws IOException {
-		Type type = decl.getType();
+		
+		if(decl.isFinal()) {
+			_code.append("static ");
+		}
+		if(decl.isFinal()) {
+			_code.append("final ");
+		}
+		
+		/* Type type = decl.getType();
 		if(type == Type.STRING) {
-			_code.append("\tString " + decl.getName().toString() + ";\n");
+			_code.append("String ");
 		}
 		else if (type == Type.INTEGER) {
-			_code.append("\tint " + decl.getName().toString() + ";\n");
+			_code.append("int ");
 		}
 		else if (type == Type.FLOAT) {
-			_code.append("\tfloat " + decl.getName().toString() + ";\n");
+			_code.append("float ");
+		}*/
+		_code.append(Type.toJavaString(decl.getType()) + " ");
+		
+		for(int i=0; i<decl.getDimension(); ++i) {
+			_code.append("[] ");
 		}
+		
+		_code.append(decl.getName());
+		
+		if(decl.getValue() != null) {
+			_code.append(" = " + decl.getValue());
+		}
+		/*
+		else if(decl.isArray()) {
+				_code.append(" = new " + Type.toJavaString(decl.getType()));
+				for(int i=0; i<decl.getDimension(); ++i) {
+					_code.append("[]");
+				}
+		}*/
+		_code.append(";\n");
 	}
 	
 	@Override
@@ -78,7 +112,7 @@ public class JavaBuilder extends Builder {
 			_code.append("float ");
 		}
 		
-		_code.append(func.getName().toString() + " (");
+		_code.append(func.getName() + " (");
 		// Argumente der Funktion
 		_code.append("");
 		_code.append(") {\n");

@@ -40,7 +40,7 @@ public class PhysicalDirectoryWriter implements DirectoryWriter {
 	public OutputStream openFile(CharSequence fileName, CharSequence folder) throws IOException {
 		final File path = new File(root, folder.toString());
 		path.mkdirs();
-		final File dest = new File(path, fileName.toString());
+		final File dest = new File(path, fileName.toString() + ".java");
 		return new FileOutputStream(dest);
 	}
 

@@ -21,4 +21,16 @@ public class Type {
 			return ReferenceType.get(type);
 		}
 	}
+	
+	public static String toJavaString(Type type) {
+		if (type == STRING) {
+			return "String";
+		} else if (type == INTEGER) {
+			return "int";
+		} else if (type == FLOAT) {
+			return "float";
+		} else {
+			return "null";
+		}
+	}
 }
