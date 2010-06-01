@@ -46,7 +46,7 @@ public class Director {
 		for(Class clazz : module.getClasses()) {
 			final OutputStream file;
 			try {
-				file = directoryWriter.openFile(clazz.getName(), moduleRoot);
+				file = directoryWriter.openFile(clazz.getName()+".java", moduleRoot);
 			} catch(IllegalAccessException e) {
 				throw new RuntimeException("This cannot happen.", e);
 			}

@@ -6,6 +6,7 @@ package de.fu_berlin.compilerbau.builder;
  */
 
 import java.io.IOException;
+import java.util.List;
 
 import de.fu_berlin.compilerbau.parser.AbstractSyntaxTree;
 import de.fu_berlin.compilerbau.parser.BreakStatement;
@@ -82,14 +83,6 @@ public class JavaBuilder extends Builder {
 			_code.append("final ");
 		}
 		
-		/* Type type = decl.getType();
-		if (type == Type.STRING) {
-			_code.append("String ");
-		} else if (type == Type.INTEGER) {
-			_code.append("int ");
-		} else if (type == Type.FLOAT) {
-			_code.append("float ");
-		}*/
 		_code.append(Type.toJavaString(decl.getType()) + " ");
 		
 		for(int i=0; i<decl.getDimension(); ++i) {
@@ -102,6 +95,7 @@ public class JavaBuilder extends Builder {
 			_code.append(" = " + decl.getValue());
 		}
 		/*
+		 * optional TODO: Arrays
 		else if(decl.isArray()) {
 				_code.append(" = new " + Type.toJavaString(decl.getType()));
 				for(int i=0; i<decl.getDimension(); ++i) {
@@ -115,27 +109,31 @@ public class JavaBuilder extends Builder {
 	protected void buildFunction(Function func) throws IOException {
 		_code.append("public ");
 
-		Type type = func.getReturnType();
-		if (type == Type.STRING) {
-			_code.append("String ");
-		} else if (type == Type.INTEGER) {
-			_code.append("int ");
-		} else if (type == Type.FLOAT) {
-			_code.append("float ");
-		}
+		_code.append(Type.toJavaString(func.getReturnType()) + " ");
 
 		_code.append(func.getName() + " (");
+		
 		// Argumente der Funktion
-		_code.append("");
+		List<DeclarationStatement> args = func.getArguments();
+		for(int i=0; i<args.size(); ++i) {
+			DeclarationStatement declStmt = args.get(i);
+			_code.append(Type.toJavaString(declStmt.getType()) + " ");
+			_code.append(declStmt.getName());
+			if(i+1<args.size()) _code.append(", ");
+		}
+		
 		_code.append(") {\n");
 
+		for(Statement stmt : func.getBody()) {
+			buildStatement(stmt);
+		}
+		
 		_code.append("}\n");
 	}
 
 	@Override
 	protected void buildBreakStatement(BreakStatement obj) throws IOException {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override

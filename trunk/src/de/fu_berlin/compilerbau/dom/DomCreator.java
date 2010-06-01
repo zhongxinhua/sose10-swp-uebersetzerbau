@@ -21,8 +21,32 @@ import de.fu_berlin.compilerbau.xmlNodeStream.impl.XmlNodeStreamFactory;
 
 public class DomCreator {
 	static private Iterator<XmlNode> _iter;
-	
 	static private XmlNode _nextNodeToRead;
+	
+	/**
+	 * Use this method to initialize or reset the DomCreator.
+	 * 
+	 * @param file - the source File
+	 * @throws IOException the reader threw an Exception
+	 */
+	static public void init(Reader file) throws IOException {
+		XmlNodeStream stax = XmlNodeStreamFactory.createNewInstance(file);
+		_iter = stax.iterator();
+	}
+	
+	/**
+	 * Create the whole DOM-Tree if the XML Structure is valid.
+	 * Otherwise the compiler ends with a short error Report.
+	 * <p>
+	 * Caution: The DomCreator have to be initialized first.
+	 * 
+	 * @return DOM-Tree or null, if input was empty
+	 */
+	static public DomNode createDOM() {
+		return readChild(true);
+	}
+	
+	
 	static private void unreadNode(XmlNode node) throws IllegalStateException {
 		if(_nextNodeToRead == null) {
 			_nextNodeToRead = node;
@@ -42,17 +66,6 @@ public class DomCreator {
 			_nextNodeToRead = null;
 		}
 		return result;
-	}
-	
-	/**
-	 * Use this method to initialize or reset the DomCreator.
-	 * 
-	 * @param file - the source File
-	 * @throws IOException the reader threw an Exception
-	 */
-	static public void init(Reader file) throws IOException {
-		XmlNodeStream stax = XmlNodeStreamFactory.createNewInstance(file);
-		_iter = stax.iterator();
 	}
 	
 	static private DomNode readChild(boolean piAllowed) {
@@ -127,17 +140,6 @@ public class DomCreator {
 			}
 		}
 		return true;
-	}
-	/**
-	 * Create the whole DOM-Tree if the XML Structure is valid.
-	 * Otherwise the compiler ends with a short error Report.
-	 * <p>
-	 * Caution: The DomCreator have to be initialized first.
-	 * 
-	 * @return DOM-Tree or null, if input was empty
-	 */
-	static public DomNode createDOM() {
-		return readChild(true);
 	}
 
 	/**

@@ -114,15 +114,9 @@ public class Function extends SyntaxTreeNode {
 		}
 	}
 
-	public boolean hasBody() {
-		return !body.isEmpty();
-	}
-
-	public Type getReturnType() {
-		return return_type;
-	}
-
-	public PositionString getName() {
-		return name;
-	}
+	public boolean hasBody() { return !body.isEmpty(); }
+	public Type getReturnType() { return return_type; }
+	public PositionString getName() { return name; }
+	public List<DeclarationStatement> getArguments() { return arguments; }
+	public List<Statement> getBody() { return body; }
 }

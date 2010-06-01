@@ -17,7 +17,7 @@ public class DomTreeTest {
 	static StringBuffer sb;
 	
 	public static void main(String args[]) {
-		DomTreeTest test = new DomTreeTest();
+		new DomTreeTest();
 		System.out.println("Test done: " + test);
 	}
 	
