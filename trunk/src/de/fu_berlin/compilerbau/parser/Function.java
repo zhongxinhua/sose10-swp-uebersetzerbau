@@ -37,7 +37,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
  * @see {@link ReturnStatement}
  * 
  */
-public class Function {
+public class Function extends SyntaxTreeNode {
 	private PositionString name;
 	private Type return_type;
 	// default: NO

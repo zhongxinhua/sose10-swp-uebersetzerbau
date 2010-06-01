@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import de.fu_berlin.compilerbau.dom.DomNode;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
+import de.fu_berlin.compilerbau.util.PositionString;
 
 /**<b>Description</b><br>
  * {@link Class} is a subclass of {@link ClassOrInterface} representing a
@@ -32,7 +33,7 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
  * 
  */
 public class Class extends ClassOrInterface {
-	Class parent;
+	PositionString parent;
 	List<ImportStatement> imports = new LinkedList<ImportStatement>();
 	List<ImplementStatement> implementations = new LinkedList<ImplementStatement>();
 	List<DeclarationStatement> declarations = new LinkedList<DeclarationStatement>();
@@ -50,7 +51,8 @@ public class Class extends ClassOrInterface {
 		// check optional attribute: super
 		if (node.hasAttribute("super")
 				&& !node.getAttributeValue("super").equals("")) {
-			// TODO parent referenzieren über symboltabelleneintrag
+			// TODO parent referenzieren ï¿½ber symboltabelleneintrag
+			parent = node.getAttribute("super");
 		}
 
 		// process child nodes

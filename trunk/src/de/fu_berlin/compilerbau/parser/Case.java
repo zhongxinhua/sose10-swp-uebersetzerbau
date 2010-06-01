@@ -29,7 +29,7 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
  * @author Sam
  * 
  */
-public class Case {
+public class Case extends SyntaxTreeNode {
 	Expression test;
 	List<Statement> body = new LinkedList<Statement>();
 	

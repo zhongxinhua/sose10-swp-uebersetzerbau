@@ -24,7 +24,7 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
  * @author Sam
  * 
  */
-public class Statement {
+public class Statement extends SyntaxTreeNode {
 	Statement statement;
 
 	public Statement() {

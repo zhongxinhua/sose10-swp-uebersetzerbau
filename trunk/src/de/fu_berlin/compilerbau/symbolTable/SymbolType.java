@@ -57,6 +57,11 @@ public enum SymbolType {
 	/**
 	 * @see Scope
 	 */
-	SCOPE
+	SCOPE,
+	
+	/**
+	 * @see TODO lol
+	 */
+	ATOMARTYPE
 	
 }

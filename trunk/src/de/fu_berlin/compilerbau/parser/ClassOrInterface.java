@@ -17,7 +17,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
  * @see {@link Interface}
  * 
  */
-public abstract class ClassOrInterface {
+public abstract class ClassOrInterface extends SyntaxTreeNode {
 	//Wird in Class oder Interface belegt
 	protected PositionString name;
 	/**

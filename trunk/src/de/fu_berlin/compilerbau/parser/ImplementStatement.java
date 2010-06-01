@@ -21,7 +21,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
  * @author Sam
  * @see {@link Class}
  */
-public class ImplementStatement extends Statement {
+public class ImplementStatement extends SyntaxTreeNode {
 	PositionString name;
 
 	public ImplementStatement(DomNode node) {

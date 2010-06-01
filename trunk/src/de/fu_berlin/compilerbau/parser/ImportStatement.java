@@ -20,7 +20,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
  * @author Sam
  * 
  */
-public class ImportStatement extends Statement {
+public class ImportStatement extends SyntaxTreeNode {
 
 	PositionString name;
 

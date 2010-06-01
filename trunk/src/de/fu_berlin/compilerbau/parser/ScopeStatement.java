@@ -3,6 +3,7 @@ package de.fu_berlin.compilerbau.parser;
 import java.util.List;
 
 import de.fu_berlin.compilerbau.dom.DomNode;
+import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
 
 /**
@@ -24,7 +25,6 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
  * 
  */
 public class ScopeStatement extends Statement {
-	SymbolTable symbolTable;
 	List<Statement> body;
 
 	public ScopeStatement(DomNode node) {
