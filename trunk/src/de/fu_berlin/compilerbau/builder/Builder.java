@@ -25,6 +25,20 @@ import de.fu_berlin.compilerbau.parser.Module;
 import de.fu_berlin.compilerbau.parser.ReturnStatement;
 import de.fu_berlin.compilerbau.parser.ScopeStatement;
 import de.fu_berlin.compilerbau.parser.SetStatement;
+import de.fu_berlin.compilerbau.parser.Statement;
+import de.fu_berlin.compilerbau.parser.expressions.ArrayAccess;
+import de.fu_berlin.compilerbau.parser.expressions.BinaryOperation;
+import de.fu_berlin.compilerbau.parser.expressions.Expression;
+import de.fu_berlin.compilerbau.parser.expressions.FloatLiteral;
+import de.fu_berlin.compilerbau.parser.expressions.FunctionCall;
+import de.fu_berlin.compilerbau.parser.expressions.Identifier;
+import de.fu_berlin.compilerbau.parser.expressions.IntegerLiteral;
+import de.fu_berlin.compilerbau.parser.expressions.Literal;
+import de.fu_berlin.compilerbau.parser.expressions.MemberAccess;
+import de.fu_berlin.compilerbau.parser.expressions.NullLiteral;
+import de.fu_berlin.compilerbau.parser.expressions.ObjectCreation;
+import de.fu_berlin.compilerbau.parser.expressions.StringLiteral;
+import de.fu_berlin.compilerbau.parser.expressions.UnaryOperation;
 
 public abstract class Builder {
 	
@@ -47,7 +61,6 @@ public abstract class Builder {
 	protected abstract void buildDecleration(DeclarationStatement decl) throws IOException;
 	protected abstract void buildFunction(Function func) throws IOException;
 
-	protected abstract void buildAssignStatement(SetStatement obj) throws IOException;
 	protected abstract void buildBreakStatement(BreakStatement obj) throws IOException;
 	protected abstract void buildCallStatement(CallStatement obj) throws IOException;
 	protected abstract void buildCase(Case obj) throws IOException;
@@ -55,12 +68,40 @@ public abstract class Builder {
 	protected abstract void buildContinueStatement(ContinueStatement obj) throws IOException;
 	protected abstract void buildDeclarationStatement(DeclarationStatement obj) throws IOException;
 	protected abstract void buildDoStatement(DoStatement obj) throws IOException;
+	protected abstract void buildExpressionStatement(Expression obj) throws IOException;
 	protected abstract void buildImplementStatement(ImplementStatement obj) throws IOException;
 	protected abstract void buildImportStatement(ImportStatement obj) throws IOException;
 	protected abstract void buildInterface(Interface obj) throws IOException;
 	protected abstract void buildModule(Module obj) throws IOException;
 	protected abstract void buildReturnStatement(ReturnStatement obj) throws IOException;
 	protected abstract void buildScopeStatement(ScopeStatement obj) throws IOException;
+	protected abstract void buildStatement(Statement obj) throws IOException;
+	protected abstract void buildSetStatement(SetStatement obj) throws IOException;
+	
+	/*
+	 * START>List of Expressions to build
+	*/
+	protected abstract void buildArrayAccessExpression(ArrayAccess obj) throws IOException;
+	protected abstract void buildBinaryOperationExpression(BinaryOperation obj)throws IOException;
+	protected abstract void buildFloatLiteralExpression(FloatLiteral obj)throws IOException;
+	protected abstract void buildFunctionCallExpression(FunctionCall obj)throws IOException;
+	protected abstract void buildIdentifierExpression(Identifier obj) throws IOException;
+	protected abstract void buildIntegerLiteralExpression(IntegerLiteral obj) throws IOException;
+	protected abstract void buildLiteralExpression(Literal obj) throws IOException;
+	protected abstract void buildMemberAccessExpression(MemberAccess obj) throws IOException;
+	protected abstract void buildNullLiteralExpression(NullLiteral obj) throws IOException;
+	protected abstract void buildObjectCreationExpression(ObjectCreation obj) throws IOException;
+	protected abstract void buildStringLiteralExpression(StringLiteral obj) throws IOException;
+	protected abstract void buildUnaryOperationExpression(UnaryOperation obj) throws IOException;
+	/*
+	 * END>List of Expressions to build
+	 */
+	
+	
+	
+	
+	
+	
 
 	public void setCode(PrintStream code) {
 		_code = code;
