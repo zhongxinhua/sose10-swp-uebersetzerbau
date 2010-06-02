@@ -12,7 +12,7 @@ class RuntimeFactoryTest {
 	static final URL RT_JAR;
 	static {
 		try {
-			RT_JAR = new URL("file:///usr/local/jdk1.6.0_04/jre/lib/rt.jar");
+			RT_JAR = new URL("file:///usr/lib/jvm/java-6-openjdk/jre/lib/rt.jar");
 		} catch (MalformedURLException e) {
 			throw new RuntimeException(e);
 		}

@@ -8,7 +8,6 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierExcept
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.Likelyness;
-import de.fu_berlin.compilerbau.util.Pair;
 import de.fu_berlin.compilerbau.util.PositionString;
 
 /**
@@ -57,6 +56,13 @@ public interface Runtime extends SymbolContainer {
 	 * The actual type is known.
 	 * @see #getUniqualifiedSymbol(PositionString, Iterator)
 	 */
-	UnqualifiedSymbol getUniqualifiedSymbol(PositionString name, SymbolType type);
+	UnqualifiedSymbol getUnqualifiedSymbol(PositionString name, SymbolType type);
+	
+	/**
+	 * Tries to convert all unqualified symbols to qualified ones.
+	 * @return List of all containers having containing unqualified symbols* or
+	 * 	null if all symbols are qualified. *) May be transitive or maybe not.
+	 */
+	Set<SymbolContainer> qualifyAllSymbols();
 	
 }

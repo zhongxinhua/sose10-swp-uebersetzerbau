@@ -7,7 +7,6 @@ import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
-import de.fu_berlin.compilerbau.util.Pair;
 import de.fu_berlin.compilerbau.util.StreamPosition;
 
 

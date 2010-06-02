@@ -10,6 +10,7 @@ import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.Package;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
+import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
@@ -65,7 +66,7 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	}
 	
 	@Override
-	public UnqualifiedSymbol getUniqualifiedSymbol(PositionString name, SymbolType type) {
+	public UnqualifiedSymbol getUnqualifiedSymbol(PositionString name, SymbolType type) {
 		KnownTypeIterator iterator = new KnownTypeIterator(type);
 		return getUniqualifiedSymbol(name, iterator);
 	}
@@ -92,6 +93,12 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 			return super.lookup(symbol);
 		}
 		throw new NullPointerException();
+	}
+
+	@Override
+	public Set<SymbolContainer> qualifyAllSymbols() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

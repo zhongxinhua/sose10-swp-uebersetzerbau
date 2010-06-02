@@ -2,11 +2,13 @@ package de.fu_berlin.compilerbau.symbolTable.java;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.jar.JarEntry;
@@ -17,12 +19,9 @@ import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.Package;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
+import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
-import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
-import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.SymbolTableException;
-import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
-import de.fu_berlin.compilerbau.util.Pair;
 import de.fu_berlin.compilerbau.util.PositionBean;
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.Visibility;
@@ -48,10 +47,7 @@ public class RuntimeFactory {
 	 * 	declared as such explicitly.
 	 * @param classpath JARs of this classpath
 	 * @param rtJar The JAR containing the JRE, e.g. "/usr/lib/jvm/java-6-openjdk/jre/lib/rt.jar".
-	 * @throws IOException 
-	 * @throws WrongModifierException 
-	 * @throws ShadowedIdentifierException 
-	 * @throws DuplicateIdentifierException 
+	 * @throws IOException Something in the underlying IO system went wrong!
 	 */
 	public static Runtime newRuntime(Iterator<Map.Entry<PositionString,PositionString>> imports,
 			URL[] classpath, URL rtJar) throws IOException {
@@ -79,10 +75,11 @@ public class RuntimeFactory {
 					if(!fileName.endsWith(DOT_CLASS)) {
 						continue;
 					}
-					String pkgName = fileName.replaceAll("/", "\\.");
-					pkgName = pkgName.substring(0, pkgName.length() - DOT_CLASS.length());
-					Class<?> clazz = loader.findClass(pkgName);
-					populateFromNativeClass(result, pkgName, clazz); // indentation too big ...
+					String className = fileName.replaceAll("/", "\\.");
+					className = className.substring(0, className.length() - DOT_CLASS.length());
+					Class<?> clazz = Class.forName(className, false, loader);
+					String pkgName = className.substring(0, className.lastIndexOf('.'));
+					populateFromNativeClass(result, pkgName, className, clazz); // indentation too big ...
 				}
 			} catch(ClassNotFoundException e) {
 				throw new RuntimeException("A class in a JAR could not be loaded.", e);
@@ -93,13 +90,23 @@ public class RuntimeFactory {
 			jarInputStream.close();
 		}
 		
+		Set<SymbolContainer> unqualifiedSymbols = result.qualifyAllSymbols();
+		if(unqualifiedSymbols != null) {
+			System.err.println("Runtime contains unqualified symbol(s) in");
+			for(SymbolContainer symbol : unqualifiedSymbols) {
+				System.err.println("\t" + symbol);
+			}
+			throw new RuntimeException("Runtime contains unqualified symbols!");
+		}
+		
 		return result;
 	}
 
-	private static void populateFromNativeClass(RuntimeImpl result, String pkgName, Class<?> clazz)
-			throws SymbolTableException {
+	private static void populateFromNativeClass(RuntimeImpl rt, String pkgName,
+			String className, Class<?> clazz) throws SymbolTableException {
+		
 		PositionString pkgLookupName = new PositionString(pkgName, PositionBean.ZERO);
-		Symbol pkgSymbol = result.getQualifiedSymbol(pkgLookupName, SymbolType.PACKAGE);
+		Symbol pkgSymbol = rt.getQualifiedSymbol(pkgLookupName, SymbolType.PACKAGE);
 		if(pkgSymbol == null) {
 			// class private, protected oder private Klasse
 			return;
@@ -109,27 +116,68 @@ public class RuntimeFactory {
 		final Symbol extends_;
 		Class<?> superclass = clazz.getSuperclass();
 		if(superclass != null) {
-			PositionString name = new PositionString(superclass.getName(), PositionBean.ZERO);
-			extends_ = result.getUniqualifiedSymbol(name, SymbolType.CLASS);
+			extends_ = javaToCompilerType(rt, superclass);
 		} else {
 			extends_ = null;
-		}
-		
-		List<Symbol> implements_ = null; // TODO: Interfaces raussuchen
+		}		
 
-		PositionString classLookupName = new PositionString(pkgName, PositionBean.ZERO);
+		Symbol[] ifSymbols = javaToCompilerType(rt, clazz.getInterfaces());
+
+		PositionString classLookupName = new PositionString(className, PositionBean.ZERO);
 		Modifier clazzModifiers = new NativeModifier(clazz.getModifiers());
+		Iterator<Symbol> implements_ = Arrays.asList(ifSymbols).iterator();
 		de.fu_berlin.compilerbau.symbolTable.Class clazzSymbol =
-				pkg.addClass(classLookupName, extends_, implements_.iterator(), clazzModifiers);
+				pkg.addClass(classLookupName, extends_, implements_, clazzModifiers);
 		
 		for(Field field : clazz.getDeclaredFields()) {
-			NativeModifier fieldModifiers = new NativeModifier(field.getModifiers());
+			NativeModifier modifiers = new NativeModifier(field.getModifiers());
 			PositionString name = new PositionString(field.getName(), PositionBean.ZERO);
-			Symbol type = result.getUniqualifiedSymbol(name, SymbolType.CLASS_OR_INTERFACE);
-			clazzSymbol.addMember(name, type, fieldModifiers);
+			Symbol type = javaToCompilerType(rt, field.getType());
+			clazzSymbol.addMember(name, type, modifiers);
 		}
 		
-		// TODO: Methoden und Ctors hinzufügen
+		for(Constructor<?> ctor : clazz.getDeclaredConstructors()) {
+			NativeModifier modifiers = new NativeModifier(ctor.getModifiers());
+			Iterator<Symbol> parameters = Arrays.asList(javaToCompilerType(
+					rt, ctor.getParameterTypes())).iterator();
+			clazzSymbol.addConstructor(parameters, modifiers);
+		}
+		
+		for(Method method : clazz.getDeclaredMethods()) {
+			NativeModifier modifiers = new NativeModifier(method.getModifiers());
+			Iterator<Symbol> parameters = Arrays.asList(javaToCompilerType(
+					rt, method.getParameterTypes())).iterator();
+			Symbol resultType = javaToCompilerType(rt, method.getReturnType());
+			PositionString name = new PositionString(method.getName(), PositionBean.ZERO);
+			clazzSymbol.addMethod(name, resultType, parameters, modifiers);
+		}
+		
+	}
+	
+	/**
+	 * Java's type names have to be put in our {@link Symbol} schema.
+	 * This method translates a {@link Class} into a unqualified symbol.
+	 * @param rt
+	 * @param type
+	 * @return
+	 */
+	static Symbol javaToCompilerType(Runtime rt, Class<?> type) {
+		// TODO: atomare Typen, Arrays, void
+		PositionString name = new PositionString(type.getName(), PositionBean.ZERO);
+		SymbolType symbolType = type.isInterface() ? SymbolType.INTERFACE : SymbolType.CLASS;
+		Symbol result = rt.getUnqualifiedSymbol(name, symbolType);
+		return result;
+	}
+	
+	/**
+	 * @see #javaToCompilerType(Runtime, Class)
+	 */
+	static Symbol[] javaToCompilerType(Runtime rt, Class<?> type[]) {
+		Symbol[] result = new Symbol[type.length];
+		for(int i = 0; i < type.length; ++i) {
+			result[i] = javaToCompilerType(rt, type[i]);
+		}
+		return result;
 	}
 	
 }

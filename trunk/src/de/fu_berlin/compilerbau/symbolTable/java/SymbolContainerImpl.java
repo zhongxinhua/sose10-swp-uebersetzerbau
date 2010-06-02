@@ -25,7 +25,7 @@ class SymbolContainerImpl extends SymbolImpl implements SymbolContainer {
 	@Override
 	public Symbol getQualifiedSymbol(PositionString name, SymbolType type) {
 		Runtime runtime = getRuntime();
-		UnqualifiedSymbol uniqualifiedSymbol = runtime.getUniqualifiedSymbol(name, type);
+		UnqualifiedSymbol uniqualifiedSymbol = runtime.getUnqualifiedSymbol(name, type);
 		return lookup(uniqualifiedSymbol);
 	}
 	

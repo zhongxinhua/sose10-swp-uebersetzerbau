@@ -1,6 +1,6 @@
 package de.fu_berlin.compilerbau.symbolTable;
 
-import java.util.List;
+import java.util.Iterator;
 
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
@@ -15,7 +15,7 @@ public interface Class extends ClassOrInterface {
 	/**
 	 * @see ClassOrInterface#addMethod(PositionString, Symbol, List, Modifier)
 	 */
-	Constructor addConstructor(List<Symbol> parameters, Modifier modifier) throws
+	Constructor addConstructor(Iterator<Symbol> parameters, Modifier modifier) throws
 			DuplicateIdentifierException, ShadowedIdentifierException, WrongModifierException;
 	
 }

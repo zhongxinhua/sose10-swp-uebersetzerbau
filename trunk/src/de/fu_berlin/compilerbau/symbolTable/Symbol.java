@@ -3,7 +3,6 @@ package de.fu_berlin.compilerbau.symbolTable;
 import java.util.Map;
 import java.util.Set;
 
-import de.fu_berlin.compilerbau.util.Pair;
 import de.fu_berlin.compilerbau.util.StreamPosition;
 
 public interface Symbol {
