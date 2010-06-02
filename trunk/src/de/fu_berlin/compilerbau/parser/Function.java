@@ -12,13 +12,14 @@ import de.fu_berlin.compilerbau.util.PositionString;
  * statement.
  * <p/>
  * <b>Specification</b><br>
- * The &ltfunction/&gt statement <b>needs two</b> attributes:
+ * The &ltfunction/&gt statement <b>needs one</b> attributes:
  * <ul>
  * <li>name - the name of the function</li>
- * <li>returns - declares the {@link Type} of the return value
+ * 
  * </ul>
- * The &ltfunction/&gt statement <b>has two</b> optional attributes:
+ * The &ltfunction/&gt statement <b>has three</b> optional attributes:
  * <ul>
+ * <li>returns - declares the {@link Type} of the return value
  * <li>static - determines whether the function is static. The {@link String}
  * "yes" sets the function static (default="no")</li>
  * <li>final - determines whether the function ist final. The {@link String}
@@ -58,7 +59,7 @@ public class Function extends SyntaxTreeNode {
 			ErrorHandler.error(node,
 					"'name' attribute expected at function head");
 		}
-		// check needed attribute: returns
+		// check optional attribute: returns
 		if (node.hasAttribute("returns")
 				&& node.getAttributeValue("returns").length() > 0) {
 			return_type = Type.get(node.getAttributeValue("returns"));
