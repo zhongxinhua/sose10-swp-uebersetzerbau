@@ -4,7 +4,7 @@ import de.fu_berlin.compilerbau.parser.expressions.Expression;
 import de.fu_berlin.compilerbau.statementParser.impl.StatementParser;
 import de.fu_berlin.compilerbau.statementParser.impl.StatementParser.ExpressionType;
 
-public class StatementParserTest {
+class StatementParserTest {
 	public static void main(String[] args) {		
 		String[] rvalue_tests = new String[] { 
 				/*"\"abc\" - abc - 123 - 1.23",

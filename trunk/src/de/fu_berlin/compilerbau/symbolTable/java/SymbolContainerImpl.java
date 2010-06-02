@@ -2,6 +2,7 @@ package de.fu_berlin.compilerbau.symbolTable.java;
 
 import java.util.Set;
 
+import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
@@ -11,6 +12,10 @@ import de.fu_berlin.compilerbau.util.PositionString;
 
 class SymbolContainerImpl extends SymbolImpl implements SymbolContainer {
 	
+	SymbolContainerImpl(RuntimeImpl runtime) {
+		super(runtime);
+	}
+	
 	@Override
 	public Set<Symbol> getContainedSymbols() {
 		// TODO Auto-generated method stub
@@ -19,7 +24,8 @@ class SymbolContainerImpl extends SymbolImpl implements SymbolContainer {
 	
 	@Override
 	public Symbol getQualifiedSymbol(PositionString name, SymbolType type) {
-		UnqualifiedSymbol uniqualifiedSymbol = getRuntime().getUniqualifiedSymbol(name, type);
+		Runtime runtime = getRuntime();
+		UnqualifiedSymbol uniqualifiedSymbol = runtime.getUniqualifiedSymbol(name, type);
 		return lookup(uniqualifiedSymbol);
 	}
 	

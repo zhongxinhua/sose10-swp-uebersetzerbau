@@ -15,7 +15,7 @@ public final class GetModifier {
 		
 		int position = 0;
 		position += visibility.ordinal();
-		position <<= 2;
+		position <<= 1;
 		position += isStatic ? 1 : 0;
 		position <<= 1;
 		position += isFinal ? 1 : 0;

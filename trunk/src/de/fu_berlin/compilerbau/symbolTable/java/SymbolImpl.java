@@ -1,5 +1,6 @@
 package de.fu_berlin.compilerbau.symbolTable.java;
 
+import java.util.Map;
 import java.util.Set;
 
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
@@ -11,6 +12,12 @@ import de.fu_berlin.compilerbau.util.StreamPosition;
 
 
 class SymbolImpl implements Symbol {
+	
+	private final RuntimeImpl runtime;
+	
+	SymbolImpl(RuntimeImpl runtime) {
+		this.runtime = runtime;
+	}
 	
 	@Override
 	public void addMention(Symbol who, StreamPosition where) {
@@ -31,7 +38,7 @@ class SymbolImpl implements Symbol {
 	}
 	
 	@Override
-	public Set<Pair<Symbol, StreamPosition>> getMentions() {
+	public Set<Map.Entry<Symbol, StreamPosition>> getMentions() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -50,8 +57,7 @@ class SymbolImpl implements Symbol {
 
 	@Override
 	public Runtime getRuntime() {
-		// TODO Auto-generated method stub
-		return null;
+		return runtime;
 	}
 
 	@Override

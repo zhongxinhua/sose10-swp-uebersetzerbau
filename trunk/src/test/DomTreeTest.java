@@ -13,7 +13,7 @@ import de.fu_berlin.compilerbau.dom.DomAttribute;
 import de.fu_berlin.compilerbau.dom.DomCreator;
 import de.fu_berlin.compilerbau.dom.DomNode;
 
-public class DomTreeTest {
+class DomTreeTest {
 	static StringBuffer sb;
 	
 	public static void main(String args[]) {

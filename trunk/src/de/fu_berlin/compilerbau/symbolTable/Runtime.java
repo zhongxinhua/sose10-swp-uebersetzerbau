@@ -1,6 +1,7 @@
 package de.fu_berlin.compilerbau.symbolTable;
 
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
@@ -50,7 +51,7 @@ public interface Runtime extends SymbolContainer {
 	 * @throws RuntimeException A symbol occurred twice.
 	 */
 	UnqualifiedSymbol getUniqualifiedSymbol(PositionString name,
-			Iterator<Pair<SymbolType,Likelyness>> likeliness) throws RuntimeException;
+			Iterator<Map.Entry<SymbolType,Likelyness>> likeliness) throws RuntimeException;
 	
 	/**
 	 * The actual type is known.

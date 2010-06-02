@@ -1,5 +1,6 @@
 package de.fu_berlin.compilerbau.symbolTable;
 
+import java.util.Map;
 import java.util.Set;
 
 import de.fu_berlin.compilerbau.util.Pair;
@@ -25,7 +26,7 @@ public interface Symbol {
 	 * Where and by whom was this symbol mentioned. (For circular dependencies.)
 	 * @return immutable list [(who,where)]
 	 */
-	Set<Pair<Symbol,StreamPosition>> getMentions();
+	Set<Map.Entry<Symbol,StreamPosition>> getMentions();
 	
 	void addMention(Symbol who,StreamPosition where);
 	

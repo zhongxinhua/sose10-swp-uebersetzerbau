@@ -7,6 +7,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -51,7 +53,7 @@ public class RuntimeFactory {
 	 * @throws ShadowedIdentifierException 
 	 * @throws DuplicateIdentifierException 
 	 */
-	public static Runtime newRuntime(Iterator<Pair<PositionString,PositionString>> imports,
+	public static Runtime newRuntime(Iterator<Map.Entry<PositionString,PositionString>> imports,
 			URL[] classpath, URL rtJar) throws IOException {
 		RuntimeImpl result = new RuntimeImpl();
 		
@@ -98,8 +100,9 @@ public class RuntimeFactory {
 			throws SymbolTableException {
 		PositionString pkgLookupName = new PositionString(pkgName, PositionBean.ZERO);
 		Symbol pkgSymbol = result.getQualifiedSymbol(pkgLookupName, SymbolType.PACKAGE);
-		if(pkgSymbol == null || pkgSymbol.getType() != SymbolType.PACKAGE) {
-			throw new SymbolTableException("Could not lookup a package that should be already known.");
+		if(pkgSymbol == null) {
+			// class private, protected oder private Klasse
+			return;
 		}
 		Package pkg = (Package)pkgSymbol;
 

@@ -67,7 +67,7 @@ public class PositionString extends PositionBean implements CharSequence, Compar
 				return +1;
 			}
 			
-			final int v = charAt(i) -right.charAt(i);
+			final int v = charAt(i) - right.charAt(i);
 			if(v != 0) {
 				return v;
 			}
