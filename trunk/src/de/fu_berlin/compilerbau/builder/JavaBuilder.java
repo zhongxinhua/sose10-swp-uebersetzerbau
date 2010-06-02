@@ -106,7 +106,7 @@ public class JavaBuilder extends Builder {
 			_code.append("static ");
 		}
 
-		_code.append(Type.toJavaString(func.getReturnType()) + " ");
+		_code.append(functionTypeToJavaString(func.getReturnType()) + " ");
 
 		_code.append(func.getName() + " (");
 
@@ -114,7 +114,7 @@ public class JavaBuilder extends Builder {
 		List<DeclarationStatement> args = func.getArguments();
 		for (int i = 0; i < args.size(); ++i) {
 			DeclarationStatement declStmt = args.get(i);
-			_code.append(Type.toJavaString(declStmt.getType()) + " ");
+			_code.append(typeToJavaString(declStmt.getType()) + " ");
 			_code.append(declStmt.getName());
 			if (i + 1 < args.size())
 				_code.append(", ");
@@ -168,7 +168,7 @@ public class JavaBuilder extends Builder {
 			_code.append("final ");
 		}
 
-		_code.append(Type.toJavaString(decl.getType()) + " ");
+		_code.append(typeToJavaString(decl.getType()) + " ");
 
 		for (int i = 0; i < decl.getDimension(); ++i) {
 			_code.append("[] ");
@@ -467,4 +467,28 @@ public class JavaBuilder extends Builder {
 
 	}
 
+	private String typeToJavaString(Type type) {
+		if (type == Type.STRING) {
+			return "String";
+		} else if (type == Type.INTEGER) {
+			return "int";
+		} else if (type == Type.FLOAT) {
+			return "float";
+		} else {
+			return "null";
+		}
+	}
+	
+	private String functionTypeToJavaString(Type type) {
+		if (type == Type.STRING) {
+			return "String";
+		} else if (type == Type.INTEGER) {
+			return "int";
+		} else if (type == Type.FLOAT) {
+			return "float";
+		} else {
+			return "void";
+		}
+	}
+	
 }

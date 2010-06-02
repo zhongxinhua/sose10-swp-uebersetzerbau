@@ -184,7 +184,7 @@ public class DomCreator {
 					if (child == null) {
 						throw new IllegalStateException("child == null"); // cannot happen
 					}
-					children.push(child);
+					children.add(child);
 					break;
 				}
 				case NT_END_TAG: {
