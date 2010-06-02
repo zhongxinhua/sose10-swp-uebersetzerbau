@@ -61,7 +61,7 @@ public class JavaBuilder extends Builder {
 		
 		_code.append(" {\n");
 		
-		for(DeclarationStatement decl : theclass.getDeclerations()) {
+		for(DeclarationStatement decl : theclass.getDeclarations()) {
 			buildDecleration(decl);
 		}
 
@@ -237,9 +237,9 @@ public class JavaBuilder extends Builder {
 	}
 
 	protected void buildSetStatement(SetStatement obj) throws IOException {
-		buildExpressionStatement(obj.lvalue);
+		buildExpressionStatement(obj.getLValue());
 		_code.append("=");
-		buildExpressionStatement(obj.rvalue);
+		buildExpressionStatement(obj.getRLValue());
 	}
 
 	@Override

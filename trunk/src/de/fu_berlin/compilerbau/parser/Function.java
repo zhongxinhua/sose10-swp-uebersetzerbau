@@ -1,6 +1,5 @@
 package de.fu_berlin.compilerbau.parser;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import de.fu_berlin.compilerbau.dom.DomNode;
@@ -141,7 +140,7 @@ public class Function extends SyntaxTreeNode {
 		return arguments;
 	}
 
-	public Iterator<Statement> getBody() {
-		return body.iterator();
+	public List<Statement> getBody() {
+		return body;
 	}
 }
