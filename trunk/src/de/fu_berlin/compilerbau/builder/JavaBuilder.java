@@ -33,15 +33,18 @@ import de.fu_berlin.compilerbau.parser.expressions.FloatLiteral;
 import de.fu_berlin.compilerbau.parser.expressions.FunctionCall;
 import de.fu_berlin.compilerbau.parser.expressions.Identifier;
 import de.fu_berlin.compilerbau.parser.expressions.IntegerLiteral;
-import de.fu_berlin.compilerbau.parser.expressions.Literal;
 import de.fu_berlin.compilerbau.parser.expressions.MemberAccess;
 import de.fu_berlin.compilerbau.parser.expressions.NullLiteral;
 import de.fu_berlin.compilerbau.parser.expressions.ObjectCreation;
 import de.fu_berlin.compilerbau.parser.expressions.StringLiteral;
 import de.fu_berlin.compilerbau.parser.expressions.Type;
 import de.fu_berlin.compilerbau.parser.expressions.UnaryOperation;
+import de.fu_berlin.compilerbau.parser.expressions.BinaryOperation.BinaryOperator;
+import de.fu_berlin.compilerbau.parser.expressions.UnaryOperation.UnaryOperator;
 
 public class JavaBuilder extends Builder {
+	// Active DEBUG to Console?
+	boolean PRINT_DEBUG = false;
 
 	public JavaBuilder(AbstractSyntaxTree astree, String classpath) {
 		super(astree, classpath);
@@ -52,17 +55,33 @@ public class JavaBuilder extends Builder {
 		Module root = _astree.getRoot();
 		_code.append("package " + root.getName() + ";\n");
 
+		// check for import statements
+		if (!theclass.getImports().isEmpty()) {
+			for (ImportStatement importstmt : theclass.getImports()) {
+				buildImportStatement(importstmt);
+			}
+		}
+
 		_code.append("class " + theclass.getName() + " ");
-		
-		// TODO: super auswerten, wenn irgendwann im SyntaxBaum vorhanden
-		/*if (theclass.getSuper() != null) {
+		// check for optional attribute "super"
+		if (theclass.getSuper() != null) {
 			_code.append("extends " + theclass.getSuper());
-		}*/
-		
+		}
+		// check for implement statements
+		if (!theclass.getImplementations().isEmpty()) {
+			for (ImplementStatement implementstmt : theclass
+					.getImplementations()) {
+				buildImplementStatement(implementstmt);
+			}
+			// Reset Boolean
+			isFirstImplementStatement = true;
+		}
+
+		// JAVA-Class-Body Begin>
 		_code.append(" {\n");
-		
-		for(DeclarationStatement decl : theclass.getDeclarations()) {
-			buildDecleration(decl);
+
+		for (DeclarationStatement decl : theclass.getDeclarations()) {
+			buildDeclarationStatement(decl);
 		}
 
 		for (Function func : theclass.getFunctions()) {
@@ -70,64 +89,42 @@ public class JavaBuilder extends Builder {
 		}
 
 		_code.append("}\n");
-	}
-
-	@Override
-	protected void buildDecleration(DeclarationStatement decl)
-			throws IOException {
-		
-		if(decl.isFinal()) {
-			_code.append("static ");
-		}
-		if(decl.isFinal()) {
-			_code.append("final ");
-		}
-		
-		_code.append(Type.toJavaString(decl.getType()) + " ");
-		
-		for(int i=0; i<decl.getDimension(); ++i) {
-			_code.append("[] ");
-		}
-		
-		_code.append(decl.getName());
-		
-		if(decl.getValue() != null) {
-			_code.append(" = " + decl.getValue());
-		}
-		/*
-		 * optional TODO: Arrays
-		else if(decl.isArray()) {
-				_code.append(" = new " + Type.toJavaString(decl.getType()));
-				for(int i=0; i<decl.getDimension(); ++i) {
-					_code.append("[]");
-				}
-		}*/
-		_code.append(";\n");
+		// JAVA-Class-Body End>
 	}
 
 	@Override
 	protected void buildFunction(Function func) throws IOException {
+		if (PRINT_DEBUG) {
+			System.out.println("DEBUG::buildFunction::"
+					+ func.getClass().toString());
+		}
 		_code.append("public ");
+		if (func.isFinal()) {
+			_code.append("final ");
+		}
+		if (func.isStatic()) {
+			_code.append("static ");
+		}
 
 		_code.append(Type.toJavaString(func.getReturnType()) + " ");
 
 		_code.append(func.getName() + " (");
-		
+
 		// Argumente der Funktion
 		List<DeclarationStatement> args = func.getArguments();
-		for(int i=0; i<args.size(); ++i) {
+		for (int i = 0; i < args.size(); ++i) {
 			DeclarationStatement declStmt = args.get(i);
 			_code.append(Type.toJavaString(declStmt.getType()) + " ");
 			_code.append(declStmt.getName());
-			if(i+1<args.size()) _code.append(", ");
+			if (i + 1 < args.size())
+				_code.append(", ");
 		}
-		
-		_code.append(") {\n");
 
-		for(Statement stmt : func.getBody()) {
+		_code.append(") {\n");
+		for (Statement stmt : func.getBody()) {
 			buildStatement(stmt);
 		}
-		
+
 		_code.append("}\n");
 	}
 
@@ -160,31 +157,69 @@ public class JavaBuilder extends Builder {
 		// TODO Auto-generated method stub
 
 	}
-
-	@Override
-	protected void buildDeclarationStatement(DeclarationStatement obj)
+	//ASSERT: this Declaration Statement DO NOT appear in <arguments> body 
+	protected void buildDeclarationStatement(DeclarationStatement decl)
 			throws IOException {
-		// TODO Auto-generated method stub
 
+		if (decl.isFinal()) {
+			_code.append("static ");
+		}
+		if (decl.isFinal()) {
+			_code.append("final ");
+		}
+
+		_code.append(Type.toJavaString(decl.getType()) + " ");
+
+		for (int i = 0; i < decl.getDimension(); ++i) {
+			_code.append("[] ");
+		}
+
+		_code.append(decl.getName());
+
+		if (decl.getValue() != null) {
+			_code.append(" = ");
+			buildExpressionStatement(decl.getValue());
+		}
+		/*
+		 * optional TODO: Arrays else if(decl.isArray()) {
+		 * _code.append(" = new " + Type.toJavaString(decl.getType())); for(int
+		 * i=0; i<decl.getDimension(); ++i) { _code.append("[]"); } }
+		 */
+		_code.append(";\n");
 	}
 
 	@Override
 	protected void buildDoStatement(DoStatement obj) throws IOException {
-		// TODO Auto-generated method stub
+		_code.append("while(");
+		buildExpressionStatement(obj.getTest());
+		// WHILE-Body Begin>
+		_code.append(") {\n");
+
+		for (Statement stmt : obj.getBody()) {
+			buildStatement(stmt);
+		}
+		// WHILE-Body End>
+		_code.append("}\n");
 
 	}
 
-	@Override
+	boolean isFirstImplementStatement = true;
+
 	protected void buildImplementStatement(ImplementStatement obj)
 			throws IOException {
-		// TODO Auto-generated method stub
-
+		if (isFirstImplementStatement) {
+			_code.append("implements ");
+			_code.append(obj.getName());
+			isFirstImplementStatement = false;
+		} else {
+			_code.append(", " + obj.getName());
+		}
 	}
 
-	@Override
 	protected void buildImportStatement(ImportStatement obj) throws IOException {
-		// TODO Auto-generated method stub
-
+		_code.append("import ");
+		_code.append(obj.getName());
+		_code.append(";\n");
 	}
 
 	@Override
@@ -201,8 +236,9 @@ public class JavaBuilder extends Builder {
 
 	@Override
 	protected void buildReturnStatement(ReturnStatement obj) throws IOException {
-		// TODO Auto-generated method stub
-
+		_code.append("return ");
+		buildExpressionStatement(obj.getValue());
+		_code.append(";\n");
 	}
 
 	@Override
@@ -213,9 +249,11 @@ public class JavaBuilder extends Builder {
 
 	@Override
 	protected void buildStatement(Statement obj) throws IOException {
-		if (obj instanceof SetStatement) {
-			buildSetStatement((SetStatement) obj);
-		} else if (obj instanceof BreakStatement) {
+		if (PRINT_DEBUG) {
+			System.out.println("DEBUG::buildStatement::"
+					+ obj.getClass().toString());
+		}
+		if (obj instanceof BreakStatement) {
 			buildBreakStatement((BreakStatement) obj);
 		} else if (obj instanceof CallStatement) {
 			buildCallStatement((CallStatement) obj);
@@ -225,13 +263,19 @@ public class JavaBuilder extends Builder {
 			buildContinueStatement((ContinueStatement) obj);
 		} else if (obj instanceof DeclarationStatement) {
 			buildDeclarationStatement((DeclarationStatement) obj);
-		}else if (obj instanceof DoStatement) {
+		} else if (obj instanceof DoStatement) {
 			buildDoStatement((DoStatement) obj);
-		}else if (obj instanceof ScopeStatement) {
+		} else if (obj instanceof ReturnStatement) {
+			buildReturnStatement((ReturnStatement) obj);
+		} else if (obj instanceof ScopeStatement) {
 			buildScopeStatement((ScopeStatement) obj);
-		}else{
-			//ERROR
-			System.err.println(this.getClass().toString()+" - Should not happen - buildStatement");
+		} else if (obj instanceof SetStatement) {
+			buildSetStatement((SetStatement) obj);
+		} else {
+			// ERROR
+			System.err.println(this.getClass().toString()
+					+ " - Should not happen - buildStatement::"
+					+ obj.getClass().toString());
 		}
 
 	}
@@ -240,10 +284,14 @@ public class JavaBuilder extends Builder {
 		buildExpressionStatement(obj.getLValue());
 		_code.append("=");
 		buildExpressionStatement(obj.getRLValue());
+		_code.append(";\n");
 	}
 
-	@Override
 	protected void buildExpressionStatement(Expression obj) throws IOException {
+		if (PRINT_DEBUG) {
+			System.out.println("DEBUG::buildExpressionStatement::"
+					+ obj.getClass().toString());
+		}
 		if (obj instanceof ArrayAccess) {
 			buildArrayAccessExpression((ArrayAccess) obj);
 		} else if (obj instanceof BinaryOperation) {
@@ -256,106 +304,167 @@ public class JavaBuilder extends Builder {
 			buildIdentifierExpression((Identifier) obj);
 		} else if (obj instanceof IntegerLiteral) {
 			buildIntegerLiteralExpression((IntegerLiteral) obj);
-		}else if (obj instanceof Literal) {
-			buildLiteralExpression((Literal) obj);
-		}else if (obj instanceof MemberAccess) {
+		} else if (obj instanceof MemberAccess) {
 			buildMemberAccessExpression((MemberAccess) obj);
-		}else if (obj instanceof NullLiteral) {
+		} else if (obj instanceof NullLiteral) {
 			buildNullLiteralExpression((NullLiteral) obj);
-		}else if (obj instanceof ObjectCreation) {
+		} else if (obj instanceof ObjectCreation) {
 			buildObjectCreationExpression((ObjectCreation) obj);
-		}else if (obj instanceof StringLiteral) {
+		} else if (obj instanceof StringLiteral) {
 			buildStringLiteralExpression((StringLiteral) obj);
-		}else if (obj instanceof UnaryOperation) {
+		} else if (obj instanceof UnaryOperation) {
 			buildUnaryOperationExpression((UnaryOperation) obj);
-		}else{
-			//ERROR
-			System.err.println(this.getClass().toString()+" - Should not happen - buildExpresseionStatement");
+		} else {
+			// ERROR
+			System.err.println(this.getClass().toString()
+					+ " - Should not happen - buildExpresseionStatement");
 		}
 
 	}
 
-	@Override
 	protected void buildArrayAccessExpression(ArrayAccess obj)
 			throws IOException {
-		// TODO Auto-generated method stub
-		
+		// Arrayname
+		_code.append(obj.getName());
+		_code.append('[');
+		for (Expression indice : obj.getIndices()) {
+			buildExpressionStatement(indice);
+		}
+		_code.append(']');
 	}
 
-	@Override
 	protected void buildBinaryOperationExpression(BinaryOperation obj)
 			throws IOException {
-		// TODO Auto-generated method stub
-		
+		// Build Left
+		buildExpressionStatement(obj.getLeftExpression());
+
+		// Build Operator
+		BinaryOperator tmp = obj.getBinaryOperator();
+		if (tmp == BinaryOperator.ADD) {
+			_code.append('+');
+		} else if (tmp == BinaryOperator.AND) {
+			_code.append("&&");
+		} else if (tmp == BinaryOperator.BITWISE_AND) {
+			_code.append('&');
+		} else if (tmp == BinaryOperator.BITWISE_OR) {
+			_code.append('|');
+		} else if (tmp == BinaryOperator.BITWISE_XOR) {
+			_code.append('^');
+		} else if (tmp == BinaryOperator.DIVIDES) {
+			_code.append('/');
+		} else if (tmp == BinaryOperator.EQUAL) {
+			_code.append("==");
+		} else if (tmp == BinaryOperator.GREATER_EQUAL) {
+			_code.append(">=");
+		} else if (tmp == BinaryOperator.GREATER_THAN) {
+			_code.append('>');
+		} else if (tmp == BinaryOperator.LESS_EQUAL) {
+			_code.append("<=");
+		} else if (tmp == BinaryOperator.LESS_THAN) {
+			_code.append('<');
+		} else if (tmp == BinaryOperator.MODULOS) {
+			_code.append('%');
+		} else if (tmp == BinaryOperator.NOTEQUAL) {
+			_code.append("!=");
+		} else if (tmp == BinaryOperator.OR) {
+			_code.append("||");
+		} else if (tmp == BinaryOperator.SUBSTRACT) {
+			_code.append('-');
+		} else if (tmp == BinaryOperator.TIMES) {
+			_code.append('*');
+		} else {
+			// ERROR
+			System.err.println(this.getClass().toString()
+					+ " - Should not happen - buildBinaryOperationExpression");
+		}
+		// Build Right
+		buildExpressionStatement(obj.getRightExpression());
+
 	}
 
-	@Override
 	protected void buildFloatLiteralExpression(FloatLiteral obj)
 			throws IOException {
-		// TODO Auto-generated method stub
-		
+		_code.append(String.valueOf(obj.getValue()));
 	}
 
-	@Override
 	protected void buildFunctionCallExpression(FunctionCall obj)
 			throws IOException {
-		// TODO Auto-generated method stub
-		
+		_code.append(obj.getName() + "(");
+
+		for (Expression argument : obj.getArguments()) {
+			buildExpressionStatement(argument);
+		}
+
+		_code.append(")");
 	}
 
-	@Override
 	protected void buildIdentifierExpression(Identifier obj) throws IOException {
-		// TODO Auto-generated method stub
-		
+		_code.append(obj.getName());
 	}
 
-	@Override
 	protected void buildIntegerLiteralExpression(IntegerLiteral obj)
 			throws IOException {
-		// TODO Auto-generated method stub
-		
+		_code.append(String.valueOf(obj.getValue()));
 	}
 
-	@Override
-	protected void buildLiteralExpression(Literal obj) throws IOException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	protected void buildMemberAccessExpression(MemberAccess obj)
 			throws IOException {
-		// TODO Auto-generated method stub
-		
+		buildExpressionStatement(obj.getParent());
+		_code.append('.');
+		buildExpressionStatement(obj.getChild());
+
 	}
 
-	@Override
 	protected void buildNullLiteralExpression(NullLiteral obj)
 			throws IOException {
-		// TODO Auto-generated method stub
-		
+		_code.append("null");
+
 	}
 
-	@Override
 	protected void buildObjectCreationExpression(ObjectCreation obj)
 			throws IOException {
-		// TODO Auto-generated method stub
-		
+		// as ObjectCreation is a subclass of FunctionCall, use FunctionCall
+		// Build
+		buildFunctionCallExpression((FunctionCall) obj);
 	}
 
-	@Override
 	protected void buildStringLiteralExpression(StringLiteral obj)
 			throws IOException {
-		// TODO Auto-generated method stub
-		
+		_code.append(obj.getValue());
+
 	}
 
-	@Override
 	protected void buildUnaryOperationExpression(UnaryOperation obj)
 			throws IOException {
-		// TODO Auto-generated method stub
-		
+		// Build Operator
+		UnaryOperator tmp = obj.getUnaryOperator();
+		if (tmp == UnaryOperator.MINUS) {
+			_code.append('-');
+			buildExpressionStatement(obj.getExpression());
+		} else if (tmp == UnaryOperator.NOT) {
+			_code.append('!');
+			buildExpressionStatement(obj.getExpression());
+		} else if (tmp == UnaryOperator.PLUS) {
+			_code.append('+');
+			buildExpressionStatement(obj.getExpression());
+		} else if (tmp == UnaryOperator.PREDEC) {
+			_code.append("--");
+			buildExpressionStatement(obj.getExpression());
+		} else if (tmp == UnaryOperator.PREINC) {
+			_code.append("++");
+			buildExpressionStatement(obj.getExpression());
+		} else if (tmp == UnaryOperator.POSTDEC) {
+			buildExpressionStatement(obj.getExpression());
+			_code.append("--");
+		} else if (tmp == UnaryOperator.POSTINC) {
+			buildExpressionStatement(obj.getExpression());
+			_code.append("++");
+		} else {
+			// ERROR
+			System.err.println(this.getClass().toString()
+					+ " - Should not happen - buildBinaryOperationExpression");
+		}
+
 	}
 
-	
 }

@@ -2,6 +2,7 @@ package de.fu_berlin.compilerbau.builder;
 
 /**
  * @author stefan
+ * @author Sam
  */
 
 import java.io.IOException;
@@ -33,7 +34,6 @@ import de.fu_berlin.compilerbau.parser.expressions.FloatLiteral;
 import de.fu_berlin.compilerbau.parser.expressions.FunctionCall;
 import de.fu_berlin.compilerbau.parser.expressions.Identifier;
 import de.fu_berlin.compilerbau.parser.expressions.IntegerLiteral;
-import de.fu_berlin.compilerbau.parser.expressions.Literal;
 import de.fu_berlin.compilerbau.parser.expressions.MemberAccess;
 import de.fu_berlin.compilerbau.parser.expressions.NullLiteral;
 import de.fu_berlin.compilerbau.parser.expressions.ObjectCreation;
@@ -58,7 +58,6 @@ public abstract class Builder {
 	}
 
 	protected abstract void buildClass(Class theclass) throws IOException;
-	protected abstract void buildDecleration(DeclarationStatement decl) throws IOException;
 	protected abstract void buildFunction(Function func) throws IOException;
 
 	protected abstract void buildBreakStatement(BreakStatement obj) throws IOException;
@@ -87,7 +86,6 @@ public abstract class Builder {
 	protected abstract void buildFunctionCallExpression(FunctionCall obj)throws IOException;
 	protected abstract void buildIdentifierExpression(Identifier obj) throws IOException;
 	protected abstract void buildIntegerLiteralExpression(IntegerLiteral obj) throws IOException;
-	protected abstract void buildLiteralExpression(Literal obj) throws IOException;
 	protected abstract void buildMemberAccessExpression(MemberAccess obj) throws IOException;
 	protected abstract void buildNullLiteralExpression(NullLiteral obj) throws IOException;
 	protected abstract void buildObjectCreationExpression(ObjectCreation obj) throws IOException;
