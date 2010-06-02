@@ -89,7 +89,8 @@ public class DeclarationStatement extends Statement {
 		// check optional attribute: value
 		if (node.hasAttribute("value")
 				&& !node.getAttributeValue("value").equals("")) {
-			this.value = Expression.build(node.getAttribute("value"), ExpressionType.RVALUE);
+			this.value = Expression.build(node.getAttribute("value"),
+					ExpressionType.RVALUE);
 		}
 
 		// check optional attribute: static
@@ -113,7 +114,7 @@ public class DeclarationStatement extends Statement {
 						"'final' attribute parse error: 'yes' expected");
 			}
 		}
-		
+
 		// check if statement is a Leaf
 		if (!node.isLeaf()) {
 			ErrorHandler.error(node, this.getClass().toString()
@@ -121,12 +122,33 @@ public class DeclarationStatement extends Statement {
 		}
 	}
 
-	public Type getType() {	return type; }
-	public PositionString getName() { return name;	}
-	public int getDimension() { return dimension; }
-	public Expression getValue() { return value; }
-	public boolean isStatic() { return isStatic; }
-	public boolean isFinal() { return isFinal; }
-	public boolean isArray() { return dimension > 0; }
+	// BEGIN get-Methoden für Builder
+	public Type getType() {
+		return type;
+	}
 
+	public PositionString getName() {
+		return name;
+	}
+
+	public int getDimension() {
+		return dimension;
+	}
+
+	public Expression getValue() {
+		return value;
+	}
+
+	public boolean isStatic() {
+		return isStatic;
+	}
+
+	public boolean isFinal() {
+		return isFinal;
+	}
+
+	public boolean isArray() {
+		return dimension > 0;
+	}
+	// END get-Methoden für Builder
 }

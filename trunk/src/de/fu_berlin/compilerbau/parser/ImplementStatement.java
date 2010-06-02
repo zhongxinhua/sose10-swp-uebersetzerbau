@@ -39,5 +39,10 @@ public class ImplementStatement extends SyntaxTreeNode {
 		}
 
 	}
+	// BEGIN get-Methoden für Builder
+	public PositionString getName(){
+		return name;
+	}
+	// END get-Methoden für Builder
 
 }

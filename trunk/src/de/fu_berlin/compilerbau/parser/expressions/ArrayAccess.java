@@ -36,4 +36,12 @@ public class ArrayAccess extends Expression {
 	public String toString() {
 		return name+"[...]";
 	}
+	//BEGIN get-Methoden für Builder
+	public CharSequence getName(){
+		return name;
+	}
+	public List<Expression> getIndices(){
+		return indices;
+	}
+	//END get-Methoden für Builder
 }

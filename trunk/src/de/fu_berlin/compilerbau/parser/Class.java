@@ -6,9 +6,9 @@ import de.fu_berlin.compilerbau.dom.DomNode;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
 import de.fu_berlin.compilerbau.util.PositionString;
 
-/**<b>Description</b><br>
- * {@link Class} is a subclass of {@link ClassOrInterface} representing a
- * &ltclass/&gt statement forming a node in the parse tree.<br>
+/**
+ * <b>Description</b><br> {@link Class} is a subclass of {@link ClassOrInterface}
+ * representing a &ltclass/&gt statement forming a node in the parse tree.<br>
  * <p>
  * <b>Specification</b><br>
  * The &ltclass/&gt statement <b>needs one</b> attribute:
@@ -26,7 +26,6 @@ import de.fu_berlin.compilerbau.util.PositionString;
  * <li><b>arbitrary</b> &ltimplements/&gt statements</li>
  * <li><b>arbitrary</b> &ltdecl/&gt statements</li>
  * <li><b>arbitrary</b> &ltfunction/&gt statements</li>
- * <li><b>arbitrary</b> &ltstatic/&gt statements</li>
  * </ul>
  * 
  * @author Sam
@@ -50,8 +49,7 @@ public class Class extends ClassOrInterface {
 		}
 		// check optional attribute: super
 		if (node.hasAttribute("super")
-				&& !node.getAttributeValue("super").equals("")) {
-			// TODO parent referenzieren ï¿½ber symboltabelleneintrag
+				&& node.getAttributeValue("super").length() > 0) {
 			parent = node.getAttribute("super");
 		}
 
@@ -82,11 +80,22 @@ public class Class extends ClassOrInterface {
 		}
 	}
 
-	public List<DeclarationStatement> getDeclerations() {
+	// BEGIN get-Methoden für Builder
+	public PositionString getSuper(){
+		return parent;
+	}
+	
+	public List<ImportStatement> getImports(){
+		return imports;
+	}
+	public List<ImplementStatement> getImplementations(){
+		return implementations;
+	}
+	public List<DeclarationStatement> getDeclarations() {
 		return declarations;
 	}
-
 	public List<Function> getFunctions() {
 		return functions;
 	}
+	// END get-Methoden für Builder
 }

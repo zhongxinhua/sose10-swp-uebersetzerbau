@@ -21,4 +21,9 @@ public class StringLiteral extends Literal {
 	public String toString() {
 		return "string("+value+")";
 	}
+	//BEGIN get-Methoden für Builder
+	public CharSequence getValue(){
+		return value;
+	}
+	//END get-Methoden für Builder
 }

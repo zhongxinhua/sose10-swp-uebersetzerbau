@@ -42,4 +42,15 @@ public class BinaryOperation extends Expression { // a+b
 	public String toString() {
 		return left.toString()+" "+operator.toString()+" "+right.toString();
 	}
+	//BEGIN get-Methoden für Builder
+	public Expression getLeftExpression(){
+		return left;
+	}
+	public BinaryOperator getBinaryOperator(){
+		return operator;
+	}
+	public Expression getRightExpression(){
+		return right;
+	}
+	//END get-Methoden für Builder
 }

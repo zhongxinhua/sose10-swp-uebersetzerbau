@@ -36,8 +36,9 @@ public abstract class ClassOrInterface extends SyntaxTreeNode {
 			ErrorHandler.error(node, "'calss' or 'interface' expected");
 		return null;
 	}
-
+	// BEGIN get-Methoden für Builder
 	public PositionString getName() {
 		return name;
 	}
+	// END get-Methoden für Builder
 }

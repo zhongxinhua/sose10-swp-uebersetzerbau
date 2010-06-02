@@ -29,4 +29,12 @@ public class UnaryOperation extends Expression {
 		System.out.println(operator);
 		expression.printTree(deep+1);
 	}
+	//BEGIN get-Methoden für Builder
+	public UnaryOperator getUnaryOperator(){
+		return operator;
+	}
+	public Expression getExpression(){
+		return expression;
+	}
+	//END get-Methoden für Builder
 }

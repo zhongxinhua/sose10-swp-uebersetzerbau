@@ -21,4 +21,9 @@ public class IntegerLiteral extends Literal {
 	public String toString() {
 		return "integer("+Integer.toString(value)+")";
 	}
+	//BEGIN get-Methoden für Builder
+	public int getValue(){
+		return value;
+	}
+	//END get-Methoden für Builder
 }

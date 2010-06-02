@@ -21,4 +21,9 @@ public class FloatLiteral extends Literal {
 	public String toString() {
 		return "float("+Float.toString(value)+")";
 	}
+	//BEGIN get-Methoden für Builder
+	public float getValue(){
+		return value;
+	}
+	//END get-Methoden für Builder
 }

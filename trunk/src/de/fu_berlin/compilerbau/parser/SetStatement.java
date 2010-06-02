@@ -25,14 +25,14 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
  */
 
 public class SetStatement extends Statement {
-	Expression lvalue;
-	Expression rvalue;
+	private Expression lvalue;
+	private Expression rvalue;
 
 	public SetStatement(DomNode node) {
 		// check needed attribute: name
 		if (node.hasAttribute("name")
 				&& node.getAttributeValue("name").length() > 0) {
-			lvalue = Expression.build(node.getAttribute("value"), ExpressionType.LVALUE);
+			lvalue = Expression.build(node.getAttribute("name"), ExpressionType.LVALUE);
 		} else {
 			ErrorHandler.error(node, this.getClass().toString()
 					+ " 'name' attribute expected");
@@ -52,5 +52,14 @@ public class SetStatement extends Statement {
 		}
 
 	}
+	public Expression getLValue(){
+		return lvalue;
+		
+	}
+	public Expression getRLValue(){
+		return rvalue;
+		
+	}
+	
 
 }

@@ -34,8 +34,13 @@ public class MemberAccess extends Expression {
 	public String toString() {
 		return ".";
 	}
-	
+	//BEGIN get-Methoden für Builder
 	public Expression getChild() {
 		return child;
 	}
+	public Expression getParent() {
+		return parent;
+	}
+	//END get-Methoden für Builder
+	
 }

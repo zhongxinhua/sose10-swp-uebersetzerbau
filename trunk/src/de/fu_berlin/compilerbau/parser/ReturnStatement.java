@@ -41,5 +41,12 @@ public class ReturnStatement extends Statement {
 					+ " body forbidden!");
 		}
 	}
+	//BEGIN get-Methoden für Builder
+	public Expression getValue(){
+		return value;
+	}
+	//END get-Methoden für Builder
+	
+	
 
 }

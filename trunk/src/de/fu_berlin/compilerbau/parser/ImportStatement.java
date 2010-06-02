@@ -41,5 +41,10 @@ public class ImportStatement extends SyntaxTreeNode {
 			ErrorHandler.error(node, this.getClass().toString()+" body forbidden!");
 		}
 	}
+	// BEGIN get-Methoden für Builder
+	public PositionString getName(){
+		return name;
+	}
+	// END get-Methoden für Builder
 
 }

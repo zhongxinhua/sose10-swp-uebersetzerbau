@@ -36,4 +36,12 @@ public class FunctionCall extends Expression { // a(b,c)
 	public String toString() {
 		return "functionCall("+name+")";
 	}
+	//BEGIN get-Methoden für Builder
+	public CharSequence getName(){
+		return name;
+	}
+	public List<Expression> getArguments(){
+		return actualArguments;
+	}
+	//END get-Methoden für Builder
 }

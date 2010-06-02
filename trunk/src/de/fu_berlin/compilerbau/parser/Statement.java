@@ -10,14 +10,16 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
  * <b>Specification</b><br>
  * There are following subclasses of statement:
  * <ul>
- * <li>&ltset/&gt statement, see also: {@link SetStatement}</li>
+ * 
  * <li>&ltbreak/&gt statement, see also: {@link BreakStatement}</li>
  * <li>&ltcall/&gt statement, see also: {@link CallStatement}</li>
  * <li>&ltchoose/&gt statement, see also: {@link ChooseStatement}</li>
  * <li>&ltcontinue/&gt statement, see also: {@link ContinueStatement}</li>
  * <li>&ltdecl/&gt statement, see also: {@link DeclarationStatement}</li>
  * <li>&ltdo/&gt statement, see also: {@link DoStatement}</li>
+ * <li>&ltreturn/&gt statement, see also: {@link ReturnStatement}</li>
  * <li>&ltscope/&gt statement, see also: {@link ScopeStatement}</li>
+ * <li>&ltset/&gt statement, see also: {@link SetStatement}</li>
  * </ul>
  * 
  * 
@@ -50,6 +52,9 @@ public class Statement extends SyntaxTreeNode {
 		}
 		else if (node.getName().compareTo("do") == 0) {
 			statement = new DoStatement(node);
+		}
+		else if (node.getName().compareTo("return") == 0) {
+			statement = new ReturnStatement(node);
 		}
 		else if (node.getName().compareTo("scope") == 0) {
 			statement = new ScopeStatement(node);

@@ -1,15 +1,16 @@
 package de.fu_berlin.compilerbau.parser;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
 import de.fu_berlin.compilerbau.dom.DomNode;
 import de.fu_berlin.compilerbau.parser.expressions.Type;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
 import de.fu_berlin.compilerbau.util.PositionString;
 
 /**
- * <b>Description</b><br>{@link Function} is representing a &ltfunction/&gt statement.
+ * <b>Description</b><br>{@link Function} is representing a &ltfunction/&gt
+ * statement.
  * <p/>
  * <b>Specification</b><br>
  * The &ltfunction/&gt statement <b>needs two</b> attributes:
@@ -19,8 +20,10 @@ import de.fu_berlin.compilerbau.util.PositionString;
  * </ul>
  * The &ltfunction/&gt statement <b>has two</b> optional attributes:
  * <ul>
- * <li>static - determines whether the function is static. The {@link String} "yes" sets the function static (default="no")</li>
- * <li>final - determines whether the function ist final. The {@link String} "yes" sets the function final (default="no")</li>
+ * <li>static - determines whether the function is static. The {@link String}
+ * "yes" sets the function static (default="no")</li>
+ * <li>final - determines whether the function ist final. The {@link String}
+ * "yes" sets the function final (default="no")</li>
  * </ul>
  * <p/>
  * The &ltfunction/&gt statement body has:
@@ -90,33 +93,55 @@ public class Function extends SyntaxTreeNode {
 		// process child nodes
 		for (DomNode child : node.getChilds()) {
 			if (child.getName().compareTo("arguments") == 0) {
-				 // check for empty attribute list
-                if (!child.getAttributes().isEmpty()) {
-                        ErrorHandler.error(child, this.getClass().toString()
-                                        + " attributes forbidden!");
-                }
-                // process childs
-                for (DomNode arg : child.getChilds()) {
-                        // arbitrary decl statements
-                        if (arg.getName().compareTo("decl") == 0) {
-                                arguments.add(new DeclarationStatement(arg));
-                        } else {
-                                // ERROR
-                                ErrorHandler.error(child, this.getClass().toString()
-                                                + " forbidden use: " + node.getName());
-                        }
-                }
+				// check for empty attribute list
+				if (!child.getAttributes().isEmpty()) {
+					ErrorHandler.error(child, this.getClass().toString()
+							+ " attributes forbidden!");
+				}
+				// process childs
+				for (DomNode arg : child.getChilds()) {
+					// arbitrary decl statements
+					if (arg.getName().compareTo("decl") == 0) {
+						arguments.add(new DeclarationStatement(arg));
+					} else {
+						// ERROR
+						ErrorHandler.error(child, this.getClass().toString()
+								+ " forbidden use: " + node.getName());
+					}
+				}
 			} else if (child.getName().compareTo("return") == 0) {
+				System.out.println("DEBUG2::Function::ReturnStatement");
 				body.add(new ReturnStatement(child));
 			} else {
-				body.add(new Statement(child));
+				Statement stmt = new Statement(child);
+				System.out.println("DEBUG2::Function::"+stmt.statement);
+				body.add(stmt.statement);
 			}
 		}
 	}
 
-	public boolean hasBody() { return !body.isEmpty(); }
-	public Type getReturnType() { return return_type; }
-	public PositionString getName() { return name; }
-	public List<DeclarationStatement> getArguments() { return arguments; }
-	public List<Statement> getBody() { return body; }
+	public boolean hasBody() {
+		return !body.isEmpty();
+	}
+
+	public Type getReturnType() {
+		return return_type;
+	}
+
+	public PositionString getName() {
+		return name;
+	}
+	public boolean isFinal() {
+		return isFinal;
+	}
+	public boolean isStatic() {
+		return isStatic;
+	}
+	public List<DeclarationStatement> getArguments() {
+		return arguments;
+	}
+
+	public Iterator<Statement> getBody() {
+		return body.iterator();
+	}
 }

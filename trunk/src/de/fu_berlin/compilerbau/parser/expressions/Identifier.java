@@ -28,5 +28,10 @@ public class Identifier extends Expression {
 		for(int d=deep; d>0; d--) System.out.print("  ");
 		System.out.println(this);
 	}
+	//BEGIN get-Methoden für Builder
+	public CharSequence getName(){
+		return name;
+	}
+	//END get-Methoden für Builder
 
 }
