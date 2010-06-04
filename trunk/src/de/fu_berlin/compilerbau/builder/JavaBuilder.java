@@ -128,36 +128,49 @@ public class JavaBuilder extends Builder {
 		_code.append("}\n");
 	}
 
-	@Override
+
 	protected void buildBreakStatement(BreakStatement obj) throws IOException {
-		// TODO Auto-generated method stub
+		_code.append("break;\n");
 	}
 
-	@Override
+
 	protected void buildCallStatement(CallStatement obj) throws IOException {
-		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	protected void buildCase(Case obj) throws IOException {
-		// TODO Auto-generated method stub
+		buildExpressionStatement(obj.getTest());
+		_code.append(") {\n");
+		for (Statement stmt : obj.getBody()) {
+			buildStatement(stmt);
+		}
+		_code.append("} ");
 
 	}
-
-	@Override
+	
 	protected void buildChooseStatement(ChooseStatement obj) throws IOException {
-		// TODO Auto-generated method stub
+		boolean isFirstCase = true;
+		for (Case concase : obj.getCases()) {
+			if (isFirstCase) {
+				isFirstCase = false;
+				_code.append("if(");
+				buildCase(concase);
+			} else {
+				_code.append("else if(");
+				buildCase(concase);
+			}
+		}
 
 	}
 
 	@Override
 	protected void buildContinueStatement(ContinueStatement obj)
 			throws IOException {
-		// TODO Auto-generated method stub
+		_code.append("continue;\n");
 
 	}
-	//ASSERT: this Declaration Statement DO NOT appear in <arguments> body 
+
+	// ASSERT: this Declaration Statement DO NOT appear in <arguments> body
 	protected void buildDeclarationStatement(DeclarationStatement decl)
 			throws IOException {
 
@@ -478,7 +491,7 @@ public class JavaBuilder extends Builder {
 			return "null";
 		}
 	}
-	
+
 	private String functionTypeToJavaString(Type type) {
 		if (type == Type.STRING) {
 			return "String";
@@ -490,5 +503,5 @@ public class JavaBuilder extends Builder {
 			return "void";
 		}
 	}
-	
+
 }
