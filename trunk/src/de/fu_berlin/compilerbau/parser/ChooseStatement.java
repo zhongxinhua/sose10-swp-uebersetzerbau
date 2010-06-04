@@ -1,5 +1,6 @@
 package de.fu_berlin.compilerbau.parser;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import de.fu_berlin.compilerbau.dom.DomNode;
@@ -26,7 +27,7 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
  */
 
 public class ChooseStatement extends Statement {
-	List<Case> cases;
+	List<Case> cases = new LinkedList<Case>();
 
 	public ChooseStatement(DomNode node) {
 		// check for empty attribute list
@@ -38,9 +39,8 @@ public class ChooseStatement extends Statement {
 		// check for at least one child
 		if (!node.isLeaf()) {
 			for (DomNode child : node.getChilds()) {
-				if (child.getName().compareTo("arguments") == 0) {
+				if (child.getName().compareTo("case") == 0) {
 					cases.add(new Case(child));
-					continue;
 				}
 			}
 		} else {
@@ -48,5 +48,10 @@ public class ChooseStatement extends Statement {
 					+ " at least one child needed!");
 		}
 	}
+	// BEGIN get-Methoden für Builder
+	public List<Case> getCases(){
+		return cases;
+	}
+	// END get-Methoden für Builder
 
 }
