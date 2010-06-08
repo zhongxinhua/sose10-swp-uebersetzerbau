@@ -27,45 +27,39 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
  * 
  */
 public class Statement extends SyntaxTreeNode {
-	Statement statement;
-
-	public Statement() {
-
-	}
-
-	public Statement(DomNode node) {
+	public static Statement build(DomNode node) {
 		
-		if (node.getName().compareTo("break") == 0) {
-			statement = new BreakStatement(node);
+		if (node.getName().equals("break")) {
+			return new BreakStatement(node);
 		}
-		else if (node.getName().compareTo("call") == 0) {
-			statement = new CallStatement(node);
+		else if (node.getName().equals("call")) {
+			return new CallStatement(node);
 		}
-		else if (node.getName().compareTo("choose") == 0) {
-			statement = new ChooseStatement(node);
+		else if (node.getName().equals("choose")) {
+			return new ChooseStatement(node);
 		}
-		else if (node.getName().compareTo("continue") == 0) {
-			statement = new ContinueStatement(node);
+		else if (node.getName().equals("continue")) {
+			return new ContinueStatement(node);
 		}
-		else if (node.getName().compareTo("decl") == 0) {
-			statement = new DeclarationStatement(node);
+		else if (node.getName().equals("decl")) {
+			return new DeclarationStatement(node);
 		}
-		else if (node.getName().compareTo("do") == 0) {
-			statement = new DoStatement(node);
+		else if (node.getName().equals("do")) {
+			return new DoStatement(node);
 		}
-		else if (node.getName().compareTo("return") == 0) {
-			statement = new ReturnStatement(node);
+		else if (node.getName().equals("return")) {
+			return new ReturnStatement(node);
 		}
-		else if (node.getName().compareTo("scope") == 0) {
-			statement = new ScopeStatement(node);
+		else if (node.getName().equals("scope")) {
+			return new ScopeStatement(node);
 		}
-		else if (node.getName().compareTo("set") == 0) {
-			statement = new SetStatement(node);
+		else if (node.getName().equals("set")) {
+			return new SetStatement(node);
 		}
 		else{
 			//ERROR
-			ErrorHandler.error(node, this.getClass().toString()
-					+ " unknown statement: " + node.getName());
+			ErrorHandler.error(node, "unknown statement: " + node.getName());
+			return null;
 		}
 	}
 

@@ -41,11 +41,9 @@ import de.fu_berlin.compilerbau.parser.expressions.Type;
 import de.fu_berlin.compilerbau.parser.expressions.UnaryOperation;
 import de.fu_berlin.compilerbau.parser.expressions.BinaryOperation.BinaryOperator;
 import de.fu_berlin.compilerbau.parser.expressions.UnaryOperation.UnaryOperator;
+import de.fu_berlin.compilerbau.util.ErrorHandler;
 
 public class JavaBuilder extends Builder {
-	// Active DEBUG to Console?
-	boolean PRINT_DEBUG = false;
-
 	public JavaBuilder(AbstractSyntaxTree astree, String classpath) {
 		super(astree, classpath);
 	}
@@ -94,10 +92,9 @@ public class JavaBuilder extends Builder {
 
 	@Override
 	protected void buildFunction(Function func) throws IOException {
-		if (PRINT_DEBUG) {
-			System.out.println("DEBUG::buildFunction::"
-					+ func.getClass().toString());
-		}
+		ErrorHandler.debugMsg(null, "DEBUG::buildFunction::" + 
+			func.getClass().toString());
+					
 		_code.append("public ");
 		if (func.isFinal()) {
 			_code.append("final ");
@@ -262,10 +259,9 @@ public class JavaBuilder extends Builder {
 
 	@Override
 	protected void buildStatement(Statement obj) throws IOException {
-		if (PRINT_DEBUG) {
-			System.out.println("DEBUG::buildStatement::"
-					+ obj.getClass().toString());
-		}
+		ErrorHandler.debugMsg(null, "DEBUG::buildStatement::"
+			+ obj.getClass().toString());
+		
 		if (obj instanceof BreakStatement) {
 			buildBreakStatement((BreakStatement) obj);
 		} else if (obj instanceof CallStatement) {
@@ -301,10 +297,9 @@ public class JavaBuilder extends Builder {
 	}
 
 	protected void buildExpressionStatement(Expression obj) throws IOException {
-		if (PRINT_DEBUG) {
-			System.out.println("DEBUG::buildExpressionStatement::"
-					+ obj.getClass().toString());
-		}
+		ErrorHandler.debugMsg(null, "DEBUG::buildExpressionStatement::"
+			+ obj.getClass().toString());
+		
 		if (obj instanceof ArrayAccess) {
 			buildArrayAccessExpression((ArrayAccess) obj);
 		} else if (obj instanceof BinaryOperation) {

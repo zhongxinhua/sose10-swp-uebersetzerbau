@@ -95,8 +95,8 @@ public class DeclarationStatement extends Statement {
 
 		// check optional attribute: static
 		if (node.hasAttribute("static")
-				&& !(node.getAttributeValue("static").compareTo("") == 0)) {
-			if (node.getAttributeValue("static").compareTo("yes") == 0) {
+				&& (node.getAttributeValue("static").length() != 0)) {
+			if (node.getAttributeValue("static").equals("yes")) {
 				this.isStatic = true;
 			} else {
 				ErrorHandler.error(node,
@@ -106,8 +106,8 @@ public class DeclarationStatement extends Statement {
 
 		// check optional attribute: final
 		if (node.hasAttribute("final")
-				&& !(node.getAttributeValue("final").compareTo("") == 0)) {
-			if (node.getAttributeValue("final").compareTo("yes") == 0) {
+				&& (node.getAttributeValue("final").length() != 0)) {
+			if (node.getAttributeValue("final").equals("yes")) {
 				isFinal = true;
 			} else {
 				ErrorHandler.error(node,
@@ -122,7 +122,7 @@ public class DeclarationStatement extends Statement {
 		}
 	}
 
-	// BEGIN get-Methoden für Builder
+	// BEGIN get-Methoden fï¿½r Builder
 	public Type getType() {
 		return type;
 	}
@@ -150,5 +150,5 @@ public class DeclarationStatement extends Statement {
 	public boolean isArray() {
 		return dimension > 0;
 	}
-	// END get-Methoden für Builder
+	// END get-Methoden fï¿½r Builder
 }

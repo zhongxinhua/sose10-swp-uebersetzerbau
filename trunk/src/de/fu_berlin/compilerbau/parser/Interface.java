@@ -38,7 +38,7 @@ public class Interface extends ClassOrInterface {
 		}
 		// process child nodes
 		for (DomNode child : node.getChilds()) {
-			if (child.getName().compareTo("function") == 0) {
+			if (child.getName().equals("function")) {
 				Function tmp = new Function(child);
 				if (tmp.hasBody()) {
 					ErrorHandler

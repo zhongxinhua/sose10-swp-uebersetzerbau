@@ -46,18 +46,18 @@ public class Case extends SyntaxTreeNode {
 		// process child nodes, if exist
 		if (node.isNode()) {
 			for (DomNode child : node.getChilds()) {
-				Statement stmt = new Statement(child); 
-				body.add(stmt.statement);
+				Statement stmt = Statement.build(child); 
+				body.add(stmt);
 			}
 		}
 	}
-	// BEGIN get-Methoden für Builder
+	// BEGIN get-Methoden fï¿½r Builder
 	public Expression getTest(){
 		return test;
 	}
 	public List<Statement> getBody(){
 		return body;
 	}
-	// END get-Methoden für Builder
+	// END get-Methoden fï¿½r Builder
 
 }

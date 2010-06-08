@@ -3,7 +3,6 @@ package de.fu_berlin.compilerbau.parser;
 import java.util.List;
 
 import de.fu_berlin.compilerbau.dom.DomNode;
-import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
 
 /**
@@ -34,7 +33,7 @@ public class ScopeStatement extends Statement {
 		}
 		// process child nodes
 		for (DomNode child : node.getChilds()) {
-			body.add(new Statement(child));
+			body.add(Statement.build(child));
 		}
 
 	}

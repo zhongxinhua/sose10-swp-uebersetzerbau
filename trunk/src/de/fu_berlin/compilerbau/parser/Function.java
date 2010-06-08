@@ -71,8 +71,8 @@ public class Function extends SyntaxTreeNode {
 		}
 		// check optional attribute: static
 		if (node.hasAttribute("static")
-				&& !(node.getAttributeValue("static").compareTo("") == 0)) {
-			if (node.getAttributeValue("static").compareTo("yes") == 0) {
+				&& (node.getAttributeValue("static").length() != 0)) {
+			if (node.getAttributeValue("static").equals("yes")) {
 				this.isStatic = true;
 			} else {
 				ErrorHandler.error(node,
@@ -81,8 +81,8 @@ public class Function extends SyntaxTreeNode {
 		}
 		// check optional attribute: final
 		if (node.hasAttribute("final")
-				&& !(node.getAttributeValue("final").compareTo("") == 0)) {
-			if (node.getAttributeValue("final").compareTo("yes") == 0) {
+				&& (node.getAttributeValue("final").length() != 0)) {
+			if (node.getAttributeValue("final").equals("yes")) {
 				isFinal = true;
 			} else {
 				ErrorHandler.error(node,
@@ -92,7 +92,7 @@ public class Function extends SyntaxTreeNode {
 
 		// process child nodes
 		for (DomNode child : node.getChilds()) {
-			if (child.getName().compareTo("arguments") == 0) {
+			if (child.getName().equals("arguments")) {
 				// check for empty attribute list
 				if (!child.getAttributes().isEmpty()) {
 					ErrorHandler.error(child, this.getClass().toString()
@@ -101,7 +101,7 @@ public class Function extends SyntaxTreeNode {
 				// process childs
 				for (DomNode arg : child.getChilds()) {
 					// arbitrary decl statements
-					if (arg.getName().compareTo("decl") == 0) {
+					if (arg.getName().equals("decl")) {
 						arguments.add(new DeclarationStatement(arg));
 					} else {
 						// ERROR
@@ -109,13 +109,13 @@ public class Function extends SyntaxTreeNode {
 								+ " forbidden use: " + node.getName());
 					}
 				}
-			} else if (child.getName().compareTo("return") == 0) {
-				System.out.println("DEBUG2::Function::ReturnStatement");
+			} else if (child.getName().equals("return")) {
+				ErrorHandler.debugMsg(null, "DEBUG2::Function::ReturnStatement");
 				body.add(new ReturnStatement(child));
 			} else {
-				Statement stmt = new Statement(child);
-				System.out.println("DEBUG2::Function::"+stmt.statement);
-				body.add(stmt.statement);
+				Statement stmt = Statement.build(child);
+				ErrorHandler.debugMsg(null, "DEBUG2::Function::"+stmt);
+				body.add(stmt);
 			}
 		}
 	}

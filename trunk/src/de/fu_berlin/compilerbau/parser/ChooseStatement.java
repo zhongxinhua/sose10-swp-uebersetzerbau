@@ -39,7 +39,7 @@ public class ChooseStatement extends Statement {
 		// check for at least one child
 		if (!node.isLeaf()) {
 			for (DomNode child : node.getChilds()) {
-				if (child.getName().compareTo("case") == 0) {
+				if (child.getName().equals("case")) {
 					cases.add(new Case(child));
 				}
 			}
@@ -48,10 +48,10 @@ public class ChooseStatement extends Statement {
 					+ " at least one child needed!");
 		}
 	}
-	// BEGIN get-Methoden für Builder
+	// BEGIN get-Methoden fï¿½r Builder
 	public List<Case> getCases(){
 		return cases;
 	}
-	// END get-Methoden für Builder
+	// END get-Methoden fï¿½r Builder
 
 }

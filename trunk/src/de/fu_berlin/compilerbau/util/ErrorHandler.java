@@ -1,24 +1,39 @@
 package de.fu_berlin.compilerbau.util;
 
-import de.fu_berlin.compilerbau.dom.DomNode;
+import java.io.PrintStream;
 
 public class ErrorHandler {
 	private static int errorCount;
 	private static int warningCount;
+	private static boolean showDebug;
 	
-	public static void init() {
+	public static void init(boolean showDebugMessages) {
 		errorCount = 0;
 		warningCount = 0;
+		showDebug = showDebugMessages;
 	}
 	
-	public static void error(DomNode node, String msg) {
-		System.err.println("Error: "+msg);
+	public static void error(StreamPosition position, String msg) {
+		msg(System.err, position, "Error", msg);
 		errorCount++;
 	}
 	
-	public static void warning(DomNode node, String msg) {
-		System.err.println("Warning: "+msg);
+	public static void warning(StreamPosition position, String msg) {
+		msg(System.err, position, "Warning", msg);
 		warningCount++;
+	}
+	
+	public static void debugMsg(StreamPosition position, String msg) {
+		if(showDebug)
+			msg(System.out, position, "Debug", msg);
+	}
+	
+	private static void msg(PrintStream dstOut, StreamPosition position, String prefix, String msg) {
+		dstOut.print(prefix);
+		if(position != null)
+			dstOut.print(" @ ("+position.getLine()+" : "+position.getCharacter()+")");		
+		dstOut.print(": ");
+		dstOut.println(msg);
 	}
 	
 	public static boolean errorOccured() {
@@ -30,6 +45,6 @@ public class ErrorHandler {
 	}
 	
 	public static int getWarningCount() {
-		return errorCount;
+		return warningCount;
 	}
 }

@@ -11,8 +11,9 @@ package de.fu_berlin.compilerbau.dom;
 import java.util.List;
 
 import de.fu_berlin.compilerbau.util.PositionString;
+import de.fu_berlin.compilerbau.util.StreamPosition;
 
-public interface DomNode {
+public interface DomNode extends StreamPosition {
 	
 	/**
 	 * Check if this Node is a Leaf.

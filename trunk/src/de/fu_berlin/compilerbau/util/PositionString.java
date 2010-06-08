@@ -78,7 +78,7 @@ public class PositionString extends PositionBean implements CharSequence, Compar
 	public boolean equals(Object right) throws ClassCastException {
 		if(right == null) {
 			return false;
-		} else if(right instanceof ClassCastException) {
+		} else if(right instanceof CharSequence) {
 			return compareTo((CharSequence)right) == 0;
 		} else {
 			throw new ClassCastException("Cannot compare " + right.getClass().getName() +

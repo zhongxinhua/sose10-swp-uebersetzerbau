@@ -83,7 +83,7 @@ public class DomNodeImpl implements DomNode {
 	@Override
 	public PositionString getAttribute(String attributeName) {
 		for (DomAttribute attr : _attributes) {
-			if (attr.getName().compareTo(attributeName) == 0) {
+			if (attr.getName().equals(attributeName)) {
 				return attr.getValue();
 			}
 		}
@@ -94,7 +94,7 @@ public class DomNodeImpl implements DomNode {
 	@Override
 	public String getAttributeValue(String attributeName) {	
 		for (DomAttribute attr : _attributes) {
-			if (attr.getName().compareTo(attributeName) == 0) {
+			if (attr.getName().equals(attributeName)) {
 				return attr.getValue().toString();
 			}
 		}
@@ -105,9 +105,24 @@ public class DomNodeImpl implements DomNode {
 	@Override
 	public boolean hasAttribute(String attributeName) {
 		for (DomAttribute attr : _attributes) {
-			if (attr.getName().compareTo(attributeName) == 0) return true;
+			if (attr.getName().equals(attributeName)) return true;
 		}
 		return false;
+	}
+
+	@Override
+	public int getCharacter() {
+		return _nodeName.getCharacter();
+	}
+
+	@Override
+	public int getLine() {
+		return _nodeName.getLine();
+	}
+
+	@Override
+	public int getStart() {
+		return _nodeName.getStart();
 	}
 
 }

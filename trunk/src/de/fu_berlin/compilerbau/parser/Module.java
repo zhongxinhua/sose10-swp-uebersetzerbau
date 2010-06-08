@@ -67,14 +67,14 @@ public class Module {
 		}
 		// process child nodes
 		for (DomNode child : node.getChilds()) {
-			if (child.getName().compareTo("import")==0) {
+			if (child.getName().equals("import")) {
 				imports.add(new ImportStatement(child));
 				continue;
-			} else if (child.getName().compareTo("class")==0) {
+			} else if (child.getName().equals("class")) {
 				classes.add(new Class(child));
 				continue;
 
-			} else if (child.getName().compareTo("interface")==0) {
+			} else if (child.getName().equals("interface")) {
 				interfaces.add(new Interface(child));
 			} else {
 				// ERROR

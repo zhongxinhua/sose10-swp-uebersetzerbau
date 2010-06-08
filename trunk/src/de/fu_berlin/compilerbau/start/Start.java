@@ -50,7 +50,7 @@ class Start {
 	}
 
 	public static void main(final String[] args) {
-		ErrorHandler.init();
+		ErrorHandler.init(true); //true==show debug information
 		
 		final Iterator<String> i = Arrays.asList(args).iterator();
 		

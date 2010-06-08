@@ -56,19 +56,19 @@ public class Class extends ClassOrInterface {
 		// process child nodes
 		for (DomNode child : node.getChilds()) {
 			// check arbitrary import statements
-			if (child.getName().compareTo("import") == 0) {
+			if (child.getName().equals("import")) {
 				imports.add(new ImportStatement(child));
 				continue;
 				// check arbitrary implement statements
-			} else if (child.getName().compareTo("implements") == 0) {
+			} else if (child.getName().equals("implements")) {
 				implementations.add(new ImplementStatement(child));
 				continue;
 				// check arbitrary decl statements
-			} else if (child.getName().compareTo("decl") == 0) {
+			} else if (child.getName().equals("decl")) {
 				declarations.add(new DeclarationStatement(child));
 				continue;
 				// check arbitrary function statements
-			} else if (child.getName().compareTo("function") == 0) {
+			} else if (child.getName().equals("function")) {
 				functions.add(new Function(child));
 				continue;
 			} else {
@@ -80,7 +80,7 @@ public class Class extends ClassOrInterface {
 		}
 	}
 
-	// BEGIN get-Methoden für Builder
+	// BEGIN get-Methoden fï¿½r Builder
 	public PositionString getSuper(){
 		return parent;
 	}
@@ -97,5 +97,5 @@ public class Class extends ClassOrInterface {
 	public List<Function> getFunctions() {
 		return functions;
 	}
-	// END get-Methoden für Builder
+	// END get-Methoden fï¿½r Builder
 }
