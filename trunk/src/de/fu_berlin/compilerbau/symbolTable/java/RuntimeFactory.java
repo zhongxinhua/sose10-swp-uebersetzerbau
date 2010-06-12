@@ -8,7 +8,6 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -156,7 +155,6 @@ public class RuntimeFactory {
 		
 	}
 	
-	protected static Map<Class<?>,Symbol> primitiveTypes = new HashMap<Class<?>,Symbol>();
 	/**
 	 * Java's type names have to be put in our {@link Symbol} schema.
 	 * This method translates a {@link Class} into a unqualified symbol.
@@ -172,11 +170,7 @@ public class RuntimeFactory {
 		if(type == Void.TYPE) {
 			result = rt.getVoid();
 		} else if(type.isPrimitive()) {
-			result = primitiveTypes.get(type);
-			if(result == null) {
-				result = new PrimitiveTypeImpl(rt, type);
-				primitiveTypes.put(type, result);
-			}
+			result = rt.getPrimitiveType(type);
 		} else if(type.isArray()) {
 			result = null; // TODO
 		} else if(type.isInterface()) {

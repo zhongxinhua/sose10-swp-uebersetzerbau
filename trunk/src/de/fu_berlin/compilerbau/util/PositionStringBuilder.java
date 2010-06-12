@@ -1,7 +1,5 @@
 package de.fu_berlin.compilerbau.util;
 
-import java.io.IOException;
-
 public class PositionStringBuilder extends PositionBean
 		implements Appendable, StreamPosition {
 
@@ -18,19 +16,19 @@ public class PositionStringBuilder extends PositionBean
 	protected final StringBuilder builder = new StringBuilder();
 
 	@Override
-	public Appendable append(CharSequence sq) throws IOException {
+	public Appendable append(CharSequence sq) {
 		builder.append(sq);
 		return this;
 	}
 
 	@Override
-	public Appendable append(char c) throws IOException {
+	public Appendable append(char c) {
 		builder.append(c);
 		return this;
 	}
 
 	@Override
-	public Appendable append(CharSequence sq, int start, int end) throws IOException {
+	public Appendable append(CharSequence sq, int start, int end) {
 		builder.append(sq, start, end);
 		return this;
 	}

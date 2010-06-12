@@ -2,6 +2,7 @@ package de.fu_berlin.compilerbau.symbolTable.java;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
@@ -13,6 +14,7 @@ class SymbolImpl implements Symbol {
 	
 	private final Runtime runtime;
 	private final SymbolContainer parent;
+	protected final Set<Map.Entry<Symbol, StreamPosition>> mentions = new TreeSet<Map.Entry<Symbol, StreamPosition>>();
 	
 	SymbolImpl(Runtime runtime, SymbolContainer parent) {
 		this.runtime = runtime;
@@ -21,14 +23,13 @@ class SymbolImpl implements Symbol {
 	
 	@Override
 	public void addMention(Symbol who, StreamPosition where) {
-		// TODO Auto-generated method stub
-		
+		Mention mention = new Mention(who, where);
+		mentions.add(mention);
 	}
 	
 	@Override
 	public Set<Map.Entry<Symbol, StreamPosition>> getMentions() {
-		// TODO Auto-generated method stub
-		return null;
+		return mentions;
 	}
 	
 	@Override

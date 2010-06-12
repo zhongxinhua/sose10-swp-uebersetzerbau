@@ -63,6 +63,8 @@ public enum SymbolType {
 	
 	ARRAYTYPE,
 	
-	VOID
+	VOID,
+	
+	METHOD
 	
 }

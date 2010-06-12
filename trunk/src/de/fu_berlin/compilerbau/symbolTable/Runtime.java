@@ -67,4 +67,6 @@ public interface Runtime extends SymbolContainer {
 	
 	Symbol getVoid();
 	
+	PrimitiveType getPrimitiveType(java.lang.Class<?> c);
+	
 }

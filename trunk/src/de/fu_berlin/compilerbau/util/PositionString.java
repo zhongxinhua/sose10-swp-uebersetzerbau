@@ -1,5 +1,7 @@
 package de.fu_berlin.compilerbau.util;
 
+import java.util.LinkedList;
+
 /**
  * @author kijewski
  */
@@ -84,6 +86,31 @@ public class PositionString extends PositionBean implements CharSequence, Compar
 			throw new ClassCastException("Cannot compare " + right.getClass().getName() +
 					" against " + getClass().getName());
 		}
+	}
+	
+	/**
+	 * @see String#split(String)
+	 * @param at character to split the string at
+	 * @param maxIndices return at most maxIndices indices;
+	 * 	<tt>maxIndices&lt;0</tt> means indefinite
+	 * @return mutable list
+	 */
+	public LinkedList<PositionString> split(final char at, final int maxIndices) {
+		LinkedList<PositionString> result = new LinkedList<PositionString>();
+		PositionCharacterStream stream = new PositionCharacterStream(this);
+		int index = 0;
+		while((maxIndices<0 || index<maxIndices) && stream.hasNext()) {
+			PositionStringBuilder builder = new PositionStringBuilder(stream);
+			do {
+				char c = stream.next();
+				if(c == at) {
+					break;
+				}
+				builder.append(c);
+			} while(stream.hasNext());
+			result.add(builder.toPositionString());
+		}
+		return result;
 	}
 
 }
