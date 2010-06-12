@@ -88,7 +88,7 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 				return result;
 			}
 		}
-		return result != null ? result : super.lookup(symbol);
+		return null; // TODO: voll qualifizierten Namen finden
 	}
 
 	@Override

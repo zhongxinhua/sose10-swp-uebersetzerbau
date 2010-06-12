@@ -9,6 +9,7 @@ import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
+import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
@@ -34,6 +35,12 @@ class ClassImpl extends ClassOrInterfaceImpl implements Class {
 	public Member addMember(PositionString name, Symbol type, Modifier modifier)
 			throws DuplicateIdentifierException, ShadowedIdentifierException,
 			WrongModifierException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Symbol lookup(UnqualifiedSymbol symbol) {
 		// TODO Auto-generated method stub
 		return null;
 	}

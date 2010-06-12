@@ -13,6 +13,7 @@ import de.fu_berlin.compilerbau.symbolTable.Package;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
+import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
@@ -121,6 +122,12 @@ class PackageImpl extends SymbolContainerImpl implements Package, Comparable<Pac
 	@Override
 	public StreamPosition getPosition() {
 		return name;
+	}
+
+	@Override
+	public Symbol lookup(UnqualifiedSymbol symbol) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

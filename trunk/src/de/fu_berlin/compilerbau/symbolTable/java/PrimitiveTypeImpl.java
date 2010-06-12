@@ -9,6 +9,7 @@ import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.PrimitiveType;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
+import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
@@ -52,6 +53,11 @@ public class PrimitiveTypeImpl extends ClassOrInterfaceImpl implements Primitive
 		if(type == boolean.class) return "Z";
 		if(type == boolean.class) return "Z";
 		throw new RuntimeException();
+	}
+
+	@Override
+	public Symbol lookup(UnqualifiedSymbol symbol) {
+		return null;
 	}
 
 }

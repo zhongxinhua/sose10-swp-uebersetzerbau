@@ -10,7 +10,7 @@ import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.util.PositionString;
 
 
-class SymbolContainerImpl extends SymbolImpl implements SymbolContainer {
+abstract class SymbolContainerImpl extends SymbolImpl implements SymbolContainer {
 	
 	SymbolContainerImpl(Runtime runtime, SymbolContainer parent) {
 		super(runtime, parent);
@@ -45,12 +45,6 @@ class SymbolContainerImpl extends SymbolImpl implements SymbolContainer {
 	public boolean hasUnqualifiedSymbols() {
 		// TODO Auto-generated method stub
 		return false;
-	}
-	
-	@Override
-	public Symbol lookup(UnqualifiedSymbol symbol) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 	
 }
