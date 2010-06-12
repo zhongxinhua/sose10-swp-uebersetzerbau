@@ -2,14 +2,13 @@ package de.fu_berlin.compilerbau.symbolTable.exceptions;
 
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
-import de.fu_berlin.compilerbau.util.StreamPosition;
 
 /**
  * A {@link Symbol} shadows another {@code Symbol}.
  * This exception is only thrown if set so in the {@link Runtime}.
  * @author kijewski
  */
-public class ShadowedIdentifierException extends SymbolTableException implements StreamPosition {
+public class ShadowedIdentifierException extends SymbolTableException {
 	
 	private static final long serialVersionUID = -2661926521450297237L;
 	
@@ -34,21 +33,6 @@ public class ShadowedIdentifierException extends SymbolTableException implements
 	
 	public Symbol getOldSymbol() {
 		return oldSymbol;
-	}
-
-	@Override
-	public int getCharacter() {
-		return newSymbol.getPosition().getCharacter();
-	}
-
-	@Override
-	public int getLine() {
-		return newSymbol.getPosition().getLine();
-	}
-
-	@Override
-	public int getStart() {
-		return newSymbol.getPosition().getStart();
 	}
 	
 }

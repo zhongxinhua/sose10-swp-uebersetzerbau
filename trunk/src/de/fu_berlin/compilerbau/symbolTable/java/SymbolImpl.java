@@ -35,12 +35,6 @@ class SymbolImpl implements Symbol {
 	public SymbolContainer getParent() {
 		return parent;
 	}
-	
-	@Override
-	public StreamPosition getPosition() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public Runtime getRuntime() {

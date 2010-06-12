@@ -12,6 +12,7 @@ import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
+import de.fu_berlin.compilerbau.util.PositionBean;
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.Visibility;
 
@@ -20,7 +21,8 @@ public class PrimitiveTypeImpl extends ClassOrInterfaceImpl implements Primitive
 	protected final java.lang.Class<?> type;
 
 	public PrimitiveTypeImpl(Runtime runtime, java.lang.Class<?> type) {
-		super(runtime, runtime, null, GetModifier.getModifier(Visibility.PUBLIC, false, true, false), type.getName());
+		super(runtime, runtime, null, GetModifier.getModifier(Visibility.PUBLIC, false, true, false),
+				new PositionString(type.getName(), PositionBean.ZERO));
 		this.type = type;
 	}
 

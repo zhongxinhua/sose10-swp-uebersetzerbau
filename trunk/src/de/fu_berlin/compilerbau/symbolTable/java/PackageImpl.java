@@ -17,6 +17,7 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierExcept
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.PositionString;
+import de.fu_berlin.compilerbau.util.StreamPosition;
 
 class PackageImpl extends SymbolContainerImpl implements Package, Comparable<PackageImpl> {
 	
@@ -39,7 +40,7 @@ class PackageImpl extends SymbolContainerImpl implements Package, Comparable<Pac
 			Iterator<Symbol> implements_, Modifier modifier)
 			throws DuplicateIdentifierException, ShadowedIdentifierException,
 			WrongModifierException {
-		final ClassImpl newSymbol = new ClassImpl(getRuntime(), this, extends_, implements_, modifier, name.toString());
+		final ClassImpl newSymbol = new ClassImpl(getRuntime(), this, extends_, implements_, modifier, name);
 		final Symbol duplicate = classesAndInterfaces.get(newSymbol);
 		if(duplicate != null) {
 			throw new DuplicateIdentifierException(this, newSymbol, duplicate);
@@ -54,7 +55,7 @@ class PackageImpl extends SymbolContainerImpl implements Package, Comparable<Pac
 			Iterator<Symbol> extends_, Modifier modifier)
 			throws DuplicateIdentifierException, ShadowedIdentifierException,
 			WrongModifierException {
-		final InterfaceImpl newSymbol = new InterfaceImpl(getRuntime(), this, extends_, modifier, name.toString());
+		final InterfaceImpl newSymbol = new InterfaceImpl(getRuntime(), this, extends_, modifier, name);
 		final Symbol duplicate = classesAndInterfaces.get(newSymbol);
 		if(duplicate != null) {
 			throw new DuplicateIdentifierException(this, newSymbol, duplicate);
@@ -115,6 +116,11 @@ class PackageImpl extends SymbolContainerImpl implements Package, Comparable<Pac
 	@Override
 	public Modifier getModifier() {
 		return null;
+	}
+
+	@Override
+	public StreamPosition getPosition() {
+		return name;
 	}
 
 }

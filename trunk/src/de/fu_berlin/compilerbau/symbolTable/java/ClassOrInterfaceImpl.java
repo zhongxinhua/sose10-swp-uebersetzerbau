@@ -13,14 +13,15 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierExcept
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.PositionString;
+import de.fu_berlin.compilerbau.util.StreamPosition;
 
 class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterface, Comparable<ClassOrInterfaceImpl> {
 	
-	protected final String canonicalName;
+	protected final PositionString canonicalName;
 	protected final Modifier modifier;
 
 	public ClassOrInterfaceImpl(Runtime runtime, SymbolContainer parent, Iterator<Symbol> implements_,
-			Modifier modifier, String canonicalName) {
+			Modifier modifier, PositionString canonicalName) {
 		// implements_
 		super(runtime, parent);
 		this.modifier = modifier;
@@ -38,7 +39,7 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 
 	@Override
 	public String getCanonicalName() {
-		return canonicalName;
+		return canonicalName.toString();
 	}
 
 	@Override
@@ -59,6 +60,11 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 	@Override
 	public Modifier getModifier() {
 		return modifier;
+	}
+
+	@Override
+	public StreamPosition getPosition() {
+		return canonicalName;
 	}
 
 }

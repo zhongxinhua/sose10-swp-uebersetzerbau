@@ -10,12 +10,6 @@ public interface Symbol {
 	Runtime getRuntime();
 	
 	/**
-	 * Returns the position where the symbol was implemented.
-	 * @return null if position is unknown
-	 */
-	StreamPosition getPosition();
-	
-	/**
 	 * Where and by whom was this symbol mentioned. (For circular dependencies.)
 	 * @return immutable list [(who,where)]
 	 */

@@ -2,13 +2,12 @@ package de.fu_berlin.compilerbau.symbolTable.exceptions;
 
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
-import de.fu_berlin.compilerbau.util.StreamPosition;
 
 /**
  * An identifier was added twice to the same {@link SymbolContainer}.
  * @author kijewski
  */
-public class DuplicateIdentifierException extends SymbolTableException implements StreamPosition {
+public class DuplicateIdentifierException extends SymbolTableException {
 	
 	private static final long serialVersionUID = 8581164664313507022L;
 	
@@ -42,21 +41,6 @@ public class DuplicateIdentifierException extends SymbolTableException implement
 	
 	public Symbol getOldSymbol() {
 		return oldSymbol;
-	}
-
-	@Override
-	public int getCharacter() {
-		return newSymbol.getPosition().getCharacter();
-	}
-
-	@Override
-	public int getLine() {
-		return newSymbol.getPosition().getLine();
-	}
-
-	@Override
-	public int getStart() {
-		return newSymbol.getPosition().getStart();
 	}
 	
 }

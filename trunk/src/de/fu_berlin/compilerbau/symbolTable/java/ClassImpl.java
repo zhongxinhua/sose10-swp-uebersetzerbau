@@ -17,7 +17,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
 class ClassImpl extends ClassOrInterfaceImpl implements Class {
 
 	public ClassImpl(Runtime runtime, SymbolContainer parent, Symbol extends_, Iterator<Symbol> implements_,
-			Modifier modifier, String canonicalName) {
+			Modifier modifier, PositionString canonicalName) {
 		// TODO extends_
 		super(runtime, parent, implements_, modifier, canonicalName);
 	}
