@@ -34,21 +34,21 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	final VoidTypeImpl voidType = new VoidTypeImpl(this);
 	
 	void addPrimitiveClass(Class<?> c) {
-		PrimitiveTypeImpl typeImpl = new PrimitiveTypeImpl(this, boolean.class);
+		PrimitiveTypeImpl typeImpl = new PrimitiveTypeImpl(this, c);
 		primitiveTypes.put(c, typeImpl);
 		primitiveTypesByName.put(c.getName(), typeImpl);
 	}
 	
 	RuntimeImpl() {
 		super(null, null);
+		addPrimitiveClass(boolean.class);
+		addPrimitiveClass(byte.class);
 		addPrimitiveClass(char.class);
 		addPrimitiveClass(double.class);
 		addPrimitiveClass(float.class);
 		addPrimitiveClass(int.class);
 		addPrimitiveClass(long.class);
 		addPrimitiveClass(short.class);
-		addPrimitiveClass(boolean.class);
-		addPrimitiveClass(boolean.class);
 	}
 	
 	@Override
