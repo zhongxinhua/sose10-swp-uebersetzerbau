@@ -1,14 +1,18 @@
 package de.fu_berlin.compilerbau.symbolTable.java;
 
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import de.fu_berlin.compilerbau.symbolTable.Class;
 import de.fu_berlin.compilerbau.symbolTable.ClassOrInterface;
 import de.fu_berlin.compilerbau.symbolTable.Interface;
 import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.Package;
+import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
+import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
@@ -17,46 +21,65 @@ import de.fu_berlin.compilerbau.util.PositionString;
 class PackageImpl extends SymbolContainerImpl implements Package, Comparable<PackageImpl> {
 	
 	final PositionString name;
+	
+	protected Map<ClassOrInterfaceImpl,ClassImpl> classes =
+			new TreeMap<ClassOrInterfaceImpl,ClassImpl>();
+	protected Map<ClassOrInterfaceImpl,InterfaceImpl> interfaces =
+			new TreeMap<ClassOrInterfaceImpl,InterfaceImpl>();
+	protected Map<ClassOrInterfaceImpl,ClassOrInterfaceImpl> classesAndInterfaces =
+			new TreeMap<ClassOrInterfaceImpl,ClassOrInterfaceImpl>();
 
-	public PackageImpl(RuntimeImpl runtime, PositionString name) {
+	public PackageImpl(Runtime runtime, PositionString name) {
 		super(runtime, runtime);
 		this.name = name;
 	}
 
 	@Override
-	public Class addClass(PositionString name, Symbol extends1,
-			Iterator<Symbol> implements1, Modifier modifier)
+	public Class addClass(PositionString name, Symbol extends_,
+			Iterator<Symbol> implements_, Modifier modifier)
 			throws DuplicateIdentifierException, ShadowedIdentifierException,
 			WrongModifierException {
-		// TODO Auto-generated method stub
-		return null;
+		final ClassImpl newSymbol = new ClassImpl(getRuntime(), this, extends_, implements_, modifier, name.toString());
+		final Symbol duplicate = classesAndInterfaces.get(newSymbol);
+		if(duplicate != null) {
+			throw new DuplicateIdentifierException(this, newSymbol, duplicate);
+		}
+		classes.put(newSymbol, newSymbol);
+		classesAndInterfaces.put(newSymbol, newSymbol);
+		return newSymbol;
 	}
 
 	@Override
 	public Interface addInterface(PositionString name,
-			Iterator<Symbol> extends1, Modifier modifier)
+			Iterator<Symbol> extends_, Modifier modifier)
 			throws DuplicateIdentifierException, ShadowedIdentifierException,
 			WrongModifierException {
-		// TODO Auto-generated method stub
-		return null;
+		final InterfaceImpl newSymbol = new InterfaceImpl(getRuntime(), this, extends_, modifier, name.toString());
+		final Symbol duplicate = classesAndInterfaces.get(newSymbol);
+		if(duplicate != null) {
+			throw new DuplicateIdentifierException(this, newSymbol, duplicate);
+		}
+		interfaces.put(newSymbol, newSymbol);
+		classesAndInterfaces.put(newSymbol, newSymbol);
+		return newSymbol;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Set<Class> getClasses() {
-		// TODO Auto-generated method stub
-		return null;
+		return (Set<Class>)(Set<?>)classes.keySet();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Set<ClassOrInterface> getClassesAndInterfaces() {
-		// TODO Auto-generated method stub
-		return null;
+		return (Set<ClassOrInterface>)(Set<?>)classesAndInterfaces.keySet();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Set<Interface> getInterfaces() {
-		// TODO Auto-generated method stub
-		return null;
+		return (Set<Interface>)(Set<?>)interfaces.keySet();
 	}
 
 	@Override
@@ -72,6 +95,26 @@ class PackageImpl extends SymbolContainerImpl implements Package, Comparable<Pac
 	@Override
 	public boolean equals(Object obj) {
 		return super.equals(obj);
+	}
+
+	@Override
+	public String getCanonicalName() {
+		return name.toString();
+	}
+
+	@Override
+	public String getJavaSignature() {
+		return null;
+	}
+
+	@Override
+	public SymbolType getType() {
+		return SymbolType.PACKAGE;
+	}
+
+	@Override
+	public Modifier getModifier() {
+		return null;
 	}
 
 }

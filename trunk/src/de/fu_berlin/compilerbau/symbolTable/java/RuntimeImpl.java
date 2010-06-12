@@ -23,6 +23,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
 public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	
 	protected final Map<PackageImpl, PackageImpl> packages = new TreeMap<PackageImpl, PackageImpl>();
+	protected final VoidTypeImpl voidType = new VoidTypeImpl(this);
 	
 	RuntimeImpl() {
 		super(null, null);
@@ -94,6 +95,11 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	public Set<SymbolContainer> qualifyAllSymbols() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Symbol getVoid() {
+		return voidType;
 	}
 	
 }

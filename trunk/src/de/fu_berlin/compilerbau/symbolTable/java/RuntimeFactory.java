@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -51,6 +52,7 @@ public class RuntimeFactory {
 	 */
 	public static Runtime newRuntime(Iterator<Map.Entry<PositionString,PositionString>> imports,
 			URL[] classpath, URL rtJar) throws IOException {
+		
 		RuntimeImpl result = new RuntimeImpl();
 		
 		final PackageLoader loader = new PackageLoader(rtJar, classpath);
@@ -102,7 +104,7 @@ public class RuntimeFactory {
 		return result;
 	}
 
-	private static void populateFromNativeClass(RuntimeImpl rt, String pkgName,
+	private static void populateFromNativeClass(Runtime rt, String pkgName,
 			String className, Class<?> clazz) throws SymbolTableException {
 		
 		PositionString pkgLookupName = new PositionString(pkgName, PositionBean.ZERO);
@@ -154,6 +156,7 @@ public class RuntimeFactory {
 		
 	}
 	
+	protected static Map<Class<?>,Symbol> primitiveTypes = new HashMap<Class<?>,Symbol>();
 	/**
 	 * Java's type names have to be put in our {@link Symbol} schema.
 	 * This method translates a {@link Class} into a unqualified symbol.
@@ -165,20 +168,23 @@ public class RuntimeFactory {
 		
 		final PositionString name = new PositionString(type.getName(), PositionBean.ZERO);
 		
-		final SymbolType symbolType;
+		Symbol result;
 		if(type == Void.TYPE) {
-			symbolType = SymbolType.VOID;
+			result = rt.getVoid();
 		} else if(type.isPrimitive()) {
-			symbolType = SymbolType.ATOMARTYPE;
+			result = primitiveTypes.get(type);
+			if(result == null) {
+				result = new PrimitiveTypeImpl(rt, type);
+				primitiveTypes.put(type, result);
+			}
 		} else if(type.isArray()) {
-			symbolType = SymbolType.ARRAYTYPE;
+			result = null; // TODO
 		} else if(type.isInterface()) {
-			symbolType = SymbolType.INTERFACE;
+			result = rt.getUnqualifiedSymbol(name, SymbolType.INTERFACE);
 		} else {
-			symbolType = SymbolType.CLASS;
+			result = rt.getUnqualifiedSymbol(name, SymbolType.CLASS);
 		}
 		
-		final Symbol result = rt.getUnqualifiedSymbol(name, symbolType);
 		return result;
 		
 	}

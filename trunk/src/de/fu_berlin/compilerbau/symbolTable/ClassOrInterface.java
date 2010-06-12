@@ -7,7 +7,7 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierExcepti
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.PositionString;
 
-public interface ClassOrInterface extends SymbolContainer {
+public interface ClassOrInterface extends SymbolContainer, QualifiedSymbol {
 	
 	/**
 	 * For interfaces you must not add a method body.

@@ -65,4 +65,6 @@ public interface Runtime extends SymbolContainer {
 	 */
 	Set<SymbolContainer> qualifyAllSymbols();
 	
+	Symbol getVoid();
+	
 }

@@ -9,12 +9,6 @@ public interface Symbol {
 	
 	Runtime getRuntime();
 	
-	String getCanonicalName();
-	
-	String getJavaSignature();
-	
-	SymbolType getType();
-	
 	/**
 	 * Returns the position where the symbol was implemented.
 	 * @return null if position is unknown

@@ -12,7 +12,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
 
 class SymbolContainerImpl extends SymbolImpl implements SymbolContainer {
 	
-	SymbolContainerImpl(RuntimeImpl runtime, SymbolContainer parent) {
+	SymbolContainerImpl(Runtime runtime, SymbolContainer parent) {
 		super(runtime, parent);
 	}
 	

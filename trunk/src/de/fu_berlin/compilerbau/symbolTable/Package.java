@@ -11,7 +11,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
 /**
  * @author kijewski
  */
-public interface Package extends SymbolContainer {
+public interface Package extends SymbolContainer, QualifiedSymbol {
 	
 	Runtime getRuntime();
 	

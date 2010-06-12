@@ -38,6 +38,7 @@ public interface SymbolContainer extends Symbol {
 	/**
 	 * @see #lookup(UnqualifiedSymbol)
 	 * @see Runtime#getUniqualifiedSymbol(PositionString, SymbolType)
+	 * @return null if not found
 	 */
 	Symbol getQualifiedSymbol(PositionString name, SymbolType type);
 	
