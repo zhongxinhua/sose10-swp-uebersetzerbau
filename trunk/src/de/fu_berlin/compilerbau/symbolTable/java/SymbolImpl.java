@@ -13,9 +13,11 @@ import de.fu_berlin.compilerbau.util.StreamPosition;
 class SymbolImpl implements Symbol {
 	
 	private final RuntimeImpl runtime;
+	private final SymbolContainer parent;
 	
-	SymbolImpl(RuntimeImpl runtime) {
+	SymbolImpl(RuntimeImpl runtime, SymbolContainer parent) {
 		this.runtime = runtime;
+		this.parent = parent ;
 	}
 	
 	@Override
@@ -44,8 +46,7 @@ class SymbolImpl implements Symbol {
 	
 	@Override
 	public SymbolContainer getParent() {
-		// TODO Auto-generated method stub
-		return null;
+		return parent;
 	}
 	
 	@Override

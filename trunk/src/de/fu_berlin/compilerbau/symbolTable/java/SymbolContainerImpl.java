@@ -12,8 +12,8 @@ import de.fu_berlin.compilerbau.util.PositionString;
 
 class SymbolContainerImpl extends SymbolImpl implements SymbolContainer {
 	
-	SymbolContainerImpl(RuntimeImpl runtime) {
-		super(runtime);
+	SymbolContainerImpl(RuntimeImpl runtime, SymbolContainer parent) {
+		super(runtime, parent);
 	}
 	
 	@Override

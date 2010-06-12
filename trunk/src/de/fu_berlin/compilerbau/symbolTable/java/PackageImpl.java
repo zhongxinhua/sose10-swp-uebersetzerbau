@@ -19,7 +19,7 @@ class PackageImpl extends SymbolContainerImpl implements Package, Comparable<Pac
 	final PositionString name;
 
 	public PackageImpl(RuntimeImpl runtime, PositionString name) {
-		super(runtime);
+		super(runtime, runtime);
 		this.name = name;
 	}
 

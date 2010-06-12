@@ -25,7 +25,7 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	protected final Map<PackageImpl, PackageImpl> packages = new TreeMap<PackageImpl, PackageImpl>();
 	
 	RuntimeImpl() {
-		super(null);
+		super(null, null);
 	}
 	
 	@Override
@@ -79,20 +79,15 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	@Override
 	public Symbol lookup(UnqualifiedSymbol symbol) {
 		Likelyness isPackage = symbol.is(SymbolType.PACKAGE);
-		if(isPackage == Likelyness.YES) {
-			if(symbol instanceof UnqualifiedSymbolImpl) {
-				PackageImpl newPackage = new PackageImpl(this, ((UnqualifiedSymbolImpl) symbol).name);
-				return packages.get(newPackage);
-			} else {
-				throw new ClassCastException();
+		
+		PackageImpl result = null;
+		if(isPackage != Likelyness.IMPOSSIBLE) {
+			result = packages.get(new PackageImpl(this, ((UnqualifiedSymbolImpl) symbol).name));
+			if(isPackage == Likelyness.YES) {
+				return result;
 			}
-		} else if(isPackage == Likelyness.MAYBE) {
-			// TODO
-			return null;
-		} else if(isPackage == Likelyness.IMPOSSIBLE) {
-			return super.lookup(symbol);
 		}
-		throw new NullPointerException();
+		return result != null ? result : super.lookup(symbol);
 	}
 
 	@Override

@@ -17,7 +17,7 @@ public class UnqualifiedSymbolImpl extends SymbolImpl implements
 	final PositionString name;
 
 	UnqualifiedSymbolImpl(PositionString name, RuntimeImpl runtime, Iterator<Entry<SymbolType, Likelyness>> likeliness) {
-		super(runtime);
+		super(runtime, null);
 		this.name = name;
 		
 		likelyness = new EnumMap<SymbolType, Likelyness>(SymbolType.class);

@@ -162,11 +162,25 @@ public class RuntimeFactory {
 	 * @return
 	 */
 	static Symbol javaToCompilerType(Runtime rt, Class<?> type) {
-		// TODO: atomare Typen, Arrays, void
-		PositionString name = new PositionString(type.getName(), PositionBean.ZERO);
-		SymbolType symbolType = type.isInterface() ? SymbolType.INTERFACE : SymbolType.CLASS;
-		Symbol result = rt.getUnqualifiedSymbol(name, symbolType);
+		
+		final PositionString name = new PositionString(type.getName(), PositionBean.ZERO);
+		
+		final SymbolType symbolType;
+		if(type == Void.TYPE) {
+			symbolType = SymbolType.VOID;
+		} else if(type.isPrimitive()) {
+			symbolType = SymbolType.ATOMARTYPE;
+		} else if(type.isArray()) {
+			symbolType = SymbolType.ARRAYTYPE;
+		} else if(type.isInterface()) {
+			symbolType = SymbolType.INTERFACE;
+		} else {
+			symbolType = SymbolType.CLASS;
+		}
+		
+		final Symbol result = rt.getUnqualifiedSymbol(name, symbolType);
 		return result;
+		
 	}
 	
 	/**
