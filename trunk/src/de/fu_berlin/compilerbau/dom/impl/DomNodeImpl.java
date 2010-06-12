@@ -13,6 +13,8 @@ import de.fu_berlin.compilerbau.util.PositionString;
 
 public class DomNodeImpl implements DomNode {
 
+	private static final long serialVersionUID = 4972476412913818684L;
+	
 	private LinkedList<DomAttribute> _attributes;
 	private LinkedList<DomNode> _childList;
 	
