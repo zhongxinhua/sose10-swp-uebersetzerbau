@@ -114,33 +114,33 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 			final PositionString call = symbol.getCall();
 			
 			final PackageImpl pkgResult = packages.get(new PackageImpl(this, call));
-			if(pkgResult != null) {
+			if(pkgResult != null || isPackage == YES) {
 				return pkgResult;
 			}
+		}
+		
+		final LinkedList<PositionString> list = symbol.getCall().split('.', -1);
+		for(int i = list.size()-1; i > 0; ++i) {
+			final PositionString p0 = list.get(0);
+			final PositionStringBuilder builder = new PositionStringBuilder(p0);
+			builder.append(p0.toString());
+			for(int h = 1; h < i; ++h) {
+				builder.append('.');
+				builder.append(list.get(h));
+			}
 			
-			final LinkedList<PositionString> list = symbol.getCall().split('.', -1);
-			for(int i = list.size()-1; i > 0; ++i) {
-				final PositionString p0 = list.get(0);
-				final PositionStringBuilder builder = new PositionStringBuilder(p0);
-				builder.append(p0.toString());
-				for(int h = 1; h < i; ++h) {
-					builder.append('.');
-					builder.append(list.get(h));
+			final PackageImpl pkg = packages.get(new PackageImpl(this, builder.toPositionString()));
+			if(pkg != null) {
+				final PositionString p1 = list.get(i);
+				final PositionStringBuilder subCall = new PositionStringBuilder(p1);
+				subCall.append(p1);
+				for(int h = i+1; h < list.size()-1; ++h) {
+					subCall.append('.');
+					subCall.append(list.get(h));
 				}
-				
-				final PackageImpl pkg = packages.get(new PackageImpl(this, builder.toPositionString()));
-				if(pkg != null) {
-					final PositionString p1 = list.get(i);
-					final PositionStringBuilder subCall = new PositionStringBuilder(p1);
-					subCall.append(p1);
-					for(int h = i+1; h < list.size()-1; ++h) {
-						subCall.append('.');
-						subCall.append(list.get(h));
-					}
-					final UnqualifiedSymbolImpl subCallSym =
-							new UnqualifiedSymbolImpl(subCall.toPositionString(), this, symbol.getLikelynessPerType());
-					return pkg.lookup(subCallSym);
-				}
+				final UnqualifiedSymbolImpl subCallSym =
+						new UnqualifiedSymbolImpl(subCall.toPositionString(), this, symbol.getLikelynessPerType());
+				return pkg.lookup(subCallSym);
 			}
 		}
 		
