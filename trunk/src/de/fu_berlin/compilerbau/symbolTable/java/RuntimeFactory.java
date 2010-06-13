@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
+import de.fu_berlin.compilerbau.symbolTable.ClassOrInterface;
 import de.fu_berlin.compilerbau.symbolTable.GetModifier;
 import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.Package;
@@ -114,34 +115,40 @@ public class RuntimeFactory {
 		}
 		Package pkg = (Package)pkgSymbol;
 
-		final Symbol extends_;
-		Class<?> superclass = clazz.getSuperclass();
-		if(superclass != null) {
-			extends_ = javaToCompilerType(rt, superclass);
-		} else {
-			extends_ = null;
-		}		
-
 		Symbol[] ifSymbols = javaToCompilerType(rt, clazz.getInterfaces());
 
 		PositionString classLookupName = new PositionString(className, PositionBean.ZERO);
 		Modifier clazzModifiers = new NativeModifier(clazz.getModifiers());
 		Iterator<Symbol> implements_ = Arrays.asList(ifSymbols).iterator();
-		de.fu_berlin.compilerbau.symbolTable.Class clazzSymbol =
+		ClassOrInterface coiSymbol;
+		if(!clazz.isInterface()) {
+			final Symbol extends_;
+			Class<?> superclass = clazz.getSuperclass();
+			if(superclass != null) {
+				extends_ = javaToCompilerType(rt, superclass);
+			} else {
+				extends_ = null;
+			}
+			
+			de.fu_berlin.compilerbau.symbolTable.Class clazzSymbol =
 				pkg.addClass(classLookupName, extends_, implements_, clazzModifiers);
-		
-		for(Field field : clazz.getDeclaredFields()) {
-			NativeModifier modifiers = new NativeModifier(field.getModifiers());
-			PositionString name = new PositionString(field.getName(), PositionBean.ZERO);
-			Symbol type = javaToCompilerType(rt, field.getType());
-			clazzSymbol.addMember(name, type, modifiers);
-		}
-		
-		for(Constructor<?> ctor : clazz.getDeclaredConstructors()) {
-			NativeModifier modifiers = new NativeModifier(ctor.getModifiers());
-			Iterator<Symbol> parameters = Arrays.asList(javaToCompilerType(
-					rt, ctor.getParameterTypes())).iterator();
-			clazzSymbol.addConstructor(parameters, modifiers);
+			coiSymbol = clazzSymbol; 
+			
+			for(Field field : clazz.getDeclaredFields()) {
+				NativeModifier modifiers = new NativeModifier(field.getModifiers());
+				PositionString name = new PositionString(field.getName(), PositionBean.ZERO);
+				Symbol type = javaToCompilerType(rt, field.getType());
+				clazzSymbol.addMember(name, type, modifiers);
+			}
+			
+			for(Constructor<?> ctor : clazz.getDeclaredConstructors()) {
+				NativeModifier modifiers = new NativeModifier(ctor.getModifiers());
+				Iterator<Symbol> parameters = Arrays.asList(javaToCompilerType(
+						rt, ctor.getParameterTypes())).iterator();
+				clazzSymbol.addConstructor(parameters, modifiers);
+			}
+		} else {
+			coiSymbol = pkg.addInterface(classLookupName, implements_, clazzModifiers);
 		}
 		
 		for(Method method : clazz.getDeclaredMethods()) {
@@ -150,7 +157,7 @@ public class RuntimeFactory {
 					rt, method.getParameterTypes())).iterator();
 			Symbol resultType = javaToCompilerType(rt, method.getReturnType());
 			PositionString name = new PositionString(method.getName(), PositionBean.ZERO);
-			clazzSymbol.addMethod(name, resultType, parameters, modifiers);
+			coiSymbol.addMethod(name, resultType, parameters, modifiers);
 		}
 		
 	}

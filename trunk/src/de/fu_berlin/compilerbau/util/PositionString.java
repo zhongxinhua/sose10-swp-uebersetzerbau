@@ -89,6 +89,14 @@ public class PositionString extends PositionBean implements CharSequence, Compar
 	}
 	
 	/**
+	 * {@code hashCode() = toString().hashCode()}
+	 */
+	@Override
+	public int hashCode() {
+		return string.hashCode();
+	}
+	
+	/**
 	 * @see String#split(String)
 	 * @param at character to split the string at
 	 * @param maxIndices return at most maxIndices indices;

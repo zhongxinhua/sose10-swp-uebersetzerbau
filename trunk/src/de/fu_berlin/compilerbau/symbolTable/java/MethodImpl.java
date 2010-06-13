@@ -13,7 +13,7 @@ import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
 
-class MethodImpl extends SymbolImpl implements Method {
+class MethodImpl extends SymbolImpl implements Method, Comparable<Method> {
 
 	public MethodImpl(Runtime runtime, SymbolContainer parent) {
 		super(runtime, parent);
@@ -96,6 +96,12 @@ class MethodImpl extends SymbolImpl implements Method {
 	public SymbolType getType() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public int compareTo(Method o) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }
