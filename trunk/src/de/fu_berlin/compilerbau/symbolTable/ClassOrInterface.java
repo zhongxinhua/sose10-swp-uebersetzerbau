@@ -1,6 +1,7 @@
 package de.fu_berlin.compilerbau.symbolTable;
 
 import java.util.Iterator;
+import java.util.Set;
 
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
@@ -15,5 +16,7 @@ public interface ClassOrInterface extends SymbolContainer, QualifiedSymbol {
 	Method addMethod(PositionString name, Symbol resultType, Iterator<Symbol> parameters,
 			Modifier modifier) throws
 			DuplicateIdentifierException, ShadowedIdentifierException, WrongModifierException;
+	
+	Set<Symbol> getInterfaces();
 	
 }

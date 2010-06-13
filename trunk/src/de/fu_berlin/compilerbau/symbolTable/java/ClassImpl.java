@@ -19,12 +19,13 @@ import de.fu_berlin.compilerbau.util.PositionString;
 
 class ClassImpl extends ClassOrInterfaceImpl implements Class {
 	
-	protected Map<Member,MemberImpl> members = new TreeMap<Member,MemberImpl>();
+	protected final Map<Member,MemberImpl> members = new TreeMap<Member,MemberImpl>();
+	protected final Symbol extends_;
 
 	public ClassImpl(Runtime runtime, SymbolContainer parent, Symbol extends_, Iterator<Symbol> implements_,
 			Modifier modifier, PositionString canonicalName) {
-		// TODO extends_
 		super(runtime, parent, implements_, modifier, canonicalName);
+		this.extends_ = extends_;
 	}
 
 	@Override
@@ -39,14 +40,19 @@ class ClassImpl extends ClassOrInterfaceImpl implements Class {
 	public Member addMember(PositionString name, Symbol type, Modifier modifier)
 			throws DuplicateIdentifierException, ShadowedIdentifierException,
 			WrongModifierException {
-		// TODO name, type, modifier
-		final MemberImpl newMember = new MemberImpl(getRuntime(), this);
+		// TODO type
+		final MemberImpl newMember = new MemberImpl(getRuntime(), this, name, modifier);
 		final MemberImpl oldMember = members.get(newMember);
 		if(oldMember != null) {
 			throw new DuplicateIdentifierException(this, newMember, oldMember);
 		}
 		members.put(newMember, newMember);
 		return newMember;
+	}
+
+	@Override
+	public Symbol getSuperClass() {
+		return extends_;
 	}
 
 	@Override

@@ -60,4 +60,9 @@ public class PrimitiveTypeImpl extends ClassOrInterfaceImpl implements Primitive
 		return null;
 	}
 
+	@Override
+	public Symbol getSuperClass() {
+		return null;
+	}
+
 }

@@ -5,19 +5,23 @@ import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.Variable;
+import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
 
 class VariableImpl extends SymbolImpl implements Variable, Comparable<Variable> {
+	
+	protected final PositionString name;
+	protected final Modifier modifier;
 
-	public VariableImpl(Runtime runtime, SymbolContainer parent) {
+	public VariableImpl(Runtime runtime, SymbolContainer parent, PositionString name, Modifier modifier) {
 		super(runtime, parent);
-		// TODO Auto-generated constructor stub
+		this.name = name;
+		this.modifier = modifier;
 	}
 
 	@Override
 	public String getCanonicalName() {
-		// TODO Auto-generated method stub
-		return null;
+		return name.toString();
 	}
 
 	@Override
@@ -28,20 +32,17 @@ class VariableImpl extends SymbolImpl implements Variable, Comparable<Variable> 
 
 	@Override
 	public Modifier getModifier() {
-		// TODO Auto-generated method stub
-		return null;
+		return modifier;
 	}
 
 	@Override
 	public StreamPosition getPosition() {
-		// TODO Auto-generated method stub
-		return null;
+		return name;
 	}
 
 	@Override
 	public SymbolType getType() {
-		// TODO Auto-generated method stub
-		return null;
+		return SymbolType.VARIABLE;
 	}
 
 	@Override

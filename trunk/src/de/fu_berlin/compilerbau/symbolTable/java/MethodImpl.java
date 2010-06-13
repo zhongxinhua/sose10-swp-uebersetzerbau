@@ -1,65 +1,47 @@
 package de.fu_berlin.compilerbau.symbolTable.java;
 
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
+import de.fu_berlin.compilerbau.symbolTable.ClassOrInterface;
 import de.fu_berlin.compilerbau.symbolTable.Method;
 import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
-import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
 
-class MethodImpl extends SymbolImpl implements Method, Comparable<Method> {
+class MethodImpl extends SymbolContainerImpl implements Method, Comparable<Method> {
+	
+	protected final ClassOrInterface parent;
+	protected final PositionString name;
+	protected final Symbol resultType;
+	protected final List<Symbol> parameters = new LinkedList<Symbol>();
+	protected final Modifier modifier;
 
-	public MethodImpl(Runtime runtime, SymbolContainer parent) {
+	public MethodImpl(Runtime runtime, ClassOrInterface parent, PositionString name, Symbol resultType,
+			Iterator<Symbol> parameters, Modifier modifier) {
 		super(runtime, parent);
-		// TODO Auto-generated constructor stub
+		this.parent = parent;
+		this.name = name;
+		this.resultType = resultType;
+		this.modifier = modifier;
+		while(parameters.hasNext()) {
+			this.parameters.add(parameters.next());
+		}
 	}
 
 	@Override
 	public List<Symbol> getParameters() {
-		// TODO Auto-generated method stub
-		return null;
+		return parameters;
 	}
 
 	@Override
 	public Symbol getReturnType() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Set<Symbol> getContainedSymbols() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Symbol getQualifiedSymbol(PositionString name, SymbolType type) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Set<Set<Symbol>> getShadowedSymbols() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Set<UnqualifiedSymbol> getUnqualifiedSymbols() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean hasUnqualifiedSymbols() {
-		// TODO Auto-generated method stub
-		return false;
+		return resultType;
 	}
 
 	@Override
@@ -70,8 +52,7 @@ class MethodImpl extends SymbolImpl implements Method, Comparable<Method> {
 
 	@Override
 	public String getCanonicalName() {
-		// TODO Auto-generated method stub
-		return null;
+		return name.toString();
 	}
 
 	@Override
@@ -82,26 +63,26 @@ class MethodImpl extends SymbolImpl implements Method, Comparable<Method> {
 
 	@Override
 	public Modifier getModifier() {
-		// TODO Auto-generated method stub
-		return null;
+		return modifier;
 	}
 
 	@Override
 	public StreamPosition getPosition() {
-		// TODO Auto-generated method stub
-		return null;
+		return name;
 	}
 
 	@Override
 	public SymbolType getType() {
-		// TODO Auto-generated method stub
-		return null;
+		return SymbolType.METHOD;
 	}
 
 	@Override
-	public int compareTo(Method o) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int compareTo(Method right) {
+		int r = parent.getCanonicalName().compareTo(right.getCanonicalName());
+		if(r != 0) {
+			return r;
+		}
+		return name.compareTo(right.getCanonicalName());
 	}
 
 }

@@ -1,6 +1,10 @@
 package de.fu_berlin.compilerbau.symbolTable.java;
 
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import de.fu_berlin.compilerbau.symbolTable.ClassOrInterface;
 import de.fu_berlin.compilerbau.symbolTable.Method;
@@ -19,6 +23,8 @@ abstract class ClassOrInterfaceImpl extends SymbolContainerImpl implements Class
 	
 	protected final PositionString canonicalName;
 	protected final Modifier modifier;
+	protected final Set<Symbol> interfaces = new TreeSet<Symbol>();
+	protected final Map<Method, MethodImpl> methods = new TreeMap<Method, MethodImpl>();
 
 	public ClassOrInterfaceImpl(Runtime runtime, SymbolContainer parent, Iterator<Symbol> implements_,
 			Modifier modifier, PositionString canonicalName) {
@@ -26,6 +32,9 @@ abstract class ClassOrInterfaceImpl extends SymbolContainerImpl implements Class
 		super(runtime, parent);
 		this.modifier = modifier;
 		this.canonicalName = canonicalName;
+		while(implements_.hasNext()) {
+			interfaces.add(implements_.next());
+		}
 	}
 
 	@Override
@@ -33,8 +42,13 @@ abstract class ClassOrInterfaceImpl extends SymbolContainerImpl implements Class
 			Iterator<Symbol> parameters, Modifier modifier)
 			throws DuplicateIdentifierException, ShadowedIdentifierException,
 			WrongModifierException {
-		// TODO Auto-generated method stub
-		return null;
+		final MethodImpl newMethod = new MethodImpl(getRuntime(), this, name, resultType, parameters, modifier);
+		final MethodImpl oldMethod = methods.get(newMethod);
+		if(oldMethod != null) {
+			throw new DuplicateIdentifierException(this, newMethod, oldMethod);
+		}
+		methods.put(newMethod, newMethod);
+		return newMethod;
 	}
 
 	@Override
@@ -65,6 +79,11 @@ abstract class ClassOrInterfaceImpl extends SymbolContainerImpl implements Class
 	@Override
 	public StreamPosition getPosition() {
 		return canonicalName;
+	}
+
+	@Override
+	public Set<Symbol> getInterfaces() {
+		return interfaces;
 	}
 
 }

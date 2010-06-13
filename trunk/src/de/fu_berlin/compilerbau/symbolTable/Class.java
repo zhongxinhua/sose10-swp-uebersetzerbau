@@ -18,4 +18,6 @@ public interface Class extends ClassOrInterface {
 	Constructor addConstructor(Iterator<Symbol> parameters, Modifier modifier) throws
 			DuplicateIdentifierException, ShadowedIdentifierException, WrongModifierException;
 	
+	Symbol getSuperClass();
+	
 }
