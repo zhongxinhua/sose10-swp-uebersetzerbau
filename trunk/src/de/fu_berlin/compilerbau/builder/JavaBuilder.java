@@ -392,7 +392,7 @@ public class JavaBuilder extends Builder {
 
 	protected void buildFloatLiteralExpression(FloatLiteral obj)
 			throws IOException {
-		_code.append(String.valueOf(obj.getValue()));
+		_code.append(String.valueOf(obj.getValue()+"f"));
 	}
 
 	protected void buildFunctionCallExpression(FunctionCall obj)
