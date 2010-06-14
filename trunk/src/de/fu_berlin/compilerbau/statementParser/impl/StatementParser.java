@@ -84,24 +84,24 @@ import de.fu_berlin.compilerbau.util.*;
 public class StatementParser {
 	private Iterator<StatementNode> tokens;
 	private StatementNode current;
-	
+
 	/**
-	 * Dieser Typ dient als Auswahlparameter für den Parser, 
-	 * da dieser verschiedene Ausdrücke parst. 
+	 * Dieser Typ dient als Auswahlparameter für den Parser, da dieser
+	 * verschiedene Ausdrücke parst.
+	 * 
 	 * @author Markus
 	 */
 	public enum ExpressionType {
-		RVALUE,
-		LVALUE,
-		FUNCTIONCALL
+		RVALUE, LVALUE, FUNCTIONCALL
 	}
 
 	public StatementParser() {
 	}
 
 	/**
-	 * siehe parse(Iterable&lt;StatementNode&gt; nodes)
-	 * Diese Methode wird nur zum Testen verwendet!
+	 * siehe parse(Iterable&lt;StatementNode&gt; nodes) Diese Methode wird nur
+	 * zum Testen verwendet!
+	 * 
 	 * @param str
 	 *            ein String, der einen Ausdruck enthält
 	 * @param type
@@ -153,44 +153,47 @@ public class StatementParser {
 		tokens = nodes.iterator();
 		next();
 		Expression result;
-		switch(type) {
+		switch (type) {
 		case LVALUE:
 			result = factor();
-			if(!isLValue(result))
-				ErrorHandler.error(null, "the expression is not a valid lvalue!");
+			if (!isLValue(result))
+				ErrorHandler.error(null,
+						"the expression is not a valid lvalue!");
 			return result;
 		case FUNCTIONCALL:
 			result = factor();
-			if(!isFunctionCall(result))
-				ErrorHandler.error(null, "the expression is not a valid function call!");
+			if (!isFunctionCall(result))
+				ErrorHandler.error(null,
+						"the expression is not a valid function call!");
 			return result;
-		default: //RVALUE
-		  return expression();
+		default: // RVALUE
+			return expression();
 		}
 	}
 
 	/**
 	 * überprüft ob ein gegebener Audruck ein L-Wert ist.
+	 * 
 	 * @param expr
 	 * @return true wenn der Ausdruck ein gültiger L-Wert ist, sonst false
 	 */
 	private boolean isLValue(Expression expr) {
-		//letztes Element in der Kette muss ein Bezeichner oder 
-		//ein Array-Zugriff sein!
-		while(expr instanceof MemberAccess)
+		// letztes Element in der Kette muss ein Bezeichner oder
+		// ein Array-Zugriff sein!
+		while (expr instanceof MemberAccess)
 			expr = ((MemberAccess) expr).getChild();
-		return expr instanceof ArrayAccess ||
-		       expr instanceof Identifier;
+		return expr instanceof ArrayAccess || expr instanceof Identifier;
 	}
-	
+
 	/**
 	 * überprüft ob ein gegebener Audruck ein Funktionsaufruf ist.
+	 * 
 	 * @param expr
 	 * @return true wenn der Ausdruck ein gültiger L-Wert ist, sonst false
 	 */
 	private boolean isFunctionCall(Expression expr) {
-		//letztes Element in der Kette muss ein Funktionsaufruf
-		while(expr instanceof MemberAccess)
+		// letztes Element in der Kette muss ein Funktionsaufruf
+		while (expr instanceof MemberAccess)
 			expr = ((MemberAccess) expr).getChild();
 		return expr.getClass() == FunctionCall.class;
 	}
@@ -434,24 +437,27 @@ public class StatementParser {
 		case PLUS:
 			op = UnaryOperator.PLUS;
 			break;
-		case NEW: 		
-			//Namen der Klasse lesen
-			if(next().getType() != TokenType.ID) {
-				ErrorHandler.error(null, "identifier expected but "+current.getType()+" found.");
+		case NEW:
+			// Namen der Klasse lesen
+			if (next().getType() != TokenType.ID) {
+				ErrorHandler.error(null, "identifier expected but "
+						+ current.getType() + " found.");
 				break;
 			}
 			CharSequence name = null;
 			try {
 				name = current.getString();
-			} catch (IllegalAccessException e) {}
-			//TODO könnte verketteter Namen mit Packages sein
+			} catch (IllegalAccessException e) {
+			}
+			// TODO könnte verketteter Namen mit Packages sein
 
-			//Arguemente			
-			if(next().getType() != TokenType.PAREN_OPEN) {
-				ErrorHandler.error(null, "'(' expected but "+current.getType()+" found.");
+			// Arguemente
+			if (next().getType() != TokenType.PAREN_OPEN) {
+				ErrorHandler.error(null, "'(' expected but "
+						+ current.getType() + " found.");
 				break;
 			}
-			return new ObjectCreation(name, actualArguments());
+			return new ObjectCreation(name, actualArguments(TokenType.PAREN_OPEN));
 		}
 		if (op != null)
 			next();
@@ -510,25 +516,29 @@ public class StatementParser {
 			next();
 
 			switch (current.getType()) {
-			case PAREN_OPEN:
-				List<Expression> arguments = actualArguments();
+			case PAREN_OPEN: //Funktionsaufruf
+				List<Expression> arguments = actualArguments(TokenType.PAREN_OPEN);
 				result = new FunctionCall(name, arguments);
 				break;
-			case BRACKET_OPEN:
+			case BRACKET_OPEN: //Arrayzugriff
 				List<Expression> indicies = arrayAccess();
 				result = new ArrayAccess(name, indicies);
 				break;
-			default:
+			default:          //einfacher Bezeichner
 				result = new Identifier(name);
 			}
 			break;
 		case PAREN_OPEN: // Unterausdruck
 			next();
 			result = expression();
-			if (current.getType() != TokenType.PARENT_CLOSE)
+			if (current.getType() != TokenType.PAREN_CLOSE)
 				ErrorHandler.error(null, "missing ')'");
 			else
 				next();
+			break;
+
+		case BRACE_OPEN: // Arrayerzeugung
+			result = new ArrayCreation(actualArguments(TokenType.BRACE_OPEN));
 			break;
 		}
 
@@ -553,7 +563,7 @@ public class StatementParser {
 				Expression rhs;
 				switch (current.getType()) {
 				case PAREN_OPEN:
-					List<Expression> arguments = actualArguments();
+					List<Expression> arguments = actualArguments(TokenType.PAREN_OPEN);
 					rhs = new FunctionCall(name, arguments);
 					break;
 				case BRACKET_OPEN:
@@ -652,17 +662,19 @@ public class StatementParser {
 	 * parst eine Funktionsparameterliste der Form (Ausdruck, Ausdruck,
 	 * Ausdruck,...)
 	 * 
+	 * @param startToken ist entweder BRACE_OPEN oder PAREN_OPEN. Hiermit wird zur richtigen abschließenden Klammer gematcht.
+	 * 
 	 * @return liefert eine Liste von Ausdrücken zurück
 	 */
-	private List<Expression> actualArguments() {
+	private List<Expression> actualArguments(TokenType startToken) {
 		// linke Klammer!
-		assert (current.getType() == TokenType.PAREN_OPEN);
+		assert (current.getType() == startToken && (startToken == TokenType.BRACE_OPEN || startToken == TokenType.PAREN_OPEN));
 		next();
 
 		LinkedList<Expression> expressions = new LinkedList<Expression>();
 
 		// schon rechte Klammer?
-		if (current.getType() == TokenType.PARENT_CLOSE) {
+		if (current.getType() == TokenType.PAREN_CLOSE) {
 			next();
 			return expressions;
 		}
@@ -674,9 +686,13 @@ public class StatementParser {
 			case COMMA:
 				next();
 				break;
-			case PARENT_CLOSE:
-				next();
-				break Loop;
+			case BRACE_CLOSE:
+			case PAREN_CLOSE:
+				if( (startToken == TokenType.BRACE_OPEN && current.getType() == TokenType.BRACE_CLOSE) ||
+					(startToken == TokenType.PAREN_OPEN && current.getType() == TokenType.PAREN_CLOSE) ) {
+					next();
+					break Loop;
+				}
 			default:
 				ErrorHandler.error(null, "',' or ')' exprected, but "
 						+ current.getType() + " found.");

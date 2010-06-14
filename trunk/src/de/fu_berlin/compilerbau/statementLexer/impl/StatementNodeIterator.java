@@ -46,9 +46,11 @@ class StatementNodeIterator implements Iterator<StatementNode> {
 		switch(next) {
 			case '.': type = TokenType.DOT; break;
 			case '(': type = TokenType.PAREN_OPEN; break;
-			case ')': type = TokenType.PARENT_CLOSE; break;
+			case ')': type = TokenType.PAREN_CLOSE; break;
 			case '[': type = TokenType.BRACKET_OPEN; break;
 			case ']': type = TokenType.BRACKET_CLOSE; break;
+			case '{': type = TokenType.BRACE_OPEN; break;
+			case '}': type = TokenType.BRACE_CLOSE; break;
 			case '*': type = TokenType.TIMES; break;
 			case '/': type = TokenType.DIVIDES; break;
 			case '%': type = TokenType.MOD; break;

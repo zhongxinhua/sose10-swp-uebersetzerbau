@@ -9,11 +9,15 @@ public enum TokenType {
 
 	PAREN_OPEN,
 
-	PARENT_CLOSE,
+	PAREN_CLOSE,
 
 	BRACKET_OPEN,
 
 	BRACKET_CLOSE,
+	
+	BRACE_OPEN,
+
+	BRACE_CLOSE,
 
 	INCR,
 

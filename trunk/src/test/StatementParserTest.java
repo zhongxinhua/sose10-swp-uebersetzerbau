@@ -14,7 +14,8 @@ class StatementParserTest {
 				"1 & 2 | 3 ^ 4",
 				"a && b || c",*/
 				"a[123+456]",
-				"a.b[1+2].c(1) + new Klasse(1,2,3)"
+				"a.b[1+2].c(1) + new Klasse(1,2,3)",
+				"{1,2,3,4} + {'a', 'b', 'c', 'd'}"
 		};
 		String[] lvalue_tests = new String[] { 
 				"a.b[1].c(1)",
