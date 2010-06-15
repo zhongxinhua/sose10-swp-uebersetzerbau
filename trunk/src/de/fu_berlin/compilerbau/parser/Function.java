@@ -44,9 +44,9 @@ public class Function extends SyntaxTreeNode {
 	private PositionString name;
 	private Type return_type;
 	// default: NO
-	boolean isStatic = false;
+	private boolean isStatic = false;
 	// default: NO
-	boolean isFinal = false;
+	private boolean isFinal = false;
 	private List<Statement> body = new LinkedList<Statement>();
 	private List<DeclarationStatement> arguments = new LinkedList<DeclarationStatement>();
 
@@ -120,28 +120,11 @@ public class Function extends SyntaxTreeNode {
 		}
 	}
 
-	public boolean hasBody() {
-		return !body.isEmpty();
-	}
-
-	public Type getReturnType() {
-		return return_type;
-	}
-
-	public PositionString getName() {
-		return name;
-	}
-	public boolean isFinal() {
-		return isFinal;
-	}
-	public boolean isStatic() {
-		return isStatic;
-	}
-	public List<DeclarationStatement> getArguments() {
-		return arguments;
-	}
-
-	public List<Statement> getBody() {
-		return body;
-	}
+	public boolean hasBody() { return !body.isEmpty(); }
+	public Type getReturnType() { return return_type; }
+	public PositionString getName() { return name; }
+	public boolean isStatic() { return isStatic; }
+	public boolean isFinal() { return isFinal; }
+	public List<Statement> getBody() { return body; }
+	public List<DeclarationStatement> getArguments() { return arguments; }
 }

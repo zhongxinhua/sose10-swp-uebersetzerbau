@@ -26,7 +26,7 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
 
 public class CallStatement extends Statement {
 
-	Expression call;
+	private Expression call;
 
 	public CallStatement(DomNode node) {
 		// check needed attribute: exec
@@ -44,5 +44,7 @@ public class CallStatement extends Statement {
 					+ " has to be a Leaf!");
 		}
 	}
+	
+	public Expression getCall() { return call; }
 
 }

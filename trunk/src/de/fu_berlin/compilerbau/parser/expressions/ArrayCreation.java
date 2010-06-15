@@ -8,7 +8,9 @@ import java.util.List;
  * @author Markus
  */
 public class ArrayCreation extends Expression {
-	List<Expression> elements;
+	private List<Expression> elements;
+	
+	public List<Expression> getElements() { return elements; }
 
 	public ArrayCreation(List<Expression> elements) {
 		this.elements = elements;

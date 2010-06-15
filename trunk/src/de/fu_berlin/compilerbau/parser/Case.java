@@ -51,13 +51,13 @@ public class Case extends SyntaxTreeNode {
 			}
 		}
 	}
-	// BEGIN get-Methoden f�r Builder
+	// BEGIN get-Methoden fuer Builder
 	public Expression getTest(){
 		return test;
 	}
 	public List<Statement> getBody(){
 		return body;
 	}
-	// END get-Methoden f�r Builder
+	// END get-Methoden fuer Builder
 
 }

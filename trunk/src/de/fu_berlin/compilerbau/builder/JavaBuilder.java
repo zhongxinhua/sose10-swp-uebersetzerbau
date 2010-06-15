@@ -27,6 +27,7 @@ import de.fu_berlin.compilerbau.parser.ScopeStatement;
 import de.fu_berlin.compilerbau.parser.SetStatement;
 import de.fu_berlin.compilerbau.parser.Statement;
 import de.fu_berlin.compilerbau.parser.expressions.ArrayAccess;
+import de.fu_berlin.compilerbau.parser.expressions.ArrayCreation;
 import de.fu_berlin.compilerbau.parser.expressions.BinaryOperation;
 import de.fu_berlin.compilerbau.parser.expressions.Expression;
 import de.fu_berlin.compilerbau.parser.expressions.FloatLiteral;
@@ -112,6 +113,9 @@ public class JavaBuilder extends Builder {
 		for (int i = 0; i < args.size(); ++i) {
 			DeclarationStatement declStmt = args.get(i);
 			_code.append(typeToJavaString(declStmt.getType()) + " ");
+			if(declStmt.isArray()) {
+				_code.append("[] ");
+			}
 			_code.append(declStmt.getName());
 			if (i + 1 < args.size())
 				_code.append(", ");
@@ -132,7 +136,17 @@ public class JavaBuilder extends Builder {
 
 
 	protected void buildCallStatement(CallStatement obj) throws IOException {
-
+		FunctionCall fc = (FunctionCall)obj.getCall();
+		if(fc.getName().equals("print")) {
+			_code.append("System.out.println(");
+			for(Expression e : fc.getArguments()) {
+				buildExpressionStatement(e);
+			}
+			_code.append(");\n");
+		}
+		else if (fc.getName().equals("read")) {
+			
+		}
 	}
 
 	protected void buildCase(Case obj) throws IOException {
@@ -190,11 +204,14 @@ public class JavaBuilder extends Builder {
 			_code.append(" = ");
 			buildExpressionStatement(decl.getValue());
 		}
-		/*
-		 * optional TODO: Arrays else if(decl.isArray()) {
-		 * _code.append(" = new " + Type.toJavaString(decl.getType())); for(int
-		 * i=0; i<decl.getDimension(); ++i) { _code.append("[]"); } }
-		 */
+		
+		else if(decl.isArray()) {
+			_code.append(" = new " + typeToJavaString(decl.getType())); 
+			for(int i=0; i<decl.getDimension(); ++i) { 
+				_code.append("[]"); 
+			} 
+		}
+		
 		_code.append(";\n");
 	}
 
@@ -234,14 +251,19 @@ public class JavaBuilder extends Builder {
 
 	@Override
 	protected void buildInterface(Interface obj) throws IOException {
-		// TODO Auto-generated method stub
-
+		_code.append("public interface ");
+		_code.append(obj.getName());
+		_code.append(" {\n");
+		for(Function func : obj.getFunctions()) {
+			buildFunction(func);
+		}
+		_code.append("\n}");
 	}
 
 	@Override
 	protected void buildModule(Module obj) throws IOException {
-		// TODO Auto-generated method stub
-
+		// There is no need to implement this Function for Java,
+		// package structure is handled in buildClass
 	}
 
 	@Override
@@ -253,8 +275,7 @@ public class JavaBuilder extends Builder {
 
 	@Override
 	protected void buildScopeStatement(ScopeStatement obj) throws IOException {
-		// TODO Auto-generated method stub
-
+		// this is currently not supported
 	}
 
 	@Override
@@ -322,6 +343,8 @@ public class JavaBuilder extends Builder {
 			buildStringLiteralExpression((StringLiteral) obj);
 		} else if (obj instanceof UnaryOperation) {
 			buildUnaryOperationExpression((UnaryOperation) obj);
+		} else if (obj instanceof ArrayCreation) {
+			buildArrayCreation((ArrayCreation)obj);
 		} else {
 			// ERROR
 			System.err.println(this.getClass().toString()
@@ -339,6 +362,19 @@ public class JavaBuilder extends Builder {
 			buildExpressionStatement(indice);
 		}
 		_code.append(']');
+	}
+	
+	protected void buildArrayCreation(ArrayCreation obj)
+			throws IOException {
+		List<Expression> elements = obj.getElements();
+		_code.append("{");
+		for(int i=0;i<elements.size(); ++i) {
+			buildExpressionStatement(elements.get(i));
+			if(!(i == elements.size()-1)) {
+				_code.append(",");
+			}
+		}
+		_code.append("}");
 	}
 
 	protected void buildBinaryOperationExpression(BinaryOperation obj)
@@ -399,8 +435,12 @@ public class JavaBuilder extends Builder {
 			throws IOException {
 		_code.append(obj.getName() + "(");
 
-		for (Expression argument : obj.getArguments()) {
-			buildExpressionStatement(argument);
+		List<Expression> args = obj.getArguments();
+		for(int i=0; i<args.size(); ++i) {
+			buildExpressionStatement(args.get(i));
+			if(!(i == args.size()-1)) {
+				_code.append(",");
+			}
 		}
 
 		_code.append(")");
@@ -438,7 +478,7 @@ public class JavaBuilder extends Builder {
 
 	protected void buildStringLiteralExpression(StringLiteral obj)
 			throws IOException {
-		_code.append(obj.getValue());
+		_code.append(obj.getValue().toString().replace('\'','\"'));
 
 	}
 

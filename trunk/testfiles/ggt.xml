@@ -1,5 +1,5 @@
 <module name="mathe">
-<class name="Math">
+<class name="Mathe">
   <function name="ggt"  returns="int" static="yes">
       <arguments>
           <decl type="int"  name="a"/>
@@ -15,11 +15,17 @@
 </class>
 
 <class name="Test">
+  <decl type="int" name="i" value="10*2"/>
+  <decl type="float" name="field" dim="1" value="{1.0, 2.4}"/>
   <function name="main" static="yes">
       <arguments>
           <decl type="string" name="args" dim="1"/>
       </arguments>
-      <call exec="print(Math.ggt(100,201))"/>
+      
+      <decl type="int" name="ggt1"/>
+      <decl type="int" name="ggt2"/>
+      <call exec="print('Der GGT von 100 und 201 ist: ')"/>
+      <call exec="print(Mathe.ggt(100,201))"/>
   </function>
 </class>
 </module>

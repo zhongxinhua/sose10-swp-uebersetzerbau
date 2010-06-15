@@ -25,7 +25,9 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
  * 
  */
 public class Interface extends ClassOrInterface {
-	List<Function> functions;
+	private List<Function> functions;
+	
+	public List<Function> getFunctions() { return functions; }
 
 	public Interface(DomNode node) {
 		// check needed attribute: name
