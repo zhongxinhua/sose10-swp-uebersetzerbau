@@ -9,6 +9,7 @@ import de.fu_berlin.compilerbau.symbolTable.Class;
 import de.fu_berlin.compilerbau.symbolTable.Constructor;
 import de.fu_berlin.compilerbau.symbolTable.Member;
 import de.fu_berlin.compilerbau.symbolTable.Modifier;
+import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
@@ -24,6 +25,8 @@ class ClassImpl extends ClassOrInterfaceImpl implements Class {
 	
 	protected final Map<Member,MemberImpl> members = new TreeMap<Member,MemberImpl>();
 	protected final Map<Constructor, ConstructorImpl> ctors = new TreeMap<Constructor, ConstructorImpl>();
+	protected final ShadowedSymbols shadowedSymbols = new ShadowedSymbols(this);
+		;
 	protected final Symbol extends_;
 
 	public ClassImpl(Runtime runtime, SymbolContainer parent, Symbol extends_, Iterator<Symbol> implements_,
@@ -50,13 +53,14 @@ class ClassImpl extends ClassOrInterfaceImpl implements Class {
 			throws DuplicateIdentifierException, ShadowedIdentifierException,
 			WrongModifierException {
 		// TODO type
-		final MemberImpl newMember = new MemberImpl(getRuntime(), this, name, modifier);
-		final MemberImpl oldMember = members.get(newMember);
-		if(oldMember != null) {
-			throw new DuplicateIdentifierException(this, newMember, oldMember);
+		final MemberImpl newSymbol = new MemberImpl(getRuntime(), this, name, modifier);
+		final MemberImpl oldSymbol = members.get(newSymbol);
+		if(oldSymbol != null) {
+			throw new DuplicateIdentifierException(this, newSymbol, oldSymbol);
 		}
-		members.put(newMember, newMember);
-		return newMember;
+		shadowedSymbols.test(name, newSymbol);
+		members.put(newSymbol, newSymbol);
+		return newSymbol;
 	}
 
 	@Override
@@ -77,6 +81,11 @@ class ClassImpl extends ClassOrInterfaceImpl implements Class {
 		sets[1] = ctors.keySet();
 		sets[2] = super.getContainedSymbols();
 		return new CombinedSet<Symbol>(sets);
+	}
+	
+	@Override
+	public Map<QualifiedSymbol, Set<Symbol>> getShadowedSymbols() {
+		return shadowedSymbols.list;
 	}
 
 }

@@ -26,9 +26,17 @@ public class UnqualifiedSymbolImpl extends SymbolImpl implements
 		REPLICATIONS.put(VARIABLE,           new SymbolType[] { MEMBER });
 	}
 
-	UnqualifiedSymbolImpl(PositionString call, RuntimeImpl runtime, Iterator<Entry<SymbolType, Likelyness>> likeliness_) {
+	UnqualifiedSymbolImpl(PositionString call, RuntimeImpl runtime) {
 		super(runtime, null);
 		this.call = call;
+		
+		for(SymbolType t : SymbolType.values()) {
+			likelyness.put(t, MAYBE);
+		}
+	}
+
+	UnqualifiedSymbolImpl(PositionString call, RuntimeImpl runtime, Iterator<Entry<SymbolType, Likelyness>> likeliness_) {
+		this(call, runtime);
 		
 		while(likeliness_.hasNext()) {
 			Entry<SymbolType, Likelyness> next = likeliness_.next();

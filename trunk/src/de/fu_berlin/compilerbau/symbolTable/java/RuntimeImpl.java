@@ -4,13 +4,16 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.Package;
 import de.fu_berlin.compilerbau.symbolTable.PrimitiveType;
+import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
@@ -29,11 +32,13 @@ import de.fu_berlin.compilerbau.util.PositionString;
 
 public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	
-	final Map<PackageImpl, PackageImpl> packages = new TreeMap<PackageImpl, PackageImpl>();
-	final Map<PrimitiveType,PrimitiveTypeImpl> primitiveTypes = new HashMap<PrimitiveType, PrimitiveTypeImpl>();
-	final Map<Class<?>,PrimitiveTypeImpl> primitiveTypesByClass = new HashMap<Class<?>, PrimitiveTypeImpl>();
-	final Map<String,PrimitiveTypeImpl> primitiveTypesByName = new HashMap<String, PrimitiveTypeImpl>();
-	final VoidTypeImpl voidType = new VoidTypeImpl(this);
+	protected final Map<PackageImpl, PackageImpl> packages = new TreeMap<PackageImpl, PackageImpl>();
+	protected final Map<PrimitiveType,PrimitiveTypeImpl> primitiveTypes = new HashMap<PrimitiveType, PrimitiveTypeImpl>();
+	protected final Map<Class<?>,PrimitiveTypeImpl> primitiveTypesByClass = new HashMap<Class<?>, PrimitiveTypeImpl>();
+	protected final Map<String,PrimitiveTypeImpl> primitiveTypesByName = new HashMap<String, PrimitiveTypeImpl>();
+	protected final VoidTypeImpl voidType = new VoidTypeImpl(this);
+	protected final ShadowedSymbols shadowedSymbols = new ShadowedSymbols(this);
+	protected final List<Entry<QualifiedSymbol, Symbol>> allShadowsList = new LinkedList<Entry<QualifiedSymbol, Symbol>>();
 	
 	void addPrimitiveClass(Class<?> c) {
 		PrimitiveTypeImpl typeImpl = new PrimitiveTypeImpl(this, c);
@@ -57,14 +62,15 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	@Override
 	public Package addPackage(PositionString name, Modifier modifier)
 			throws DuplicateIdentifierException, ShadowedIdentifierException, WrongModifierException {
-		PackageImpl newPackage = new PackageImpl(this, name);
-		PackageImpl oldPackage = packages.get(newPackage);
-		if(oldPackage == null) {
-			packages.put(newPackage, newPackage);
-			return newPackage;
+		PackageImpl newSymbol = new PackageImpl(this, name);
+		PackageImpl oldSymbol = packages.get(newSymbol);
+		if(oldSymbol != null) {
+			throw new DuplicateIdentifierException(this, newSymbol, oldSymbol);
 		} else {
-			throw new DuplicateIdentifierException(this, newPackage, oldPackage);
 		}
+		shadowedSymbols.test(name, newSymbol);
+		packages.put(newSymbol, newSymbol);
+		return newSymbol;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -86,7 +92,7 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	}
 	
 	@Override
-	public UnqualifiedSymbol getUniqualifiedSymbol(PositionString name,
+	public UnqualifiedSymbol getUnqualifiedSymbol(PositionString name,
 			Iterator<Map.Entry<SymbolType, Likelyness>> likeliness) throws RuntimeException {
 		return new UnqualifiedSymbolImpl(name, this, likeliness);
 	}
@@ -94,7 +100,7 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	@Override
 	public UnqualifiedSymbol getUnqualifiedSymbol(PositionString name, SymbolType type) {
 		KnownTypeIterator iterator = new KnownTypeIterator(type);
-		return getUniqualifiedSymbol(name, iterator);
+		return getUnqualifiedSymbol(name, iterator);
 	}
 	
 	@Override
@@ -167,9 +173,8 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	}
 
 	@Override
-	public Set<Set<? extends Symbol>> getShadowedSymbols() {
-		// TODO Auto-generated method stub
-		return null;
+	public Map<QualifiedSymbol, Set<Symbol>> getShadowedSymbols() {
+		return shadowedSymbols.list;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -182,6 +187,16 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	public Set<? extends UnqualifiedSymbol> getUnqualifiedSymbols() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public UnqualifiedSymbol getUnqualifiedSymbol(PositionString name) {
+		return new UnqualifiedSymbolImpl(name, this);
+	}
+
+	@Override
+	public List<Entry<QualifiedSymbol, Symbol>> getAllShadowsList() {
+		return allShadowsList;
 	}
 	
 }

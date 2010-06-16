@@ -1,8 +1,10 @@
 package de.fu_berlin.compilerbau.symbolTable;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
@@ -49,14 +51,19 @@ public interface Runtime extends SymbolContainer {
 	 * @return A unqualified symbol. Give it to a {@link SymbolContainer container}!
 	 * @throws RuntimeException A symbol occurred twice.
 	 */
-	UnqualifiedSymbol getUniqualifiedSymbol(PositionString name,
+	UnqualifiedSymbol getUnqualifiedSymbol(PositionString name,
 			Iterator<Map.Entry<SymbolType,Likelyness>> likeliness) throws RuntimeException;
 	
 	/**
 	 * The actual type is known.
-	 * @see #getUniqualifiedSymbol(PositionString, Iterator)
+	 * @see #getUnqualifiedSymbol(PositionString, Iterator)
 	 */
 	UnqualifiedSymbol getUnqualifiedSymbol(PositionString name, SymbolType type);
+	
+	/**
+	 * @see #getUnqualifiedSymbol(PositionString, Iterator)
+	 */
+	UnqualifiedSymbol getUnqualifiedSymbol(PositionString name);
 	
 	/**
 	 * Tries to convert all unqualified symbols to qualified ones.
@@ -68,5 +75,11 @@ public interface Runtime extends SymbolContainer {
 	Symbol getVoid();
 	
 	PrimitiveType getPrimitiveType(java.lang.Class<?> c);
+	
+	/**
+	 * 
+	 * @return <strong>mutable</strong> list
+	 */
+	List<Entry<QualifiedSymbol,Symbol>> getAllShadowsList();
 	
 }

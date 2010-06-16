@@ -1,5 +1,6 @@
 package de.fu_berlin.compilerbau.symbolTable;
 
+import java.util.Map;
 import java.util.Set;
 
 import de.fu_berlin.compilerbau.util.PositionString;
@@ -26,7 +27,7 @@ public interface SymbolContainer extends Symbol {
 	 * Returns a list of all symbols occurring twice in the same scope of visibility.
 	 * @return [ [ occurrence ] ]
 	 */
-	Set<Set<? extends Symbol>> getShadowedSymbols();
+	Map<QualifiedSymbol, Set<Symbol>> getShadowedSymbols();
 	
 	/**
 	 * Looks up this {@link UnqualifiedSymbol unqualified symbol}.
@@ -37,7 +38,7 @@ public interface SymbolContainer extends Symbol {
 	
 	/**
 	 * @see #lookup(UnqualifiedSymbol)
-	 * @see Runtime#getUniqualifiedSymbol(PositionString, SymbolType)
+	 * @see Runtime#getUnqualifiedSymbol(PositionString, SymbolType)
 	 * @return null if not found
 	 */
 	Symbol getQualifiedSymbol(PositionString name, SymbolType type);

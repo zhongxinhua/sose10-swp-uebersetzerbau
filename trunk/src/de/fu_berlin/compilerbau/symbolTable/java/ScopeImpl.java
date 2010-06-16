@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import de.fu_berlin.compilerbau.symbolTable.Modifier;
+import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Scope;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
@@ -23,8 +24,9 @@ import de.fu_berlin.compilerbau.util.PositionString;
 
 class ScopeImpl extends SymbolContainerImpl implements Scope {
 	
-	protected Map<Variable,VariableImpl> variables = new TreeMap<Variable,VariableImpl>();
-	protected List<Scope> subScopes = new LinkedList<Scope>();
+	protected final Map<Variable,VariableImpl> variables = new TreeMap<Variable,VariableImpl>();
+	protected final List<Scope> subScopes = new LinkedList<Scope>();
+	protected final ShadowedSymbols shadowedSymbols = new ShadowedSymbols(this);
 
 	public ScopeImpl(Runtime runtime, SymbolContainer parent) {
 		super(runtime, parent);
@@ -34,14 +36,19 @@ class ScopeImpl extends SymbolContainerImpl implements Scope {
 	public Variable addVariable(PositionString name, Symbol type,
 			Modifier modifier) throws DuplicateIdentifierException,
 			ShadowedIdentifierException, WrongModifierException {
-		// TODO Auto-generated method stub
-		return null;
+		VariableImpl newSymbol = new VariableImpl(getRuntime(), this, name, modifier);
+		final VariableImpl oldSymbol = variables.get(newSymbol);
+		if(oldSymbol != null) {
+			throw new DuplicateIdentifierException(this, newSymbol, oldSymbol);
+		}
+		shadowedSymbols.test(name, newSymbol);
+		variables.put(newSymbol, newSymbol);
+		return newSymbol;
 	}
 
 	@Override
-	public Set<Set<? extends Symbol>> getShadowedSymbols() {
-		// TODO Auto-generated method stub
-		return null;
+	public Map<QualifiedSymbol, Set<Symbol>> getShadowedSymbols() {
+		return shadowedSymbols.list;
 	}
 
 	@SuppressWarnings("unchecked")

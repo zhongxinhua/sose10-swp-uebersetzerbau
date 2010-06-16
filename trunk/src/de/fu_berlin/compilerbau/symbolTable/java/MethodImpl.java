@@ -1,14 +1,17 @@
 package de.fu_berlin.compilerbau.symbolTable.java;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
 import de.fu_berlin.compilerbau.symbolTable.ClassOrInterface;
 import de.fu_berlin.compilerbau.symbolTable.Method;
 import de.fu_berlin.compilerbau.symbolTable.Modifier;
+import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Scope;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
@@ -94,10 +97,10 @@ class MethodImpl extends SymbolContainerImpl implements Method, Comparable<Metho
 		return name.compareTo(right.getCanonicalName());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Set<Set<? extends Symbol>> getShadowedSymbols() {
-		// TODO Auto-generated method stub
-		return null;
+	public Map<QualifiedSymbol, Set<Symbol>> getShadowedSymbols() {
+		return Collections.EMPTY_MAP;
 	}
 
 	@SuppressWarnings("unchecked")

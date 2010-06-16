@@ -10,6 +10,7 @@ import de.fu_berlin.compilerbau.symbolTable.ClassOrInterface;
 import de.fu_berlin.compilerbau.symbolTable.Interface;
 import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.Package;
+import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
@@ -30,6 +31,7 @@ class PackageImpl extends SymbolContainerImpl implements Package, Comparable<Pac
 			new TreeMap<ClassOrInterfaceImpl,InterfaceImpl>();
 	protected Map<ClassOrInterfaceImpl,ClassOrInterfaceImpl> classesAndInterfaces =
 			new TreeMap<ClassOrInterfaceImpl,ClassOrInterfaceImpl>();
+	protected final ShadowedSymbols shadowedSymbols = new ShadowedSymbols(this);
 
 	public PackageImpl(Runtime runtime, PositionString name) {
 		super(runtime, runtime);
@@ -46,6 +48,9 @@ class PackageImpl extends SymbolContainerImpl implements Package, Comparable<Pac
 		if(duplicate != null) {
 			throw new DuplicateIdentifierException(this, newSymbol, duplicate);
 		}
+		
+		shadowedSymbols.test(name, newSymbol);
+		
 		classes.put(newSymbol, newSymbol);
 		classesAndInterfaces.put(newSymbol, newSymbol);
 		return newSymbol;
@@ -136,7 +141,7 @@ class PackageImpl extends SymbolContainerImpl implements Package, Comparable<Pac
 	}
 
 	@Override
-	public Set<Set<? extends Symbol>> getShadowedSymbols() {
+	public Map<QualifiedSymbol, Set<Symbol>> getShadowedSymbols() {
 		// TODO Auto-generated method stub
 		return null;
 	}

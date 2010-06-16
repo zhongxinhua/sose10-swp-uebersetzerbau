@@ -2,6 +2,7 @@ package de.fu_berlin.compilerbau.symbolTable.java;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import de.fu_berlin.compilerbau.symbolTable.Constructor;
@@ -9,6 +10,7 @@ import de.fu_berlin.compilerbau.symbolTable.GetModifier;
 import de.fu_berlin.compilerbau.symbolTable.Member;
 import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.PrimitiveType;
+import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
@@ -73,8 +75,8 @@ public class PrimitiveTypeImpl extends ClassOrInterfaceImpl implements Primitive
 	}
 
 	@Override
-	public Set<Set<? extends Symbol>> getShadowedSymbols() {
-		return Collections.emptySet();
+	public Map<QualifiedSymbol, Set<Symbol>> getShadowedSymbols() {
+		return Collections.emptyMap();
 	}
 
 }
