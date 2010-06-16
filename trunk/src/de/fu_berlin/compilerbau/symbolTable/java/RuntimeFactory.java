@@ -179,7 +179,7 @@ public class RuntimeFactory {
 		} else if(type.isPrimitive()) {
 			result = rt.getPrimitiveType(type);
 		} else if(type.isArray()) {
-			result = null; // TODO
+			result = rt.getArrayType(type);
 		} else if(type.isInterface()) {
 			result = rt.getUnqualifiedSymbol(name, SymbolType.INTERFACE);
 		} else {

@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
+import de.fu_berlin.compilerbau.symbolTable.ArrayType;
 import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.Package;
 import de.fu_berlin.compilerbau.symbolTable.PrimitiveType;
@@ -197,6 +198,16 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	@Override
 	public List<Entry<QualifiedSymbol, Symbol>> getAllShadowsList() {
 		return allShadowsList;
+	}
+
+	@Override
+	public ArrayType getArrayType(Symbol componentType, int dimension) {
+		return new ArrayTypeImpl(this, componentType, dimension);
+	}
+
+	@Override
+	public ArrayType getArrayType(Class<?> clazz) {
+		return new ArrayTypeImpl(this, clazz);
 	}
 	
 }

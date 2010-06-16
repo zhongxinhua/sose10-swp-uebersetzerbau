@@ -78,4 +78,8 @@ public interface Runtime extends SymbolContainer {
 	
 	List<Entry<QualifiedSymbol,Symbol>> getAllShadowsList();
 	
+	ArrayType getArrayType(Symbol componentType, int dimension);
+	
+	ArrayType getArrayType(java.lang.Class<?> clazz);
+	
 }

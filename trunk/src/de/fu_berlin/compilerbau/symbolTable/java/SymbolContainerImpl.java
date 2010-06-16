@@ -2,7 +2,6 @@ package de.fu_berlin.compilerbau.symbolTable.java;
 
 import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
-import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
@@ -31,7 +30,6 @@ abstract class SymbolContainerImpl extends SymbolImpl implements SymbolContainer
 	
 	@Override
 	public boolean hasUnqualifiedSymbols() {
-		// TODO Auto-generated method stub
 		return getUnqualifiedSymbols().size() > 0;
 	}
 	

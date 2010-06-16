@@ -46,9 +46,13 @@ class VariableImpl extends SymbolImpl implements Variable, Comparable<Variable> 
 	}
 
 	@Override
-	public int compareTo(Variable arg0) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int compareTo(Variable right) {
+		return name.compareTo(right.getCanonicalName());
+	}
+
+	@Override
+	public int hashCode() {
+		return name.hashCode();
 	}
 
 }
