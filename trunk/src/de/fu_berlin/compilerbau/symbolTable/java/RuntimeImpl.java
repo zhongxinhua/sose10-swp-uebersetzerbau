@@ -20,6 +20,7 @@ import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
+import de.fu_berlin.compilerbau.util.CombinedSet;
 import de.fu_berlin.compilerbau.util.Likelyness;
 import de.fu_berlin.compilerbau.util.PositionStringBuilder;
 import static de.fu_berlin.compilerbau.util.Likelyness.*;
@@ -29,14 +30,16 @@ import de.fu_berlin.compilerbau.util.PositionString;
 public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	
 	final Map<PackageImpl, PackageImpl> packages = new TreeMap<PackageImpl, PackageImpl>();
-	final Map<Class<?>,PrimitiveTypeImpl> primitiveTypes = new HashMap<Class<?>, PrimitiveTypeImpl>();
+	final Map<PrimitiveType,PrimitiveTypeImpl> primitiveTypes = new HashMap<PrimitiveType, PrimitiveTypeImpl>();
+	final Map<Class<?>,PrimitiveTypeImpl> primitiveTypesByClass = new HashMap<Class<?>, PrimitiveTypeImpl>();
 	final Map<String,PrimitiveTypeImpl> primitiveTypesByName = new HashMap<String, PrimitiveTypeImpl>();
 	final VoidTypeImpl voidType = new VoidTypeImpl(this);
 	
 	void addPrimitiveClass(Class<?> c) {
 		PrimitiveTypeImpl typeImpl = new PrimitiveTypeImpl(this, c);
-		primitiveTypes.put(c, typeImpl);
+		primitiveTypesByClass.put(c, typeImpl);
 		primitiveTypesByName.put(c.getName(), typeImpl);
+		primitiveTypes.put(typeImpl, typeImpl);
 	}
 	
 	RuntimeImpl() {
@@ -160,7 +163,7 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 
 	@Override
 	public PrimitiveType getPrimitiveType(Class<?> c) {
-		return primitiveTypes.get(c);
+		return primitiveTypesByClass.get(c);
 	}
 
 	@Override
@@ -169,10 +172,10 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Set<Symbol> getContainedSymbols() {
-		// TODO Auto-generated method stub
-		return null;
+		return new CombinedSet<Symbol>(new Set[] { Collections.singleton(voidType), primitiveTypes.keySet(), packages.keySet() });
 	}
 
 	@Override

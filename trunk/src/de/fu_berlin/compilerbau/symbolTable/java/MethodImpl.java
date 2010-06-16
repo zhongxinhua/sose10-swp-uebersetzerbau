@@ -14,6 +14,7 @@ import de.fu_berlin.compilerbau.symbolTable.Scope;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
+import de.fu_berlin.compilerbau.util.CombinedSet;
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
 
@@ -99,9 +100,10 @@ class MethodImpl extends SymbolContainerImpl implements Method, Comparable<Metho
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Set<Symbol> getContainedSymbols() {
-		return parameterSet;
+		return new CombinedSet<Symbol>(new Set[] { parameterSet, mainScope.getContainedSymbols() });
 	}
 
 	@Override

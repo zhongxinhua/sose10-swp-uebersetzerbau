@@ -142,9 +142,8 @@ class PackageImpl extends SymbolContainerImpl implements Package, Comparable<Pac
 	}
 
 	@Override
-	public Set<Symbol> getContainedSymbols() {
-		// TODO Auto-generated method stub
-		return null;
+	public Set<? extends Symbol> getContainedSymbols() {
+		return classesAndInterfaces.keySet();
 	}
 
 	@Override
