@@ -1,6 +1,11 @@
 package de.fu_berlin.compilerbau.builder;
 
 /**
+ * Abstract Class for the builder
+ * 
+ * For the design pattern refer Wikipedia: 
+ * http://en.wikipedia.org/wiki/Builder_pattern
+ * 
  * @author stefan
  * @author Sam
  */
@@ -47,6 +52,10 @@ public abstract class Builder {
 	
 	protected PrintStream _code = null;
 	
+	/** 
+	 * @param astree The Abstract Syntaxtree with the Code
+	 * @param classpath
+	 */
 	public Builder(AbstractSyntaxTree astree, String classpath) {
 		_astree = astree;
 		
@@ -57,9 +66,25 @@ public abstract class Builder {
 		}
 	}
 
+	/**
+	 * Build a whole Class with all parts
+	 * 
+	 * @param theclass The Class to build
+	 * @throws IOException
+	 */
 	protected abstract void buildClass(Class theclass) throws IOException;
-	protected abstract void buildFunction(Function func) throws IOException;
+	
+	/**
+	 * Build a whole Function with all parts
+	 * 
+	 * @param function the Function to build
+	 * @throws IOException
+	 */
+	protected abstract void buildFunction(Function function) throws IOException;
 
+	/*
+	 * START>List of Statements to build
+	 */
 	protected abstract void buildBreakStatement(BreakStatement obj) throws IOException;
 	protected abstract void buildCallStatement(CallStatement obj) throws IOException;
 	protected abstract void buildCase(Case obj) throws IOException;
@@ -76,6 +101,10 @@ public abstract class Builder {
 	protected abstract void buildScopeStatement(ScopeStatement obj) throws IOException;
 	protected abstract void buildStatement(Statement obj) throws IOException;
 	protected abstract void buildSetStatement(SetStatement obj) throws IOException;
+	/*
+	 * END>List of Statements to build
+	 */
+	
 	
 	/*
 	 * START>List of Expressions to build
@@ -94,17 +123,16 @@ public abstract class Builder {
 	/*
 	 * END>List of Expressions to build
 	 */
-	
-	
-	
-	
-	
-	
 
 	public void setCode(PrintStream code) {
 		_code = code;
 	}
 	
+	/**
+	 * Getter for the Code
+	 * 
+	 * @return the complete Code in the specific language
+	 */
 	public Appendable getCode() {
 		return _code;
 	}

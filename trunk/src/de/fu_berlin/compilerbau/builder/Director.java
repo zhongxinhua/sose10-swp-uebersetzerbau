@@ -1,6 +1,10 @@
 package de.fu_berlin.compilerbau.builder;
 
 /**
+ * The Director Class for the Builder.
+ * 
+ * Specify in which sequence the Code has to be build.
+ * 
  * @author stefan
  */
 
@@ -16,6 +20,14 @@ import de.fu_berlin.compilerbau.parser.Module;
 
 public class Director {
 	
+	/**
+	 * Build the complete Code
+	 * 
+	 * @param builder The specific Language-Builder
+	 * @param directoryWriter The Directory Writer which take care of the files
+	 * @throws IOException
+	 */
+	
 	public static void build(Builder builder, DirectoryWriter directoryWriter)
 			throws IOException {
 		
@@ -24,7 +36,7 @@ public class Director {
 		// replace dots with slashes
 		final String moduleRoot = "/" + Pattern.compile("\\.").
 				matcher(module.getName()).replaceAll("/");
-		
+
 		// write each interface
 		for(Interface interfaze : module.getInterfaces()) {
 			final OutputStream file;
@@ -46,7 +58,7 @@ public class Director {
 		for(Class clazz : module.getClasses()) {
 			final OutputStream file;
 			try {
-				file = directoryWriter.openFile(clazz.getName()+".java", moduleRoot);
+				file = directoryWriter.openFile(clazz.getName(), moduleRoot);
 			} catch(IllegalAccessException e) {
 				throw new RuntimeException("This cannot happen.", e);
 			}

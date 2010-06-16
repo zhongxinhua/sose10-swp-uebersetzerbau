@@ -4,6 +4,7 @@ import de.fu_berlin.compilerbau.dom.DomNode;
 import de.fu_berlin.compilerbau.parser.expressions.Expression;
 import de.fu_berlin.compilerbau.statementParser.impl.StatementParser.ExpressionType;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
+import de.fu_berlin.compilerbau.util.PositionString;
 
 /**
  * <b>Description</b><br>{@link CallStatement} is a subclass of {@link Statement}
@@ -27,6 +28,7 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
 public class CallStatement extends Statement {
 
 	private Expression call;
+	private PositionString value = null;
 
 	public CallStatement(DomNode node) {
 		// check needed attribute: exec
@@ -38,6 +40,11 @@ public class CallStatement extends Statement {
 					+ " 'exec' attribute expected");
 		}
 
+		if (node.hasAttribute("value")
+			&& node.getAttributeValue("value").length() > 0) {
+			this.value = node.getAttribute("value");
+		}
+		
 		// check if statement is a Leaf
 		if (!node.isLeaf()) {
 			ErrorHandler.error(node, this.getClass().toString()
@@ -46,5 +53,5 @@ public class CallStatement extends Statement {
 	}
 	
 	public Expression getCall() { return call; }
-
+	public PositionString getValue() { return value; }
 }

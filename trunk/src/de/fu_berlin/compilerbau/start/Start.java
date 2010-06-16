@@ -13,6 +13,12 @@ import java.io.PrintStream;
 import java.io.Reader;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Vector;
+
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.ToolProvider;
 
 import de.fu_berlin.compilerbau.builder.Builder;
 import de.fu_berlin.compilerbau.builder.Director;
@@ -153,6 +159,35 @@ class Start {
 		} catch(IOException e) {
 			throw new RuntimeException("Could not close output.", e);
 		}
+		
+		File[] fileList = getJavaFiles(destPath);
+		
+		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+		StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
+		
+		Iterable<? extends JavaFileObject> compilationUnit =
+	           fileManager.getJavaFileObjectsFromFiles(Arrays.asList(fileList));
+	    compiler.getTask(null, fileManager, null, null, null, compilationUnit).call();
+	    
+	    try {
+			fileManager.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	static private File[] getJavaFiles(String rootPath) {
+		Vector<File> fileList = new Vector<File>();
+		File dir = new File(rootPath);
+		File[] files = dir.listFiles();
+		for(File f : files) {
+		    if(f.isFile() && f.getName().endsWith(".java")) fileList.add(f);
+		    else if(f.isDirectory()) {	    	
+		    	fileList.addAll(Arrays.asList(getJavaFiles(f.getAbsolutePath())));
+		    }
+		}
+		
+		return (File[]) fileList.toArray(new File[fileList.size()]);	
 	}
 	
 }

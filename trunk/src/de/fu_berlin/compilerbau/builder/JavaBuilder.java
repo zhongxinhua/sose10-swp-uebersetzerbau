@@ -45,6 +45,8 @@ import de.fu_berlin.compilerbau.parser.expressions.UnaryOperation.UnaryOperator;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
 
 public class JavaBuilder extends Builder {
+	private int _scannerId = 0; 
+	
 	public JavaBuilder(AbstractSyntaxTree astree, String classpath) {
 		super(astree, classpath);
 	}
@@ -145,7 +147,9 @@ public class JavaBuilder extends Builder {
 			_code.append(");\n");
 		}
 		else if (fc.getName().equals("read")) {
-			
+			String scanner = "scanner"+ _scannerId++;
+			_code.append("java.util.Scanner " + scanner + " = new java.util.Scanner(System.in);\n");
+			_code.append(obj.getValue() + " = " + scanner + ".nextInt();\n");
 		}
 	}
 
