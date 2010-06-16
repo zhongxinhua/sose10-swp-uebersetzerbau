@@ -101,7 +101,7 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	
 	@Override
 	public Symbol lookup(UnqualifiedSymbol symbol) {
-		final Likelyness isPrimitive = symbol.is(ATOMARTYPE);
+		final Likelyness isPrimitive = symbol.is(PRIMITIVE_TYPE);
 		if(isPrimitive != IMPOSSIBLE) {
 			PrimitiveTypeImpl result = primitiveTypesByName.get(symbol.getCall().toString());
 			if(result != null) {

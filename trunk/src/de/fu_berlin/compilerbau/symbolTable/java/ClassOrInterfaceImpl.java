@@ -12,7 +12,6 @@ import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
-import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
@@ -59,11 +58,6 @@ abstract class ClassOrInterfaceImpl extends SymbolContainerImpl implements Class
 	@Override
 	public String getJavaSignature() {
 		return "L" + canonicalName + ";";
-	}
-
-	@Override
-	public SymbolType getType() {
-		return SymbolType.CLASS_OR_INTERFACE;
 	}
 
 	@Override

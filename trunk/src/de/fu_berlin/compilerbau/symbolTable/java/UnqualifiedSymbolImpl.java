@@ -27,10 +27,10 @@ public class UnqualifiedSymbolImpl extends SymbolImpl implements
 		}
 		
 		Likelyness isVoid = likelyness.get(SymbolType.VOID);
-		Likelyness isPrimitive = likelyness.get(SymbolType.ATOMARTYPE);
+		Likelyness isPrimitive = likelyness.get(SymbolType.PRIMITIVE_TYPE);
 		if(isVoid.compareTo(isPrimitive) > 0) {
 			isPrimitive = isVoid;
-			likelyness.put(SymbolType.ATOMARTYPE, isPrimitive);
+			likelyness.put(SymbolType.PRIMITIVE_TYPE, isPrimitive);
 		}
 		Likelyness isClass = likelyness.get(SymbolType.CLASS);
 		if(isPrimitive.compareTo(isClass) > 0) {

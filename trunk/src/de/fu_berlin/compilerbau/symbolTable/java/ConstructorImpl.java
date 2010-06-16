@@ -7,17 +7,22 @@ import de.fu_berlin.compilerbau.symbolTable.Constructor;
 import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
+import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.util.PositionBean;
 import de.fu_berlin.compilerbau.util.PositionString;
 
 class ConstructorImpl extends MethodImpl implements Constructor {
 	
-	protected static final PositionString init = new PositionString("<init>", PositionBean.ZERO);
+	protected static final PositionString INIT = new PositionString("<init>", PositionBean.ZERO);
 	
 	public ConstructorImpl(Runtime runtime, ClassOrInterface parent,
-			PositionString name, Symbol resultType,
 			Iterator<Symbol> parameters, Modifier modifier) {
-		super(runtime, parent, init, resultType, parameters, modifier);
+		super(runtime, parent, INIT, runtime.getVoid(), parameters, modifier);
+	}
+
+	@Override
+	public SymbolType getType() {
+		return SymbolType.CONSTRUCTOR;
 	}
 
 }

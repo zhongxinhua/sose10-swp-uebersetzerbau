@@ -59,7 +59,7 @@ public enum SymbolType {
 	 */
 	SCOPE,
 	
-	ATOMARTYPE,
+	PRIMITIVE_TYPE,
 	
 	ARRAYTYPE,
 	

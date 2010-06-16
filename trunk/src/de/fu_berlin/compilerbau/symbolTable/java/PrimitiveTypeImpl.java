@@ -9,6 +9,7 @@ import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.PrimitiveType;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
+import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
@@ -63,6 +64,11 @@ public class PrimitiveTypeImpl extends ClassOrInterfaceImpl implements Primitive
 	@Override
 	public Symbol getSuperClass() {
 		return null;
+	}
+
+	@Override
+	public SymbolType getType() {
+		return SymbolType.PRIMITIVE_TYPE;
 	}
 
 }

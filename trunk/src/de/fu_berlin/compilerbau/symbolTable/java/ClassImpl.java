@@ -11,6 +11,7 @@ import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
+import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
@@ -20,6 +21,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
 class ClassImpl extends ClassOrInterfaceImpl implements Class {
 	
 	protected final Map<Member,MemberImpl> members = new TreeMap<Member,MemberImpl>();
+	protected final Map<Constructor, ConstructorImpl> ctors = new TreeMap<Constructor, ConstructorImpl>();
 	protected final Symbol extends_;
 
 	public ClassImpl(Runtime runtime, SymbolContainer parent, Symbol extends_, Iterator<Symbol> implements_,
@@ -32,8 +34,13 @@ class ClassImpl extends ClassOrInterfaceImpl implements Class {
 	public Constructor addConstructor(Iterator<Symbol> parameters,
 			Modifier modifier) throws DuplicateIdentifierException,
 			ShadowedIdentifierException, WrongModifierException {
-		// TODO Auto-generated method stub
-		return null;
+		final ConstructorImpl newSymbol = new ConstructorImpl(getRuntime(), this, parameters, modifier);
+		final ConstructorImpl oldSymbol = ctors.get(newSymbol);
+		if(oldSymbol != null) {
+			throw new DuplicateIdentifierException(this, newSymbol, oldSymbol);
+		}
+		ctors.put(newSymbol, newSymbol);
+		return newSymbol;
 	}
 
 	@Override
@@ -59,6 +66,11 @@ class ClassImpl extends ClassOrInterfaceImpl implements Class {
 	public Symbol lookup(UnqualifiedSymbol symbol) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public SymbolType getType() {
+		return SymbolType.CLASS;
 	}
 
 }
