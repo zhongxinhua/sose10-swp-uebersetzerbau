@@ -41,12 +41,12 @@ public interface SymbolContainer extends Symbol {
 	 * @see Runtime#getUnqualifiedSymbol(PositionString, SymbolType)
 	 * @return null if not found
 	 */
-	Symbol getQualifiedSymbol(PositionString name, SymbolType type);
+	QualifiedSymbol getQualifiedSymbol(PositionString name, SymbolType type);
 	
 	/**
 	 * @see #lookup(UnqualifiedSymbol)
 	 * @return null if not found
 	 */
-	Symbol getQualifiedSymbol(PositionString name);
+	QualifiedSymbol getQualifiedSymbol(PositionString name);
 	
 }

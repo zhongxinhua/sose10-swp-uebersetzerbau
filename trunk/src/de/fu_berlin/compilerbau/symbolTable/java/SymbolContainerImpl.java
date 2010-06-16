@@ -1,5 +1,6 @@
 package de.fu_berlin.compilerbau.symbolTable.java;
 
+import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
@@ -15,14 +16,14 @@ abstract class SymbolContainerImpl extends SymbolImpl implements SymbolContainer
 	}
 	
 	@Override
-	public Symbol getQualifiedSymbol(PositionString name, SymbolType type) {
+	public QualifiedSymbol getQualifiedSymbol(PositionString name, SymbolType type) {
 		Runtime runtime = getRuntime();
 		UnqualifiedSymbol uniqualifiedSymbol = runtime.getUnqualifiedSymbol(name, type);
 		return lookup(uniqualifiedSymbol);
 	}
 	
 	@Override
-	public Symbol getQualifiedSymbol(PositionString name) {
+	public QualifiedSymbol getQualifiedSymbol(PositionString name) {
 		Runtime runtime = getRuntime();
 		UnqualifiedSymbol uniqualifiedSymbol = runtime.getUnqualifiedSymbol(name);
 		return lookup(uniqualifiedSymbol);
