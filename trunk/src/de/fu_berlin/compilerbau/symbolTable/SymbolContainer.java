@@ -34,7 +34,7 @@ public interface SymbolContainer extends Symbol {
 	 * @param symbol symbol to lookup
 	 * @return null if not found
 	 */
-	Symbol lookup(UnqualifiedSymbol symbol);
+	QualifiedSymbol lookup(UnqualifiedSymbol symbol);
 	
 	/**
 	 * @see #lookup(UnqualifiedSymbol)
@@ -42,5 +42,11 @@ public interface SymbolContainer extends Symbol {
 	 * @return null if not found
 	 */
 	Symbol getQualifiedSymbol(PositionString name, SymbolType type);
+	
+	/**
+	 * @see #lookup(UnqualifiedSymbol)
+	 * @return null if not found
+	 */
+	Symbol getQualifiedSymbol(PositionString name);
 	
 }

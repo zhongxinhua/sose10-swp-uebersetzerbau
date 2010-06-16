@@ -107,7 +107,7 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 	}
 
 	@Override
-	final public Symbol lookup(UnqualifiedSymbol symbol) {
+	final public QualifiedSymbol lookup(UnqualifiedSymbol symbol) {
 		return null;
 	}
 

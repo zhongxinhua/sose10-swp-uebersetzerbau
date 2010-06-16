@@ -22,6 +22,13 @@ abstract class SymbolContainerImpl extends SymbolImpl implements SymbolContainer
 	}
 	
 	@Override
+	public Symbol getQualifiedSymbol(PositionString name) {
+		Runtime runtime = getRuntime();
+		UnqualifiedSymbol uniqualifiedSymbol = runtime.getUnqualifiedSymbol(name);
+		return lookup(uniqualifiedSymbol);
+	}
+	
+	@Override
 	public boolean hasUnqualifiedSymbols() {
 		// TODO Auto-generated method stub
 		return getUnqualifiedSymbols().size() > 0;

@@ -135,7 +135,7 @@ class PackageImpl extends SymbolContainerImpl implements Package, Comparable<Pac
 	}
 
 	@Override
-	public Symbol lookup(UnqualifiedSymbol symbol) {
+	public QualifiedSymbol lookup(UnqualifiedSymbol symbol) {
 		// TODO Auto-generated method stub
 		return null;
 	}
