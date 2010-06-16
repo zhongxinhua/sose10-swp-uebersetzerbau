@@ -162,5 +162,11 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	public PrimitiveType getPrimitiveType(Class<?> c) {
 		return primitiveTypes.get(c);
 	}
+
+	@Override
+	public Set<Set<Symbol>> getShadowedSymbols() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

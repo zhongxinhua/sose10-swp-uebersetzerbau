@@ -12,6 +12,7 @@ import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
+import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
@@ -19,7 +20,7 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
 
-abstract class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterface, Comparable<ClassOrInterfaceImpl> {
+class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterface, Comparable<ClassOrInterfaceImpl> {
 	
 	protected final PositionString canonicalName;
 	protected final Modifier modifier;
@@ -85,6 +86,17 @@ abstract class ClassOrInterfaceImpl extends SymbolContainerImpl implements Class
 	public Symbol lookup(UnqualifiedSymbol symbol) {
 		// if(symbol.is(SymbolType.METHOD))
 		return null; // TODO
+	}
+
+	@Override
+	public Set<Set<Symbol>> getShadowedSymbols() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public SymbolType getType() {
+		return SymbolType.CLASS_OR_INTERFACE;
 	}
 
 }

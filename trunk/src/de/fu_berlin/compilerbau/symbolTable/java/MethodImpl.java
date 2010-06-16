@@ -3,6 +3,7 @@ package de.fu_berlin.compilerbau.symbolTable.java;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import de.fu_berlin.compilerbau.symbolTable.ClassOrInterface;
 import de.fu_berlin.compilerbau.symbolTable.Method;
@@ -83,6 +84,12 @@ class MethodImpl extends SymbolContainerImpl implements Method, Comparable<Metho
 			return r;
 		}
 		return name.compareTo(right.getCanonicalName());
+	}
+
+	@Override
+	public Set<Set<Symbol>> getShadowedSymbols() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

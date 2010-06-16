@@ -135,4 +135,10 @@ class PackageImpl extends SymbolContainerImpl implements Package, Comparable<Pac
 		return null;
 	}
 
+	@Override
+	public Set<Set<Symbol>> getShadowedSymbols() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -29,11 +29,12 @@ abstract class SymbolContainerImpl extends SymbolImpl implements SymbolContainer
 		return lookup(uniqualifiedSymbol);
 	}
 	
+	/*
 	@Override
 	public Set<Set<Symbol>> getShadowedSymbols() {
 		// TODO Auto-generated method stub
 		return null;
-	}
+	}*/
 	
 	@Override
 	public Set<UnqualifiedSymbol> getUnqualifiedSymbols() {
@@ -44,7 +45,7 @@ abstract class SymbolContainerImpl extends SymbolImpl implements SymbolContainer
 	@Override
 	public boolean hasUnqualifiedSymbols() {
 		// TODO Auto-generated method stub
-		return false;
+		return getUnqualifiedSymbols().size() > 0;
 	}
 	
 }

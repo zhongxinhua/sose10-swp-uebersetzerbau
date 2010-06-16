@@ -1,6 +1,7 @@
 package de.fu_berlin.compilerbau.symbolTable.java;
 
 import java.util.Iterator;
+import java.util.Set;
 
 import de.fu_berlin.compilerbau.symbolTable.Interface;
 import de.fu_berlin.compilerbau.symbolTable.Modifier;
@@ -31,6 +32,12 @@ public class InterfaceImpl extends ClassOrInterfaceImpl implements Interface {
 	@Override
 	public SymbolType getType() {
 		return SymbolType.INTERFACE;
+	}
+
+	@Override
+	public Set<Set<Symbol>> getShadowedSymbols() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

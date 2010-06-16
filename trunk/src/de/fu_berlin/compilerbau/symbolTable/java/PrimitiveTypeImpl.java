@@ -1,6 +1,8 @@
 package de.fu_berlin.compilerbau.symbolTable.java;
 
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.Set;
 
 import de.fu_berlin.compilerbau.symbolTable.Constructor;
 import de.fu_berlin.compilerbau.symbolTable.GetModifier;
@@ -69,6 +71,11 @@ public class PrimitiveTypeImpl extends ClassOrInterfaceImpl implements Primitive
 	@Override
 	public SymbolType getType() {
 		return SymbolType.PRIMITIVE_TYPE;
+	}
+
+	@Override
+	public Set<Set<Symbol>> getShadowedSymbols() {
+		return Collections.emptySet();
 	}
 
 }

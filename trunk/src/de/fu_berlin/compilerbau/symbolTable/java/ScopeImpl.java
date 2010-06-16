@@ -1,5 +1,7 @@
 package de.fu_berlin.compilerbau.symbolTable.java;
 
+import java.util.Set;
+
 import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Scope;
@@ -29,6 +31,12 @@ class ScopeImpl extends SymbolContainerImpl implements Scope {
 
 	@Override
 	public Symbol lookup(UnqualifiedSymbol symbol) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<Set<Symbol>> getShadowedSymbols() {
 		// TODO Auto-generated method stub
 		return null;
 	}
