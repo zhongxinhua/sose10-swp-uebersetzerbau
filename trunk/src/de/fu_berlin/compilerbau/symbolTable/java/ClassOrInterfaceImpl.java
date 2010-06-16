@@ -12,6 +12,7 @@ import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
+import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
@@ -57,7 +58,7 @@ abstract class ClassOrInterfaceImpl extends SymbolContainerImpl implements Class
 
 	@Override
 	public String getJavaSignature() {
-		return "L" + canonicalName + ";";
+		return "L" + canonicalName + ";"; // TODO ← das ist wahrscheinlich Unsinn :)
 	}
 
 	@Override
@@ -78,6 +79,12 @@ abstract class ClassOrInterfaceImpl extends SymbolContainerImpl implements Class
 	@Override
 	public Set<Symbol> getInterfaces() {
 		return interfaces;
+	}
+	
+	@Override
+	public Symbol lookup(UnqualifiedSymbol symbol) {
+		// if(symbol.is(SymbolType.METHOD))
+		return null; // TODO
 	}
 
 }

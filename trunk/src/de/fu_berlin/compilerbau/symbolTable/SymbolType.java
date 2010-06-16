@@ -61,7 +61,7 @@ public enum SymbolType {
 	
 	PRIMITIVE_TYPE,
 	
-	ARRAYTYPE,
+	ARRAY_TYPE,
 	
 	VOID,
 	

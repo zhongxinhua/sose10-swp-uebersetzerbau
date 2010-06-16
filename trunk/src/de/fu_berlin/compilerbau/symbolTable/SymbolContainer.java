@@ -24,7 +24,7 @@ public interface SymbolContainer extends Symbol {
 	
 	/**
 	 * Returns a list of all symbols occurring twice in the same scope of visibility.
-	 * @return immutable list
+	 * @return [ [ occurrence ] ]
 	 */
 	Set<Set<Symbol>> getShadowedSymbols();
 	

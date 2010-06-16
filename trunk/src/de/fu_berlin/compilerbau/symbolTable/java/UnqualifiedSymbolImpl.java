@@ -6,80 +6,59 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
+import static de.fu_berlin.compilerbau.symbolTable.SymbolType.*;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.util.Likelyness;
+import static de.fu_berlin.compilerbau.util.Likelyness.*;
 import de.fu_berlin.compilerbau.util.PositionString;
 
 public class UnqualifiedSymbolImpl extends SymbolImpl implements
 		UnqualifiedSymbol {
 	
-	final Map<SymbolType, Likelyness> likelyness;
+	final Map<SymbolType, Likelyness> likelyness = new EnumMap<SymbolType, Likelyness>(SymbolType.class);
 	final PositionString call;
+	
+	static final EnumMap<SymbolType,SymbolType[]> REPLICATIONS = new EnumMap<SymbolType,SymbolType[]>(SymbolType.class);
+	static {
+		REPLICATIONS.put(CLASS_OR_INTERFACE, new SymbolType[] { PRIMITIVE_TYPE, CLASS, INTERFACE, ARRAY_TYPE, VOID });
+		REPLICATIONS.put(METHOD,             new SymbolType[] { CONSTRUCTOR });
+		REPLICATIONS.put(SCOPE,              new SymbolType[] { RUNTIME, METHOD, PACKAGE, SCOPE });
+		REPLICATIONS.put(VARIABLE,           new SymbolType[] { MEMBER });
+	}
 
-	UnqualifiedSymbolImpl(PositionString call, RuntimeImpl runtime, Iterator<Entry<SymbolType, Likelyness>> likeliness) {
+	UnqualifiedSymbolImpl(PositionString call, RuntimeImpl runtime, Iterator<Entry<SymbolType, Likelyness>> likeliness_) {
 		super(runtime, null);
 		this.call = call;
 		
-		likelyness = new EnumMap<SymbolType, Likelyness>(SymbolType.class);
-		while(likeliness.hasNext()) {
-			Entry<SymbolType, Likelyness> next = likeliness.next();
+		while(likeliness_.hasNext()) {
+			Entry<SymbolType, Likelyness> next = likeliness_.next();
 			likelyness.put(next.getKey(), next.getValue());
 		}
 		
-		Likelyness isVoid = likelyness.get(SymbolType.VOID);
-		Likelyness isPrimitive = likelyness.get(SymbolType.PRIMITIVE_TYPE);
-		if(isVoid.compareTo(isPrimitive) > 0) {
-			isPrimitive = isVoid;
-			likelyness.put(SymbolType.PRIMITIVE_TYPE, isPrimitive);
-		}
-		Likelyness isClass = likelyness.get(SymbolType.CLASS);
-		if(isPrimitive.compareTo(isClass) > 0) {
-			isClass = isPrimitive;
-			likelyness.put(SymbolType.CLASS, isClass);
-		}
-		Likelyness isCoI = likelyness.get(SymbolType.CLASS_OR_INTERFACE);
-		if(isClass.compareTo(isCoI) > 0) {
-			isCoI = isClass;
-			likelyness.put(SymbolType.CLASS_OR_INTERFACE, isCoI);
-		}
-		Likelyness isInterface = likelyness.get(SymbolType.INTERFACE);
-		if(isInterface.compareTo(isCoI) > 0) {
-			isCoI = isInterface;
-			likelyness.put(SymbolType.CLASS_OR_INTERFACE, isCoI);
-		}
-		Likelyness isArray = likelyness.get(SymbolType.ARRAYTYPE);
-		if(isArray.compareTo(isCoI) > 0) {
-			isCoI = isArray;
-			likelyness.put(SymbolType.CLASS_OR_INTERFACE, isCoI);
-		}
-
-		Likelyness isVariable = likelyness.get(SymbolType.VARIABLE);
-		Likelyness isMember = likelyness.get(SymbolType.MEMBER);
-		if(isMember.compareTo(isVariable) > 0) {
-			isVariable = isMember;
-			likelyness.put(SymbolType.VARIABLE, isVariable);
-		}
-
-		Likelyness isMethod = likelyness.get(SymbolType.METHOD);
-		Likelyness isCtor = likelyness.get(SymbolType.CONSTRUCTOR);
-		if(isMethod.compareTo(isCtor) > 0) {
-			isMethod = isCtor;
-			likelyness.put(SymbolType.METHOD, isCtor);
-		}
-
-		Likelyness isScope = likelyness.get(SymbolType.SCOPE);
-		Likelyness isPkg = likelyness.get(SymbolType.PACKAGE);
-		if(isScope.compareTo(isPkg) > 0) {
-			isScope = isPkg;
-			likelyness.put(SymbolType.SCOPE, isScope);
-		}
+		boolean hasChanges;
+		do {
+			hasChanges = false;
+			for(final Entry<SymbolType, Likelyness> left : likelyness.entrySet()) {
+				// left → right
+				final SymbolType leftSymbol = left.getKey();
+				final Likelyness leftLikelyness = left.getValue();
+				if(leftLikelyness != IMPOSSIBLE) {
+					for(final SymbolType rightSymbol : REPLICATIONS.get(leftSymbol)) {
+						final Likelyness rightLikelyness = likelyness.get(rightSymbol);
+						if(leftLikelyness.compareTo(rightLikelyness) > 0) {
+							likelyness.put(rightSymbol, leftLikelyness);
+							hasChanges = true;
+						}
+					}
+				}
+			}
+		} while(hasChanges);
 	}
 
 	UnqualifiedSymbolImpl(PositionString call, RuntimeImpl runtime,
 			Map<SymbolType, Likelyness> likelynesses) {
 		super(runtime, null);
 		this.call = call;
-		this.likelyness = new EnumMap<SymbolType, Likelyness>(SymbolType.class);
 		likelyness.putAll(likelynesses);
 	}
 
