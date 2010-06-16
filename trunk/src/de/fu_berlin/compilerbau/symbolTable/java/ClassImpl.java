@@ -12,11 +12,11 @@ import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
-import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.PositionString;
+import de.fu_berlin.compilerbau.util.StreamPosition;
 
 class ClassImpl extends ClassOrInterfaceImpl implements Class {
 	
@@ -31,10 +31,10 @@ class ClassImpl extends ClassOrInterfaceImpl implements Class {
 	}
 
 	@Override
-	public Constructor addConstructor(Iterator<Symbol> parameters,
+	public Constructor addConstructor(StreamPosition pos, Iterator<Symbol> parameters,
 			Modifier modifier) throws DuplicateIdentifierException,
 			ShadowedIdentifierException, WrongModifierException {
-		final ConstructorImpl newSymbol = new ConstructorImpl(getRuntime(), this, parameters, modifier);
+		final ConstructorImpl newSymbol = new ConstructorImpl(getRuntime(), this, pos, parameters, modifier);
 		final ConstructorImpl oldSymbol = ctors.get(newSymbol);
 		if(oldSymbol != null) {
 			throw new DuplicateIdentifierException(this, newSymbol, oldSymbol);
@@ -60,12 +60,6 @@ class ClassImpl extends ClassOrInterfaceImpl implements Class {
 	@Override
 	public Symbol getSuperClass() {
 		return extends_;
-	}
-
-	@Override
-	public Symbol lookup(UnqualifiedSymbol symbol) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

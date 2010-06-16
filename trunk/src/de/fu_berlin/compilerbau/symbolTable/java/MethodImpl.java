@@ -4,11 +4,13 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import de.fu_berlin.compilerbau.symbolTable.ClassOrInterface;
 import de.fu_berlin.compilerbau.symbolTable.Method;
 import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
+import de.fu_berlin.compilerbau.symbolTable.Scope;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
@@ -21,7 +23,9 @@ class MethodImpl extends SymbolContainerImpl implements Method, Comparable<Metho
 	protected final PositionString name;
 	protected final Symbol resultType;
 	protected final List<Symbol> parameters = new LinkedList<Symbol>();
+	protected final Set<Symbol> parameterSet = new TreeSet<Symbol>();
 	protected final Modifier modifier;
+	protected final Scope mainScope;
 
 	public MethodImpl(Runtime runtime, ClassOrInterface parent, PositionString name, Symbol resultType,
 			Iterator<Symbol> parameters, Modifier modifier) {
@@ -31,8 +35,11 @@ class MethodImpl extends SymbolContainerImpl implements Method, Comparable<Metho
 		this.resultType = resultType;
 		this.modifier = modifier;
 		while(parameters.hasNext()) {
-			this.parameters.add(parameters.next());
+			Symbol e = parameters.next();
+			this.parameters.add(e);
+			this.parameterSet.add(e);
 		}
+		this.mainScope = new ScopeImpl(runtime, this);
 	}
 
 	@Override
@@ -94,14 +101,18 @@ class MethodImpl extends SymbolContainerImpl implements Method, Comparable<Metho
 
 	@Override
 	public Set<Symbol> getContainedSymbols() {
-		// TODO Auto-generated method stub
-		return null;
+		return parameterSet;
 	}
 
 	@Override
 	public Set<? extends UnqualifiedSymbol> getUnqualifiedSymbols() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Scope getScope() {
+		return mainScope;
 	}
 
 }

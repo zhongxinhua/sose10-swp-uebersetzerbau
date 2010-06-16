@@ -97,16 +97,15 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 	public Set<? extends Symbol> getContainedSymbols() {
 		return methods.keySet();
 	}
-	
-	@Override
-	public Symbol lookup(UnqualifiedSymbol symbol) {
-		// if(symbol.is(SymbolType.METHOD))
-		return null; // TODO
-	}
 
 	@Override
 	public Set<? extends UnqualifiedSymbol> getUnqualifiedSymbols() {
 		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	final public Symbol lookup(UnqualifiedSymbol symbol) {
 		return null;
 	}
 

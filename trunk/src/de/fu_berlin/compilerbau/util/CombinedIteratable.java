@@ -3,7 +3,7 @@ package de.fu_berlin.compilerbau.util;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-class CombinedIteratable<E> extends Object implements Iterable<E> {
+public class CombinedIteratable<E> extends Object implements Iterable<E> {
 	
 	protected final Iterable<E>[] iters;
 	

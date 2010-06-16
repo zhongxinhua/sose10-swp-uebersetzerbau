@@ -145,7 +145,7 @@ public class RuntimeFactory {
 				NativeModifier modifiers = new NativeModifier(ctor.getModifiers());
 				Iterator<Symbol> parameters = Arrays.asList(javaToCompilerType(
 						rt, ctor.getParameterTypes())).iterator();
-				clazzSymbol.addConstructor(parameters, modifiers);
+				clazzSymbol.addConstructor(PositionBean.ZERO, parameters, modifiers);
 			}
 		} else {
 			coiSymbol = pkg.addInterface(classLookupName, implements_, clazzModifiers);

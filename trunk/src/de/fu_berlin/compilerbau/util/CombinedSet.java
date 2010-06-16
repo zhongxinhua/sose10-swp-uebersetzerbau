@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
-class CombinedSet<E extends Comparable<E>> implements Set<E> {
+public class CombinedSet<E> implements Set<E> {
 	
 	protected final Set<E>[] sets;
 	

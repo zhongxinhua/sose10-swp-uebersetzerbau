@@ -12,28 +12,41 @@ import de.fu_berlin.compilerbau.symbolTable.PrimitiveType;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
-import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.PositionBean;
 import de.fu_berlin.compilerbau.util.PositionString;
+import de.fu_berlin.compilerbau.util.StreamPosition;
 import de.fu_berlin.compilerbau.util.Visibility;
 
 public class PrimitiveTypeImpl extends ClassOrInterfaceImpl implements PrimitiveType {
 
 	protected final java.lang.Class<?> type;
+	protected final String javaSignature;
 
 	public PrimitiveTypeImpl(Runtime runtime, java.lang.Class<?> type) {
 		super(runtime, runtime, null, GetModifier.getModifier(Visibility.PUBLIC, false, true, false),
 				new PositionString(type.getName(), PositionBean.ZERO));
 		this.type = type;
+		
+		if(type == boolean.class) javaSignature = "Z"; else
+		if(type == char.class)    javaSignature = "C"; else
+		if(type == double.class)  javaSignature = "D"; else
+		if(type == float.class)   javaSignature = "F"; else
+		if(type == int.class)     javaSignature = "I"; else
+		if(type == long.class)    javaSignature = "J"; else
+		if(type == short.class)   javaSignature = "S"; else
+		if(type == boolean.class) javaSignature = "Z"; else
+		if(type == boolean.class) javaSignature = "Z"; else
+		throw new RuntimeException();
 	}
 
 	@Override
-	public Constructor addConstructor(Iterator<Symbol> parameters,
-			Modifier modifier) throws DuplicateIdentifierException,
-			ShadowedIdentifierException, WrongModifierException {
+	public Constructor addConstructor(StreamPosition pos,
+			Iterator<Symbol> parameters, Modifier modifier)
+			throws DuplicateIdentifierException, ShadowedIdentifierException,
+			WrongModifierException {
 		throw new UnsupportedOperationException();
 	}
 
@@ -46,21 +59,7 @@ public class PrimitiveTypeImpl extends ClassOrInterfaceImpl implements Primitive
 
 	@Override
 	public String getJavaSignature() {
-		if(type == boolean.class) return "Z";
-		if(type == char.class)    return "C";
-		if(type == double.class)  return "D";
-		if(type == float.class)   return "F";
-		if(type == int.class)     return "I";
-		if(type == long.class)    return "J";
-		if(type == short.class)   return "S";
-		if(type == boolean.class) return "Z";
-		if(type == boolean.class) return "Z";
-		throw new RuntimeException();
-	}
-
-	@Override
-	public Symbol lookup(UnqualifiedSymbol symbol) {
-		return null;
+		return javaSignature;
 	}
 
 	@Override

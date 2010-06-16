@@ -7,5 +7,6 @@ public interface Method extends SymbolContainer, QualifiedSymbol {
 	
 	List<Symbol> getParameters();
 	Symbol getReturnType();
+	Scope getScope();
 	
 }

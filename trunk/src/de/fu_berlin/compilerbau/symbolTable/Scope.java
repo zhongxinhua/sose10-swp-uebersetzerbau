@@ -11,4 +11,6 @@ public interface Scope extends SymbolContainer {
 	Variable addVariable(PositionString name, Symbol type, Modifier modifier) throws
 			DuplicateIdentifierException, ShadowedIdentifierException, WrongModifierException;
 	
+	Scope addScope();
+	
 }

@@ -6,6 +6,7 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierExcept
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.PositionString;
+import de.fu_berlin.compilerbau.util.StreamPosition;
 
 public interface Class extends ClassOrInterface {
 	
@@ -15,7 +16,7 @@ public interface Class extends ClassOrInterface {
 	/**
 	 * @see ClassOrInterface#addMethod(PositionString, Symbol, List, Modifier)
 	 */
-	Constructor addConstructor(Iterator<Symbol> parameters, Modifier modifier) throws
+	Constructor addConstructor(StreamPosition pos, Iterator<Symbol> parameters, Modifier modifier) throws
 			DuplicateIdentifierException, ShadowedIdentifierException, WrongModifierException;
 	
 	Symbol getSuperClass();

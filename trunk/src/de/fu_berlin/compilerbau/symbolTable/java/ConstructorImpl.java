@@ -8,16 +8,16 @@ import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
-import de.fu_berlin.compilerbau.util.PositionBean;
 import de.fu_berlin.compilerbau.util.PositionString;
+import de.fu_berlin.compilerbau.util.StreamPosition;
 
 class ConstructorImpl extends MethodImpl implements Constructor {
 	
-	protected static final PositionString INIT = new PositionString("<init>", PositionBean.ZERO);
+	protected static final String INIT = "<init>";
 	
-	public ConstructorImpl(Runtime runtime, ClassOrInterface parent,
+	public ConstructorImpl(Runtime runtime, ClassOrInterface parent, StreamPosition pos,
 			Iterator<Symbol> parameters, Modifier modifier) {
-		super(runtime, parent, INIT, runtime.getVoid(), parameters, modifier);
+		super(runtime, parent, new PositionString(INIT, pos), runtime.getVoid(), parameters, modifier);
 	}
 
 	@Override
