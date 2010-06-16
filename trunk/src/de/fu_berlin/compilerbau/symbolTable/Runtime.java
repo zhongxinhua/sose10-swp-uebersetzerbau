@@ -76,10 +76,6 @@ public interface Runtime extends SymbolContainer {
 	
 	PrimitiveType getPrimitiveType(java.lang.Class<?> c);
 	
-	/**
-	 * 
-	 * @return <strong>mutable</strong> list
-	 */
 	List<Entry<QualifiedSymbol,Symbol>> getAllShadowsList();
 	
 }

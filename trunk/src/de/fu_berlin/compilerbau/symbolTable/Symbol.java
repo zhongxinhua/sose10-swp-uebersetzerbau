@@ -24,4 +24,12 @@ public interface Symbol {
 	 */
 	SymbolContainer getParent();
 	
+	/**
+	 * return <code>leftType implicates (({@link QualifiedSymbol})this).getType())</code>
+	 * 
+	 * <p/>E.g. {@link SymbolType.CONSTRUCTOR} → {@link SymbolType.METHOD} → {@link SymbolType.SCOPE}
+	 * @return null if <code>!(this instanceof {@link QualifiedSymbol})</code> 
+	 */
+	Boolean hasType(SymbolType leftType);
+	
 }

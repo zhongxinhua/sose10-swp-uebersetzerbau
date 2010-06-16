@@ -21,7 +21,7 @@ import de.fu_berlin.compilerbau.util.CombinedSet;
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
 
-class MethodImpl extends SymbolContainerImpl implements Method, Comparable<Method> {
+class MethodImpl extends ScopeImpl implements Method, Comparable<Method> {
 	
 	protected final ClassOrInterface parent;
 	protected final PositionString name;
@@ -29,7 +29,6 @@ class MethodImpl extends SymbolContainerImpl implements Method, Comparable<Metho
 	protected final List<Symbol> parameters = new LinkedList<Symbol>();
 	protected final Set<Symbol> parameterSet = new TreeSet<Symbol>();
 	protected final Modifier modifier;
-	protected final Scope mainScope;
 
 	public MethodImpl(Runtime runtime, ClassOrInterface parent, PositionString name, Symbol resultType,
 			Iterator<Symbol> parameters, Modifier modifier) {
@@ -43,7 +42,6 @@ class MethodImpl extends SymbolContainerImpl implements Method, Comparable<Metho
 			this.parameters.add(e);
 			this.parameterSet.add(e);
 		}
-		this.mainScope = new ScopeImpl(runtime, this);
 	}
 
 	@Override
@@ -106,7 +104,7 @@ class MethodImpl extends SymbolContainerImpl implements Method, Comparable<Metho
 	@SuppressWarnings("unchecked")
 	@Override
 	public Set<Symbol> getContainedSymbols() {
-		return new CombinedSet<Symbol>(new Set[] { parameterSet, mainScope.getContainedSymbols() });
+		return new CombinedSet<Symbol>(new Set[] { parameterSet, super.getContainedSymbols() });
 	}
 
 	@Override
@@ -117,7 +115,7 @@ class MethodImpl extends SymbolContainerImpl implements Method, Comparable<Metho
 
 	@Override
 	public Scope getScope() {
-		return mainScope;
+		return this;
 	}
 
 }

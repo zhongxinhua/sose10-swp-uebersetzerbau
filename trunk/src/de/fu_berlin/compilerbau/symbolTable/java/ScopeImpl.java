@@ -53,7 +53,7 @@ class ScopeImpl extends SymbolContainerImpl implements Scope {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Set<Symbol> getContainedSymbols() {
+	public Set<? extends Symbol> getContainedSymbols() {
 		Set[] sets = subScopes.toArray(new Set[subScopes.size()+1]);
 		sets[subScopes.size()] = variables.keySet();
 		return new CombinedSet(sets);
