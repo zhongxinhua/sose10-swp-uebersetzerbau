@@ -9,13 +9,13 @@ import de.fu_berlin.compilerbau.util.PositionString;
  */
 public interface SymbolContainer extends Symbol {
 	
-	Set<Symbol> getContainedSymbols();
+	Set<? extends Symbol> getContainedSymbols();
 	
 	/**
 	 * recursively
 	 * @return immutable list
 	 */
-	Set<UnqualifiedSymbol> getUnqualifiedSymbols();
+	Set<? extends UnqualifiedSymbol> getUnqualifiedSymbols();
 	
 	/**
 	 * recursively
@@ -26,7 +26,7 @@ public interface SymbolContainer extends Symbol {
 	 * Returns a list of all symbols occurring twice in the same scope of visibility.
 	 * @return [ [ occurrence ] ]
 	 */
-	Set<Set<Symbol>> getShadowedSymbols();
+	Set<Set<? extends Symbol>> getShadowedSymbols();
 	
 	/**
 	 * Looks up this {@link UnqualifiedSymbol unqualified symbol}.

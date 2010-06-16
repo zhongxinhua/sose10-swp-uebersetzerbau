@@ -35,7 +35,7 @@ public class InterfaceImpl extends ClassOrInterfaceImpl implements Interface {
 	}
 
 	@Override
-	public Set<Set<Symbol>> getShadowedSymbols() {
+	public Set<Set<? extends Symbol>> getShadowedSymbols() {
 		// TODO Auto-generated method stub
 		return null;
 	}

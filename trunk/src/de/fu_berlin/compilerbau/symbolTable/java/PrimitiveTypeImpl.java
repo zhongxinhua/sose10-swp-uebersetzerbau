@@ -74,7 +74,7 @@ public class PrimitiveTypeImpl extends ClassOrInterfaceImpl implements Primitive
 	}
 
 	@Override
-	public Set<Set<Symbol>> getShadowedSymbols() {
+	public Set<Set<? extends Symbol>> getShadowedSymbols() {
 		return Collections.emptySet();
 	}
 

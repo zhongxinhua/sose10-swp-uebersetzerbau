@@ -81,6 +81,22 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 	public Set<Symbol> getInterfaces() {
 		return interfaces;
 	}
+
+	@Override
+	public Set<Set<? extends Symbol>> getShadowedSymbols() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public SymbolType getType() {
+		return SymbolType.CLASS_OR_INTERFACE;
+	}
+
+	@Override
+	public Set<? extends Symbol> getContainedSymbols() {
+		return methods.keySet();
+	}
 	
 	@Override
 	public Symbol lookup(UnqualifiedSymbol symbol) {
@@ -89,14 +105,9 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 	}
 
 	@Override
-	public Set<Set<Symbol>> getShadowedSymbols() {
+	public Set<? extends UnqualifiedSymbol> getUnqualifiedSymbols() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public SymbolType getType() {
-		return SymbolType.CLASS_OR_INTERFACE;
 	}
 
 }

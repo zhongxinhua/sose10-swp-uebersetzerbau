@@ -136,7 +136,19 @@ class PackageImpl extends SymbolContainerImpl implements Package, Comparable<Pac
 	}
 
 	@Override
-	public Set<Set<Symbol>> getShadowedSymbols() {
+	public Set<Set<? extends Symbol>> getShadowedSymbols() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<Symbol> getContainedSymbols() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<? extends UnqualifiedSymbol> getUnqualifiedSymbols() {
 		// TODO Auto-generated method stub
 		return null;
 	}
