@@ -67,6 +67,9 @@ public class DeclarationStatement extends Statement {
 		// check needed attribute: name
 		if (node.hasAttribute("name")
 				&& node.getAttributeValue("name").length() > 0) {
+			//Symboltabellenanbindung-> überprüfe reservierte/vergebene Namen
+				//Symboltable.check(node.getAttributeValue("name"));
+			//
 			this.name = node.getAttribute("name");
 		} else {
 			ErrorHandler.error(node, this.getClass().toString()
