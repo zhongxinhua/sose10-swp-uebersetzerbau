@@ -53,6 +53,7 @@ public class JavaBuilder extends Builder {
 
 	@Override
 	protected void buildClass(Class theclass) throws IOException {
+		
 		Module root = _astree.getRoot();
 		_code.append("package " + root.getName() + ";\n");
 
@@ -196,11 +197,12 @@ public class JavaBuilder extends Builder {
 			_code.append("final ");
 		}
 
-		_code.append(typeToJavaString(decl.getType()) + " ");
-
+		_code.append(typeToJavaString(decl.getType()));
+		
 		for (int i = 0; i < decl.getDimension(); ++i) {
 			_code.append("[] ");
 		}
+		_code.append(" ");
 
 		_code.append(decl.getName());
 
@@ -212,7 +214,7 @@ public class JavaBuilder extends Builder {
 		else if(decl.isArray()) {
 			_code.append(" = new " + typeToJavaString(decl.getType())); 
 			for(int i=0; i<decl.getDimension(); ++i) { 
-				_code.append("[]"); 
+				_code.append("[1]"); 
 			} 
 		}
 		
@@ -316,6 +318,9 @@ public class JavaBuilder extends Builder {
 
 	protected void buildSetStatement(SetStatement obj) throws IOException {
 		buildExpressionStatement(obj.getLValue());
+		//DEBUG @Date
+		System.out.println("DEBUG:"+obj.getLValue().getClass().getCanonicalName());
+		//DEBUG @Date
 		_code.append("=");
 		buildExpressionStatement(obj.getRLValue());
 		_code.append(";\n");
@@ -367,7 +372,11 @@ public class JavaBuilder extends Builder {
 		}
 		_code.append(']');
 	}
-	
+	/**
+	 * 
+	 * @param obj
+	 * @throws IOException
+	 */
 	protected void buildArrayCreation(ArrayCreation obj)
 			throws IOException {
 		List<Expression> elements = obj.getElements();
