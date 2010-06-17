@@ -110,11 +110,9 @@ public class Function extends SyntaxTreeNode {
 					}
 				}
 			} else if (child.getName().equals("return")) {
-				ErrorHandler.debugMsg(null, "DEBUG2::Function::ReturnStatement");
 				body.add(new ReturnStatement(child));
 			} else {
 				Statement stmt = Statement.build(child);
-				ErrorHandler.debugMsg(null, "DEBUG2::Function::"+stmt);
 				body.add(stmt);
 			}
 		}
