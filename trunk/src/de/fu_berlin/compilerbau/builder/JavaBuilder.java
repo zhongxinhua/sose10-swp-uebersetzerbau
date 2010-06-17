@@ -186,7 +186,7 @@ public class JavaBuilder extends Builder {
 
 	}
 
-	// ASSERT: this Declaration Statement DO NOT appear in <arguments> body
+	// ASSERT: this Declaration Statement DO NOT appear in <arguments> body, since these are parameters
 	protected void buildDeclarationStatement(DeclarationStatement decl)
 			throws IOException {
 
@@ -207,8 +207,15 @@ public class JavaBuilder extends Builder {
 		_code.append(decl.getName());
 
 		if (decl.getValue() != null) {
+			
 			_code.append(" = ");
+			if(decl.getType() == Type.STRING){
+				_code.append("new String(");
+			}
 			buildExpressionStatement(decl.getValue());
+			if(decl.getType() == Type.STRING){
+				_code.append(")");
+			}
 		}
 		
 		else if(decl.isArray()) {
@@ -318,9 +325,6 @@ public class JavaBuilder extends Builder {
 
 	protected void buildSetStatement(SetStatement obj) throws IOException {
 		buildExpressionStatement(obj.getLValue());
-		//DEBUG @Date
-		System.out.println("DEBUG:"+obj.getLValue().getClass().getCanonicalName());
-		//DEBUG @Date
 		_code.append("=");
 		buildExpressionStatement(obj.getRLValue());
 		_code.append(";\n");
@@ -372,11 +376,7 @@ public class JavaBuilder extends Builder {
 		}
 		_code.append(']');
 	}
-	/**
-	 * 
-	 * @param obj
-	 * @throws IOException
-	 */
+
 	protected void buildArrayCreation(ArrayCreation obj)
 			throws IOException {
 		List<Expression> elements = obj.getElements();
@@ -491,6 +491,7 @@ public class JavaBuilder extends Builder {
 
 	protected void buildStringLiteralExpression(StringLiteral obj)
 			throws IOException {
+	
 		_code.append(obj.getValue().toString().replace('\'','\"'));
 
 	}
