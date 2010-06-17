@@ -55,6 +55,9 @@ public class Statement extends SyntaxTreeNode {
 		}
 		else if (node.getName().equals("set")) {
 			return new SetStatement(node);
+		} else
+		if (node.getName().equals("foreach")) {
+			return new ForEachStatement(node);
 		}
 		else{
 			//ERROR

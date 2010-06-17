@@ -17,6 +17,7 @@ import de.fu_berlin.compilerbau.parser.Class;
 import de.fu_berlin.compilerbau.parser.ContinueStatement;
 import de.fu_berlin.compilerbau.parser.DeclarationStatement;
 import de.fu_berlin.compilerbau.parser.DoStatement;
+import de.fu_berlin.compilerbau.parser.ForEachStatement;
 import de.fu_berlin.compilerbau.parser.Function;
 import de.fu_berlin.compilerbau.parser.ImplementStatement;
 import de.fu_berlin.compilerbau.parser.ImportStatement;
@@ -242,6 +243,13 @@ public class JavaBuilder extends Builder {
 		_code.append("}\n");
 
 	}
+	
+	@Override
+	protected void buildForEachStatement(ForEachStatement obj) throws IOException {
+		//TODO needs type from Symboltable
+		/*_code.append("for("")");
+		_code.append("");*/
+	}
 
 	boolean isFirstImplementStatement = true;
 
@@ -308,6 +316,8 @@ public class JavaBuilder extends Builder {
 			buildDeclarationStatement((DeclarationStatement) obj);
 		} else if (obj instanceof DoStatement) {
 			buildDoStatement((DoStatement) obj);
+		} else if (obj instanceof ForEachStatement) {
+			buildForEachStatement((ForEachStatement) obj); 
 		} else if (obj instanceof ReturnStatement) {
 			buildReturnStatement((ReturnStatement) obj);
 		} else if (obj instanceof ScopeStatement) {
@@ -552,5 +562,4 @@ public class JavaBuilder extends Builder {
 			return "void";
 		}
 	}
-
 }
