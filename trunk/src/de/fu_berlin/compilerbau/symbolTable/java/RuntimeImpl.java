@@ -27,6 +27,7 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.CombinedSet;
 import de.fu_berlin.compilerbau.util.Likelyness;
 import de.fu_berlin.compilerbau.util.PositionStringBuilder;
+import de.fu_berlin.compilerbau.util.Punycode;
 import static de.fu_berlin.compilerbau.util.Likelyness.*;
 import de.fu_berlin.compilerbau.util.PositionString;
 
@@ -208,6 +209,17 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	@Override
 	public ArrayType getArrayType(Class<?> clazz) {
 		return new ArrayTypeImpl(this, clazz);
+	}
+
+	@Override
+	public boolean isValidIdentifier(String id) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public String mangleName(String name) {
+		return Punycode.encode(name);
 	}
 	
 }

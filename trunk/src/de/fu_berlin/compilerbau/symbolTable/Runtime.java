@@ -85,4 +85,18 @@ public interface Runtime extends SymbolContainer {
 	
 	ArrayType getArrayType(java.lang.Class<?> clazz);
 	
+	/**
+	 * This method makes the input name a valid identifier for Java.
+	 * E.g. "Übersetzerbau" could become a puny code like name "$Zbersetzerbau$clb".
+	 * 
+	 * See <a href="http://en.wikipedia.org/wiki/Name_mangling">Wikipedia</a>.
+	 * @return null if the name could not be mangled.
+	 */
+	String mangleName(String name);
+	
+	/**
+	 * Tests the given string if it is a valid identifier in Java.
+	 */
+	boolean isValidIdentifier(String id);
+	
 }
