@@ -85,7 +85,7 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 	}
 
 	@Override
-	public Set<Symbol> getInterfaces() {
+	public Set<Symbol> getImplementedInterfaces() {
 		return interfaces;
 	}
 

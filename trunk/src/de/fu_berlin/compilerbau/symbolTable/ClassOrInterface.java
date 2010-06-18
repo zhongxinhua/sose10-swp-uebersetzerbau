@@ -18,6 +18,6 @@ public interface ClassOrInterface extends SymbolContainer, QualifiedSymbol {
 			Modifier modifier) throws
 			DuplicateIdentifierException, ShadowedIdentifierException, WrongModifierException, InvalidIdentifierException;
 	
-	Set<Symbol> getInterfaces();
+	Set<Symbol> getImplementedInterfaces();
 	
 }
