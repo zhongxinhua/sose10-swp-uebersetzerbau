@@ -5,6 +5,7 @@ import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
+import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.util.PositionString;
 
 
@@ -15,14 +16,14 @@ abstract class SymbolContainerImpl extends SymbolImpl implements SymbolContainer
 	}
 	
 	@Override
-	public QualifiedSymbol getQualifiedSymbol(PositionString name, SymbolType type) {
+	public QualifiedSymbol getQualifiedSymbol(PositionString name, SymbolType type) throws InvalidIdentifierException {
 		Runtime runtime = getRuntime();
 		UnqualifiedSymbol uniqualifiedSymbol = runtime.getUnqualifiedSymbol(name, type);
 		return lookup(uniqualifiedSymbol);
 	}
 	
 	@Override
-	public QualifiedSymbol getQualifiedSymbol(PositionString name) {
+	public QualifiedSymbol getQualifiedSymbol(PositionString name) throws InvalidIdentifierException {
 		Runtime runtime = getRuntime();
 		UnqualifiedSymbol uniqualifiedSymbol = runtime.getUnqualifiedSymbol(name);
 		return lookup(uniqualifiedSymbol);

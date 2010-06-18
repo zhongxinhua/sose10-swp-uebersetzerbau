@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
+import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.Likelyness;
@@ -41,7 +42,7 @@ public interface Runtime extends SymbolContainer {
 	 * @return a {@link Package} to fill top-down.
 	 */
 	Package addPackage(PositionString name, Modifier modifier) throws
-			DuplicateIdentifierException, ShadowedIdentifierException, WrongModifierException;
+			DuplicateIdentifierException, ShadowedIdentifierException, WrongModifierException, InvalidIdentifierException;
 	
 	/**
 	 * Returns a {@link UnqualifiedSymbol unqualified symbol, i.e. a symbol who's actual type

@@ -22,6 +22,7 @@ import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import static de.fu_berlin.compilerbau.symbolTable.SymbolType.*;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
+import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.CombinedSet;
@@ -38,11 +39,11 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	protected final Map<PrimitiveType,PrimitiveTypeImpl> primitiveTypes = new HashMap<PrimitiveType, PrimitiveTypeImpl>();
 	protected final Map<Class<?>,PrimitiveTypeImpl> primitiveTypesByClass = new HashMap<Class<?>, PrimitiveTypeImpl>();
 	protected final Map<String,PrimitiveTypeImpl> primitiveTypesByName = new HashMap<String, PrimitiveTypeImpl>();
-	protected final VoidTypeImpl voidType = new VoidTypeImpl(this);
+	protected final VoidTypeImpl voidType;
 	protected final ShadowedSymbols shadowedSymbols = new ShadowedSymbols(this);
 	protected final List<Entry<QualifiedSymbol, Symbol>> allShadowsList = new LinkedList<Entry<QualifiedSymbol, Symbol>>();
 	
-	void addPrimitiveClass(Class<?> c) {
+	protected void addPrimitiveClass(Class<?> c) throws InvalidIdentifierException {
 		PrimitiveTypeImpl typeImpl = new PrimitiveTypeImpl(this, c);
 		primitiveTypesByClass.put(c, typeImpl);
 		primitiveTypesByName.put(c.getName(), typeImpl);
@@ -51,19 +52,25 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	
 	RuntimeImpl() {
 		super(null, null);
-		addPrimitiveClass(boolean.class);
-		addPrimitiveClass(byte.class);
-		addPrimitiveClass(char.class);
-		addPrimitiveClass(double.class);
-		addPrimitiveClass(float.class);
-		addPrimitiveClass(int.class);
-		addPrimitiveClass(long.class);
-		addPrimitiveClass(short.class);
+		try {
+			addPrimitiveClass(boolean.class);
+			addPrimitiveClass(byte.class);
+			addPrimitiveClass(char.class);
+			addPrimitiveClass(double.class);
+			addPrimitiveClass(float.class);
+			addPrimitiveClass(int.class);
+			addPrimitiveClass(long.class);
+			addPrimitiveClass(short.class);
+			
+			this.voidType = new VoidTypeImpl(this);
+		} catch (InvalidIdentifierException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	@Override
 	public Package addPackage(PositionString name, Modifier modifier)
-			throws DuplicateIdentifierException, ShadowedIdentifierException, WrongModifierException {
+			throws DuplicateIdentifierException, ShadowedIdentifierException, WrongModifierException, InvalidIdentifierException {
 		PackageImpl newSymbol = new PackageImpl(this, name);
 		PackageImpl oldSymbol = packages.get(newSymbol);
 		if(oldSymbol != null) {
@@ -111,7 +118,7 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	}
 	
 	@Override
-	public QualifiedSymbol lookup(UnqualifiedSymbol symbol) {
+	public QualifiedSymbol lookup(UnqualifiedSymbol symbol) throws InvalidIdentifierException {
 		final Likelyness isPrimitive = symbol.is(PRIMITIVE_TYPE);
 		if(isPrimitive != IMPOSSIBLE) {
 			PrimitiveTypeImpl result = primitiveTypesByName.get(symbol.getCall().toString());
@@ -203,12 +210,20 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 
 	@Override
 	public ArrayType getArrayType(Symbol componentType, int dimension) {
-		return new ArrayTypeImpl(this, componentType, dimension);
+		try {
+			return new ArrayTypeImpl(this, componentType, dimension);
+		} catch (InvalidIdentifierException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
 	public ArrayType getArrayType(Class<?> clazz) {
-		return new ArrayTypeImpl(this, clazz);
+		try {
+			return new ArrayTypeImpl(this, clazz);
+		} catch (InvalidIdentifierException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override

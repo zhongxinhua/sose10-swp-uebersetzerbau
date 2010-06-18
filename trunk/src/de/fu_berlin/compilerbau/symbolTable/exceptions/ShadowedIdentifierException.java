@@ -17,7 +17,7 @@ public class ShadowedIdentifierException extends ContainerSymbolsException {
 		super(createMessageFor(container, newSymbol, oldSymbol), container, newSymbol, oldSymbol);
 	}
 	
-	private static String createMessageFor(SymbolContainer container, Symbol newSymbol, Symbol oldSymbol) {
+	public static String createMessageFor(SymbolContainer container, Symbol newSymbol, Symbol oldSymbol) {
 		return "Symbol <" + newSymbol + "> shadows <" + oldSymbol + "> in " + container;
 	}
 	

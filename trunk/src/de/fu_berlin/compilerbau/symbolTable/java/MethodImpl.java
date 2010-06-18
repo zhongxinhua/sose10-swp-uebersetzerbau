@@ -17,6 +17,7 @@ import de.fu_berlin.compilerbau.symbolTable.Scope;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
+import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.util.CombinedSet;
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
@@ -25,16 +26,25 @@ class MethodImpl extends ScopeImpl implements Method, Comparable<Method> {
 	
 	protected final ClassOrInterface parent;
 	protected final PositionString name;
+	protected final String destionationName;
 	protected final Symbol resultType;
 	protected final List<Symbol> parameters = new LinkedList<Symbol>();
 	protected final Set<Symbol> parameterSet = new TreeSet<Symbol>();
 	protected final Modifier modifier;
 
 	public MethodImpl(Runtime runtime, ClassOrInterface parent, PositionString name, Symbol resultType,
-			Iterator<Symbol> parameters, Modifier modifier) {
+			Iterator<Symbol> parameters, Modifier modifier) throws InvalidIdentifierException {
 		super(runtime, parent);
 		this.parent = parent;
 		this.name = name;
+		if(name != null && !name.equals(ConstructorImpl.INIT)) {
+			this.destionationName = runtime.mangleName(name.toString());
+			if(destionationName == null) {
+				throw new InvalidIdentifierException(this, name);
+			}
+		} else {
+			this.destionationName = name.toString();
+		}
 		this.resultType = resultType;
 		this.modifier = modifier;
 		while(parameters.hasNext()) {
@@ -63,12 +73,6 @@ class MethodImpl extends ScopeImpl implements Method, Comparable<Method> {
 	@Override
 	public String getName() {
 		return name.toString();
-	}
-
-	@Override
-	public String getJavaSignature() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -111,6 +115,11 @@ class MethodImpl extends ScopeImpl implements Method, Comparable<Method> {
 	public Set<? extends UnqualifiedSymbol> getUnqualifiedSymbols() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public String getDestinationName() {
+		return destionationName;
 	}
 
 	@Override

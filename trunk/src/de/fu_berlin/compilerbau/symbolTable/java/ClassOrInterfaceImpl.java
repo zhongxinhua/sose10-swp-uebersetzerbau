@@ -16,6 +16,7 @@ import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
+import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.PositionString;
@@ -24,17 +25,25 @@ import de.fu_berlin.compilerbau.util.StreamPosition;
 class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterface, Comparable<ClassOrInterfaceImpl> {
 	
 	protected final PositionString canonicalName;
+	protected final String destinationName;
 	protected final Modifier modifier;
 	protected final Set<Symbol> interfaces = new TreeSet<Symbol>();
 	protected final Map<Method, MethodImpl> methods = new TreeMap<Method, MethodImpl>();
 	protected final ShadowedSymbols shadowedSymbols = new ShadowedSymbols(this);
 
 	public ClassOrInterfaceImpl(Runtime runtime, SymbolContainer parent, Iterator<Symbol> implements_,
-			Modifier modifier, PositionString canonicalName) {
-		// implements_
+			Modifier modifier, PositionString canonicalName) throws InvalidIdentifierException {
 		super(runtime, parent);
 		this.modifier = modifier;
 		this.canonicalName = canonicalName;
+		if(canonicalName != null) {
+			this.destinationName = runtime.mangleName(canonicalName.toString());
+			if(this.destinationName == null || !runtime.isValidIdentifier(this.destinationName)) {
+				throw new InvalidIdentifierException(this, canonicalName);
+			}
+		} else {
+			this.destinationName = null;
+		}
 		while(implements_.hasNext()) {
 			interfaces.add(implements_.next());
 		}
@@ -44,7 +53,7 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 	public Method addMethod(PositionString name, Symbol resultType,
 			Iterator<Symbol> parameters, Modifier modifier)
 			throws DuplicateIdentifierException, ShadowedIdentifierException,
-			WrongModifierException {
+			WrongModifierException, InvalidIdentifierException {
 		final MethodImpl newSymbol = new MethodImpl(getRuntime(), this, name, resultType, parameters, modifier);
 		final MethodImpl oldSymbol = methods.get(newSymbol);
 		if(oldSymbol != null) {
@@ -58,11 +67,6 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 	@Override
 	public String getName() {
 		return canonicalName.toString();
-	}
-
-	@Override
-	public String getJavaSignature() {
-		return "L" + canonicalName + ";"; // TODO ← das ist wahrscheinlich Unsinn :)
 	}
 
 	@Override
@@ -109,6 +113,11 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 	@Override
 	final public QualifiedSymbol lookup(UnqualifiedSymbol symbol) {
 		return null;
+	}
+
+	@Override
+	public String getDestinationName() {
+		return destinationName;
 	}
 
 }

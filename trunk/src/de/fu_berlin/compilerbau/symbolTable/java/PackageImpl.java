@@ -16,6 +16,7 @@ import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
+import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.PositionString;
@@ -23,7 +24,8 @@ import de.fu_berlin.compilerbau.util.StreamPosition;
 
 class PackageImpl extends SymbolContainerImpl implements Package, Comparable<PackageImpl> {
 	
-	final PositionString name;
+	protected final PositionString name;
+	protected final String destionationName;
 	
 	protected Map<ClassOrInterfaceImpl,ClassImpl> classes =
 			new TreeMap<ClassOrInterfaceImpl,ClassImpl>();
@@ -33,16 +35,32 @@ class PackageImpl extends SymbolContainerImpl implements Package, Comparable<Pac
 			new TreeMap<ClassOrInterfaceImpl,ClassOrInterfaceImpl>();
 	protected final ShadowedSymbols shadowedSymbols = new ShadowedSymbols(this);
 
-	public PackageImpl(Runtime runtime, PositionString name) {
+	public PackageImpl(Runtime runtime, PositionString name) throws InvalidIdentifierException {
 		super(runtime, runtime);
 		this.name = name;
+		
+		boolean first = true;
+		final StringBuilder destionationName = new StringBuilder();
+		for(final String pathComponent : name.toString().split("\\.")) {
+			if(!first) {
+				destionationName.append('.');
+			} else {
+				first = true;
+			}
+			final String mangledName = runtime.mangleName(pathComponent);
+			if(mangledName == null || runtime.isValidIdentifier(mangledName)) {
+				throw new InvalidIdentifierException(runtime, name);
+			}
+			destionationName.append(mangledName);
+		}
+		this.destionationName = destionationName.toString();
 	}
 
 	@Override
 	public Class addClass(PositionString name, Symbol extends_,
 			Iterator<Symbol> implements_, Modifier modifier)
 			throws DuplicateIdentifierException, ShadowedIdentifierException,
-			WrongModifierException {
+			WrongModifierException, InvalidIdentifierException {
 		final ClassImpl newSymbol = new ClassImpl(getRuntime(), this, extends_, implements_, modifier, name);
 		final Symbol duplicate = classesAndInterfaces.get(newSymbol);
 		if(duplicate != null) {
@@ -60,7 +78,7 @@ class PackageImpl extends SymbolContainerImpl implements Package, Comparable<Pac
 	public Interface addInterface(PositionString name,
 			Iterator<Symbol> extends_, Modifier modifier)
 			throws DuplicateIdentifierException, ShadowedIdentifierException,
-			WrongModifierException {
+			WrongModifierException, InvalidIdentifierException {
 		final InterfaceImpl newSymbol = new InterfaceImpl(getRuntime(), this, extends_, modifier, name);
 		final Symbol duplicate = classesAndInterfaces.get(newSymbol);
 		if(duplicate != null) {
@@ -115,11 +133,6 @@ class PackageImpl extends SymbolContainerImpl implements Package, Comparable<Pac
 	}
 
 	@Override
-	public String getJavaSignature() {
-		return null;
-	}
-
-	@Override
 	public SymbolType getType() {
 		return SymbolType.PACKAGE;
 	}
@@ -155,6 +168,11 @@ class PackageImpl extends SymbolContainerImpl implements Package, Comparable<Pac
 	public Set<? extends UnqualifiedSymbol> getUnqualifiedSymbols() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public String getDestinationName() {
+		return destionationName;
 	}
 
 }

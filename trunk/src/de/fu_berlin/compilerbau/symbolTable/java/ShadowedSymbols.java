@@ -9,6 +9,7 @@ import java.util.TreeSet;
 import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
+import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.util.Pair;
 import de.fu_berlin.compilerbau.util.PositionString;
@@ -37,7 +38,7 @@ class ShadowedSymbols {
 		return result;
 	}
 	
-	public void test(PositionString name, QualifiedSymbol newSymbol) throws ShadowedIdentifierException {
+	public void test(PositionString name, QualifiedSymbol newSymbol) throws ShadowedIdentifierException, InvalidIdentifierException {
 		final Runtime rt = container.getRuntime();
 		final Symbol shadowed = container.lookup(rt.getUnqualifiedSymbol(name));
 		if(shadowed != null) {

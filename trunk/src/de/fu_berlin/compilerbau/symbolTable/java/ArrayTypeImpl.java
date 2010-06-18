@@ -14,6 +14,7 @@ import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
+import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.Pair;
@@ -25,13 +26,13 @@ class ArrayTypeImpl extends ClassImpl implements ArrayType {
 	protected final Symbol componentType;
 	protected final int dimension;
 
-	public ArrayTypeImpl(Runtime runtime, Symbol componentType, int dimension) {
+	public ArrayTypeImpl(Runtime runtime, Symbol componentType, int dimension) throws InvalidIdentifierException {
 		super(runtime, runtime, null, null, null, null);
 		this.componentType = componentType;
 		this.dimension = dimension;
 	}
 
-	public ArrayTypeImpl(Runtime rt, Class<?> clazz) {
+	public ArrayTypeImpl(Runtime rt, Class<?> clazz) throws InvalidIdentifierException {
 		this(rt, arrayClassInfo(rt,clazz).getKey(), arrayClassInfo(rt,clazz).getValue());
 	}
 
@@ -59,11 +60,6 @@ class ArrayTypeImpl extends ClassImpl implements ArrayType {
 			throws DuplicateIdentifierException, ShadowedIdentifierException,
 			WrongModifierException {
 		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public String getJavaSignature() {
-		return null; // TODO
 	}
 
 	@Override

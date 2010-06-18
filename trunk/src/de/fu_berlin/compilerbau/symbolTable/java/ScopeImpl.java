@@ -16,6 +16,7 @@ import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Variable;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
+import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.CombinedSet;
@@ -35,7 +36,7 @@ class ScopeImpl extends SymbolContainerImpl implements Scope {
 	@Override
 	public Variable addVariable(PositionString name, Symbol type,
 			Modifier modifier) throws DuplicateIdentifierException,
-			ShadowedIdentifierException, WrongModifierException {
+			ShadowedIdentifierException, WrongModifierException, InvalidIdentifierException {
 		VariableImpl newSymbol = new VariableImpl(getRuntime(), this, name, modifier);
 		final VariableImpl oldSymbol = variables.get(newSymbol);
 		if(oldSymbol != null) {
@@ -66,7 +67,7 @@ class ScopeImpl extends SymbolContainerImpl implements Scope {
 	}
 
 	@Override
-	public QualifiedSymbol lookup(UnqualifiedSymbol symbol) {
+	public QualifiedSymbol lookup(UnqualifiedSymbol symbol) throws InvalidIdentifierException {
 		if(symbol.is(SymbolType.VARIABLE) != Likelyness.IMPOSSIBLE) {
 			VariableImpl needle = new VariableImpl(null, null, symbol.getCall(), null);
 			VariableImpl result = variables.get(needle);

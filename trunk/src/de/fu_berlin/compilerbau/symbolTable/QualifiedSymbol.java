@@ -4,9 +4,15 @@ import de.fu_berlin.compilerbau.util.StreamPosition;
 
 public interface QualifiedSymbol extends Symbol {
 	
+	/**
+	 * Returns the pure name as defined in the source.
+	 */
 	String getName();
 	
-	String getJavaSignature();
+	/**
+	 * Returns the mangled name to conform the destination system.
+	 */
+	String getDestinationName();
 	
 	SymbolType getType();
 	

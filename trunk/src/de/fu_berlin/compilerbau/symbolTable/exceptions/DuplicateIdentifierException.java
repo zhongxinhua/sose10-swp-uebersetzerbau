@@ -16,7 +16,7 @@ public class DuplicateIdentifierException extends ContainerSymbolsException {
 		super(createMessageFor(container, newSymbol, oldSymbol), container, newSymbol, oldSymbol);
 	}
 	
-	private static String createMessageFor(SymbolContainer container, Symbol newSymbol,
+	public static String createMessageFor(SymbolContainer container, Symbol newSymbol,
 			Symbol oldSymbol) {
 		return "In " + container + ": Symbol <" + newSymbol + "> was already introduced as <" +
 				oldSymbol + ">";

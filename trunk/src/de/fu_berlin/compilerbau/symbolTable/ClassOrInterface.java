@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
+import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.PositionString;
@@ -15,7 +16,7 @@ public interface ClassOrInterface extends SymbolContainer, QualifiedSymbol {
 	 */
 	Method addMethod(PositionString name, Symbol resultType, Iterator<Symbol> parameters,
 			Modifier modifier) throws
-			DuplicateIdentifierException, ShadowedIdentifierException, WrongModifierException;
+			DuplicateIdentifierException, ShadowedIdentifierException, WrongModifierException, InvalidIdentifierException;
 	
 	Set<Symbol> getInterfaces();
 	

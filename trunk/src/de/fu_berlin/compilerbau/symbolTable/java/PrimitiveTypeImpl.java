@@ -15,6 +15,7 @@ import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
+import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.PositionBean;
@@ -26,39 +27,29 @@ public class PrimitiveTypeImpl extends ClassOrInterfaceImpl implements Primitive
 
 	protected final java.lang.Class<?> type;
 	protected final java.lang.Class<?> boxedType;
-	protected final String javaSignature;
 
-	public PrimitiveTypeImpl(Runtime runtime, java.lang.Class<?> type) {
+	public PrimitiveTypeImpl(Runtime runtime, java.lang.Class<?> type) throws InvalidIdentifierException {
 		super(runtime, runtime, null, GetModifier.getModifier(Visibility.PUBLIC, false, true, false),
 				new PositionString(type.getName(), PositionBean.ZERO));
 		this.type = type;
 
 		if (type == boolean.class) {
-			javaSignature = "Z";
 			boxedType = Boolean.class;
 		} else if (type == byte.class) {
-			javaSignature = "B";
 			boxedType = Byte.class;
 		} else if (type == char.class) {
-			javaSignature = "C";
 			boxedType = Character.class;
 		} else if (type == double.class) {
-			javaSignature = "D";
 			boxedType = Double.class;
 		} else if (type == float.class) {
-			javaSignature = "F";
 			boxedType = Float.class;
 		} else if (type == int.class) {
-			javaSignature = "I";
 			boxedType = Integer.class;
 		} else if (type == long.class) {
-			javaSignature = "J";
 			boxedType = Long.class;
 		} else if (type == short.class) {
-			javaSignature = "S";
 			boxedType = Short.class;
 		} else if (type == Void.class) {
-			javaSignature = null;
 			boxedType = Void.class;
 		} else {
 			throw new RuntimeException();
@@ -78,11 +69,6 @@ public class PrimitiveTypeImpl extends ClassOrInterfaceImpl implements Primitive
 			throws DuplicateIdentifierException, ShadowedIdentifierException,
 			WrongModifierException {
 		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public String getJavaSignature() {
-		return javaSignature;
 	}
 
 	@Override
@@ -107,7 +93,7 @@ public class PrimitiveTypeImpl extends ClassOrInterfaceImpl implements Primitive
 
 	@Override
 	public Class<?> getWrapperClass() {
-		return boxedType; // TODO
+		return boxedType;
 	}
 
 }

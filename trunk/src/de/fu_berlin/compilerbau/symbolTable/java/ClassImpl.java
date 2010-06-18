@@ -15,6 +15,7 @@ import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
+import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.CombinedSet;
@@ -30,7 +31,7 @@ class ClassImpl extends ClassOrInterfaceImpl implements Class {
 	protected final Symbol extends_;
 
 	public ClassImpl(Runtime runtime, SymbolContainer parent, Symbol extends_, Iterator<Symbol> implements_,
-			Modifier modifier, PositionString canonicalName) {
+			Modifier modifier, PositionString canonicalName) throws InvalidIdentifierException {
 		super(runtime, parent, implements_, modifier, canonicalName);
 		this.extends_ = extends_;
 	}
@@ -38,7 +39,7 @@ class ClassImpl extends ClassOrInterfaceImpl implements Class {
 	@Override
 	public Constructor addConstructor(StreamPosition pos, Iterator<Symbol> parameters,
 			Modifier modifier) throws DuplicateIdentifierException,
-			ShadowedIdentifierException, WrongModifierException {
+			ShadowedIdentifierException, WrongModifierException, InvalidIdentifierException {
 		final ConstructorImpl newSymbol = new ConstructorImpl(getRuntime(), this, pos, parameters, modifier);
 		final ConstructorImpl oldSymbol = ctors.get(newSymbol);
 		if(oldSymbol != null) {
@@ -51,7 +52,7 @@ class ClassImpl extends ClassOrInterfaceImpl implements Class {
 	@Override
 	public Member addMember(PositionString name, Symbol type, Modifier modifier)
 			throws DuplicateIdentifierException, ShadowedIdentifierException,
-			WrongModifierException {
+			WrongModifierException, InvalidIdentifierException {
 		// TODO type
 		final MemberImpl newSymbol = new MemberImpl(getRuntime(), this, name, modifier);
 		final MemberImpl oldSymbol = members.get(newSymbol);
