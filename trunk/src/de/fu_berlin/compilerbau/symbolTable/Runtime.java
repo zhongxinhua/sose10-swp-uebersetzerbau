@@ -72,7 +72,10 @@ public interface Runtime extends SymbolContainer {
 	 */
 	Set<SymbolContainer> qualifyAllSymbols();
 	
-	Symbol getVoid();
+	/**
+	 * returns the type representing void
+	 */
+	Void getVoid();
 	
 	PrimitiveType getPrimitiveType(java.lang.Class<?> c);
 	

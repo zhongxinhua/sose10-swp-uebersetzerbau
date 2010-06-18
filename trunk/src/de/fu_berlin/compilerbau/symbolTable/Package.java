@@ -13,8 +13,6 @@ import de.fu_berlin.compilerbau.util.PositionString;
  */
 public interface Package extends SymbolContainer, QualifiedSymbol {
 	
-	Runtime getRuntime();
-	
 	/**
 	 * @return immutable list
 	 */

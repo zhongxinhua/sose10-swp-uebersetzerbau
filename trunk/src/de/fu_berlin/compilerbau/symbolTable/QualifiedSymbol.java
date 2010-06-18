@@ -4,7 +4,7 @@ import de.fu_berlin.compilerbau.util.StreamPosition;
 
 public interface QualifiedSymbol extends Symbol {
 	
-	String getCanonicalName();
+	String getName();
 	
 	String getJavaSignature();
 	

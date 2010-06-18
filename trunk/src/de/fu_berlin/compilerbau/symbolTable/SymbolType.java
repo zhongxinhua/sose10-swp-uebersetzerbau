@@ -59,12 +59,24 @@ public enum SymbolType {
 	 */
 	SCOPE,
 	
+	/**
+	 * @see PrimitiveType
+	 */
 	PRIMITIVE_TYPE,
 	
+	/**
+	 * @see ArrayType
+	 */
 	ARRAY_TYPE,
 	
+	/**
+	 * @see Void
+	 */
 	VOID,
 	
+	/**
+	 * @see Method
+	 */
 	METHOD
 	
 }

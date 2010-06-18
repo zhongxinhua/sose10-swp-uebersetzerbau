@@ -56,7 +56,7 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 	}
 
 	@Override
-	public String getCanonicalName() {
+	public String getName() {
 		return canonicalName.toString();
 	}
 

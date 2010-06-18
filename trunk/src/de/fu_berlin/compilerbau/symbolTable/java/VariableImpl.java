@@ -20,7 +20,7 @@ class VariableImpl extends SymbolImpl implements Variable, Comparable<Variable> 
 	}
 
 	@Override
-	public String getCanonicalName() {
+	public String getName() {
 		return name.toString();
 	}
 
@@ -47,7 +47,7 @@ class VariableImpl extends SymbolImpl implements Variable, Comparable<Variable> 
 
 	@Override
 	public int compareTo(Variable right) {
-		return name.compareTo(right.getCanonicalName());
+		return name.compareTo(right.getName());
 	}
 
 	@Override

@@ -110,7 +110,7 @@ class PackageImpl extends SymbolContainerImpl implements Package, Comparable<Pac
 	}
 
 	@Override
-	public String getCanonicalName() {
+	public String getName() {
 		return name.toString();
 	}
 

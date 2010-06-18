@@ -164,7 +164,7 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	}
 
 	@Override
-	public Symbol getVoid() {
+	public de.fu_berlin.compilerbau.symbolTable.Void getVoid() {
 		return voidType;
 	}
 

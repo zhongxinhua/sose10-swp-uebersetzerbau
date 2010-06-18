@@ -25,23 +25,44 @@ import de.fu_berlin.compilerbau.util.Visibility;
 public class PrimitiveTypeImpl extends ClassOrInterfaceImpl implements PrimitiveType {
 
 	protected final java.lang.Class<?> type;
+	protected final java.lang.Class<?> boxedType;
 	protected final String javaSignature;
 
 	public PrimitiveTypeImpl(Runtime runtime, java.lang.Class<?> type) {
 		super(runtime, runtime, null, GetModifier.getModifier(Visibility.PUBLIC, false, true, false),
 				new PositionString(type.getName(), PositionBean.ZERO));
 		this.type = type;
-		
-		if(type == boolean.class) javaSignature = "Z"; else
-		if(type == char.class)    javaSignature = "C"; else
-		if(type == double.class)  javaSignature = "D"; else
-		if(type == float.class)   javaSignature = "F"; else
-		if(type == int.class)     javaSignature = "I"; else
-		if(type == long.class)    javaSignature = "J"; else
-		if(type == short.class)   javaSignature = "S"; else
-		if(type == boolean.class) javaSignature = "Z"; else
-		if(type == boolean.class) javaSignature = "Z"; else
-		throw new RuntimeException();
+
+		if (type == boolean.class) {
+			javaSignature = "Z";
+			boxedType = Boolean.class;
+		} else if (type == byte.class) {
+			javaSignature = "B";
+			boxedType = Byte.class;
+		} else if (type == char.class) {
+			javaSignature = "C";
+			boxedType = Character.class;
+		} else if (type == double.class) {
+			javaSignature = "D";
+			boxedType = Double.class;
+		} else if (type == float.class) {
+			javaSignature = "F";
+			boxedType = Float.class;
+		} else if (type == int.class) {
+			javaSignature = "I";
+			boxedType = Integer.class;
+		} else if (type == long.class) {
+			javaSignature = "J";
+			boxedType = Long.class;
+		} else if (type == short.class) {
+			javaSignature = "S";
+			boxedType = Short.class;
+		} else if (type == Void.class) {
+			javaSignature = null;
+			boxedType = Void.class;
+		} else {
+			throw new RuntimeException();
+		}
 	}
 
 	@Override
@@ -77,6 +98,16 @@ public class PrimitiveTypeImpl extends ClassOrInterfaceImpl implements Primitive
 	@Override
 	public Map<QualifiedSymbol, Set<Symbol>> getShadowedSymbols() {
 		return Collections.emptyMap();
+	}
+
+	@Override
+	public Class<?> getJavaClass() {
+		return type;
+	}
+
+	@Override
+	public Class<?> getWrapperClass() {
+		return boxedType; // TODO
 	}
 
 }

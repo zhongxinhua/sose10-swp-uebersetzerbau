@@ -26,7 +26,7 @@ class ShadowedSymbols {
 	private static final long serialVersionUID = -8115798161952915022L;
 	
 	private Set<Symbol> put(QualifiedSymbol newSymbol, Symbol oldSymbol) {
-		String name = newSymbol.getCanonicalName();
+		String name = newSymbol.getName();
 		Set<Symbol> result = names.get(name);
 		if(result == null) {
 			result = new TreeSet<Symbol>();

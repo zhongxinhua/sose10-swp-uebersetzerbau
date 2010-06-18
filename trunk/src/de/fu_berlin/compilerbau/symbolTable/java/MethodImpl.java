@@ -61,7 +61,7 @@ class MethodImpl extends ScopeImpl implements Method, Comparable<Method> {
 	}
 
 	@Override
-	public String getCanonicalName() {
+	public String getName() {
 		return name.toString();
 	}
 
@@ -88,11 +88,11 @@ class MethodImpl extends ScopeImpl implements Method, Comparable<Method> {
 
 	@Override
 	public int compareTo(Method right) {
-		int r = parent.getCanonicalName().compareTo(right.getCanonicalName());
+		int r = parent.getName().compareTo(right.getName());
 		if(r != 0) {
 			return r;
 		}
-		return name.compareTo(right.getCanonicalName());
+		return name.compareTo(right.getName());
 	}
 
 	@SuppressWarnings("unchecked")

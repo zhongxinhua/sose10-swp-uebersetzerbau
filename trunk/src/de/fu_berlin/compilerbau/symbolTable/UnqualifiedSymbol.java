@@ -5,7 +5,9 @@ import java.util.Map;
 import de.fu_berlin.compilerbau.util.Likelyness;
 import de.fu_berlin.compilerbau.util.PositionString;
 
-
+/**
+ * You most likely won't need to access this type directly.
+ */
 public interface UnqualifiedSymbol extends Symbol {
 	
 	/**
