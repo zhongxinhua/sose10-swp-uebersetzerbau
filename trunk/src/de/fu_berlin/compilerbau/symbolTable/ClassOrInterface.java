@@ -9,6 +9,11 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierExcepti
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.PositionString;
 
+/**
+ * Base type of {@link Class classes}, {@link Interface interfaces},
+ * {@link PrimitiveType primitive types} and {@link Void void types}.
+ * @author rene
+ */
 public interface ClassOrInterface extends SymbolContainer, QualifiedSymbol {
 	
 	/**
@@ -18,6 +23,9 @@ public interface ClassOrInterface extends SymbolContainer, QualifiedSymbol {
 			Modifier modifier) throws
 			DuplicateIdentifierException, ShadowedIdentifierException, WrongModifierException, InvalidIdentifierException;
 	
+	/**
+	 * If this if an {@link Interface} itself, read getExtendedInterfaces ...
+	 */
 	Set<Symbol> getImplementedInterfaces();
 	
 }

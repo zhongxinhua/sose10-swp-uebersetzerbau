@@ -6,7 +6,11 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierExcepti
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.PositionString;
 
-
+/**
+ * A scope of visibility. Could belong to almost every structure in java:
+ * for, while, do while, ...
+ * @author rene
+ */
 public interface Scope extends SymbolContainer {
 
 	Variable addVariable(PositionString name, Symbol type, Modifier modifier) throws

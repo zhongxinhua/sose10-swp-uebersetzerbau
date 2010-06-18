@@ -9,6 +9,10 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
 
+/**
+ * This type represents a class, if not {@link Void} or {@link PrimitiveType}.
+ * @author rene
+ */
 public interface Class extends ClassOrInterface {
 	
 	Member addMember(PositionString name, Symbol type, Modifier modifier) throws

@@ -5,8 +5,19 @@ import java.util.Set;
 
 import de.fu_berlin.compilerbau.util.StreamPosition;
 
+/**
+ * Base interface of all symbols.
+ * 
+ * <p/>Don't you dare to use <code>instanceof</code> for testing the actual type of a symbol!
+ * See {@link #hasType(SymbolType)}.
+ * @author rene
+ */
 public interface Symbol {
 	
+	/**
+	 * Symbols of different {@link Runtime runtimes} may not be combined.
+	 * The effects would be mostly random.
+	 */
 	Runtime getRuntime();
 	
 	/**
@@ -15,6 +26,11 @@ public interface Symbol {
 	 */
 	Set<Map.Entry<Symbol,StreamPosition>> getMentions();
 	
+	/**
+	 * Somewhere this symbol was accessed.
+	 * @param who The {@link SymbolContainer} that referenced the symbol.
+	 * @param where Where in the data stream the symbol was mentioned.
+	 */
 	void addMention(Symbol who,StreamPosition where);
 	
 	/**
@@ -28,7 +44,9 @@ public interface Symbol {
 	 * return <code>leftType implicates (({@link QualifiedSymbol})this).getType())</code>
 	 * 
 	 * <p/>E.g. {@link SymbolType.CONSTRUCTOR} → {@link SymbolType.METHOD} → {@link SymbolType.SCOPE}
-	 * @return null if <code>!(this instanceof {@link QualifiedSymbol})</code> 
+	 * 
+	 * <p/>You must not use <code>instanceof</code> to determine the type of a Symbol!
+	 * @return null if this is a {@link QualifiedSymbol}
 	 */
 	Boolean hasType(SymbolType leftType);
 	

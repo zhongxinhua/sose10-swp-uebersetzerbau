@@ -117,6 +117,21 @@ public class UnqualifiedSymbolImpl implements UnqualifiedSymbol, AnySymbolType {
 		return likelyness;
 	}
 
+	@Override
+	public QualifiedSymbol getActualSymbol() {
+		return actualSymbol;
+	}
+
+	@Override
+	public void setActualSymbol(QualifiedSymbol actualSymbol) {
+		for(Entry<Symbol, StreamPosition> mention : storageSymbol.getMentions()) {
+			actualSymbol.addMention(mention.getKey(), mention.getValue());
+		}
+		
+		this.actualSymbol = (AnySymbolType) actualSymbol;
+		this.storageSymbol = null;
+	}
+
 	//*****************************************************************************
 	// Symbol:
 	//*****************************************************************************

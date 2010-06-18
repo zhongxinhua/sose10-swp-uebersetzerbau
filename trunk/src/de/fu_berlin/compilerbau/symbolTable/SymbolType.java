@@ -1,6 +1,8 @@
 package de.fu_berlin.compilerbau.symbolTable;
 
 /**
+ * If {@link Symbol#hasType(SymbolType)} returns true, you may safely assume
+ * the {@link Symbol symbol} in question to implement the associated interface.
  * @author kijewski
  */
 public enum SymbolType {
@@ -19,8 +21,7 @@ public enum SymbolType {
 
 	/**
 	 * Either {@link Class} or {@link Interface}. Cannot be the type of a qualified symbol.
-	 * @see Class
-	 * @see Interface
+	 * @see ClassOrInterface
 	 */
 	CLASS_OR_INTERFACE,
 

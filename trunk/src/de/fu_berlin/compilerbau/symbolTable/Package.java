@@ -10,6 +10,8 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.PositionString;
 
 /**
+ * This is one single package. Packages lay flat in the {@link Runtime} as they
+ * do not employ a tree structure in the JRE.
  * @author kijewski
  */
 public interface Package extends SymbolContainer, QualifiedSymbol {

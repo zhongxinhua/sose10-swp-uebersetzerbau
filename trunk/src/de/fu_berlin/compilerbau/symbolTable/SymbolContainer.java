@@ -7,6 +7,7 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierExceptio
 import de.fu_berlin.compilerbau.util.PositionString;
 
 /**
+ * This {@link Symbol symbol} can contain other symbols.
  * @author kijewski
  */
 public interface SymbolContainer extends Symbol {

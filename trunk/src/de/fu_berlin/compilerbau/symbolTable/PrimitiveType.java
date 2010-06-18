@@ -1,5 +1,11 @@
 package de.fu_berlin.compilerbau.symbolTable;
 
+/**
+ * This is boolean, byte, ...
+ * 
+ * <p/>Bear in mind: {@link Void} inherits PrimitiveType but is not a type at all!
+ * @author rene
+ */
 public interface PrimitiveType extends Class {
 
 	/**

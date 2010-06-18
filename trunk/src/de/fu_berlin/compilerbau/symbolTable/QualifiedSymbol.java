@@ -2,6 +2,10 @@ package de.fu_berlin.compilerbau.symbolTable;
 
 import de.fu_berlin.compilerbau.util.StreamPosition;
 
+/**
+ * This symbol is not only referenced but already declared.
+ * @author rene
+ */
 public interface QualifiedSymbol extends Symbol {
 	
 	/**
