@@ -22,7 +22,7 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
 
-class PackageImpl extends SymbolContainerImpl implements Package, Comparable<PackageImpl> {
+class PackageImpl extends SymbolContainerImpl implements Package {
 	
 	protected final PositionString name;
 	protected final String destionationName;
@@ -106,11 +106,6 @@ class PackageImpl extends SymbolContainerImpl implements Package, Comparable<Pac
 	public Set<Interface> getInterfaces() {
 		return (Set<Interface>)(Set<?>)interfaces.keySet();
 	}
-
-	@Override
-	public int compareTo(PackageImpl right) {
-		return name.compareTo(right.name);
-	}
 	
 	@Override
 	public String toString() {
@@ -173,6 +168,11 @@ class PackageImpl extends SymbolContainerImpl implements Package, Comparable<Pac
 	@Override
 	public String getDestinationName() {
 		return destionationName;
+	}
+
+	@Override
+	public int compareKey() {
+		return destionationName.hashCode();
 	}
 
 }

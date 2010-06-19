@@ -31,6 +31,13 @@ class ScopeImpl extends SymbolContainerImpl implements Scope {
 
 	public ScopeImpl(Runtime runtime, SymbolContainer parent) {
 		super(runtime, parent);
+		this.COMPARE_KEY = ("\u0001\u000c<" + parent.compareKey() + ">").hashCode();
+	}
+
+	protected final int COMPARE_KEY;
+	@Override
+	public int compareKey() {
+		return COMPARE_KEY;
 	}
 
 	@Override

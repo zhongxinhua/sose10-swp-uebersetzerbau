@@ -9,10 +9,10 @@ import de.fu_berlin.compilerbau.symbolTable.Class;
 import de.fu_berlin.compilerbau.symbolTable.Constructor;
 import de.fu_berlin.compilerbau.symbolTable.Member;
 import de.fu_berlin.compilerbau.symbolTable.Modifier;
+import de.fu_berlin.compilerbau.symbolTable.Package;
 import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
-import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
@@ -30,7 +30,7 @@ class ClassImpl extends ClassOrInterfaceImpl implements Class {
 		;
 	protected final Symbol extends_;
 
-	public ClassImpl(Runtime runtime, SymbolContainer parent, Symbol extends_, Iterator<Symbol> implements_,
+	public ClassImpl(Runtime runtime, Package parent, Symbol extends_, Iterator<Symbol> implements_,
 			Modifier modifier, PositionString canonicalName) throws InvalidIdentifierException {
 		super(runtime, parent, implements_, modifier, canonicalName);
 		this.extends_ = extends_;

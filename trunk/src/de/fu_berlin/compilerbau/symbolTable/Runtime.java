@@ -104,4 +104,9 @@ public interface Runtime extends SymbolContainer {
 	
 	void setNameManglingEnabled(boolean enabled);
 	
+	/**
+	 * Returns the scope for all symbols that do not belong to a scope (int, A[], ...).
+	 */
+	Package getGlobalScope();
+	
 }

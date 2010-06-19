@@ -9,7 +9,7 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierExceptio
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
 
-class VariableImpl extends SymbolImpl implements Variable, Comparable<Variable> {
+class VariableImpl extends SymbolImpl implements Variable {
 	
 	protected final PositionString name;
 	protected final Modifier modifier;
@@ -50,11 +50,6 @@ class VariableImpl extends SymbolImpl implements Variable, Comparable<Variable> 
 	}
 
 	@Override
-	public int compareTo(Variable right) {
-		return name.compareTo(right.getName());
-	}
-
-	@Override
 	public int hashCode() {
 		return name.hashCode();
 	}
@@ -62,6 +57,11 @@ class VariableImpl extends SymbolImpl implements Variable, Comparable<Variable> 
 	@Override
 	public String getDestinationName() {
 		return destinationName;
+	}
+	
+	@Override
+	public int compareKey() {
+		return destinationName.hashCode();
 	}
 
 }

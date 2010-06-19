@@ -27,13 +27,14 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierExcepti
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.CombinedSet;
 import de.fu_berlin.compilerbau.util.Likelyness;
+import de.fu_berlin.compilerbau.util.PositionBean;
 import de.fu_berlin.compilerbau.util.PositionStringBuilder;
 import de.fu_berlin.compilerbau.util.Punycode;
 import static de.fu_berlin.compilerbau.util.Likelyness.*;
 import de.fu_berlin.compilerbau.util.PositionString;
 
 
-public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
+class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	
 	protected final Map<PackageImpl, PackageImpl> packages = new TreeMap<PackageImpl, PackageImpl>();
 	protected final Map<PrimitiveType,PrimitiveTypeImpl> primitiveTypes = new HashMap<PrimitiveType, PrimitiveTypeImpl>();
@@ -42,6 +43,7 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	protected final VoidTypeImpl voidType;
 	protected final ShadowedSymbols shadowedSymbols = new ShadowedSymbols(this);
 	protected final List<Entry<QualifiedSymbol, Symbol>> allShadowsList = new LinkedList<Entry<QualifiedSymbol, Symbol>>();
+	protected final Package globalScope;
 	
 	protected boolean mangle = true;
 	
@@ -52,9 +54,12 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 		primitiveTypes.put(typeImpl, typeImpl);
 	}
 	
-	RuntimeImpl() {
+	public RuntimeImpl() {
 		super(null, null);
 		try {
+			this.globalScope = new PackageImpl(this, new PositionString("\000c\0001<GLOBAL>\000c", PositionBean.ZERO));
+			this.voidType = new VoidTypeImpl(this);
+			
 			addPrimitiveClass(boolean.class);
 			addPrimitiveClass(byte.class);
 			addPrimitiveClass(char.class);
@@ -63,8 +68,6 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 			addPrimitiveClass(int.class);
 			addPrimitiveClass(long.class);
 			addPrimitiveClass(short.class);
-			
-			this.voidType = new VoidTypeImpl(this);
 		} catch (InvalidIdentifierException e) {
 			throw new RuntimeException(e);
 		}
@@ -251,6 +254,16 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	@Override
 	public void setNameManglingEnabled(boolean enabled) {
 		this.mangle = enabled;
+	}
+
+	@Override
+	public int compareKey() {
+		return 0;
+	}
+
+	@Override
+	public Package getGlobalScope() {
+		return globalScope;
 	}
 	
 }

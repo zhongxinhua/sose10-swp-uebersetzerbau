@@ -25,11 +25,21 @@ class ArrayTypeImpl extends ClassImpl implements ArrayType {
 	
 	protected final Symbol componentType;
 	protected final int dimension;
+	protected final int COMPARE_KEY;
 
 	public ArrayTypeImpl(Runtime runtime, Symbol componentType, int dimension) throws InvalidIdentifierException {
-		super(runtime, runtime, null, null, null, null);
+		super(runtime, runtime.getGlobalScope(), null, null, null, null);
 		this.componentType = componentType;
 		this.dimension = dimension;
+		
+		StringBuilder builder = new StringBuilder();
+		builder.append("\u000c\u0001<");
+		for(int i = 0; i < dimension; ++i) {
+			builder.append("[");
+		}
+		builder.append(Integer.toHexString(componentType.compareKey()));
+		builder.append(">\u000c");
+		this.COMPARE_KEY = builder.toString().hashCode();
 	}
 
 	public ArrayTypeImpl(Runtime rt, Class<?> clazz) throws InvalidIdentifierException {
@@ -85,6 +95,16 @@ class ArrayTypeImpl extends ClassImpl implements ArrayType {
 	@Override
 	public int getDimension() {
 		return dimension;
+	}
+
+	@Override
+	public int compareKey() {
+		return COMPARE_KEY;
+	}
+	
+	@Override
+	public String getDestinationName() {
+		return null;
 	}
 
 }

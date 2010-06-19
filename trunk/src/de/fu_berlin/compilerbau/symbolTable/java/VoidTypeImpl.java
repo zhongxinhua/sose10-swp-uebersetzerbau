@@ -15,5 +15,11 @@ public class VoidTypeImpl extends PrimitiveTypeImpl implements Void {
 	public SymbolType getType() {
 		return SymbolType.VOID;
 	}
+	
+	protected static final int COMPARE_KEY = "void".hashCode();
+	@Override
+	public int compareKey() {
+		return COMPARE_KEY;
+	}
 
 }

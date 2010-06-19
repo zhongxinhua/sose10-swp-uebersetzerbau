@@ -96,7 +96,7 @@ public class UnqualifiedSymbolImpl implements UnqualifiedSymbol, AnySymbolType {
 
 	UnqualifiedSymbolImpl(PositionString call, RuntimeImpl runtime,
 			Map<SymbolType, Likelyness> likelynesses) {
-		this.storageSymbol = new SymbolImpl(runtime, null);
+		this.storageSymbol = new SymbolImpl(runtime, (Package)null);
 		this.call = call;
 		likelyness.putAll(likelynesses);
 	}
@@ -481,6 +481,22 @@ public class UnqualifiedSymbolImpl implements UnqualifiedSymbol, AnySymbolType {
 	@Override
 	public void setNameManglingEnabled(boolean enabled) {
 		actualSymbol.setNameManglingEnabled(enabled);
+	}
+
+	@Override
+	public int compareKey() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int compareTo(Symbol right) {
+		return compareKey() - right.compareKey();
+	}
+
+	@Override
+	public Package getGlobalScope() {
+		return actualSymbol.getGlobalScope();
 	}
 
 }

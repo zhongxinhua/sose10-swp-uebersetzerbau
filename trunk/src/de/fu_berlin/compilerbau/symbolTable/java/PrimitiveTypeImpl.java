@@ -23,14 +23,14 @@ import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
 import de.fu_berlin.compilerbau.util.Visibility;
 
-public class PrimitiveTypeImpl extends ClassOrInterfaceImpl implements PrimitiveType {
+class PrimitiveTypeImpl extends ClassOrInterfaceImpl implements PrimitiveType {
 
+	protected static final Modifier DEFAULT_MODIFIER = GetModifier.getModifier(Visibility.PUBLIC, false, true, false);
 	protected final java.lang.Class<?> type;
 	protected final java.lang.Class<?> boxedType;
 
 	public PrimitiveTypeImpl(Runtime runtime, java.lang.Class<?> type) throws InvalidIdentifierException {
-		super(runtime, runtime, null, GetModifier.getModifier(Visibility.PUBLIC, false, true, false),
-				new PositionString(type.getName(), PositionBean.ZERO));
+		super(runtime, runtime.getGlobalScope(), null, DEFAULT_MODIFIER, new PositionString(type.getName(), PositionBean.ZERO));
 		this.type = type;
 
 		if (type == boolean.class) {
@@ -54,6 +54,11 @@ public class PrimitiveTypeImpl extends ClassOrInterfaceImpl implements Primitive
 		} else {
 			throw new RuntimeException();
 		}
+	}
+	
+	@Override
+	public int compareKey() {
+		return COMPARE_KEY;
 	}
 
 	@Override

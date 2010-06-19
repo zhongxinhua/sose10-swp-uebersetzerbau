@@ -22,7 +22,7 @@ import de.fu_berlin.compilerbau.util.CombinedSet;
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
 
-class MethodImpl extends ScopeImpl implements Method, Comparable<Method> {
+class MethodImpl extends ScopeImpl implements Method {
 	
 	protected final ClassOrInterface parent;
 	protected final PositionString name;
@@ -31,6 +31,7 @@ class MethodImpl extends ScopeImpl implements Method, Comparable<Method> {
 	protected final List<Symbol> parameters = new LinkedList<Symbol>();
 	protected final Set<Symbol> parameterSet = new TreeSet<Symbol>(); // TODO: worüber kann man alle Symbole vergleichen?
 	protected final Modifier modifier;
+	protected final int COMPARE_KEY;
 
 	public MethodImpl(Runtime runtime, ClassOrInterface parent, PositionString name, Symbol resultType,
 			Iterator<Symbol> parameters, Modifier modifier) throws InvalidIdentifierException {
@@ -52,6 +53,13 @@ class MethodImpl extends ScopeImpl implements Method, Comparable<Method> {
 			this.parameters.add(e);
 			this.parameterSet.add(e);
 		}
+		
+		this.COMPARE_KEY = (parent.getDestinationName() + "." + this.destionationName).hashCode();
+	}
+
+	@Override
+	public int compareKey() {
+		return COMPARE_KEY;
 	}
 
 	@Override
@@ -88,15 +96,6 @@ class MethodImpl extends ScopeImpl implements Method, Comparable<Method> {
 	@Override
 	public SymbolType getType() {
 		return SymbolType.METHOD;
-	}
-
-	@Override
-	public int compareTo(Method right) {
-		int r = parent.getName().compareTo(right.getName());
-		if(r != 0) {
-			return r;
-		}
-		return name.compareTo(right.getName());
 	}
 
 	@SuppressWarnings("unchecked")

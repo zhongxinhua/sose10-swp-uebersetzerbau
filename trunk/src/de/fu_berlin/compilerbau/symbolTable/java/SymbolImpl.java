@@ -83,5 +83,15 @@ class SymbolImpl implements Symbol {
 		final Boolean result = IMPLICATIONS[leftType.ordinal()][rightType.ordinal()];
 		return result;
 	}
+
+	@Override
+	public int compareTo(Symbol right) {
+		return compareKey() - right.compareKey();
+	}
+
+	@Override
+	public int compareKey() {
+		throw new RuntimeException("abstract");
+	}
 	
 }
