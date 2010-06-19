@@ -53,7 +53,8 @@ public class RuntimeFactory {
 	public static Runtime newRuntime(Iterator<Map.Entry<PositionString,PositionString>> imports,
 			URL[] classpath, URL rtJar) throws IOException {
 		
-		RuntimeImpl result = new RuntimeImpl();
+		final RuntimeImpl result = new RuntimeImpl();
+		result.setNameManglingEnabled(false);
 		
 		final PackageLoader loader = new PackageLoader(rtJar, classpath);
 		try {
@@ -101,6 +102,7 @@ public class RuntimeFactory {
 			throw new RuntimeException("Runtime contains unqualified symbols!");
 		}
 		
+		result.setNameManglingEnabled(true);
 		return result;
 	}
 

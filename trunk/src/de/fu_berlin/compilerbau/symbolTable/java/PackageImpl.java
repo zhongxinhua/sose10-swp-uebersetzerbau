@@ -45,10 +45,10 @@ class PackageImpl extends SymbolContainerImpl implements Package, Comparable<Pac
 			if(!first) {
 				destionationName.append('.');
 			} else {
-				first = true;
+				first = false;
 			}
 			final String mangledName = runtime.mangleName(pathComponent);
-			if(mangledName == null || runtime.isValidIdentifier(mangledName)) {
+			if(mangledName == null || !runtime.isValidIdentifier(mangledName)) {
 				throw new InvalidIdentifierException(runtime, name);
 			}
 			destionationName.append(mangledName);

@@ -78,7 +78,11 @@ public class UnqualifiedSymbolImpl implements UnqualifiedSymbol, AnySymbolType {
 				final SymbolType leftSymbol = left.getKey();
 				final Likelyness leftLikelyness = left.getValue();
 				if(leftLikelyness != IMPOSSIBLE) {
-					for(final SymbolType rightSymbol : REPLICATIONS.get(leftSymbol)) {
+					SymbolType[] replications = REPLICATIONS.get(leftSymbol);
+					if(replications == null) {
+						continue;
+					}
+					for(final SymbolType rightSymbol : replications) {
 						final Likelyness rightLikelyness = likelyness.get(rightSymbol);
 						if(leftLikelyness.compareTo(rightLikelyness) > 0) {
 							likelyness.put(rightSymbol, leftLikelyness);
@@ -467,6 +471,16 @@ public class UnqualifiedSymbolImpl implements UnqualifiedSymbol, AnySymbolType {
 	@Override
 	public java.lang.Class<?> getWrapperClass() {
 		return actualSymbol.getWrapperClass();
+	}
+
+	@Override
+	public boolean isNameManglingEnabled() {
+		return actualSymbol.isNameManglingEnabled();
+	}
+
+	@Override
+	public void setNameManglingEnabled(boolean enabled) {
+		actualSymbol.setNameManglingEnabled(enabled);
 	}
 
 }

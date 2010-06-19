@@ -29,7 +29,7 @@ class MethodImpl extends ScopeImpl implements Method, Comparable<Method> {
 	protected final String destionationName;
 	protected final Symbol resultType;
 	protected final List<Symbol> parameters = new LinkedList<Symbol>();
-	protected final Set<Symbol> parameterSet = new TreeSet<Symbol>();
+	protected final Set<Symbol> parameterSet = new TreeSet<Symbol>(); // TODO: worüber kann man alle Symbole vergleichen?
 	protected final Modifier modifier;
 
 	public MethodImpl(Runtime runtime, ClassOrInterface parent, PositionString name, Symbol resultType,

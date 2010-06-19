@@ -44,8 +44,10 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 		} else {
 			this.destinationName = null;
 		}
-		while(implements_.hasNext()) {
-			interfaces.add(implements_.next());
+		if(implements_ != null) {
+			while(implements_.hasNext()) {
+				interfaces.add(implements_.next());
+			}
 		}
 	}
 

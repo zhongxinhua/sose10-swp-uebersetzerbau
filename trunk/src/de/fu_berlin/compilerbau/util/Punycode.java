@@ -1,5 +1,8 @@
 package de.fu_berlin.compilerbau.util;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -314,14 +317,20 @@ public class Punycode {
 		}
 	}
 	
+	protected static final Map<String,String> encoded = new HashMap<String,String>();
 	public static String encode(String str) {
-		try {
-			return ((Invocable)javascriptEngine).invokeFunction("encode", str).toString();
-		} catch (ScriptException e) {
-			return null;
-		} catch (NoSuchMethodException e) {
-			throw new RuntimeException(e);
+		String result = encoded.get(str);
+		if(result == null) {
+			try {
+				result = ((Invocable)javascriptEngine).invokeFunction("encode", str).toString();
+			} catch (ScriptException e) {
+				return null;
+			} catch (NoSuchMethodException e) {
+				throw new RuntimeException(e);
+			}
+			encoded.put(str, result);
 		}
+		return result;
 	}
 	
 }

@@ -100,4 +100,8 @@ public interface Runtime extends SymbolContainer {
 	 */
 	boolean isValidIdentifier(String id);
 	
+	boolean isNameManglingEnabled();
+	
+	void setNameManglingEnabled(boolean enabled);
+	
 }

@@ -43,6 +43,8 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	protected final ShadowedSymbols shadowedSymbols = new ShadowedSymbols(this);
 	protected final List<Entry<QualifiedSymbol, Symbol>> allShadowsList = new LinkedList<Entry<QualifiedSymbol, Symbol>>();
 	
+	protected boolean mangle = true;
+	
 	protected void addPrimitiveClass(Class<?> c) throws InvalidIdentifierException {
 		PrimitiveTypeImpl typeImpl = new PrimitiveTypeImpl(this, c);
 		primitiveTypesByClass.put(c, typeImpl);
@@ -138,7 +140,7 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 		}
 		
 		final LinkedList<PositionString> list = symbol.getCall().split('.', -1);
-		for(int i = list.size()-1; i > 0; ++i) {
+		for(int i = list.size()-1; i > 0; --i) {
 			final PositionString p0 = list.get(0);
 			final PositionStringBuilder builder = new PositionStringBuilder(p0);
 			builder.append(p0.toString());
@@ -234,7 +236,21 @@ public class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 
 	@Override
 	public String mangleName(String name) {
-		return Punycode.encode(name);
+		if(mangle) {
+			return Punycode.encode(name);
+		} else {
+			return name;
+		}
+	}
+
+	@Override
+	public boolean isNameManglingEnabled() {
+		return mangle;
+	}
+
+	@Override
+	public void setNameManglingEnabled(boolean enabled) {
+		this.mangle = enabled;
 	}
 	
 }
