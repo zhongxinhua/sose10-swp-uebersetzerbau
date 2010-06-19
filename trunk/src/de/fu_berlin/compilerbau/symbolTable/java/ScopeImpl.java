@@ -36,7 +36,7 @@ class ScopeImpl extends SymbolContainerImpl implements Scope {
 	public Variable addVariable(PositionString name, Symbol type,
 			Modifier modifier) throws DuplicateIdentifierException,
 			ShadowedIdentifierException, WrongModifierException, InvalidIdentifierException {
-		VariableImpl newSymbol = new VariableImpl(getRuntime(), this, name, modifier);
+		VariableImpl newSymbol = new VariableImpl(getRuntime(), this, name, type, modifier);
 		final VariableImpl oldSymbol = variables.get(newSymbol);
 		if(oldSymbol != null) {
 			throw new DuplicateIdentifierException(this, newSymbol, oldSymbol);
@@ -60,7 +60,7 @@ class ScopeImpl extends SymbolContainerImpl implements Scope {
 	@Override
 	public QualifiedSymbol lookup(UnqualifiedSymbol symbol) throws InvalidIdentifierException {
 		if(symbol.is(SymbolType.VARIABLE) != Likelyness.IMPOSSIBLE) {
-			VariableImpl needle = new VariableImpl(null, null, symbol.getCall(), null);
+			VariableImpl needle = new VariableImpl(null, null, symbol.getCall(), null, null);
 			VariableImpl result = variables.get(needle);
 			if(result != null) {
 				return result;

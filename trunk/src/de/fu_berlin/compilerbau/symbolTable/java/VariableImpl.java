@@ -2,6 +2,7 @@ package de.fu_berlin.compilerbau.symbolTable.java;
 
 import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
+import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.Variable;
@@ -14,8 +15,9 @@ class VariableImpl extends SymbolImpl implements Variable {
 	protected final PositionString name;
 	protected final Modifier modifier;
 	protected final String destinationName;
+	protected final Symbol variableType;
 
-	public VariableImpl(Runtime runtime, SymbolContainer parent, PositionString name, Modifier modifier) throws InvalidIdentifierException {
+	public VariableImpl(Runtime runtime, SymbolContainer parent, PositionString name, Symbol variableType, Modifier modifier) throws InvalidIdentifierException {
 		super(runtime, parent);
 		this.name = name;
 		if(name != null) {
@@ -27,6 +29,7 @@ class VariableImpl extends SymbolImpl implements Variable {
 			this.destinationName = null;
 		}
 		this.modifier = modifier;
+		this.variableType = variableType;
 	}
 
 	@Override
@@ -57,6 +60,16 @@ class VariableImpl extends SymbolImpl implements Variable {
 	@Override
 	public String getDestinationName() {
 		return destinationName;
+	}
+
+	@Override
+	public int compareTo(Variable right) {
+		return destinationName.compareTo(right.getDestinationName());
+	}
+	
+	@Override
+	public Symbol getVariableType() {
+		return variableType;
 	}
 
 }

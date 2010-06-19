@@ -14,6 +14,7 @@ import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
+import de.fu_berlin.compilerbau.symbolTable.Variable;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
@@ -58,7 +59,7 @@ class PrimitiveTypeImpl extends ClassOrInterfaceImpl implements PrimitiveType {
 
 	@Override
 	public Constructor addConstructor(StreamPosition pos,
-			Iterator<Symbol> parameters, Modifier modifier)
+			Iterator<Variable> parameters, Modifier modifier)
 			throws DuplicateIdentifierException, ShadowedIdentifierException,
 			WrongModifierException {
 		throw new UnsupportedOperationException();

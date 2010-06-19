@@ -14,6 +14,7 @@ import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
+import de.fu_berlin.compilerbau.symbolTable.Variable;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
@@ -36,7 +37,7 @@ class ClassImpl extends ClassOrInterfaceImpl implements Class {
 	}
 
 	@Override
-	public Constructor addConstructor(StreamPosition pos, Iterator<Symbol> parameters,
+	public Constructor addConstructor(StreamPosition pos, Iterator<Variable> parameters,
 			Modifier modifier) throws DuplicateIdentifierException,
 			ShadowedIdentifierException, WrongModifierException, InvalidIdentifierException {
 		final ConstructorImpl newSymbol = new ConstructorImpl(getRuntime(), this, pos, parameters, modifier);
@@ -52,8 +53,7 @@ class ClassImpl extends ClassOrInterfaceImpl implements Class {
 	public Member addMember(PositionString name, Symbol type, Modifier modifier)
 			throws DuplicateIdentifierException, ShadowedIdentifierException,
 			WrongModifierException, InvalidIdentifierException {
-		// TODO type
-		final MemberImpl newSymbol = new MemberImpl(getRuntime(), this, name, modifier);
+		final MemberImpl newSymbol = new MemberImpl(getRuntime(), this, name, type, modifier);
 		final MemberImpl oldSymbol = members.get(newSymbol);
 		if(oldSymbol != null) {
 			throw new DuplicateIdentifierException(this, newSymbol, oldSymbol);

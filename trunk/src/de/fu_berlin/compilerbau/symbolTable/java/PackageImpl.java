@@ -25,7 +25,7 @@ import de.fu_berlin.compilerbau.util.StreamPosition;
 class PackageImpl extends SymbolContainerImpl implements Package {
 	
 	protected final PositionString name;
-	protected final String destionationName;
+	protected final String destinationName;
 	
 	protected Map<ClassOrInterfaceImpl,ClassImpl> classes =
 			new TreeMap<ClassOrInterfaceImpl,ClassImpl>();
@@ -53,7 +53,7 @@ class PackageImpl extends SymbolContainerImpl implements Package {
 			}
 			destionationName.append(mangledName);
 		}
-		this.destionationName = destionationName.toString();
+		this.destinationName = destionationName.toString();
 	}
 
 	@Override
@@ -162,7 +162,12 @@ class PackageImpl extends SymbolContainerImpl implements Package {
 
 	@Override
 	public String getDestinationName() {
-		return destionationName;
+		return destinationName;
+	}
+
+	@Override
+	public int compareTo(Package right) {
+		return destinationName.compareTo(right.getDestinationName());
 	}
 
 }

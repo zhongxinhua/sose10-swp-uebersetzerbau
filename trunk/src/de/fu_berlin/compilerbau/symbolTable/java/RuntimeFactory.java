@@ -22,6 +22,8 @@ import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
+import de.fu_berlin.compilerbau.symbolTable.Variable;
+import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.SymbolTableException;
 import de.fu_berlin.compilerbau.util.PositionBean;
 import de.fu_berlin.compilerbau.util.PositionString;
@@ -106,18 +108,56 @@ public class RuntimeFactory {
 		return result;
 	}
 
-	private static void populateFromNativeClass(Runtime rt, String pkgName,
+	protected static final class ArgumentIterator implements Iterator<Variable> {
+		
+		private static final Modifier ARGUMENT_MODIFIER =
+				GetModifier.getModifier(Visibility.DEFAULT, false, false, false);
+		
+		private final Runtime rt;
+		private final Symbol[] types;
+		
+		public ArgumentIterator(Runtime rt, Class<?>[] classes) {
+			this.rt = rt;
+			this.types = javaToCompilerTypes(rt, classes);
+		}
+		
+		private int i = 0;
+		
+		@Override
+		public boolean hasNext() {
+			return i < types.length;
+		}
+		
+		@Override
+		public Variable next() {
+			PositionString arg = new PositionString("arg" + i, PositionBean.ZERO);
+			VariableImpl result;
+			try {
+				result = new VariableImpl(rt, null, arg, types[i], ARGUMENT_MODIFIER);
+			} catch (InvalidIdentifierException e) {
+				throw new RuntimeException(e);
+			}
+			return result;
+		}
+		
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+	}
+	
+	private static void populateFromNativeClass(final Runtime rt, String pkgName,
 			String className, Class<?> clazz) throws SymbolTableException {
 		
 		PositionString pkgLookupName = new PositionString(pkgName, PositionBean.ZERO);
 		Symbol pkgSymbol = rt.getQualifiedSymbol(pkgLookupName, SymbolType.PACKAGE);
 		if(pkgSymbol == null) {
-			// class private, protected oder private Klasse
+			// package private, protected oder private Klasse
 			return;
 		}
 		Package pkg = (Package)pkgSymbol;
 
-		Symbol[] ifSymbols = javaToCompilerType(rt, clazz.getInterfaces());
+		Symbol[] ifSymbols = javaToCompilerTypes(rt, clazz.getInterfaces());
 
 		PositionString classLookupName = new PositionString(className, PositionBean.ZERO);
 		Modifier clazzModifiers = new NativeModifier(clazz.getModifiers());
@@ -132,21 +172,20 @@ public class RuntimeFactory {
 				extends_ = null;
 			}
 			
-			de.fu_berlin.compilerbau.symbolTable.Class clazzSymbol =
+			final de.fu_berlin.compilerbau.symbolTable.Class clazzSymbol =
 				pkg.addClass(classLookupName, extends_, implements_, clazzModifiers);
 			coiSymbol = clazzSymbol; 
 			
 			for(Field field : clazz.getDeclaredFields()) {
-				NativeModifier modifiers = new NativeModifier(field.getModifiers());
-				PositionString name = new PositionString(field.getName(), PositionBean.ZERO);
-				Symbol type = javaToCompilerType(rt, field.getType());
+				final NativeModifier modifiers = new NativeModifier(field.getModifiers());
+				final PositionString name = new PositionString(field.getName(), PositionBean.ZERO);
+				final Symbol type = javaToCompilerType(rt, field.getType());
 				clazzSymbol.addMember(name, type, modifiers);
 			}
 			
 			for(Constructor<?> ctor : clazz.getDeclaredConstructors()) {
-				NativeModifier modifiers = new NativeModifier(ctor.getModifiers());
-				Iterator<Symbol> parameters = Arrays.asList(javaToCompilerType(
-						rt, ctor.getParameterTypes())).iterator();
+				final NativeModifier modifiers = new NativeModifier(ctor.getModifiers());
+				final Iterator<Variable> parameters = new ArgumentIterator(rt, ctor.getParameterTypes());
 				clazzSymbol.addConstructor(PositionBean.ZERO, parameters, modifiers);
 			}
 		} else {
@@ -154,11 +193,10 @@ public class RuntimeFactory {
 		}
 		
 		for(Method method : clazz.getDeclaredMethods()) {
-			NativeModifier modifiers = new NativeModifier(method.getModifiers());
-			Iterator<Symbol> parameters = Arrays.asList(javaToCompilerType(
-					rt, method.getParameterTypes())).iterator();
-			Symbol resultType = javaToCompilerType(rt, method.getReturnType());
-			PositionString name = new PositionString(method.getName(), PositionBean.ZERO);
+			final NativeModifier modifiers = new NativeModifier(method.getModifiers());
+			final Iterator<Variable> parameters = new ArgumentIterator(rt, method.getParameterTypes());
+			final Symbol resultType = javaToCompilerType(rt, method.getReturnType());
+			final PositionString name = new PositionString(method.getName(), PositionBean.ZERO);
 			coiSymbol.addMethod(name, resultType, parameters, modifiers);
 		}
 		
@@ -195,7 +233,7 @@ public class RuntimeFactory {
 	/**
 	 * @see #javaToCompilerType(Runtime, Class)
 	 */
-	static Symbol[] javaToCompilerType(Runtime rt, Class<?> type[]) {
+	static Symbol[] javaToCompilerTypes(Runtime rt, Class<?> type[]) {
 		Symbol[] result = new Symbol[type.length];
 		for(int i = 0; i < type.length; ++i) {
 			result[i] = javaToCompilerType(rt, type[i]);

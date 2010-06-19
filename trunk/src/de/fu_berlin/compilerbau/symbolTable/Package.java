@@ -14,7 +14,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
  * do not employ a tree structure in the JRE.
  * @author kijewski
  */
-public interface Package extends SymbolContainer, QualifiedSymbol {
+public interface Package extends SymbolContainer, QualifiedSymbol, Comparable<Package> {
 	
 	/**
 	 * @return immutable list

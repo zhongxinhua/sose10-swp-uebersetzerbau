@@ -25,12 +25,4 @@ public interface UnqualifiedSymbol extends Symbol {
 	 */
 	Map<SymbolType,Likelyness> getLikelynessPerType();
 	
-	/**
-	 * Internal method to set the actual symbol for an UnqualifiedSymbol symbol.
-	 * Do not call this method twice.
-	 */
-	void setActualSymbol(QualifiedSymbol actualSymbol);
-	
-	QualifiedSymbol getActualSymbol();
-	
 }

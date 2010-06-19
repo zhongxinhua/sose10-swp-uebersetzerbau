@@ -21,7 +21,7 @@ public interface Class extends ClassOrInterface {
 	/**
 	 * @see ClassOrInterface#addMethod(PositionString, Symbol, List, Modifier)
 	 */
-	Constructor addConstructor(StreamPosition pos, Iterator<Symbol> parameters, Modifier modifier) throws
+	Constructor addConstructor(StreamPosition pos, Iterator<Variable> parameters, Modifier modifier) throws
 			DuplicateIdentifierException, ShadowedIdentifierException, WrongModifierException, InvalidIdentifierException;
 	
 	Symbol getSuperClass();

@@ -16,6 +16,7 @@ import de.fu_berlin.compilerbau.symbolTable.Scope;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
+import de.fu_berlin.compilerbau.symbolTable.Variable;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
@@ -26,11 +27,11 @@ class MethodImpl extends ScopeImpl implements Method {
 	protected final PositionString name;
 	protected final String destionationName;
 	protected final Symbol resultType;
-	protected final List<Symbol> parameters = new LinkedList<Symbol>();
+	protected final List<Variable> parameters = new LinkedList<Variable>();
 	protected final Modifier modifier;
 
 	public MethodImpl(Runtime runtime, ClassOrInterface parent, PositionString name, Symbol resultType,
-			Iterator<Symbol> parameters, Modifier modifier) throws InvalidIdentifierException {
+			Iterator<Variable> parameters, Modifier modifier) throws InvalidIdentifierException {
 		super(runtime, parent);
 		this.parent = parent;
 		this.name = name;
@@ -45,13 +46,13 @@ class MethodImpl extends ScopeImpl implements Method {
 		this.resultType = resultType;
 		this.modifier = modifier;
 		while(parameters.hasNext()) {
-			Symbol e = parameters.next();
+			Variable e = parameters.next();
 			this.parameters.add(e);
 		}
 	}
 
 	@Override
-	public List<Symbol> getParameters() {
+	public List<Variable> getParameters() {
 		return parameters;
 	}
 
@@ -61,9 +62,12 @@ class MethodImpl extends ScopeImpl implements Method {
 	}
 
 	@Override
-	public QualifiedSymbol lookup(UnqualifiedSymbol symbol) {
-		// TODO Auto-generated method stub
-		return null;
+	public QualifiedSymbol lookup(UnqualifiedSymbol symbol) throws InvalidIdentifierException {
+		QualifiedSymbol result = super.lookup(symbol);
+		if(result == null) {
+			result = getRuntime().lookup(symbol);
+		}
+		return result;
 	}
 
 	@Override
@@ -106,6 +110,35 @@ class MethodImpl extends ScopeImpl implements Method {
 	@Override
 	public Scope getScope() {
 		return this;
+	}
+
+	@Override
+	public int compareTo(Method right) {
+		final int EQUAL = 0, LEFT_BIGGER = 1, RIGHT_BIGGER = -1;
+		
+		int result = destionationName.compareTo(right.getDestinationName());
+		if(result != 0) {
+			return result;
+		}
+		final Iterator<Variable> lIter = parameters.iterator();
+		final Iterator<Variable> rIter = right.getParameters().iterator();
+		for(;;) {
+			if(!lIter.hasNext()) {
+				return rIter.hasNext() ? RIGHT_BIGGER : EQUAL;
+			} else if(!rIter.hasNext()) {
+				return LEFT_BIGGER;
+			}
+			final Symbol l = lIter.next().getVariableType();
+			final Symbol r = rIter.next().getVariableType();
+			if(l.hasType(SymbolType.CLASS_OR_INTERFACE) == Boolean.TRUE && r.hasType(SymbolType.CLASS_OR_INTERFACE) == Boolean.TRUE) {
+				result = ((ClassOrInterface)l).compareTo((ClassOrInterface)r);
+				if(result != 0) {
+					return result;
+				}
+			} else {
+				// TODO: Was mache ich jetzt?
+			}
+		}
 	}
 
 }

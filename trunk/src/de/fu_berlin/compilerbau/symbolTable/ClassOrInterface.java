@@ -14,12 +14,12 @@ import de.fu_berlin.compilerbau.util.PositionString;
  * {@link PrimitiveType primitive types} and {@link Void void types}.
  * @author rene
  */
-public interface ClassOrInterface extends SymbolContainer, QualifiedSymbol {
+public interface ClassOrInterface extends SymbolContainer, QualifiedSymbol, Comparable<ClassOrInterface> {
 	
 	/**
 	 * For interfaces you must not add a method body.
 	 */
-	Method addMethod(PositionString name, Symbol resultType, Iterator<Symbol> parameters,
+	Method addMethod(PositionString name, Symbol resultType, Iterator<Variable> parameters,
 			Modifier modifier) throws
 			DuplicateIdentifierException, ShadowedIdentifierException, WrongModifierException, InvalidIdentifierException;
 	
