@@ -10,22 +10,14 @@ import de.fu_berlin.compilerbau.util.PositionString;
 
 class MemberImpl extends VariableImpl implements Member {
 
-	protected final int COMPARE_KEY;
-
 	public MemberImpl(Runtime runtime, ClassOrInterface parent,
 			PositionString name, Modifier modifier) throws InvalidIdentifierException {
 		super(runtime, parent, name, modifier);
-		this.COMPARE_KEY = (parent.getDestinationName() + "." + getDestinationName()).hashCode();
 	}
 
 	@Override
 	public SymbolType getType() {
 		return SymbolType.MEMBER;
-	}
-
-	@Override
-	public int compareKey() {
-		return COMPARE_KEY;
 	}
 
 }

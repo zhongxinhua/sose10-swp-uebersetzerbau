@@ -30,7 +30,6 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 	protected final Set<Symbol> interfaces = new TreeSet<Symbol>();
 	protected final Map<Method, MethodImpl> methods = new TreeMap<Method, MethodImpl>();
 	protected final ShadowedSymbols shadowedSymbols = new ShadowedSymbols(this);
-	protected final int COMPARE_KEY;
 
 	public ClassOrInterfaceImpl(Runtime runtime, Package parent, Iterator<Symbol> implements_,
 			Modifier modifier, PositionString canonicalName) throws InvalidIdentifierException {
@@ -50,13 +49,6 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 				interfaces.add(implements_.next());
 			}
 		}
-		
-		this.COMPARE_KEY = (parent.getDestinationName() + "." + this.destinationName).hashCode();
-	}
-
-	@Override
-	public int compareKey() {
-		return COMPARE_KEY;
 	}
 
 	@Override
@@ -102,11 +94,6 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 	@Override
 	public SymbolType getType() {
 		return SymbolType.CLASS_OR_INTERFACE;
-	}
-
-	@Override
-	public Set<? extends Symbol> getContainedSymbols() {
-		return methods.keySet();
 	}
 
 	@Override

@@ -18,7 +18,6 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierExcept
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
-import de.fu_berlin.compilerbau.util.CombinedSet;
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
 
@@ -72,16 +71,6 @@ class ClassImpl extends ClassOrInterfaceImpl implements Class {
 	@Override
 	public SymbolType getType() {
 		return SymbolType.CLASS;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public Set<? extends Symbol> getContainedSymbols() {
-		Set[] sets = new Set[3];
-		sets[0] = members.keySet();
-		sets[1] = ctors.keySet();
-		sets[2] = super.getContainedSymbols();
-		return new CombinedSet<Symbol>(sets);
 	}
 	
 	@Override

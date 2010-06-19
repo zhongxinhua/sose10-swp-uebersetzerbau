@@ -58,10 +58,5 @@ class VariableImpl extends SymbolImpl implements Variable {
 	public String getDestinationName() {
 		return destinationName;
 	}
-	
-	@Override
-	public int compareKey() {
-		return destinationName.hashCode();
-	}
 
 }

@@ -1,5 +1,6 @@
 package de.fu_berlin.compilerbau.symbolTable;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,9 +12,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
  * @author kijewski
  */
 public interface SymbolContainer extends Symbol {
-	
-	Set<? extends Symbol> getContainedSymbols();
-	
+
 	/**
 	 * recursively
 	 * @return immutable list
@@ -52,5 +51,12 @@ public interface SymbolContainer extends Symbol {
 	 * @throws InvalidIdentifierException 
 	 */
 	QualifiedSymbol getQualifiedSymbol(PositionString name) throws InvalidIdentifierException;
+	
+	/**
+	 * Tries to convert all unqualified symbols to qualified ones.
+	 * @return List of all containers having containing unqualified symbols* or
+	 * 	null if all symbols are qualified. *) May be transitive or maybe not.
+	 */
+	List<SymbolContainer> qualifyAllSymbols();
 	
 }

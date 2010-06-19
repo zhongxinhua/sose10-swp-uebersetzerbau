@@ -37,7 +37,7 @@ import de.fu_berlin.compilerbau.util.Visibility;
 import static de.fu_berlin.compilerbau.util.Likelyness.*;
 import de.fu_berlin.compilerbau.util.PositionString;
 
-public class UnqualifiedSymbolImpl implements UnqualifiedSymbol, AnySymbolType {
+class UnqualifiedSymbolImpl implements UnqualifiedSymbol, AnySymbolType {
 	
 	protected final Map<SymbolType, Likelyness> likelyness = new EnumMap<SymbolType, Likelyness>(SymbolType.class);
 	protected final PositionString call;
@@ -242,11 +242,6 @@ public class UnqualifiedSymbolImpl implements UnqualifiedSymbol, AnySymbolType {
 	}
 
 	@Override
-	public Set<? extends Symbol> getContainedSymbols() {
-		return actualSymbol.getContainedSymbols();
-	}
-
-	@Override
 	public QualifiedSymbol getQualifiedSymbol(PositionString name,
 			SymbolType type) throws InvalidIdentifierException {
 		return actualSymbol.getQualifiedSymbol(name, type);
@@ -256,11 +251,6 @@ public class UnqualifiedSymbolImpl implements UnqualifiedSymbol, AnySymbolType {
 	public QualifiedSymbol getQualifiedSymbol(PositionString name)
 			throws InvalidIdentifierException {
 		return actualSymbol.getQualifiedSymbol(name);
-	}
-
-	@Override
-	public Map<QualifiedSymbol, Set<Symbol>> getShadowedSymbols() {
-		return actualSymbol.getShadowedSymbols();
 	}
 
 	@Override
@@ -454,7 +444,7 @@ public class UnqualifiedSymbolImpl implements UnqualifiedSymbol, AnySymbolType {
 	}
 
 	@Override
-	public Set<SymbolContainer> qualifyAllSymbols() {
+	public List<SymbolContainer> qualifyAllSymbols() {
 		return actualSymbol.qualifyAllSymbols();
 	}
 
@@ -484,19 +474,13 @@ public class UnqualifiedSymbolImpl implements UnqualifiedSymbol, AnySymbolType {
 	}
 
 	@Override
-	public int compareKey() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int compareTo(Symbol right) {
-		return compareKey() - right.compareKey();
-	}
-
-	@Override
 	public Package getGlobalScope() {
 		return actualSymbol.getGlobalScope();
+	}
+
+	@Override
+	public Map<QualifiedSymbol, Set<Symbol>> getShadowedSymbols() {
+		return actualSymbol.getShadowedSymbols();
 	}
 
 }

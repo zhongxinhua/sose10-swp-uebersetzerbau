@@ -67,13 +67,6 @@ public interface Runtime extends SymbolContainer {
 	UnqualifiedSymbol getUnqualifiedSymbol(PositionString name);
 	
 	/**
-	 * Tries to convert all unqualified symbols to qualified ones.
-	 * @return List of all containers having containing unqualified symbols* or
-	 * 	null if all symbols are qualified. *) May be transitive or maybe not.
-	 */
-	Set<SymbolContainer> qualifyAllSymbols();
-	
-	/**
 	 * returns the type representing void
 	 */
 	Void getVoid();

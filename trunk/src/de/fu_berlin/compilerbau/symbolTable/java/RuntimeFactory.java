@@ -9,8 +9,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -93,8 +93,8 @@ public class RuntimeFactory {
 			jarInputStream.close();
 		}
 		
-		Set<SymbolContainer> unqualifiedSymbols = result.qualifyAllSymbols();
-		if(unqualifiedSymbols != null) {
+		List<SymbolContainer> unqualifiedSymbols = result.qualifyAllSymbols();
+		if(unqualifiedSymbols != null && !unqualifiedSymbols.isEmpty()) {
 			System.err.println("Runtime contains unqualified symbol(s) in");
 			for(SymbolContainer symbol : unqualifiedSymbols) {
 				System.err.println("\t" + symbol);

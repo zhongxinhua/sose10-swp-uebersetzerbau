@@ -55,11 +55,6 @@ class PrimitiveTypeImpl extends ClassOrInterfaceImpl implements PrimitiveType {
 			throw new RuntimeException();
 		}
 	}
-	
-	@Override
-	public int compareKey() {
-		return COMPARE_KEY;
-	}
 
 	@Override
 	public Constructor addConstructor(StreamPosition pos,

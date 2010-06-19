@@ -17,7 +17,6 @@ import de.fu_berlin.compilerbau.symbolTable.PrimitiveType;
 import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
-import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import static de.fu_berlin.compilerbau.symbolTable.SymbolType.*;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
@@ -25,7 +24,6 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierExcept
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
-import de.fu_berlin.compilerbau.util.CombinedSet;
 import de.fu_berlin.compilerbau.util.Likelyness;
 import de.fu_berlin.compilerbau.util.PositionBean;
 import de.fu_berlin.compilerbau.util.PositionStringBuilder;
@@ -171,12 +169,6 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	}
 
 	@Override
-	public Set<SymbolContainer> qualifyAllSymbols() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public de.fu_berlin.compilerbau.symbolTable.Void getVoid() {
 		return voidType;
 	}
@@ -189,18 +181,6 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	@Override
 	public Map<QualifiedSymbol, Set<Symbol>> getShadowedSymbols() {
 		return shadowedSymbols.list;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public Set<Symbol> getContainedSymbols() {
-		return new CombinedSet<Symbol>(new Set[] { Collections.singleton(voidType), primitiveTypes.keySet(), packages.keySet() });
-	}
-
-	@Override
-	public Set<? extends UnqualifiedSymbol> getUnqualifiedSymbols() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -257,13 +237,14 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	}
 
 	@Override
-	public int compareKey() {
-		return 0;
+	public Package getGlobalScope() {
+		return globalScope;
 	}
 
 	@Override
-	public Package getGlobalScope() {
-		return globalScope;
+	public Set<? extends UnqualifiedSymbol> getUnqualifiedSymbols() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

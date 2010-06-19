@@ -155,11 +155,6 @@ class PackageImpl extends SymbolContainerImpl implements Package {
 	}
 
 	@Override
-	public Set<? extends Symbol> getContainedSymbols() {
-		return classesAndInterfaces.keySet();
-	}
-
-	@Override
 	public Set<? extends UnqualifiedSymbol> getUnqualifiedSymbols() {
 		// TODO Auto-generated method stub
 		return null;
@@ -168,11 +163,6 @@ class PackageImpl extends SymbolContainerImpl implements Package {
 	@Override
 	public String getDestinationName() {
 		return destionationName;
-	}
-
-	@Override
-	public int compareKey() {
-		return destionationName.hashCode();
 	}
 
 }

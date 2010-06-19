@@ -12,7 +12,7 @@ import de.fu_berlin.compilerbau.util.StreamPosition;
  * See {@link #hasType(SymbolType)}.
  * @author rene
  */
-public interface Symbol extends Comparable<Symbol> {
+public interface Symbol {
 	
 	/**
 	 * Symbols of different {@link Runtime runtimes} may not be combined.
@@ -49,7 +49,5 @@ public interface Symbol extends Comparable<Symbol> {
 	 * @return null if this is a {@link QualifiedSymbol}
 	 */
 	Boolean hasType(SymbolType leftType);
-	
-	int compareKey();
 	
 }

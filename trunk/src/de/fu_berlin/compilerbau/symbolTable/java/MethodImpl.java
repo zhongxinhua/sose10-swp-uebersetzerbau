@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import de.fu_berlin.compilerbau.symbolTable.ClassOrInterface;
 import de.fu_berlin.compilerbau.symbolTable.Method;
@@ -18,7 +17,6 @@ import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
-import de.fu_berlin.compilerbau.util.CombinedSet;
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
 
@@ -29,9 +27,7 @@ class MethodImpl extends ScopeImpl implements Method {
 	protected final String destionationName;
 	protected final Symbol resultType;
 	protected final List<Symbol> parameters = new LinkedList<Symbol>();
-	protected final Set<Symbol> parameterSet = new TreeSet<Symbol>(); // TODO: worüber kann man alle Symbole vergleichen?
 	protected final Modifier modifier;
-	protected final int COMPARE_KEY;
 
 	public MethodImpl(Runtime runtime, ClassOrInterface parent, PositionString name, Symbol resultType,
 			Iterator<Symbol> parameters, Modifier modifier) throws InvalidIdentifierException {
@@ -51,15 +47,7 @@ class MethodImpl extends ScopeImpl implements Method {
 		while(parameters.hasNext()) {
 			Symbol e = parameters.next();
 			this.parameters.add(e);
-			this.parameterSet.add(e);
 		}
-		
-		this.COMPARE_KEY = (parent.getDestinationName() + "." + this.destionationName).hashCode();
-	}
-
-	@Override
-	public int compareKey() {
-		return COMPARE_KEY;
 	}
 
 	@Override
@@ -102,12 +90,6 @@ class MethodImpl extends ScopeImpl implements Method {
 	@Override
 	public Map<QualifiedSymbol, Set<Symbol>> getShadowedSymbols() {
 		return Collections.EMPTY_MAP;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public Set<Symbol> getContainedSymbols() {
-		return new CombinedSet<Symbol>(new Set[] { parameterSet, super.getContainedSymbols() });
 	}
 
 	@Override

@@ -19,7 +19,6 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierExcept
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
-import de.fu_berlin.compilerbau.util.CombinedSet;
 import de.fu_berlin.compilerbau.util.Likelyness;
 import de.fu_berlin.compilerbau.util.PositionString;
 
@@ -31,13 +30,6 @@ class ScopeImpl extends SymbolContainerImpl implements Scope {
 
 	public ScopeImpl(Runtime runtime, SymbolContainer parent) {
 		super(runtime, parent);
-		this.COMPARE_KEY = ("\u0001\u000c<" + parent.compareKey() + ">").hashCode();
-	}
-
-	protected final int COMPARE_KEY;
-	@Override
-	public int compareKey() {
-		return COMPARE_KEY;
 	}
 
 	@Override
@@ -57,14 +49,6 @@ class ScopeImpl extends SymbolContainerImpl implements Scope {
 	@Override
 	public Map<QualifiedSymbol, Set<Symbol>> getShadowedSymbols() {
 		return shadowedSymbols.list;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public Set<? extends Symbol> getContainedSymbols() {
-		Set[] sets = subScopes.toArray(new Set[subScopes.size()+1]);
-		sets[subScopes.size()] = variables.keySet();
-		return new CombinedSet(sets);
 	}
 
 	@Override
