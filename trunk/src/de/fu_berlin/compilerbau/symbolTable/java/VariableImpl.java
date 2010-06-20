@@ -71,5 +71,10 @@ class VariableImpl extends SymbolImpl implements Variable {
 	public Symbol getVariableType() {
 		return variableType;
 	}
+	
+	@Override
+	public String toString() {
+		return "" + variableType + " " + name;
+	}
 
 }

@@ -130,10 +130,11 @@ public class RuntimeFactory {
 		
 		@Override
 		public Variable next() {
-			PositionString arg = new PositionString("arg" + i, PositionBean.ZERO);
+			final int item = i++;
+			PositionString arg = new PositionString("arg" + item, PositionBean.ZERO);
 			VariableImpl result;
 			try {
-				result = new VariableImpl(rt, null, arg, types[i], ARGUMENT_MODIFIER);
+				result = new VariableImpl(rt, null, arg, types[item], ARGUMENT_MODIFIER);
 			} catch (InvalidIdentifierException e) {
 				throw new RuntimeException(e);
 			}
@@ -156,6 +157,8 @@ public class RuntimeFactory {
 			return;
 		}
 		Package pkg = (Package)pkgSymbol;
+		
+		System.err.println("Reading: " + className);
 
 		Symbol[] ifSymbols = javaToCompilerTypes(rt, clazz.getInterfaces());
 
@@ -186,7 +189,8 @@ public class RuntimeFactory {
 			for(Constructor<?> ctor : clazz.getDeclaredConstructors()) {
 				final NativeModifier modifiers = new NativeModifier(ctor.getModifiers());
 				final Iterator<Variable> parameters = new ArgumentIterator(rt, ctor.getParameterTypes());
-				clazzSymbol.addConstructor(PositionBean.ZERO, parameters, modifiers);
+				Symbol symbol = clazzSymbol.addConstructor(PositionBean.ZERO, parameters, modifiers);
+				System.err.println("\t" + symbol);
 			}
 		} else {
 			coiSymbol = pkg.addInterface(classLookupName, implements_, clazzModifiers);
@@ -197,7 +201,8 @@ public class RuntimeFactory {
 			final Iterator<Variable> parameters = new ArgumentIterator(rt, method.getParameterTypes());
 			final Symbol resultType = javaToCompilerType(rt, method.getReturnType());
 			final PositionString name = new PositionString(method.getName(), PositionBean.ZERO);
-			coiSymbol.addMethod(name, resultType, parameters, modifiers);
+			Symbol symbol = coiSymbol.addMethod(name, resultType, parameters, modifiers);
+			System.err.println("\t" + symbol);
 		}
 		
 	}

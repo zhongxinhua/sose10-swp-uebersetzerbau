@@ -17,6 +17,7 @@ import de.fu_berlin.compilerbau.symbolTable.PrimitiveType;
 import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
+import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import static de.fu_berlin.compilerbau.symbolTable.SymbolType.*;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
@@ -42,6 +43,7 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	protected final ShadowedSymbols shadowedSymbols = new ShadowedSymbols(this);
 	protected final List<Entry<QualifiedSymbol, Symbol>> allShadowsList = new LinkedList<Entry<QualifiedSymbol, Symbol>>();
 	protected final Package globalScope;
+	protected final List<SymbolContainer> symbolContainers = new LinkedList<SymbolContainer>();
 	
 	protected boolean mangle = true;
 	
@@ -245,6 +247,11 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	public Set<? extends UnqualifiedSymbol> getUnqualifiedSymbols() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void registerSymbolContainer(SymbolContainer container) {
+		symbolContainers.add(container);
 	}
 	
 }

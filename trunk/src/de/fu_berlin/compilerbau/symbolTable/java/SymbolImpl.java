@@ -80,7 +80,7 @@ class SymbolImpl implements Symbol {
 			return null;
 		}
 		final SymbolType rightType = ((QualifiedSymbol)this).getType();
-		final Boolean result = IMPLICATIONS[leftType.ordinal()][rightType.ordinal()];
+		final Boolean result = IMPLICATIONS[rightType.ordinal()][leftType.ordinal()];
 		return result;
 	}
 	

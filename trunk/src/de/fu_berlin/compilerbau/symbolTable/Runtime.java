@@ -102,4 +102,9 @@ public interface Runtime extends SymbolContainer {
 	 */
 	Package getGlobalScope();
 	
+	/**
+	 * (internal method)
+	 */
+	void registerSymbolContainer(SymbolContainer container);
+	
 }

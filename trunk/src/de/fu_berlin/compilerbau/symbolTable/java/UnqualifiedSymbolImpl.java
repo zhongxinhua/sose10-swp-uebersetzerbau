@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import de.fu_berlin.compilerbau.symbolTable.Package;
+import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
@@ -18,12 +19,11 @@ import de.fu_berlin.compilerbau.util.StreamPosition;
 import static de.fu_berlin.compilerbau.util.Likelyness.*;
 import de.fu_berlin.compilerbau.util.PositionString;
 
-class UnqualifiedSymbolImpl implements UnqualifiedSymbol {
+class UnqualifiedSymbolImpl implements UnqualifiedSymbol, Comparable<Symbol> {
 	
 	protected final Map<SymbolType, Likelyness> likelyness = new EnumMap<SymbolType, Likelyness>(SymbolType.class);
 	protected final PositionString call;
 
-	protected Symbol actualSymbol = null;
 	protected SymbolImpl storageSymbol;
 	
 	static final EnumMap<SymbolType,SymbolType[]> REPLICATIONS = new EnumMap<SymbolType,SymbolType[]>(SymbolType.class);
@@ -108,56 +108,55 @@ class UnqualifiedSymbolImpl implements UnqualifiedSymbol {
 	
 	@Override
 	public String toString() {
-		if(actualSymbol != null) {
-			return actualSymbol.toString();
-		} else {
-			return storageSymbol.toString();
-		}
+		return "<~" + call + "~>";
 	}
 
 	@Override
 	public void addMention(Symbol who, StreamPosition where) {
-		if(actualSymbol != null) {
-			actualSymbol.addMention(who, where);
-		} else {
-			storageSymbol.addMention(who, where);
-		}
+		storageSymbol.addMention(who, where);
 	}
 
 	@Override
 	public Set<Entry<Symbol, StreamPosition>> getMentions() {
-		if(actualSymbol != null) {
-			return actualSymbol.getMentions();
-		} else {
-			return storageSymbol.getMentions();
-		}
+		return storageSymbol.getMentions();
 	}
 
 	@Override
 	public SymbolContainer getParent() {
-		if(actualSymbol != null) {
-			return actualSymbol.getParent();
-		} else {
-			return storageSymbol.getParent();
-		}
+		return storageSymbol.getParent();
 	}
 
 	@Override
 	public Runtime getRuntime() {
-		if(actualSymbol != null) {
-			return actualSymbol.getRuntime();
-		} else {
-			return storageSymbol.getRuntime();
-		}
+		return storageSymbol.getRuntime();
 	}
 
 	@Override
 	public Boolean hasType(SymbolType leftType) {
-		if(actualSymbol != null) {
-			return actualSymbol.hasType(leftType);
+		return storageSymbol.hasType(leftType);
+	}
+
+	@Override
+	public int compareTo(Symbol right) {
+		return compare(this, right);
+	}
+
+	public static int compare(Symbol left, Symbol right) {
+		final String lStr, rStr;
+		
+		if(left.hasType(SymbolType.CLASS_OR_INTERFACE) == Boolean.TRUE || left.hasType(SymbolType.VARIABLE) == Boolean.TRUE) {
+			lStr = ((QualifiedSymbol)left).getDestinationName();
 		} else {
-			return null;
+			lStr = ((UnqualifiedSymbol)left).getCall().toString();
 		}
+		
+		if(right.hasType(SymbolType.CLASS_OR_INTERFACE) == Boolean.TRUE || right.hasType(SymbolType.VARIABLE) == Boolean.TRUE) {
+			rStr = ((QualifiedSymbol)right).getDestinationName();
+		} else {
+			rStr = ((UnqualifiedSymbol)right).getCall().toString();
+		}
+		
+		return lStr.compareTo(rStr);
 	}
 
 }

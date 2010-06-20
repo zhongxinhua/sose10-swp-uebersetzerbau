@@ -130,15 +130,33 @@ class MethodImpl extends ScopeImpl implements Method {
 			}
 			final Symbol l = lIter.next().getVariableType();
 			final Symbol r = rIter.next().getVariableType();
-			if(l.hasType(SymbolType.CLASS_OR_INTERFACE) == Boolean.TRUE && r.hasType(SymbolType.CLASS_OR_INTERFACE) == Boolean.TRUE) {
-				result = ((ClassOrInterface)l).compareTo((ClassOrInterface)r);
-				if(result != 0) {
-					return result;
-				}
-			} else {
-				// TODO: Was mache ich jetzt?
+			
+			result = UnqualifiedSymbolImpl.compare(l, r);
+			if(result != 0) {
+				return result;
 			}
 		}
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append(resultType.toString());
+		builder.append(' ');
+		builder.append(parent.getDestinationName());
+		builder.append('.');
+		builder.append(destionationName);
+		builder.append('(');
+		if(!parameters.isEmpty()) {
+			Iterator<Variable> i = parameters.iterator();
+			builder.append(i.next());
+			while(i.hasNext()) {
+				builder.append(", ");
+				builder.append(i.next());
+			}
+		}
+		builder.append(')');
+		return builder.toString();
 	}
 
 }

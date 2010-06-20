@@ -96,5 +96,10 @@ class PrimitiveTypeImpl extends ClassOrInterfaceImpl implements PrimitiveType {
 	public Class<?> getWrapperClass() {
 		return boxedType;
 	}
+	
+	@Override
+	public String toString() {
+		return type.getName();
+	}
 
 }

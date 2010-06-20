@@ -77,5 +77,10 @@ class ClassImpl extends ClassOrInterfaceImpl implements Class {
 	public Map<QualifiedSymbol, Set<Symbol>> getShadowedSymbols() {
 		return shadowedSymbols.list;
 	}
+	
+	@Override
+	public String toString() {
+		return ((Package)getParent()).getDestinationName() + "." + destinationName;
+	}
 
 }

@@ -15,6 +15,9 @@ abstract class SymbolContainerImpl extends SymbolImpl implements SymbolContainer
 	
 	SymbolContainerImpl(Runtime runtime, SymbolContainer parent) {
 		super(runtime, parent);
+		if(runtime != null) {
+			runtime.registerSymbolContainer(this);
+		}
 	}
 	
 	@Override

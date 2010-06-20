@@ -25,5 +25,24 @@ class ConstructorImpl extends MethodImpl implements Constructor {
 	public SymbolType getType() {
 		return SymbolType.CONSTRUCTOR;
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append(parent.getDestinationName());
+		builder.append('.');
+		builder.append(destionationName);
+		builder.append('(');
+		if(!parameters.isEmpty()) {
+			Iterator<Variable> i = parameters.iterator();
+			builder.append(i.next());
+			while(i.hasNext()) {
+				builder.append(", ");
+				builder.append(i.next());
+			}
+		}
+		builder.append(')');
+		return builder.toString();
+	}
 
 }
