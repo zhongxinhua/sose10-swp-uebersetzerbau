@@ -2,6 +2,7 @@ package de.fu_berlin.compilerbau.dom;
 
 /**
  * @author stefan
+ * @author rene
  */
 
 import java.io.IOException;
@@ -12,16 +13,29 @@ import java.util.NoSuchElementException;
 
 import de.fu_berlin.compilerbau.dom.impl.DomAttributeImpl;
 import de.fu_berlin.compilerbau.dom.impl.DomNodeImpl;
+import de.fu_berlin.compilerbau.util.ErrorHandler;
+import de.fu_berlin.compilerbau.util.PositionBean;
 import de.fu_berlin.compilerbau.util.PositionString;
+import de.fu_berlin.compilerbau.util.StreamPosition;
 import de.fu_berlin.compilerbau.xmlNodeStream.NodeType;
 import de.fu_berlin.compilerbau.xmlNodeStream.XmlNode;
 import de.fu_berlin.compilerbau.xmlNodeStream.XmlNodeStream;
 import de.fu_berlin.compilerbau.xmlNodeStream.impl.XmlNodeStreamFactory;
 
-
 public class DomCreator {
 	static private Iterator<XmlNode> _iter;
 	static private XmlNode _nextNodeToRead;
+	
+	protected static final class DomCreatorException extends RuntimeException {
+		
+		private static final long serialVersionUID = 465965183063591708L;
+
+		DomCreatorException(StreamPosition where, String msg) {
+			super("DOM tree could not be created.");
+			ErrorHandler.warning(where, msg);
+		}
+		
+	}
 	
 	/**
 	 * Use this method to initialize or reset the DomCreator.
@@ -77,23 +91,23 @@ public class DomCreator {
 			}
 			currNode = readNode();
 			switch (currNode.getType()) {
-				case NT_ERROR: throw new RuntimeException(currNode.toString()); // TODO: proper type
+				case NT_ERROR: throw new DomCreatorException(currNode, "Wrong input data.");
 				case NT_TEXT: {
 					if (isAllWhiteSpace(currNode.getValue())) {
 						 continue; // skip over
 					} else {
-						throw new RuntimeException(currNode.toString()); // TODO: proper type
+						throw new DomCreatorException(currNode, "Text data occurred outside of the root node.");
 					}
 				}
 				case NT_COMMENT: continue; // skip over
 				case NT_TAG: break first;
-				case NT_END_TAG: throw new RuntimeException(currNode.toString()); // TODO: proper type
-				case NT_ATTR: throw new IllegalStateException(currNode.toString()); // cannot happen
+				case NT_END_TAG: throw new DomCreatorException(currNode, "Data begins with a closing XML node.");
+				case NT_ATTR: throw new DomCreatorException(currNode, "[INTERNAL] The XmlNodeStream in buggy! [NT_ATTR]");
 				case NT_PI: {
 					if (piAllowed) {
 						continue; // skip over
 					} else {
-						throw new RuntimeException(currNode.toString()); // TODO: proper type
+						throw new DomCreatorException(currNode, "A processing instruction must not be written inside the root node.");
 					}
 				}
 				default: throw new IllegalStateException(currNode.toString()); // there isn't another case 
@@ -109,23 +123,23 @@ public class DomCreator {
 		
 		end:for (;;) {
 			if (!hasNextNode()) {
-				throw new RuntimeException("Missing </" + rootName + ">"); // TODO: proper type
+				throw new DomCreatorException(currNode, "Missing </" + rootName + ">");
 			}
 			currNode = readNode();
 			switch (currNode.getType()) {
-				case NT_ERROR: throw new RuntimeException(currNode.toString()); // TODO: proper type
+				case NT_ERROR: throw new DomCreatorException(currNode, "Wrong input data.");
 				case NT_TEXT: continue; // skip over
 				case NT_COMMENT: continue; // skip over
-				case NT_TAG: throw new RuntimeException("Multiple elements in root!"); // TODO: proper type
+				case NT_TAG: throw new DomCreatorException(currNode, "Multiple elements in root!");
 				case NT_END_TAG: break end;
-				case NT_ATTR: throw new IllegalStateException(currNode.toString()); // cannot happen
-				case NT_PI: throw new RuntimeException(currNode.toString()); // TODO: proper type
-				default: throw new IllegalStateException(currNode.toString()); // there isn't another case 
+				case NT_ATTR: throw new DomCreatorException(currNode, "[INTERNAL] The XmlNodeStream in buggy! [NT_ATTR]");
+				case NT_PI: throw new DomCreatorException(currNode, "A processing instruction may not occur after the root node.");
+				default: throw new DomCreatorException(currNode, "[INTERNAL] The XmlNodeStream in buggy! [" + currNode.getType() + "]");
 			}
 		}
 		
 		if (currNode.getKey() != null && !currNode.getKey().equals(rootName)) {
-			throw new RuntimeException("Invalid </" + currNode.getKey() + ">"); // TODO: proper type
+			throw new DomCreatorException(currNode, "Invalid </" + currNode.getKey() + ">");
 		}
 
 		root.addChilds(rootChilds);
@@ -175,7 +189,7 @@ public class DomCreator {
 		while (hasNextNode()) {
 			XmlNode currNode = readNode();
 			switch (currNode.getType()) {
-				case NT_ERROR: throw new RuntimeException(currNode.toString()); // TODO: proper type
+				case NT_ERROR: throw new DomCreatorException(currNode, "Wrong input data.");
 				case NT_TEXT: continue; // skip over
 				case NT_COMMENT: continue; // skip over
 				case NT_TAG: {
@@ -191,12 +205,12 @@ public class DomCreator {
 					unreadNode(currNode);
 					return children;
 				}
-				case NT_ATTR: throw new IllegalStateException(currNode.toString()); // cannot happen
-				case NT_PI: throw new RuntimeException(currNode.toString()); // TODO: proper type
-				default: throw new IllegalStateException(currNode.toString()); // there isn't another case 
+				case NT_ATTR: throw new DomCreatorException(currNode, "[INTERNAL] The XmlNodeStream in buggy! [NT_ATTR]");
+				case NT_PI: throw new DomCreatorException(currNode, "A processing instruction may not occur after inside a node.");
+				default: throw new DomCreatorException(currNode, "[INTERNAL] The XmlNodeStream in buggy! [" + currNode.getType() + "]");
 			}
 		}
-		
-		throw new RuntimeException("Missing </" + elem.getName() + ">"); // TODO: proper type
+
+		throw new DomCreatorException(PositionBean.ZERO, "Missing </" + elem.getName() + "> at end of file");
 	}
 }
