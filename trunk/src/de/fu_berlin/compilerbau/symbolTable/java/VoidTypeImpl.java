@@ -15,5 +15,10 @@ public class VoidTypeImpl extends PrimitiveTypeImpl implements Void {
 	public SymbolType getType() {
 		return SymbolType.VOID;
 	}
+	
+	@Override
+	public String toString() {
+		return "void";
+	}
 
 }

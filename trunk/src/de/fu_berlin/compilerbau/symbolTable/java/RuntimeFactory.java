@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,8 @@ public class RuntimeFactory {
 	private static final Modifier PACKAGE_MODIFIER =
 		GetModifier.getModifier(Visibility.PUBLIC, false, false, false);
 	private static final String DOT_CLASS = ".class";
+	
+	protected static final Map<String,PositionString> positionStrings = new HashMap<String,PositionString>();
 
 	private RuntimeFactory() {
 		// void
@@ -55,14 +58,18 @@ public class RuntimeFactory {
 	public static Runtime newRuntime(Iterator<Map.Entry<PositionString,PositionString>> imports,
 			URL[] classpath, URL rtJar) throws IOException {
 		
+		final long start = System.currentTimeMillis();
+		
 		final RuntimeImpl result = new RuntimeImpl();
 		result.setNameManglingEnabled(false);
 		
 		final PackageLoader loader = new PackageLoader(rtJar, classpath);
 		try {
 			for(java.lang.Package pkg : loader.getPackages()) {
-				PositionString name = new PositionString(pkg.getName(), PositionBean.ZERO);
+				String pkgName = pkg.getName();
+				PositionString name = new PositionString(pkgName, PositionBean.ZERO);
 				result.addPackage(name, PACKAGE_MODIFIER);
+				positionStrings.put(pkgName, name);
 			}
 		} catch(SymbolTableException e) {
 			throw new RuntimeException("Could not populate Runtime with Java's packages.", e);
@@ -83,9 +90,11 @@ public class RuntimeFactory {
 					String className = fileName.replaceAll("/", "\\.");
 					className = className.substring(0, className.length() - DOT_CLASS.length());
 					Class<?> clazz = Class.forName(className, false, loader);
-					if(clazz.isSynthetic()) {
+					if(clazz.isSynthetic() || clazz.isAnonymousClass()) {
 						continue;
 					}
+					
+					// TODO: Bahandlung für clazz.isMemberClass();
 					
 					String pkgName = className.substring(0, className.lastIndexOf('.'));
 					try {
@@ -112,8 +121,12 @@ public class RuntimeFactory {
 			throw new RuntimeException("Runtime contains unqualified symbols!");
 		}
 		
+		final long end = System.currentTimeMillis();
+		System.err.println("Read runtime in " + (end-start)/1000f + " seconds.");
+		
 		result.setNameManglingEnabled(true);
 		return result;
+		
 	}
 
 	protected static final class ArgumentIterator implements Iterator<Variable> {
@@ -139,7 +152,12 @@ public class RuntimeFactory {
 		@Override
 		public Variable next() {
 			final int item = i++;
-			PositionString arg = new PositionString("arg" + item, PositionBean.ZERO);
+			String argName = "arg" + item;
+			PositionString arg = positionStrings.get(argName);
+			if(arg == null) {
+				arg = new PositionString("arg" + item, PositionBean.ZERO);
+				positionStrings.put(argName, arg);
+			}
 			VariableImpl result;
 			try {
 				result = new VariableImpl(rt, null, arg, types[item], ARGUMENT_MODIFIER);
@@ -158,7 +176,15 @@ public class RuntimeFactory {
 	private static void populateFromNativeClass(final Runtime rt, String pkgName,
 			String className, Class<?> clazz) throws SymbolTableException {
 		
-		PositionString pkgLookupName = new PositionString(pkgName, PositionBean.ZERO);
+		if("java.lang.String".equals(clazz.getCanonicalName())) {
+			System.out.println("String");
+		}
+		
+		PositionString pkgLookupName = positionStrings.get(pkgName);
+		if(pkgLookupName == null) {
+			pkgLookupName = new PositionString(pkgName, PositionBean.ZERO);
+			positionStrings.put(pkgName, pkgLookupName);
+		}
 		Symbol pkgSymbol = rt.getQualifiedSymbol(pkgLookupName, SymbolType.PACKAGE);
 		if(pkgSymbol == null) {
 			// package private, protected oder private Klasse
@@ -170,7 +196,12 @@ public class RuntimeFactory {
 
 		Symbol[] ifSymbols = javaToCompilerTypes(rt, clazz.getInterfaces());
 
-		PositionString classLookupName = new PositionString(className, PositionBean.ZERO);
+		
+		PositionString classLookupName = positionStrings.get(className);
+		if(classLookupName == null) {
+			classLookupName = new PositionString(className, PositionBean.ZERO);
+			positionStrings.put(className, classLookupName);
+		}
 		Modifier clazzModifiers = new NativeModifier(clazz.getModifiers());
 		Iterator<Symbol> implements_ = Arrays.asList(ifSymbols).iterator();
 		ClassOrInterface coiSymbol;
@@ -192,9 +223,15 @@ public class RuntimeFactory {
 					continue;
 				}
 				final NativeModifier modifiers = new NativeModifier(field.getModifiers());
-				final PositionString name = new PositionString(field.getName(), PositionBean.ZERO);
+				String fieldName = field.getName();
+				PositionString name = positionStrings.get(fieldName);
+				if(name == null) {
+					name = new PositionString(field.getName(), PositionBean.ZERO);
+					positionStrings.put(fieldName, name);
+				}
 				final Symbol type = javaToCompilerType(rt, field.getType());
-				clazzSymbol.addMember(name, type, modifiers);
+				Symbol symbol = clazzSymbol.addMember(name, type, modifiers);
+				System.err.println("\t" + symbol);
 			}
 			
 			for(Constructor<?> ctor : clazz.getDeclaredConstructors()) {
@@ -217,7 +254,12 @@ public class RuntimeFactory {
 			final NativeModifier modifiers = new NativeModifier(method.getModifiers());
 			final Iterator<Variable> parameters = new ArgumentIterator(rt, method.getParameterTypes());
 			final Symbol resultType = javaToCompilerType(rt, method.getReturnType());
-			final PositionString name = new PositionString(method.getName(), PositionBean.ZERO);
+			String methodName = method.getName();
+			PositionString name = positionStrings.get(methodName);
+			if(name == null) {
+				name = new PositionString(method.getName(), PositionBean.ZERO);
+				positionStrings.put(methodName, name);
+			}
 			Symbol symbol = coiSymbol.addMethod(name, resultType, parameters, modifiers);
 			System.err.println("\t" + symbol);
 		}
@@ -233,7 +275,12 @@ public class RuntimeFactory {
 	 */
 	static Symbol javaToCompilerType(Runtime rt, Class<?> type) {
 		
-		final PositionString name = new PositionString(type.getName(), PositionBean.ZERO);
+		String typeName = type.getName();
+		PositionString name = positionStrings.get(typeName);
+		if(name == null) {
+			name = new PositionString(type.getName(), PositionBean.ZERO);
+			positionStrings.put(typeName, name);
+		}
 		
 		Symbol result;
 		if(type == Void.TYPE) {
