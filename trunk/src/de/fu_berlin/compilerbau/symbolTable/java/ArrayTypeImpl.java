@@ -90,17 +90,17 @@ class ArrayTypeImpl extends ClassImpl implements ArrayType {
 	
 	@Override
 	public String getDestinationName() {
-		return null;
-	}
-	
-	@Override
-	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append(componentType.toString());
 		for(int i = 0; i < dimension; ++i) {
 			builder.append("[]");
 		}
 		return builder.toString();
+	}
+	
+	@Override
+	public String toString() {
+		return getDestinationName();
 	}
 
 }

@@ -83,13 +83,21 @@ public class RuntimeFactory {
 					String className = fileName.replaceAll("/", "\\.");
 					className = className.substring(0, className.length() - DOT_CLASS.length());
 					Class<?> clazz = Class.forName(className, false, loader);
+					if(clazz.isSynthetic()) {
+						continue;
+					}
+					
 					String pkgName = className.substring(0, className.lastIndexOf('.'));
-					populateFromNativeClass(result, pkgName, className, clazz); // indentation too big ...
+					try {
+						populateFromNativeClass(result, pkgName, className, clazz); // indentation too big ...
+					} catch(SymbolTableException e) {
+						// throw new RuntimeException("Internal error.", e);
+						// TODO: wieso passiert das?
+						e.printStackTrace();
+					}
 				}
 			} catch(ClassNotFoundException e) {
 				throw new RuntimeException("A class in a JAR could not be loaded.", e);
-			} catch(SymbolTableException e) {
-				throw new RuntimeException("Internal error.", e);
 			}
 			
 			jarInputStream.close();
@@ -180,6 +188,9 @@ public class RuntimeFactory {
 			coiSymbol = clazzSymbol; 
 			
 			for(Field field : clazz.getDeclaredFields()) {
+				if(field.isSynthetic()) {
+					continue;
+				}
 				final NativeModifier modifiers = new NativeModifier(field.getModifiers());
 				final PositionString name = new PositionString(field.getName(), PositionBean.ZERO);
 				final Symbol type = javaToCompilerType(rt, field.getType());
@@ -187,6 +198,9 @@ public class RuntimeFactory {
 			}
 			
 			for(Constructor<?> ctor : clazz.getDeclaredConstructors()) {
+				if(ctor.isSynthetic()) {
+					continue;
+				}
 				final NativeModifier modifiers = new NativeModifier(ctor.getModifiers());
 				final Iterator<Variable> parameters = new ArgumentIterator(rt, ctor.getParameterTypes());
 				Symbol symbol = clazzSymbol.addConstructor(PositionBean.ZERO, parameters, modifiers);
@@ -197,6 +211,9 @@ public class RuntimeFactory {
 		}
 		
 		for(Method method : clazz.getDeclaredMethods()) {
+			if(method.isSynthetic()) {
+				continue;
+			}
 			final NativeModifier modifiers = new NativeModifier(method.getModifiers());
 			final Iterator<Variable> parameters = new ArgumentIterator(rt, method.getParameterTypes());
 			final Symbol resultType = javaToCompilerType(rt, method.getReturnType());
