@@ -1,5 +1,6 @@
 package de.fu_berlin.compilerbau.parser;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import de.fu_berlin.compilerbau.dom.DomNode;
@@ -26,8 +27,15 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
  */
 public class Interface extends ClassOrInterface {
 	private List<Function> functions;
+	private List<ExtendsStatement> extensions = new LinkedList<ExtendsStatement>();
+
+	public List<Function> getFunctions() {
+		return functions;
+	}
 	
-	public List<Function> getFunctions() { return functions; }
+	public List<ExtendsStatement> getExtensions() {
+		return extensions;
+	}
 
 	public Interface(DomNode node) {
 		// check needed attribute: name
@@ -50,8 +58,10 @@ public class Interface extends ClassOrInterface {
 					functions.add(tmp);
 				}
 
-			}else{
-				//ERROR -> forbidden statement
+			} else if (child.getName().equals("extends")) {
+				extensions.add(new ExtendsStatement(child));
+			} else {
+				// ERROR -> forbidden statement
 				ErrorHandler.error(child, this.getClass().toString()
 						+ " unknown statement: " + child.getName());
 			}

@@ -11,19 +11,14 @@ public class FloatLiteral extends Literal {
 	public FloatLiteral(Number value) {
 		this.value = value.floatValue();
 	}
-
-	@Override
-	public Type getType() {
-		return Type.FLOAT;
-	}
 	
 	@Override
 	public String toString() {
 		return "float("+Float.toString(value)+")";
 	}
-	//BEGIN get-Methoden für Builder
+	//BEGIN get-Methoden fï¿½r Builder
 	public float getValue(){
 		return value;
 	}
-	//END get-Methoden für Builder
+	//END get-Methoden fï¿½r Builder
 }

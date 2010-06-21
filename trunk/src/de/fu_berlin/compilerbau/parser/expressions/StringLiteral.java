@@ -13,17 +13,12 @@ public class StringLiteral extends Literal {
 	}
 
 	@Override
-	public Type getType() {
-		return Type.STRING;
-	}
-
-	@Override
 	public String toString() {
 		return "string("+value+")";
 	}
-	//BEGIN get-Methoden für Builder
+	//BEGIN get-Methoden fï¿½r Builder
 	public CharSequence getValue(){
 		return value;
 	}
-	//END get-Methoden für Builder
+	//END get-Methoden fï¿½r Builder
 }

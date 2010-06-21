@@ -2,7 +2,6 @@ package de.fu_berlin.compilerbau.parser;
 
 import de.fu_berlin.compilerbau.dom.DomNode;
 import de.fu_berlin.compilerbau.parser.expressions.Expression;
-import de.fu_berlin.compilerbau.parser.expressions.Type;
 import de.fu_berlin.compilerbau.statementParser.impl.StatementParser.ExpressionType;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
 import de.fu_berlin.compilerbau.util.PositionString;
@@ -41,7 +40,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
 
 public class DeclarationStatement extends Statement {
 
-	private Type type;
+	private PositionString type;
 	private PositionString name;
 	private int dimension = 0;
 	private Expression value = null;
@@ -52,7 +51,7 @@ public class DeclarationStatement extends Statement {
 		// check needed attribute: type
 		if (node.hasAttribute("type")
 				&& node.getAttributeValue("type").length() > 0) {
-			this.type = Type.get(node.getAttributeValue("type"));
+			this.type = node.getAttribute("type");
 			// nicht besonders schï¿½n, aber funzt
 			if (type == null) {
 				ErrorHandler.error(node,
@@ -67,7 +66,7 @@ public class DeclarationStatement extends Statement {
 		// check needed attribute: name
 		if (node.hasAttribute("name")
 				&& node.getAttributeValue("name").length() > 0) {
-			//Symboltabellenanbindung-> überprüfe reservierte/vergebene Namen
+			//Symboltabellenanbindung-> ï¿½berprï¿½fe reservierte/vergebene Namen
 				//Symboltable.check(node.getAttributeValue("name"));
 			//
 			this.name = node.getAttribute("name");
@@ -126,7 +125,7 @@ public class DeclarationStatement extends Statement {
 	}
 
 	// BEGIN get-Methoden fï¿½r Builder
-	public Type getType() {
+	public PositionString getType() {
 		return type;
 	}
 

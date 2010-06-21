@@ -34,7 +34,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
 public class Class extends ClassOrInterface {
 	PositionString parent;
 	List<ImportStatement> imports = new LinkedList<ImportStatement>();
-	List<ImplementStatement> implementations = new LinkedList<ImplementStatement>();
+	List<ImplementsStatement> implementations = new LinkedList<ImplementsStatement>();
 	List<DeclarationStatement> declarations = new LinkedList<DeclarationStatement>();
 	List<Function> functions = new LinkedList<Function>();
 
@@ -61,7 +61,7 @@ public class Class extends ClassOrInterface {
 				continue;
 				// check arbitrary implement statements
 			} else if (child.getName().equals("implements")) {
-				implementations.add(new ImplementStatement(child));
+				implementations.add(new ImplementsStatement(child));
 				continue;
 				// check arbitrary decl statements
 			} else if (child.getName().equals("decl")) {
@@ -88,7 +88,7 @@ public class Class extends ClassOrInterface {
 	public List<ImportStatement> getImports(){
 		return imports;
 	}
-	public List<ImplementStatement> getImplementations(){
+	public List<ImplementsStatement> getImplementations(){
 		return implementations;
 	}
 	public List<DeclarationStatement> getDeclarations() {

@@ -16,12 +16,6 @@ public class ArrayAccess extends Expression {
 		this.name = name;
 		this.indices = indices;
 	}
-	
-	@Override
-	public Type getType() {
-		// TODO: muss Ã¼ber die semantische Analyse noch festgestellt werden
-		return null;
-	}
 
 	@Override
 	public void printTree(int deep) {
@@ -36,12 +30,12 @@ public class ArrayAccess extends Expression {
 	public String toString() {
 		return name+"[...]";
 	}
-	//BEGIN get-Methoden für Builder
+	//BEGIN get-Methoden fï¿½r Builder
 	public CharSequence getName(){
 		return name;
 	}
 	public List<Expression> getIndices(){
 		return indices;
 	}
-	//END get-Methoden für Builder
+	//END get-Methoden fï¿½r Builder
 }

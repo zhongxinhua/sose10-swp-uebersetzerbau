@@ -19,22 +19,17 @@ public class UnaryOperation extends Expression {
 	}
     
 	@Override
-	public Type getType() {
-		return expression.getType();
-	}
-
-	@Override
 	public void printTree(int deep) {
 		for(int d=deep; d>0; d--) System.out.print("  ");
 		System.out.println(operator);
 		expression.printTree(deep+1);
 	}
-	//BEGIN get-Methoden für Builder
+	//BEGIN get-Methoden fï¿½r Builder
 	public UnaryOperator getUnaryOperator(){
 		return operator;
 	}
 	public Expression getExpression(){
 		return expression;
 	}
-	//END get-Methoden für Builder
+	//END get-Methoden fï¿½r Builder
 }

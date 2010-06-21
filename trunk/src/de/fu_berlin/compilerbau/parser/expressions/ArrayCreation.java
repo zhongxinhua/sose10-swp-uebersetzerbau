@@ -15,12 +15,6 @@ public class ArrayCreation extends Expression {
 	public ArrayCreation(List<Expression> elements) {
 		this.elements = elements;
 	}
-	
-	@Override
-	public Type getType() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public void printTree(int deep) {

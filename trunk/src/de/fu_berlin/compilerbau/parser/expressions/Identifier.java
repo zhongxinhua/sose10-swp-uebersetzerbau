@@ -7,15 +7,9 @@ package de.fu_berlin.compilerbau.parser.expressions;
  */
 public class Identifier extends Expression {
 	private CharSequence name;
-	private Type type;
 	
 	public Identifier(CharSequence name) {
 		this.name = name;
-	}
-
-	@Override
-	public Type getType() {
-		return type;
 	}
 	
 	@Override
@@ -28,10 +22,10 @@ public class Identifier extends Expression {
 		for(int d=deep; d>0; d--) System.out.print("  ");
 		System.out.println(this);
 	}
-	//BEGIN get-Methoden für Builder
+	//BEGIN get-Methoden fï¿½r Builder
 	public CharSequence getName(){
 		return name;
 	}
-	//END get-Methoden für Builder
+	//END get-Methoden fï¿½r Builder
 
 }

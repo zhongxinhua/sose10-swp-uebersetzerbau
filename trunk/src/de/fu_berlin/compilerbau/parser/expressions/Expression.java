@@ -19,8 +19,6 @@ public abstract class Expression {
 	public static Expression build(PositionString attributeValue, ExpressionType type) {
 		return (new StatementParser()).parse(attributeValue, type);
 	}
-
-	public abstract Type getType();
 	
 	public abstract void printTree(int deep);
 }

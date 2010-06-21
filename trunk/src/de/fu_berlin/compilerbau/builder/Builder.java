@@ -25,7 +25,7 @@ import de.fu_berlin.compilerbau.parser.DeclarationStatement;
 import de.fu_berlin.compilerbau.parser.DoStatement;
 import de.fu_berlin.compilerbau.parser.ForEachStatement;
 import de.fu_berlin.compilerbau.parser.Function;
-import de.fu_berlin.compilerbau.parser.ImplementStatement;
+import de.fu_berlin.compilerbau.parser.ImplementsStatement;
 import de.fu_berlin.compilerbau.parser.ImportStatement;
 import de.fu_berlin.compilerbau.parser.Interface;
 import de.fu_berlin.compilerbau.parser.Module;
@@ -95,7 +95,7 @@ public abstract class Builder {
 	protected abstract void buildDoStatement(DoStatement obj) throws IOException;
 	protected abstract void buildForEachStatement(ForEachStatement obj) throws IOException;
 	protected abstract void buildExpressionStatement(Expression obj) throws IOException;
-	protected abstract void buildImplementStatement(ImplementStatement obj) throws IOException;
+	protected abstract void buildImplementStatement(ImplementsStatement obj) throws IOException;
 	protected abstract void buildImportStatement(ImportStatement obj) throws IOException;
 	protected abstract void buildInterface(Interface obj) throws IOException;
 	protected abstract void buildModule(Module obj) throws IOException;

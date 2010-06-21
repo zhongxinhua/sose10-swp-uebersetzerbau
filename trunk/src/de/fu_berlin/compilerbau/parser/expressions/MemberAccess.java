@@ -15,12 +15,6 @@ public class MemberAccess extends Expression {
 		this.parent = parent;
 		this.child  = child;
 	}
-	
-	@Override
-	public Type getType() {
-		//TODO muss wÃ¤hrend der semantischen Analyse ermittelt werden
-		return null;
-	}
 
 	@Override
 	public void printTree(int deep) {
@@ -34,13 +28,13 @@ public class MemberAccess extends Expression {
 	public String toString() {
 		return ".";
 	}
-	//BEGIN get-Methoden für Builder
+	//BEGIN get-Methoden fï¿½r Builder
 	public Expression getChild() {
 		return child;
 	}
 	public Expression getParent() {
 		return parent;
 	}
-	//END get-Methoden für Builder
+	//END get-Methoden fï¿½r Builder
 	
 }

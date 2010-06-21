@@ -11,19 +11,14 @@ public class IntegerLiteral extends Literal {
 	public IntegerLiteral(Number value) {
 		this.value = value.intValue();
 	}
-
-	@Override
-	public Type getType() {
-		return Type.INTEGER;
-	}
 	
 	@Override
 	public String toString() {
 		return "integer("+Integer.toString(value)+")";
 	}
-	//BEGIN get-Methoden für Builder
+	//BEGIN get-Methoden fï¿½r Builder
 	public int getValue(){
 		return value;
 	}
-	//END get-Methoden für Builder
+	//END get-Methoden fï¿½r Builder
 }

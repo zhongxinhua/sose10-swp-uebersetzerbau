@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.Reader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Vector;
@@ -20,6 +22,8 @@ import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 
+import de.fu_berlin.compilerbau.annotator.Annotator;
+import de.fu_berlin.compilerbau.annotator.java.AnnotatorImpl;
 import de.fu_berlin.compilerbau.builder.Builder;
 import de.fu_berlin.compilerbau.builder.Director;
 import de.fu_berlin.compilerbau.builder.JavaBuilder;
@@ -29,6 +33,7 @@ import de.fu_berlin.compilerbau.directoryWriter.ZipDirectoryWriter;
 import de.fu_berlin.compilerbau.dom.DomCreator;
 import de.fu_berlin.compilerbau.dom.DomNode;
 import de.fu_berlin.compilerbau.parser.AbstractSyntaxTree;
+import de.fu_berlin.compilerbau.symbolTable.java.RuntimeFactory;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
 
 /**
@@ -55,7 +60,7 @@ class Start {
 		System.exit(isError ? 1 : 0);
 	}
 
-	public static void main(final String[] args) {
+	public static void main(final String[] args) throws MalformedURLException, IOException {
 		ErrorHandler.init(true); //true==show debug information
 		
 		final Iterator<String> i = Arrays.asList(args).iterator();
@@ -123,6 +128,11 @@ class Start {
 		
 		//Syntaxbaum erstellen
 		AbstractSyntaxTree stree = new AbstractSyntaxTree(node);
+		
+		//Baum annotieren
+		//URL RT_JAR = new URL("file:///C:/Program Files (x86)/Java/jre1.5.0_14/lib/rt.jar");  
+		//de.fu_berlin.compilerbau.symbolTable.Runtime runtime = RuntimeFactory.newRuntime(null, new URL[] {}, RT_JAR);
+		//Annotator annotator = new AnnotatorImpl(runtime, stree);
 		
 		// Ausgabe von Fehlern und ggf. Abbruch
 		if(ErrorHandler.errorOccured()) {

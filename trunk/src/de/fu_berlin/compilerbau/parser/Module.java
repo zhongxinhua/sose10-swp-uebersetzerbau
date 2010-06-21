@@ -32,7 +32,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
  * @author Sam, stefan
  * 
  */
-public class Module {
+public class Module extends SyntaxTreeNode {
 	/**
 	 * name of the module
 	 */

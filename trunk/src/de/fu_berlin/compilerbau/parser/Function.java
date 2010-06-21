@@ -3,7 +3,6 @@ package de.fu_berlin.compilerbau.parser;
 import java.util.LinkedList;
 import java.util.List;
 import de.fu_berlin.compilerbau.dom.DomNode;
-import de.fu_berlin.compilerbau.parser.expressions.Type;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
 import de.fu_berlin.compilerbau.util.PositionString;
 
@@ -42,7 +41,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
  */
 public class Function extends SyntaxTreeNode {
 	private PositionString name;
-	private Type return_type;
+	private PositionString return_type;
 	// default: NO
 	private boolean isStatic = false;
 	// default: NO
@@ -62,7 +61,7 @@ public class Function extends SyntaxTreeNode {
 		// check optional attribute: returns
 		if (node.hasAttribute("returns")
 				&& node.getAttributeValue("returns").length() > 0) {
-			return_type = Type.get(node.getAttributeValue("returns"));
+			return_type = node.getAttribute("returns");
 			if (return_type == null) {
 				ErrorHandler.error(node,
 						"'type' attribute parse error: unknown type: "
@@ -119,7 +118,7 @@ public class Function extends SyntaxTreeNode {
 	}
 
 	public boolean hasBody() { return !body.isEmpty(); }
-	public Type getReturnType() { return return_type; }
+	public PositionString getReturnType() { return return_type; }
 	public PositionString getName() { return name; }
 	public boolean isStatic() { return isStatic; }
 	public boolean isFinal() { return isFinal; }

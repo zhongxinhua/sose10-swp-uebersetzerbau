@@ -16,12 +16,6 @@ public class FunctionCall extends Expression { // a(b,c)
 		this.name = name;
 		this.actualArguments = actualArguments;
 	}
-	
-	@Override
-	public Type getType() {
-		//TODO: wÃ¤hrend der smeantischen Analyse den Typ noch rausfinden
-		return null;
-	}
 
 	@Override
 	public void printTree(int deep) {
@@ -36,12 +30,12 @@ public class FunctionCall extends Expression { // a(b,c)
 	public String toString() {
 		return "functionCall("+name+")";
 	}
-	//BEGIN get-Methoden für Builder
+	//BEGIN get-Methoden fï¿½r Builder
 	public CharSequence getName(){
 		return name;
 	}
 	public List<Expression> getArguments(){
 		return actualArguments;
 	}
-	//END get-Methoden für Builder
+	//END get-Methoden fï¿½r Builder
 }

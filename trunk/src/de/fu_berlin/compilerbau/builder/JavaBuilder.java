@@ -19,7 +19,7 @@ import de.fu_berlin.compilerbau.parser.DeclarationStatement;
 import de.fu_berlin.compilerbau.parser.DoStatement;
 import de.fu_berlin.compilerbau.parser.ForEachStatement;
 import de.fu_berlin.compilerbau.parser.Function;
-import de.fu_berlin.compilerbau.parser.ImplementStatement;
+import de.fu_berlin.compilerbau.parser.ImplementsStatement;
 import de.fu_berlin.compilerbau.parser.ImportStatement;
 import de.fu_berlin.compilerbau.parser.Interface;
 import de.fu_berlin.compilerbau.parser.Module;
@@ -39,7 +39,6 @@ import de.fu_berlin.compilerbau.parser.expressions.MemberAccess;
 import de.fu_berlin.compilerbau.parser.expressions.NullLiteral;
 import de.fu_berlin.compilerbau.parser.expressions.ObjectCreation;
 import de.fu_berlin.compilerbau.parser.expressions.StringLiteral;
-import de.fu_berlin.compilerbau.parser.expressions.Type;
 import de.fu_berlin.compilerbau.parser.expressions.UnaryOperation;
 import de.fu_berlin.compilerbau.parser.expressions.BinaryOperation.BinaryOperator;
 import de.fu_berlin.compilerbau.parser.expressions.UnaryOperation.UnaryOperator;
@@ -72,7 +71,7 @@ public class JavaBuilder extends Builder {
 		}
 		// check for implement statements
 		if (!theclass.getImplementations().isEmpty()) {
-			for (ImplementStatement implementstmt : theclass
+			for (ImplementsStatement implementstmt : theclass
 					.getImplementations()) {
 				buildImplementStatement(implementstmt);
 			}
@@ -108,7 +107,7 @@ public class JavaBuilder extends Builder {
 			_code.append("static ");
 		}
 
-		_code.append(functionTypeToJavaString(func.getReturnType()) + " ");
+		_code.append(func.getReturnType() + " ");
 
 		_code.append(func.getName() + " (");
 
@@ -116,7 +115,7 @@ public class JavaBuilder extends Builder {
 		List<DeclarationStatement> args = func.getArguments();
 		for (int i = 0; i < args.size(); ++i) {
 			DeclarationStatement declStmt = args.get(i);
-			_code.append(typeToJavaString(declStmt.getType()) + " ");
+			_code.append(declStmt.getType() + " ");
 			if(declStmt.isArray()) {
 				_code.append("[] ");
 			}
@@ -198,7 +197,7 @@ public class JavaBuilder extends Builder {
 			_code.append("final ");
 		}
 
-		_code.append(typeToJavaString(decl.getType()));
+		_code.append(decl.getType());
 		
 		for (int i = 0; i < decl.getDimension(); ++i) {
 			_code.append("[] ");
@@ -210,17 +209,18 @@ public class JavaBuilder extends Builder {
 		if (decl.getValue() != null) {
 			
 			_code.append(" = ");
-			if(decl.getType() == Type.STRING){
+			boolean isString = decl.getType().equals("String");
+			if(isString){
 				_code.append("new String(");
 			}
 			buildExpressionStatement(decl.getValue());
-			if(decl.getType() == Type.STRING){
+			if(isString){
 				_code.append(")");
 			}
 		}
 		
 		else if(decl.isArray()) {
-			_code.append(" = new " + typeToJavaString(decl.getType())); 
+			_code.append(" = new " + decl.getType()); 
 			for(int i=0; i<decl.getDimension(); ++i) { 
 				_code.append("[1]"); 
 			} 
@@ -253,7 +253,7 @@ public class JavaBuilder extends Builder {
 
 	boolean isFirstImplementStatement = true;
 
-	protected void buildImplementStatement(ImplementStatement obj)
+	protected void buildImplementStatement(ImplementsStatement obj)
 			throws IOException {
 		if (isFirstImplementStatement) {
 			_code.append("implements ");
@@ -537,29 +537,5 @@ public class JavaBuilder extends Builder {
 					+ " - Should not happen - buildBinaryOperationExpression");
 		}
 
-	}
-
-	private String typeToJavaString(Type type) {
-		if (type == Type.STRING) {
-			return "String";
-		} else if (type == Type.INTEGER) {
-			return "int";
-		} else if (type == Type.FLOAT) {
-			return "float";
-		} else {
-			return "null";
-		}
-	}
-
-	private String functionTypeToJavaString(Type type) {
-		if (type == Type.STRING) {
-			return "String";
-		} else if (type == Type.INTEGER) {
-			return "int";
-		} else if (type == Type.FLOAT) {
-			return "float";
-		} else {
-			return "void";
-		}
 	}
 }

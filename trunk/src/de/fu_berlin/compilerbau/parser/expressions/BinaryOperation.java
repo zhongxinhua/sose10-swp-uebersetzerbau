@@ -20,12 +20,6 @@ public class BinaryOperation extends Expression { // a+b
 		left     = lhs;
 		right    = rhs;
 	}
-	
-	@Override
-	public Type getType() {
-		// TODO type checking
-		return null;
-	}
 
 	@Override
 	public void printTree(int deep) {
@@ -42,7 +36,7 @@ public class BinaryOperation extends Expression { // a+b
 	public String toString() {
 		return left.toString()+" "+operator.toString()+" "+right.toString();
 	}
-	//BEGIN get-Methoden für Builder
+	//BEGIN get-Methoden fï¿½r Builder
 	public Expression getLeftExpression(){
 		return left;
 	}
@@ -52,5 +46,5 @@ public class BinaryOperation extends Expression { // a+b
 	public Expression getRightExpression(){
 		return right;
 	}
-	//END get-Methoden für Builder
+	//END get-Methoden fï¿½r Builder
 }
