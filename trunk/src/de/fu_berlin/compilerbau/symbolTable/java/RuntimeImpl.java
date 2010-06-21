@@ -19,6 +19,7 @@ import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
+import de.fu_berlin.compilerbau.symbolTable.Variable;
 import static de.fu_berlin.compilerbau.symbolTable.SymbolType.*;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
@@ -239,6 +240,11 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	public QualifiedSymbol lookTreeUp(UnqualifiedSymbol symbol)
 			throws InvalidIdentifierException {
 		return lookTreeDown(symbol);
+	}
+
+	@Override
+	public Variable getNewVariableForParameter(PositionString name, Symbol variableType, Modifier modifier) throws InvalidIdentifierException {
+		return new VariableImpl(this, null, name, variableType, modifier);
 	}
 	
 }

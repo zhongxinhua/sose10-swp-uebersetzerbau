@@ -90,8 +90,19 @@ public interface Runtime extends SymbolContainer {
 	boolean isValidIdentifier(String id);
 	
 	/**
+	 * Creates a new {@link Variable} to be used e.g. in
+	 * {@link Class#addConstructor(de.fu_berlin.compilerbau.util.StreamPosition, Iterator, Modifier) addConstructor}.
+	 * @param name name of the parameter
+	 * @param variableType type of the parameter
+	 * @param modifier
+	 * @throws InvalidIdentifierException
+	 */
+	Variable getNewVariableForParameter(PositionString name, Symbol variableType, Modifier modifier) throws InvalidIdentifierException;
+	
+	/**
 	 * Returns the scope for all symbols that do not belong to a scope (int, A[], ...).
 	 */
+	@InternalMethod
 	Package getGlobalScope();
 	
 	/**
