@@ -18,6 +18,7 @@ import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Variable;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
+import de.fu_berlin.compilerbau.util.Likelyness;
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
 
@@ -45,9 +46,11 @@ class MethodImpl extends ScopeImpl implements Method {
 		}
 		this.resultType = resultType;
 		this.modifier = modifier;
-		while(parameters.hasNext()) {
-			Variable e = parameters.next();
-			this.parameters.add(e);
+		if(parameters != null) {
+			while(parameters.hasNext()) {
+				Variable e = parameters.next();
+				this.parameters.add(e);
+			}
 		}
 	}
 
@@ -59,15 +62,6 @@ class MethodImpl extends ScopeImpl implements Method {
 	@Override
 	public Symbol getReturnType() {
 		return resultType;
-	}
-
-	@Override
-	public QualifiedSymbol lookup(UnqualifiedSymbol symbol) throws InvalidIdentifierException {
-		QualifiedSymbol result = super.lookup(symbol);
-		if(result == null) {
-			result = getRuntime().lookup(symbol);
-		}
-		return result;
 	}
 
 	@Override
@@ -157,6 +151,23 @@ class MethodImpl extends ScopeImpl implements Method {
 		}
 		builder.append(')');
 		return builder.toString();
+	}
+
+	@Override
+	public QualifiedSymbol lookTreeDown(UnqualifiedSymbol symbol)
+			throws InvalidIdentifierException {
+		return null;
+	}
+
+	@Override
+	public QualifiedSymbol lookTreeUp(UnqualifiedSymbol symbol) throws InvalidIdentifierException {
+		if(symbol.is(SymbolType.VARIABLE) != Likelyness.IMPOSSIBLE) {
+			VariableImpl result = new VariableImpl(getRuntime(), this, symbol.getCall(), null, null);
+			if(result != null) {
+				return result;
+			}
+		}
+		return getParent().lookTreeUp(symbol);
 	}
 
 }

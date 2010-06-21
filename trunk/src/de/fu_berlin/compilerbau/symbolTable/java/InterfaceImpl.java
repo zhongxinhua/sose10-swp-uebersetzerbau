@@ -26,5 +26,10 @@ public class InterfaceImpl extends ClassOrInterfaceImpl implements Interface {
 	public SymbolType getType() {
 		return SymbolType.INTERFACE;
 	}
+	
+	@Override
+	public String toString() {
+		return ((Package)getParent()).getDestinationName() + "." + destinationName;
+	}
 
 }

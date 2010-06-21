@@ -1,10 +1,12 @@
 package de.fu_berlin.compilerbau.symbolTable;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
+import de.fu_berlin.compilerbau.util.Likelyness;
 import de.fu_berlin.compilerbau.util.PositionString;
 
 /**
@@ -31,13 +33,6 @@ public interface SymbolContainer extends Symbol {
 	Map<QualifiedSymbol, Set<Symbol>> getShadowedSymbols();
 	
 	/**
-	 * Looks up this {@link UnqualifiedSymbol unqualified symbol}.
-	 * @param symbol symbol to lookup
-	 * @return null if not found
-	 */
-	QualifiedSymbol lookup(UnqualifiedSymbol symbol) throws InvalidIdentifierException;
-	
-	/**
 	 * @see #lookup(UnqualifiedSymbol)
 	 * @see Runtime#getUnqualifiedSymbol(PositionString, SymbolType)
 	 * @return null if not found
@@ -58,5 +53,27 @@ public interface SymbolContainer extends Symbol {
 	 * 	null if all symbols are qualified. *) May be transitive or maybe not.
 	 */
 	List<SymbolContainer> qualifyAllSymbols();
+	
+	/**
+	 * Tries to lookup a symbol. Returns unqualified symbol if not found.
+	 * @see #getUnqualifiedSymbol(PositionString, Iterator)
+	 * @see SymbolContainer#lookup(UnqualifiedSymbol)
+	 */
+	Symbol tryGetQualifiedSymbol(PositionString name, Iterator<Map.Entry<SymbolType,Likelyness>> likeliness) throws InvalidIdentifierException;
+	
+	/**
+	 * @see #tryGetQualifiedSymbol(PositionString, Iterator)
+	 */
+	Symbol tryGetQualifiedSymbol(PositionString name, SymbolType type) throws InvalidIdentifierException;
+
+	/**
+	 * @throws InvalidIdentifierException 
+	 * @see #tryGetQualifiedSymbol(PositionString, Iterator)
+	 */
+	Symbol tryGetQualifiedSymbol(PositionString name) throws InvalidIdentifierException;
+	
+	QualifiedSymbol lookTreeUp(UnqualifiedSymbol symbol) throws InvalidIdentifierException;
+	
+	QualifiedSymbol lookTreeDown(UnqualifiedSymbol symbol) throws InvalidIdentifierException;
 	
 }

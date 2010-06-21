@@ -34,7 +34,7 @@ class UnqualifiedSymbolImpl implements UnqualifiedSymbol, Comparable<Symbol> {
 		REPLICATIONS.put(VARIABLE,           new SymbolType[] { MEMBER });
 	}
 
-	UnqualifiedSymbolImpl(PositionString call, RuntimeImpl runtime) {
+	UnqualifiedSymbolImpl(PositionString call, Runtime runtime) {
 		this.storageSymbol = new SymbolImpl(runtime, null);
 		this.call = call;
 		
@@ -43,7 +43,7 @@ class UnqualifiedSymbolImpl implements UnqualifiedSymbol, Comparable<Symbol> {
 		}
 	}
 
-	UnqualifiedSymbolImpl(PositionString call, RuntimeImpl runtime, Iterator<Entry<SymbolType, Likelyness>> likeliness_) {
+	UnqualifiedSymbolImpl(PositionString call, Runtime runtime, Iterator<Entry<SymbolType, Likelyness>> likeliness_) {
 		this(call, runtime);
 		
 		while(likeliness_.hasNext()) {
@@ -75,7 +75,7 @@ class UnqualifiedSymbolImpl implements UnqualifiedSymbol, Comparable<Symbol> {
 		} while(hasChanges);
 	}
 
-	UnqualifiedSymbolImpl(PositionString call, RuntimeImpl runtime,
+	UnqualifiedSymbolImpl(PositionString call, Runtime runtime,
 			Map<SymbolType, Likelyness> likelynesses) {
 		this.storageSymbol = new SymbolImpl(runtime, (Package)null);
 		this.call = call;

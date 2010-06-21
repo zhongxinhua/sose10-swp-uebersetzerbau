@@ -27,7 +27,6 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierExcepti
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.Likelyness;
 import de.fu_berlin.compilerbau.util.PositionBean;
-import de.fu_berlin.compilerbau.util.PositionStringBuilder;
 import de.fu_berlin.compilerbau.util.Punycode;
 import static de.fu_berlin.compilerbau.util.Likelyness.*;
 import de.fu_berlin.compilerbau.util.PositionString;
@@ -122,52 +121,34 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 		return this;
 	}
 	
+	SymbolSplitter.QualifiedSymbolCtor pkgCtor = new SymbolSplitter.QualifiedSymbolCtor() {
+
+		@Override
+		public QualifiedSymbol newInstance(PositionString str) throws InvalidIdentifierException {
+			return new PackageImpl(getRuntime(), str);
+		}
+		
+	};
+	
 	@Override
-	public QualifiedSymbol lookup(UnqualifiedSymbol symbol) throws InvalidIdentifierException {
-		final Likelyness isPrimitive = symbol.is(PRIMITIVE_TYPE);
-		if(isPrimitive != IMPOSSIBLE) {
+	public QualifiedSymbol lookTreeDown(UnqualifiedSymbol symbol) throws InvalidIdentifierException {
+		if(symbol.is(PRIMITIVE_TYPE) != IMPOSSIBLE) {
 			PrimitiveTypeImpl result = primitiveTypesByName.get(symbol.getCall().toString());
 			if(result != null) {
 				return result;
 			}
 		}
 		
-		final Likelyness isPackage = symbol.is(PACKAGE);
-		if(isPackage != IMPOSSIBLE) {
+		if(symbol.is(PACKAGE) != IMPOSSIBLE) {
 			final PositionString call = symbol.getCall();
 			
 			final PackageImpl pkgResult = packages.get(new PackageImpl(this, call));
-			if(pkgResult != null || isPackage == YES) {
+			if(pkgResult != null) {
 				return pkgResult;
 			}
 		}
 		
-		final LinkedList<PositionString> list = symbol.getCall().split('.', -1);
-		for(int i = list.size()-1; i > 0; --i) {
-			final PositionString p0 = list.get(0);
-			final PositionStringBuilder builder = new PositionStringBuilder(p0);
-			builder.append(p0.toString());
-			for(int h = 1; h < i; ++h) {
-				builder.append('.');
-				builder.append(list.get(h));
-			}
-			
-			final PackageImpl pkg = packages.get(new PackageImpl(this, builder.toPositionString()));
-			if(pkg != null) {
-				final PositionString p1 = list.get(i);
-				final PositionStringBuilder subCall = new PositionStringBuilder(p1);
-				subCall.append(p1);
-				for(int h = i+1; h < list.size()-1; ++h) {
-					subCall.append('.');
-					subCall.append(list.get(h));
-				}
-				final UnqualifiedSymbolImpl subCallSym =
-						new UnqualifiedSymbolImpl(subCall.toPositionString(), this, symbol.getLikelynessPerType());
-				return pkg.lookup(subCallSym);
-			}
-		}
-		
-		return null;
+		return SymbolSplitter.lookup(this, this, symbol, packages, pkgCtor);
 	}
 
 	@Override
@@ -252,6 +233,12 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	@Override
 	public void registerSymbolContainer(SymbolContainer container) {
 		symbolContainers.add(container);
+	}
+
+	@Override
+	public QualifiedSymbol lookTreeUp(UnqualifiedSymbol symbol)
+			throws InvalidIdentifierException {
+		return lookTreeDown(symbol);
 	}
 	
 }

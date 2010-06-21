@@ -26,4 +26,9 @@ public interface Class extends ClassOrInterface {
 	
 	Symbol getSuperClass();
 	
+	/**
+	 * Returns the scope representing the the static blocks in a class.
+	 */
+	Scope getStaticBlock();
+	
 }

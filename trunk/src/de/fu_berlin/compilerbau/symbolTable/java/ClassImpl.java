@@ -12,6 +12,7 @@ import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.Package;
 import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
+import de.fu_berlin.compilerbau.symbolTable.Scope;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.Variable;
@@ -27,13 +28,14 @@ class ClassImpl extends ClassOrInterfaceImpl implements Class {
 	protected final Map<Member,MemberImpl> members = new TreeMap<Member,MemberImpl>();
 	protected final Map<Constructor, ConstructorImpl> ctors = new TreeMap<Constructor, ConstructorImpl>();
 	protected final ShadowedSymbols shadowedSymbols = new ShadowedSymbols(this);
-		;
+	protected final Scope staticBlock;
 	protected final Symbol extends_;
 
 	public ClassImpl(Runtime runtime, Package parent, Symbol extends_, Iterator<Symbol> implements_,
 			Modifier modifier, PositionString canonicalName) throws InvalidIdentifierException {
 		super(runtime, parent, implements_, modifier, canonicalName);
 		this.extends_ = extends_;
+		this.staticBlock = new ScopeImpl(runtime, this);
 	}
 
 	@Override
@@ -80,7 +82,12 @@ class ClassImpl extends ClassOrInterfaceImpl implements Class {
 	
 	@Override
 	public String toString() {
-		return ((Package)getParent()).getDestinationName() + "." + destinationName;
+		return ((Package)getParent()).getDestinationName() + "." + destinationName + " extends " + extends_;
+	}
+
+	@Override
+	public Scope getStaticBlock() {
+		return staticBlock;
 	}
 
 }

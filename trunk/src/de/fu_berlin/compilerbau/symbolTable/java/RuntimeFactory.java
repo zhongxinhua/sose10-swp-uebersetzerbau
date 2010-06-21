@@ -57,8 +57,7 @@ public class RuntimeFactory {
 	 */
 	public static Runtime newRuntime(Iterator<Map.Entry<PositionString,PositionString>> imports,
 			URL[] classpath, URL rtJar) throws IOException {
-		
-		final long start = System.currentTimeMillis();
+				final long start = System.currentTimeMillis();
 		
 		final RuntimeImpl result = new RuntimeImpl();
 		result.setNameManglingEnabled(false);
@@ -87,16 +86,19 @@ public class RuntimeFactory {
 					if(!fileName.endsWith(DOT_CLASS)) {
 						continue;
 					}
+					
 					String className = fileName.replaceAll("/", "\\.");
 					className = className.substring(0, className.length() - DOT_CLASS.length());
+					
 					Class<?> clazz = Class.forName(className, false, loader);
 					if(clazz.isSynthetic() || clazz.isAnonymousClass()) {
 						continue;
 					}
 					
 					// TODO: Bahandlung für clazz.isMemberClass();
-					
+
 					String pkgName = className.substring(0, className.lastIndexOf('.'));
+					className = className.substring(pkgName.length() + 1);
 					try {
 						populateFromNativeClass(result, pkgName, className, clazz); // indentation too big ...
 					} catch(SymbolTableException e) {
@@ -137,7 +139,7 @@ public class RuntimeFactory {
 		private final Runtime rt;
 		private final Symbol[] types;
 		
-		public ArgumentIterator(Runtime rt, Class<?>[] classes) {
+		public ArgumentIterator(Runtime rt, Class<?>[] classes) throws InvalidIdentifierException {
 			this.rt = rt;
 			this.types = javaToCompilerTypes(rt, classes);
 		}
@@ -173,12 +175,8 @@ public class RuntimeFactory {
 		}
 	}
 	
-	private static void populateFromNativeClass(final Runtime rt, String pkgName,
+	private static ClassOrInterface populateFromNativeClass(final Runtime rt, String pkgName,
 			String className, Class<?> clazz) throws SymbolTableException {
-		
-		if("java.lang.String".equals(clazz.getCanonicalName())) {
-			System.out.println("String");
-		}
 		
 		PositionString pkgLookupName = positionStrings.get(pkgName);
 		if(pkgLookupName == null) {
@@ -188,14 +186,13 @@ public class RuntimeFactory {
 		Symbol pkgSymbol = rt.getQualifiedSymbol(pkgLookupName, SymbolType.PACKAGE);
 		if(pkgSymbol == null) {
 			// package private, protected oder private Klasse
-			return;
+			return null;
 		}
 		Package pkg = (Package)pkgSymbol;
 		
-		System.err.println("Reading: " + className);
+		System.err.println("Reading: " + pkgName + "/" + className);
 
 		Symbol[] ifSymbols = javaToCompilerTypes(rt, clazz.getInterfaces());
-
 		
 		PositionString classLookupName = positionStrings.get(className);
 		if(classLookupName == null) {
@@ -251,6 +248,11 @@ public class RuntimeFactory {
 			if(method.isSynthetic()) {
 				continue;
 			}
+			
+			if("Object".equals(className) && "java.lang".equals(pkgName) && "clone".equals(method.getName())) {
+				System.out.println("trap");
+			}
+			
 			final NativeModifier modifiers = new NativeModifier(method.getModifiers());
 			final Iterator<Variable> parameters = new ArgumentIterator(rt, method.getParameterTypes());
 			final Symbol resultType = javaToCompilerType(rt, method.getReturnType());
@@ -260,9 +262,16 @@ public class RuntimeFactory {
 				name = new PositionString(method.getName(), PositionBean.ZERO);
 				positionStrings.put(methodName, name);
 			}
+			
 			Symbol symbol = coiSymbol.addMethod(name, resultType, parameters, modifiers);
-			System.err.println("\t" + symbol);
+			
+			String debug = symbol.toString();
+			System.err.println("\t" + debug);
 		}
+
+		
+		System.err.println("\t" + coiSymbol + "\n");
+		return coiSymbol;
 		
 	}
 	
@@ -272,8 +281,9 @@ public class RuntimeFactory {
 	 * @param rt
 	 * @param type
 	 * @return
+	 * @throws InvalidIdentifierException 
 	 */
-	static Symbol javaToCompilerType(Runtime rt, Class<?> type) {
+	static Symbol javaToCompilerType(Runtime rt, Class<?> type) throws InvalidIdentifierException {
 		
 		String typeName = type.getName();
 		PositionString name = positionStrings.get(typeName);
@@ -282,7 +292,7 @@ public class RuntimeFactory {
 			positionStrings.put(typeName, name);
 		}
 		
-		Symbol result;
+		final Symbol result;
 		if(type == Void.TYPE) {
 			result = rt.getVoid();
 		} else if(type.isPrimitive()) {
@@ -290,9 +300,9 @@ public class RuntimeFactory {
 		} else if(type.isArray()) {
 			result = rt.getArrayType(type);
 		} else if(type.isInterface()) {
-			result = rt.getUnqualifiedSymbol(name, SymbolType.INTERFACE);
+			result = rt.tryGetQualifiedSymbol(name, SymbolType.INTERFACE);
 		} else {
-			result = rt.getUnqualifiedSymbol(name, SymbolType.CLASS);
+			result = rt.tryGetQualifiedSymbol(name, SymbolType.CLASS);
 		}
 		
 		return result;
@@ -300,9 +310,10 @@ public class RuntimeFactory {
 	}
 	
 	/**
+	 * @throws InvalidIdentifierException 
 	 * @see #javaToCompilerType(Runtime, Class)
 	 */
-	static Symbol[] javaToCompilerTypes(Runtime rt, Class<?> type[]) {
+	static Symbol[] javaToCompilerTypes(Runtime rt, Class<?> type[]) throws InvalidIdentifierException {
 		Symbol[] result = new Symbol[type.length];
 		for(int i = 0; i < type.length; ++i) {
 			result[i] = javaToCompilerType(rt, type[i]);

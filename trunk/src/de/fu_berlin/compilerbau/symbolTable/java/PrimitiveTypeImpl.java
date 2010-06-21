@@ -12,6 +12,7 @@ import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.PrimitiveType;
 import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
+import de.fu_berlin.compilerbau.symbolTable.Scope;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.Variable;
@@ -82,9 +83,10 @@ class PrimitiveTypeImpl extends ClassOrInterfaceImpl implements PrimitiveType {
 		return SymbolType.PRIMITIVE_TYPE;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Map<QualifiedSymbol, Set<Symbol>> getShadowedSymbols() {
-		return Collections.emptyMap();
+		return Collections.EMPTY_MAP;
 	}
 
 	@Override
@@ -100,6 +102,11 @@ class PrimitiveTypeImpl extends ClassOrInterfaceImpl implements PrimitiveType {
 	@Override
 	public String toString() {
 		return type.getName();
+	}
+
+	@Override
+	public Scope getStaticBlock() {
+		return null;
 	}
 
 }

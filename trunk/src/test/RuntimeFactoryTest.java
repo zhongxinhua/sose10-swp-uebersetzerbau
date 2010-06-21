@@ -19,8 +19,11 @@ class RuntimeFactoryTest {
 	}
 
 	public static void main(String[] args) throws IOException {
-		Runtime newRuntime = RuntimeFactory.newRuntime(null, new URL[] {}, RT_JAR);
-		System.out.println(newRuntime);
+		Runtime rt = RuntimeFactory.newRuntime(null, new URL[] {}, RT_JAR);
+		System.out.println(rt);
+		System.out.println(rt.mangleName("Übersetzerbau"));
+		System.out.println(rt.mangleName("übersetzerbau"));
+		System.out.println(rt.mangleName("эксперимент"));
 	}
 
 }

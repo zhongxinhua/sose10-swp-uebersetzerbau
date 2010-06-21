@@ -19,6 +19,7 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierExcept
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
+import de.fu_berlin.compilerbau.util.Likelyness;
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
 
@@ -143,9 +144,56 @@ class PackageImpl extends SymbolContainerImpl implements Package {
 	}
 
 	@Override
-	public QualifiedSymbol lookup(UnqualifiedSymbol symbol) {
-		// TODO Auto-generated method stub
-		return null;
+	public QualifiedSymbol lookTreeUp(UnqualifiedSymbol symbol) throws InvalidIdentifierException {
+		if(symbol.is(SymbolType.CLASS) != Likelyness.IMPOSSIBLE) {
+			ClassImpl result = new ClassImpl(getRuntime(), this, null, null, null, symbol.getCall());
+			if(result != null) {
+				return result;
+			}
+		}
+		if(symbol.is(SymbolType.INTERFACE) != Likelyness.IMPOSSIBLE) {
+			InterfaceImpl result = new InterfaceImpl(getRuntime(), this, null, null, symbol.getCall());
+			if(result != null) {
+				return result;
+			}
+		}
+		return getRuntime().lookTreeUp(symbol);
+	}
+	
+	protected final Package pkg = this;
+	protected final SymbolSplitter.QualifiedSymbolCtor classCtor = new SymbolSplitter.QualifiedSymbolCtor() {
+
+		@Override
+		public QualifiedSymbol newInstance(PositionString str)
+				throws InvalidIdentifierException {
+			return new ClassImpl(getRuntime(), pkg, null, null, null, str);
+		}
+		
+	};
+	protected final SymbolSplitter.QualifiedSymbolCtor interfaceCtor = new SymbolSplitter.QualifiedSymbolCtor() {
+
+		@Override
+		public QualifiedSymbol newInstance(PositionString str)
+				throws InvalidIdentifierException {
+			return new InterfaceImpl(getRuntime(), pkg, null, null, str);
+		}
+		
+	};
+
+	@Override
+	public QualifiedSymbol lookTreeDown(UnqualifiedSymbol symbol) throws InvalidIdentifierException {
+		if(symbol.is(SymbolType.CLASS_OR_INTERFACE) != Likelyness.IMPOSSIBLE) {
+			ClassOrInterfaceImpl impl = new ClassOrInterfaceImpl(getRuntime(), this, null, null, symbol.getCall());
+			ClassOrInterfaceImpl result = classesAndInterfaces.get(impl);
+			if(result != null) {
+				return result;
+			}
+		}
+		QualifiedSymbol result = SymbolSplitter.lookup(getRuntime(), this, symbol, classes, classCtor);
+		if(result != null) {
+			return result;
+		}
+		return SymbolSplitter.lookup(getRuntime(), this, symbol, interfaces, interfaceCtor);
 	}
 
 	@Override

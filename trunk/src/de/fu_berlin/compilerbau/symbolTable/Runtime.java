@@ -52,8 +52,7 @@ public interface Runtime extends SymbolContainer {
 	 * @return A unqualified symbol. Give it to a {@link SymbolContainer container}!
 	 * @throws RuntimeException A symbol occurred twice.
 	 */
-	UnqualifiedSymbol getUnqualifiedSymbol(PositionString name,
-			Iterator<Map.Entry<SymbolType,Likelyness>> likeliness) throws RuntimeException;
+	UnqualifiedSymbol getUnqualifiedSymbol(PositionString name, Iterator<Map.Entry<SymbolType,Likelyness>> likeliness);
 	
 	/**
 	 * The actual type is known.
@@ -71,19 +70,16 @@ public interface Runtime extends SymbolContainer {
 	 */
 	Void getVoid();
 	
-	PrimitiveType getPrimitiveType(java.lang.Class<?> c);
-	
 	List<Entry<QualifiedSymbol,Symbol>> getAllShadowsList();
 	
 	ArrayType getArrayType(Symbol componentType, int dimension);
 	
-	ArrayType getArrayType(java.lang.Class<?> clazz);
-	
 	/**
 	 * This method makes the input name a valid identifier for Java.
-	 * E.g. "Übersetzerbau" could become a puny code like name "$Zbersetzerbau$clb".
+	 * E.g. "Übersetzerbau" could become a puny code like name "$Zbersetzerbau$clb",
+	 * "эксперимент" could become "$Ze1aaigmhjjgr5i".
 	 * 
-	 * See <a href="http://en.wikipedia.org/wiki/Name_mangling">Wikipedia</a>.
+	 * @see <a href="http://en.wikipedia.org/wiki/Name_mangling">Wikipedia</a>.
 	 * @return null if the name could not be mangled.
 	 */
 	String mangleName(String name);
@@ -93,18 +89,40 @@ public interface Runtime extends SymbolContainer {
 	 */
 	boolean isValidIdentifier(String id);
 	
-	boolean isNameManglingEnabled();
-	
-	void setNameManglingEnabled(boolean enabled);
-	
 	/**
 	 * Returns the scope for all symbols that do not belong to a scope (int, A[], ...).
 	 */
 	Package getGlobalScope();
 	
 	/**
-	 * (internal method)
+	 * To populate the scope list.
 	 */
+	@InternalMethod
 	void registerSymbolContainer(SymbolContainer container);
+
+	/**
+	 * Determine if newly added symbols get mangled.
+	 * @see #mangleName(String)
+	 */
+	@InternalMethod
+	boolean isNameManglingEnabled();
+
+	/**
+	 * @see #isNameManglingEnabled()
+	 */
+	@InternalMethod
+	void setNameManglingEnabled(boolean enabled);
+
+	/**
+	 * Return the symbol representing a primitive type, e.g. byte.
+	 */
+	@InternalMethod
+	PrimitiveType getPrimitiveType(java.lang.Class<?> c);
+
+	/**
+	 * Return the symbol representing this array class.
+	 */
+	@InternalMethod
+	ArrayType getArrayType(java.lang.Class<?> clazz);
 	
 }

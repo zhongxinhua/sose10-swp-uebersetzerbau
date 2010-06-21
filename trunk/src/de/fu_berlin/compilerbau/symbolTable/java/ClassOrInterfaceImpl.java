@@ -20,6 +20,7 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierExcept
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
+import de.fu_berlin.compilerbau.util.Likelyness;
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
 
@@ -104,8 +105,15 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 	}
 
 	@Override
-	public QualifiedSymbol lookup(UnqualifiedSymbol symbol) throws InvalidIdentifierException {
-		return getRuntime().lookup(symbol);
+	public QualifiedSymbol lookTreeUp(UnqualifiedSymbol symbol) throws InvalidIdentifierException {
+		if(symbol.is(SymbolType.METHOD) != Likelyness.IMPOSSIBLE) {
+			MethodImpl oldsymbol = new MethodImpl(getRuntime(), this, symbol.getCall(), null, null, null);
+			MethodImpl result = methods.get(oldsymbol);
+			if(result != null) {
+				return result;
+			}
+		}
+		return getRuntime().lookTreeUp(symbol);
 	}
 
 	@Override
@@ -116,6 +124,12 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 	@Override
 	public int compareTo(ClassOrInterface right) {
 		return destinationName.compareTo(right.getDestinationName());
+	}
+
+	@Override
+	public QualifiedSymbol lookTreeDown(UnqualifiedSymbol symbol)
+			throws InvalidIdentifierException {
+		return null;
 	}
 
 }

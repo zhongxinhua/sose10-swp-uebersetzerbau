@@ -37,7 +37,7 @@ class ArrayTypeImpl extends ClassImpl implements ArrayType {
 		this(rt, arrayClassInfo(rt,clazz).getKey(), arrayClassInfo(rt,clazz).getValue());
 	}
 
-	private static Pair<Symbol, Integer> arrayClassInfo(Runtime runtime, Class<?> clazz) {
+	private static Pair<Symbol, Integer> arrayClassInfo(Runtime runtime, Class<?> clazz) throws InvalidIdentifierException {
 		int i = 0;
 		Class<?> ct;
 		while((ct = clazz.getComponentType()) != null) {

@@ -58,7 +58,7 @@ class ScopeImpl extends SymbolContainerImpl implements Scope {
 	}
 
 	@Override
-	public QualifiedSymbol lookup(UnqualifiedSymbol symbol) throws InvalidIdentifierException {
+	public QualifiedSymbol lookTreeUp(UnqualifiedSymbol symbol) throws InvalidIdentifierException {
 		if(symbol.is(SymbolType.VARIABLE) != Likelyness.IMPOSSIBLE) {
 			VariableImpl needle = new VariableImpl(null, null, symbol.getCall(), null, null);
 			VariableImpl result = variables.get(needle);
@@ -66,12 +66,18 @@ class ScopeImpl extends SymbolContainerImpl implements Scope {
 				return result;
 			}
 		}
-		return getParent().lookup(symbol);
+		return getParent().lookTreeUp(symbol);
 	}
 
 	@Override
 	public Scope addScope() {
 		return new ScopeImpl(getRuntime(), this);
+	}
+
+	@Override
+	public QualifiedSymbol lookTreeDown(UnqualifiedSymbol symbol)
+			throws InvalidIdentifierException {
+		return null;
 	}
 
 }
