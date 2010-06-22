@@ -228,4 +228,9 @@ class PackageImpl extends SymbolContainerImpl implements Package {
 		return COMPARATOR;
 	}
 
+	@Override
+	public String getCanonicalDestinationName() {
+		return getDestinationName();
+	}
+
 }

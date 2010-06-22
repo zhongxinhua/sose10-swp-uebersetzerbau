@@ -142,4 +142,9 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 		return COMPARATOR;
 	}
 
+	@Override
+	public String getCanonicalDestinationName() {
+		return ((Package)getParent()).getCanonicalDestinationName() + "." + getDestinationName();
+	}
+
 }

@@ -190,7 +190,7 @@ public class RuntimeFactory {
 		}
 		Package pkg = (Package)pkgSymbol;
 		
-		//System.err.println("Reading: " + pkgName + "/" + className);
+		System.err.println("Reading: " + pkgName + "/" + className);
 
 		Symbol[] ifSymbols = javaToCompilerTypes(rt, clazz.getInterfaces());
 		
@@ -228,7 +228,7 @@ public class RuntimeFactory {
 				}
 				final Symbol type = javaToCompilerType(rt, field.getType());
 				Symbol symbol = clazzSymbol.addMember(name, type, modifiers);
-				//System.err.println("\t" + symbol);
+				System.err.println("\t" + symbol);
 			}
 			
 			for(Constructor<?> ctor : clazz.getDeclaredConstructors()) {
@@ -238,7 +238,7 @@ public class RuntimeFactory {
 				final NativeModifier modifiers = new NativeModifier(ctor.getModifiers());
 				final Iterator<Variable> parameters = new ArgumentIterator(rt, ctor.getParameterTypes());
 				Symbol symbol = clazzSymbol.addConstructor(PositionBean.ZERO, parameters, modifiers);
-				//System.err.println("\t" + symbol);
+				System.err.println("\t" + symbol);
 			}
 		} else {
 			coiSymbol = pkg.addInterface(classLookupName, implements_, clazzModifiers);
@@ -248,10 +248,6 @@ public class RuntimeFactory {
 			if(method.isSynthetic()) {
 				continue;
 			}
-			
-			//if("Object".equals(className) && "java.lang".equals(pkgName) && "clone".equals(method.getName())) {
-				//System.out.println("trap");
-			//}
 			
 			final NativeModifier modifiers = new NativeModifier(method.getModifiers());
 			final Iterator<Variable> parameters = new ArgumentIterator(rt, method.getParameterTypes());
@@ -265,12 +261,11 @@ public class RuntimeFactory {
 			
 			Symbol symbol = coiSymbol.addMethod(name, resultType, parameters, modifiers);
 			
-			//String debug = symbol.toString();
-			//System.err.println("\t" + debug);
+			System.err.println("\t" + symbol);
 		}
 
 		
-		//System.err.println("\t" + coiSymbol + "\n");
+		System.err.println("\t" + coiSymbol + "\n");
 		return coiSymbol;
 		
 	}

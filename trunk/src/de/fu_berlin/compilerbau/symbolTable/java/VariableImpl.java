@@ -88,4 +88,9 @@ class VariableImpl extends SymbolImpl implements Variable {
 		return "" + variableType + " " + name;
 	}
 
+	@Override
+	public String getCanonicalDestinationName() {
+		return getDestinationName();
+	}
+
 }

@@ -180,4 +180,9 @@ class MethodImpl extends ScopeImpl implements Method {
 		return getParent().lookTreeUp(symbol);
 	}
 
+	@Override
+	public String getCanonicalDestinationName() {
+		return ((ClassOrInterface)getParent()).getCanonicalDestinationName() + "." + getDestinationName();
+	}
+
 }

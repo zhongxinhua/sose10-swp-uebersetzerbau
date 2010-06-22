@@ -100,10 +100,16 @@ public interface Runtime extends SymbolContainer {
 	Variable getNewVariableForParameter(PositionString name, Symbol variableType, Modifier modifier) throws InvalidIdentifierException;
 	
 	/**
+	 * Returns the scope containing all the symbols in the global scope (java.lang.*, imports ...)
+	 */
+	@InternalMethod
+	SymbolContainer getGlobalScope();
+	
+	/**
 	 * Returns the scope for all symbols that do not belong to a scope (int, A[], ...).
 	 */
 	@InternalMethod
-	Package getGlobalScope();
+	Package getUndefinedScope();
 	
 	/**
 	 * To populate the scope list.

@@ -28,7 +28,7 @@ class ArrayTypeImpl extends ClassImpl implements ArrayType {
 	protected final int dimension;
 
 	public ArrayTypeImpl(Runtime runtime, Symbol componentType, int dimension) throws InvalidIdentifierException {
-		super(runtime, runtime.getGlobalScope(), null, null, null, null);
+		super(runtime, runtime.getUndefinedScope(), null, null, null, null);
 		this.componentType = componentType;
 		this.dimension = dimension;
 	}

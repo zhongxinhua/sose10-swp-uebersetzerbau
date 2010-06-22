@@ -33,21 +33,6 @@ public interface SymbolContainer extends Symbol {
 	Map<QualifiedSymbol, Set<Symbol>> getShadowedSymbols();
 	
 	/**
-	 * @see #lookup(UnqualifiedSymbol)
-	 * @see Runtime#getUnqualifiedSymbol(PositionString, SymbolType)
-	 * @return null if not found
-	 * @throws InvalidIdentifierException 
-	 */
-	QualifiedSymbol getQualifiedSymbol(PositionString name, SymbolType type) throws InvalidIdentifierException;
-	
-	/**
-	 * @see #lookup(UnqualifiedSymbol)
-	 * @return null if not found
-	 * @throws InvalidIdentifierException 
-	 */
-	QualifiedSymbol getQualifiedSymbol(PositionString name) throws InvalidIdentifierException;
-	
-	/**
 	 * Tries to convert all unqualified symbols to qualified ones.
 	 * @return List of all containers having containing unqualified symbols* or
 	 * 	null if all symbols are qualified. *) May be transitive or maybe not.
@@ -72,8 +57,33 @@ public interface SymbolContainer extends Symbol {
 	 */
 	Symbol tryGetQualifiedSymbol(PositionString name) throws InvalidIdentifierException;
 	
-	QualifiedSymbol lookTreeUp(UnqualifiedSymbol symbol) throws InvalidIdentifierException;
+	/**
+	 * @see #lookup(UnqualifiedSymbol)
+	 * @see Runtime#getUnqualifiedSymbol(PositionString, SymbolType)
+	 * @return null if not found
+	 * @throws InvalidIdentifierException 
+	 */
+	@InternalMethod
+	QualifiedSymbol getQualifiedSymbol(PositionString name, SymbolType type) throws InvalidIdentifierException;
 	
+	/**
+	 * @see #lookup(UnqualifiedSymbol)
+	 * @return null if not found
+	 * @throws InvalidIdentifierException 
+	 */
+	@InternalMethod
+	QualifiedSymbol getQualifiedSymbol(PositionString name) throws InvalidIdentifierException;
+	
+	/**
+	 * Being in a scope, looking downwards for a symbol.
+	 */
+	@InternalMethod
+	QualifiedSymbol lookTreeUp(UnqualifiedSymbol symbol) throws InvalidIdentifierException;
+
+	/**
+	 * Being in a scope, looking upwards for a symbol.
+	 */
+	@InternalMethod
 	QualifiedSymbol lookTreeDown(UnqualifiedSymbol symbol) throws InvalidIdentifierException;
 	
 }

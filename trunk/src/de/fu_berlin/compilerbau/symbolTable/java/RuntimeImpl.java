@@ -42,8 +42,9 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	protected final VoidTypeImpl voidType;
 	protected final ShadowedSymbols shadowedSymbols = new ShadowedSymbols(this);
 	protected final List<Entry<QualifiedSymbol, Symbol>> allShadowsList = new LinkedList<Entry<QualifiedSymbol, Symbol>>();
-	protected final Package globalScope;
+	protected final Package undefinedScope;
 	protected final List<SymbolContainer> symbolContainers = new LinkedList<SymbolContainer>();
+	protected final GlobalScopeImpl globalScope = new GlobalScopeImpl(this);
 	
 	protected boolean mangle = true;
 	
@@ -57,7 +58,7 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	public RuntimeImpl() {
 		super(null, null);
 		try {
-			this.globalScope = new PackageImpl(this, new PositionString("\000c\0001<GLOBAL>\000c", PositionBean.ZERO));
+			this.undefinedScope = new PackageImpl(this, new PositionString("\000c\0001<GLOBAL>\000c", PositionBean.ZERO));
 			this.voidType = new VoidTypeImpl(this);
 			
 			addPrimitiveClass(boolean.class);
@@ -221,8 +222,8 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	}
 
 	@Override
-	public Package getGlobalScope() {
-		return globalScope;
+	public Package getUndefinedScope() {
+		return undefinedScope;
 	}
 
 	@Override
@@ -245,6 +246,12 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	@Override
 	public Variable getNewVariableForParameter(PositionString name, Symbol variableType, Modifier modifier) throws InvalidIdentifierException {
 		return new VariableImpl(this, null, name, variableType, modifier);
+	}
+
+	@Override
+	public SymbolContainer getGlobalScope() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

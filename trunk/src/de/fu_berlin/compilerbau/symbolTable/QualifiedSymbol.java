@@ -18,6 +18,12 @@ public interface QualifiedSymbol extends Symbol {
 	 */
 	String getDestinationName();
 	
+	/**
+	 * Returns the destination name including the package name.
+	 * @see #getDestinationName()
+	 */
+	String getCanonicalDestinationName();
+	
 	SymbolType getType();
 	
 	Modifier getModifier();

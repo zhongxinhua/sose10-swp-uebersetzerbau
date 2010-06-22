@@ -32,7 +32,7 @@ class PrimitiveTypeImpl extends ClassOrInterfaceImpl implements PrimitiveType {
 	protected final java.lang.Class<?> boxedType;
 
 	public PrimitiveTypeImpl(Runtime runtime, java.lang.Class<?> type) throws InvalidIdentifierException {
-		super(runtime, runtime.getGlobalScope(), null, DEFAULT_MODIFIER, new PositionString(type.getName(), PositionBean.ZERO));
+		super(runtime, runtime.getUndefinedScope(), null, DEFAULT_MODIFIER, new PositionString(type.getName(), PositionBean.ZERO));
 		this.type = type;
 
 		if (type == boolean.class) {
@@ -107,6 +107,11 @@ class PrimitiveTypeImpl extends ClassOrInterfaceImpl implements PrimitiveType {
 	@Override
 	public Scope getStaticBlock() {
 		return null;
+	}
+
+	@Override
+	public String getCanonicalDestinationName() {
+		return getDestinationName();
 	}
 
 }
