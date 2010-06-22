@@ -13,6 +13,7 @@ import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
+import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Variable;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
@@ -90,8 +91,15 @@ class ArrayTypeImpl extends ClassImpl implements ArrayType {
 	
 	@Override
 	public String getDestinationName() {
-		StringBuilder builder = new StringBuilder();
-		builder.append(componentType.toString());
+		final StringBuilder builder = new StringBuilder();
+		final Boolean hasTypeCoI = componentType.hasType(SymbolType.CLASS_OR_INTERFACE);
+		if(hasTypeCoI == Boolean.TRUE) {
+			builder.append(((QualifiedSymbol)componentType).getCanonicalDestinationName());
+		} else if(hasTypeCoI == null) {
+			builder.append(((UnqualifiedSymbol)componentType).getCall());
+		} else {
+			throw new RuntimeException("Symbol is not a class or interface.");
+		}
 		for(int i = 0; i < dimension; ++i) {
 			builder.append("[]");
 		}
@@ -100,6 +108,11 @@ class ArrayTypeImpl extends ClassImpl implements ArrayType {
 	
 	@Override
 	public String toString() {
+		return getDestinationName();
+	}
+
+	@Override
+	public String getCanonicalDestinationName() {
 		return getDestinationName();
 	}
 

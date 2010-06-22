@@ -150,7 +150,11 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 			}
 		}
 		
-		return SymbolSplitter.lookup(this, this, symbol, packages, pkgCtor);
+		final QualifiedSymbol result = SymbolSplitter.lookup(this, this, symbol, packages, pkgCtor);
+		if(result != null) {
+			return result;
+		}
+		return globalScope.lookTreeDown(symbol);
 	}
 
 	@Override
@@ -250,8 +254,24 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 
 	@Override
 	public SymbolContainer getGlobalScope() {
-		// TODO Auto-generated method stub
-		return null;
+		return globalScope;
+	}
+
+	@Override
+	public void useImports(
+			Iterator<Entry<PositionString, PositionString>> imports)
+			throws InvalidIdentifierException {
+		while(imports.hasNext()) {
+			final Entry<PositionString, PositionString> next = imports.next();
+			final PositionString path = next.getKey();
+			final PositionString alias = next.getValue();
+			useImport(path, alias);
+		}
+	}
+
+	@Override
+	public void useImport(PositionString path, PositionString alias) {
+		globalScope.useImport(path, alias);
 	}
 	
 }

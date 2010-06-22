@@ -55,8 +55,7 @@ public class RuntimeFactory {
 	 * @param rtJar The JAR containing the JRE, e.g. "/usr/lib/jvm/java-6-openjdk/jre/lib/rt.jar".
 	 * @throws IOException Something in the underlying IO system went wrong!
 	 */
-	public static Runtime newRuntime(Iterator<Map.Entry<PositionString,PositionString>> imports,
-			URL[] classpath, URL rtJar) throws IOException {
+	public static Runtime newRuntime(URL[] classpath, URL rtJar) throws IOException {
 				final long start = System.currentTimeMillis();
 		
 		final RuntimeImpl result = new RuntimeImpl();

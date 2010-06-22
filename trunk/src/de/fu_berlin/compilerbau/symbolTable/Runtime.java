@@ -100,6 +100,21 @@ public interface Runtime extends SymbolContainer {
 	Variable getNewVariableForParameter(PositionString name, Symbol variableType, Modifier modifier) throws InvalidIdentifierException;
 	
 	/**
+	 * Fills the {@link #getGlobalScope() global scope}.
+	 * Does not include <code>java.lang.*</code> if not specified so.
+	 * Any call <u>more than once</u> will result in a random behavior!
+	 * @param imports [(path, alias)], where the alias name may be null, indicating no renaming
+	 */
+	void useImports(Iterator<Map.Entry<PositionString,PositionString>> imports) throws InvalidIdentifierException;
+	
+	/**
+	 * Guess what? Don't use it ...
+	 * @see #useImports(Iterator)
+	 */
+	@InternalMethod
+	void useImport(PositionString path, PositionString alias);
+	
+	/**
 	 * Returns the scope containing all the symbols in the global scope (java.lang.*, imports ...)
 	 */
 	@InternalMethod

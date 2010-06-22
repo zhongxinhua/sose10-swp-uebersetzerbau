@@ -126,4 +126,9 @@ class GlobalScopeImpl implements SymbolContainer {
 		throw new UnsupportedOperationException();
 	}
 
+	public void useImport(PositionString path, PositionString alias) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
