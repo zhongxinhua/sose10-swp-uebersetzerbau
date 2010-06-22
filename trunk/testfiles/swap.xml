@@ -1,0 +1,26 @@
+<module name="swap">
+	<class name="Swap">
+		<function name="swap"  returns="int" static="yes">
+	    	<arguments>
+	    		<decl type="int" dim="1"  name="a"/>
+	    	</arguments>
+      		<decl type="int"  name="tmp" value="a[0]"/>
+			<decl type="float" name="field" dim="1" value="{1.0, 2.4,6}"/>
+		 	<set name="a[1]" value="tmp"/>
+	    	<decl type="int" dim="1"  name="a" value="{1,2}"/>
+	     	<set name="a[-1]" value="a[1]"/>
+			<decl type="int" dim="2"  name="b" value="{2,3,5}"/>
+			<decl type="int" dim="1"  name="b"/>
+			<decl type="int" dim="1"  name="float"/>
+			<decl type="string" dim="0"  name="s" value="123"/>
+			
+			<choose>
+   			<case test="a[1] < 0"></case> <!-- "Anweisungen" ist ein Baum -->
+    		<case test="1">Anweisungen</case>
+			</choose>
+			<decl type="int" name="nul"/>
+			<set name="nul" value="2"/>	
+	      	<return value="a"/>
+  		</function>
+	</class>
+</module>
