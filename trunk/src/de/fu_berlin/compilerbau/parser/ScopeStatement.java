@@ -24,7 +24,7 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
  * 
  */
 public class ScopeStatement extends Statement {
-	List<Statement> body;
+	private List<Statement> body;
 
 	public ScopeStatement(DomNode node) {
 		//check for empty attribute list
@@ -37,5 +37,9 @@ public class ScopeStatement extends Statement {
 		}
 
 	}
+	
+	public List<Statement> getBody() {
+		return body;		
+	} 
 
 }

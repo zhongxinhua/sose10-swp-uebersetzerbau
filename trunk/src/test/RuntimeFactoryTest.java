@@ -9,13 +9,19 @@ import de.fu_berlin.compilerbau.symbolTable.java.RuntimeFactory;
 
 class RuntimeFactoryTest {
 	
-	static final URL RT_JAR;
+	static URL RT_JAR;
 	static {
-		try {
-			RT_JAR = new URL("file:///usr/lib/jvm/java-6-openjdk/jre/lib/rt.jar");
-		} catch (MalformedURLException e) {
-			throw new RuntimeException(e);
-		}
+			//RT_JAR = new URL("file:///usr/lib/jvm/java-6-openjdk/jre/lib/rt.jar");
+			RT_JAR = //new URL("file:///C:/Documents and Settings/markrudo/Desktop/rt.jar");
+				ClassLoader.getSystemResource("testfiles/small_runtime.jar");
+			if(RT_JAR == null) {
+				try {
+					RT_JAR = new URL("file:testfiles/small_runtime.jar");
+				} catch (MalformedURLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 	}
 
 	public static void main(String[] args) throws IOException {

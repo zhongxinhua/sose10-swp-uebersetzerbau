@@ -1,10 +1,11 @@
 = Datentypen =
 Alles ist eine Referenz, es gibt keine elementaren Datentypen, sondern nur Objekte.
 
-= Ausdrücke =
+= Grammatik =
 
-== Operationen und Vorrangsregeln ==
+== Ausdrücke ==
 
+=== Operationen und Vorrangsregeln ===
 Dies sind alle Operationen, aufgelistet und getrennt nach absteigender Priorität.
 
 Operation                            Beschreibung              Assoziativität
