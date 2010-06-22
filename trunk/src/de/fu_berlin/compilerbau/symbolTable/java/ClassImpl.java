@@ -25,8 +25,8 @@ import de.fu_berlin.compilerbau.util.StreamPosition;
 
 class ClassImpl extends ClassOrInterfaceImpl implements Class {
 	
-	protected final Map<Member,MemberImpl> members = new TreeMap<Member,MemberImpl>();
-	protected final Map<Constructor, ConstructorImpl> ctors = new TreeMap<Constructor, ConstructorImpl>();
+	protected final Map<Member,MemberImpl> members = new TreeMap<Member,MemberImpl>(MemberImpl.COMPARATOR);
+	protected final Map<Constructor, ConstructorImpl> ctors = new TreeMap<Constructor, ConstructorImpl>(ConstructorImpl.COMPARATOR);
 	protected final ShadowedSymbols shadowedSymbols = new ShadowedSymbols(this);
 	protected final Scope staticBlock;
 	protected final Symbol extends_;

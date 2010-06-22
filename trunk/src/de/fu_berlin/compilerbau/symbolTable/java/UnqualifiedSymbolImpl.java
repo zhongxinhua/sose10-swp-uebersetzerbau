@@ -121,13 +121,13 @@ class UnqualifiedSymbolImpl implements UnqualifiedSymbol, Comparable<Symbol> {
 	public static int compare(Symbol left, Symbol right) {
 		final String lStr, rStr;
 		
-		if(left.hasType(SymbolType.CLASS_OR_INTERFACE) == Boolean.TRUE || left.hasType(SymbolType.VARIABLE) == Boolean.TRUE) {
+		if(left.hasType(SymbolType.CLASS_OR_INTERFACE) != null) {
 			lStr = ((QualifiedSymbol)left).getDestinationName();
 		} else {
 			lStr = ((UnqualifiedSymbol)left).getCall().toString();
 		}
 		
-		if(right.hasType(SymbolType.CLASS_OR_INTERFACE) == Boolean.TRUE || right.hasType(SymbolType.VARIABLE) == Boolean.TRUE) {
+		if(right.hasType(SymbolType.CLASS_OR_INTERFACE) != null) {
 			rStr = ((QualifiedSymbol)right).getDestinationName();
 		} else {
 			rStr = ((UnqualifiedSymbol)right).getCall().toString();

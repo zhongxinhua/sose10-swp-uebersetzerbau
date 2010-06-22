@@ -1,5 +1,7 @@
 package de.fu_berlin.compilerbau.symbolTable.java;
 
+import java.util.Comparator;
+
 import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
@@ -61,10 +63,19 @@ class VariableImpl extends SymbolImpl implements Variable {
 	public String getDestinationName() {
 		return destinationName;
 	}
+	
+	static final Comparator<? super Variable> COMPARATOR = new Comparator<Variable>() {
+
+		@Override
+		public int compare(Variable left, Variable right) {
+			return left.getDestinationName().compareTo(right.getDestinationName());
+		}
+		
+	};
 
 	@Override
-	public int compareTo(Variable right) {
-		return destinationName.compareTo(right.getDestinationName());
+	public Comparator<? super Variable> comparator() {
+		return COMPARATOR;
 	}
 	
 	@Override

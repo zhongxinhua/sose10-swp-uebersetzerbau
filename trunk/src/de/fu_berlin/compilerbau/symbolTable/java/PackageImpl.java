@@ -1,5 +1,6 @@
 package de.fu_berlin.compilerbau.symbolTable.java;
 
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -29,11 +30,11 @@ class PackageImpl extends SymbolContainerImpl implements Package {
 	protected final String destinationName;
 	
 	protected Map<ClassOrInterfaceImpl,ClassImpl> classes =
-			new TreeMap<ClassOrInterfaceImpl,ClassImpl>();
+			new TreeMap<ClassOrInterfaceImpl,ClassImpl>(ClassOrInterfaceImpl.COMPARATOR);
 	protected Map<ClassOrInterfaceImpl,InterfaceImpl> interfaces =
-			new TreeMap<ClassOrInterfaceImpl,InterfaceImpl>();
+			new TreeMap<ClassOrInterfaceImpl,InterfaceImpl>(ClassImpl.COMPARATOR);
 	protected Map<ClassOrInterfaceImpl,ClassOrInterfaceImpl> classesAndInterfaces =
-			new TreeMap<ClassOrInterfaceImpl,ClassOrInterfaceImpl>();
+			new TreeMap<ClassOrInterfaceImpl,ClassOrInterfaceImpl>(InterfaceImpl.COMPARATOR);
 	protected final ShadowedSymbols shadowedSymbols = new ShadowedSymbols(this);
 
 	public PackageImpl(Runtime runtime, PositionString name) throws InvalidIdentifierException {
@@ -212,10 +213,19 @@ class PackageImpl extends SymbolContainerImpl implements Package {
 	public String getDestinationName() {
 		return destinationName;
 	}
+	
+	protected static final Comparator<? super Package> COMPARATOR = new Comparator<Package>() {
+
+		@Override
+		public int compare(Package left, Package right) {
+			return left.getDestinationName().compareTo(right.getDestinationName());
+		}
+		
+	};
 
 	@Override
-	public int compareTo(Package right) {
-		return destinationName.compareTo(right.getDestinationName());
+	public Comparator<? super Package> comparator() {
+		return COMPARATOR;
 	}
 
 }

@@ -1,7 +1,7 @@
 package de.fu_berlin.compilerbau.symbolTable;
 
 
-public interface Variable extends Symbol, QualifiedSymbol, Comparable<Variable> {
+public interface Variable extends Symbol, QualifiedSymbol, HasComparator<Variable> {
 	
 	Symbol getVariableType();
 	

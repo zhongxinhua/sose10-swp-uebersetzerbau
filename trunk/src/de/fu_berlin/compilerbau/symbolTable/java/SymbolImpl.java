@@ -53,5 +53,10 @@ class SymbolImpl implements Symbol {
 		final Boolean result = SymbolType.implicates(leftType, rightType);
 		return result;
 	}
+
+	@Override
+	public int compareTo(Symbol right) {
+		return UnqualifiedSymbolImpl.compare(this, right);
+	}
 	
 }

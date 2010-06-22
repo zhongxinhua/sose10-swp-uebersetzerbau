@@ -1,5 +1,6 @@
 package de.fu_berlin.compilerbau.symbolTable.java;
 
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -30,7 +31,7 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 	protected final String destinationName;
 	protected final Modifier modifier;
 	protected final Set<Symbol> interfaces = new TreeSet<Symbol>();
-	protected final Map<Method, MethodImpl> methods = new TreeMap<Method, MethodImpl>();
+	protected final Map<Method, MethodImpl> methods = new TreeMap<Method, MethodImpl>(MethodImpl.COMPARATOR);
 	protected final ShadowedSymbols shadowedSymbols = new ShadowedSymbols(this);
 
 	public ClassOrInterfaceImpl(Runtime runtime, Package parent, Iterator<Symbol> implements_,
@@ -122,14 +123,23 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 	}
 
 	@Override
-	public int compareTo(ClassOrInterface right) {
-		return destinationName.compareTo(right.getDestinationName());
-	}
-
-	@Override
 	public QualifiedSymbol lookTreeDown(UnqualifiedSymbol symbol)
 			throws InvalidIdentifierException {
 		return null;
+	}
+	
+	protected static final Comparator<? super ClassOrInterface> COMPARATOR = new Comparator<ClassOrInterface>() {
+
+		@Override
+		public int compare(ClassOrInterface left, ClassOrInterface right) {
+			return left.getDestinationName().compareTo(right.getDestinationName());
+		}
+		
+	};
+
+	@Override
+	public Comparator<? super ClassOrInterface> comparator() {
+		return COMPARATOR;
 	}
 
 }

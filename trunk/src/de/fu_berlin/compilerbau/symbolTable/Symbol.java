@@ -12,7 +12,7 @@ import de.fu_berlin.compilerbau.util.StreamPosition;
  * See {@link #hasType(SymbolType)}.
  * @author rene
  */
-public interface Symbol {
+public interface Symbol extends Comparable<Symbol> {
 	
 	/**
 	 * Symbols of different {@link Runtime runtimes} may not be combined.

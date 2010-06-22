@@ -7,7 +7,7 @@ import java.util.List;
  * {@link Constructor Constructors} are methods as well.
  * @author rene
  */
-public interface Method extends Scope, QualifiedSymbol, Comparable<Method> {
+public interface Method extends Scope, QualifiedSymbol, HasComparator<Method> {
 	
 	List<Variable> getParameters();
 	

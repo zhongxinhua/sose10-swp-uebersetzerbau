@@ -14,7 +14,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
  * {@link PrimitiveType primitive types} and {@link Void void types}.
  * @author rene
  */
-public interface ClassOrInterface extends SymbolContainer, QualifiedSymbol, Comparable<ClassOrInterface> {
+public interface ClassOrInterface extends SymbolContainer, QualifiedSymbol, HasComparator<ClassOrInterface> {
 	
 	/**
 	 * For interfaces you must not add a method body.

@@ -24,7 +24,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
 
 class ScopeImpl extends SymbolContainerImpl implements Scope {
 	
-	protected final Map<Variable,VariableImpl> variables = new TreeMap<Variable,VariableImpl>();
+	protected final Map<Variable,VariableImpl> variables = new TreeMap<Variable,VariableImpl>(VariableImpl.COMPARATOR);
 	protected final List<Scope> subScopes = new LinkedList<Scope>();
 	protected final ShadowedSymbols shadowedSymbols = new ShadowedSymbols(this);
 

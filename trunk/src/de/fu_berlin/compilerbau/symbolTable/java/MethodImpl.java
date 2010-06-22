@@ -1,6 +1,7 @@
 package de.fu_berlin.compilerbau.symbolTable.java;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -105,31 +106,40 @@ class MethodImpl extends ScopeImpl implements Method {
 	public Scope getScope() {
 		return this;
 	}
+	
+	static final Comparator<? super Method> COMPARATOR = new Comparator<Method>() {
 
-	@Override
-	public int compareTo(Method right) {
-		final int EQUAL = 0, LEFT_BIGGER = 1, RIGHT_BIGGER = -1;
-		
-		int result = destionationName.compareTo(right.getDestinationName());
-		if(result != 0) {
-			return result;
-		}
-		final Iterator<Variable> lIter = parameters.iterator();
-		final Iterator<Variable> rIter = right.getParameters().iterator();
-		for(;;) {
-			if(!lIter.hasNext()) {
-				return rIter.hasNext() ? RIGHT_BIGGER : EQUAL;
-			} else if(!rIter.hasNext()) {
-				return LEFT_BIGGER;
-			}
-			final Symbol l = lIter.next().getVariableType();
-			final Symbol r = rIter.next().getVariableType();
+		@Override
+		public int compare(Method left, Method right) {
+			final int EQUAL = 0, LEFT_BIGGER = 1, RIGHT_BIGGER = -1;
 			
-			result = UnqualifiedSymbolImpl.compare(l, r);
+			int result = left.getDestinationName().compareTo(right.getDestinationName());
 			if(result != 0) {
 				return result;
 			}
+			final Iterator<Variable> lIter = left.getParameters().iterator();
+			final Iterator<Variable> rIter = right.getParameters().iterator();
+			for(;;) {
+				if(!lIter.hasNext()) {
+					return rIter.hasNext() ? RIGHT_BIGGER : EQUAL;
+				} else if(!rIter.hasNext()) {
+					return LEFT_BIGGER;
+				}
+				final Symbol l = lIter.next().getVariableType();
+				final Symbol r = rIter.next().getVariableType();
+				
+				result = UnqualifiedSymbolImpl.compare(l, r);
+				if(result != 0) {
+					return result;
+				}
+			}
 		}
+		
+	};
+
+	@Override
+	public Comparator<? super Method> comparator() {
+		return COMPARATOR;
 	}
 	
 	@Override
