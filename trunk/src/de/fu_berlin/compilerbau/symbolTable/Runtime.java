@@ -101,18 +101,20 @@ public interface Runtime extends SymbolContainer {
 	
 	/**
 	 * Fills the {@link #getGlobalScope() global scope}.
-	 * Does not include <code>java.lang.*</code> if not specified so.
-	 * Any call <u>more than once</u> will result in a random behavior!
+	 * Call this method <strong>exactly once</strong>, immediately before you add own symbols.
 	 * @param imports [(path, alias)], where the alias name may be null, indicating no renaming
+	 * @throws DuplicateIdentifierException 
 	 */
-	void useImports(Iterator<Map.Entry<PositionString,PositionString>> imports) throws InvalidIdentifierException;
+	void useImports(Iterator<Map.Entry<PositionString,PositionString>> imports) throws InvalidIdentifierException, DuplicateIdentifierException;
 	
 	/**
 	 * Guess what? Don't use it ...
+	 * @throws InvalidIdentifierException 
+	 * @throws DuplicateIdentifierException 
 	 * @see #useImports(Iterator)
 	 */
 	@InternalMethod
-	void useImport(PositionString path, PositionString alias);
+	void useImport(PositionString path, PositionString alias) throws InvalidIdentifierException, DuplicateIdentifierException;
 	
 	/**
 	 * Returns the scope containing all the symbols in the global scope (java.lang.*, imports ...)

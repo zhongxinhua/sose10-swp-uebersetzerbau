@@ -122,6 +122,12 @@ public class RuntimeFactory {
 			throw new RuntimeException("Runtime contains unqualified symbols!");
 		}
 		
+		try {
+			result.useImport(new PositionString("java.lang.*", PositionBean.ZERO), null);
+		} catch (SymbolTableException e) {
+			throw new RuntimeException(e);
+		}
+		
 		final long end = System.currentTimeMillis();
 		System.err.println("Read runtime in " + (end-start)/1000f + " seconds.");
 		

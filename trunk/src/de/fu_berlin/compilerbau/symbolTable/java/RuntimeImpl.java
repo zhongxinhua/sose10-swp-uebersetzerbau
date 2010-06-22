@@ -27,7 +27,6 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierExceptio
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.Likelyness;
-import de.fu_berlin.compilerbau.util.PositionBean;
 import de.fu_berlin.compilerbau.util.Punycode;
 import static de.fu_berlin.compilerbau.util.Likelyness.*;
 import de.fu_berlin.compilerbau.util.PositionString;
@@ -42,9 +41,9 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	protected final VoidTypeImpl voidType;
 	protected final ShadowedSymbols shadowedSymbols = new ShadowedSymbols(this);
 	protected final List<Entry<QualifiedSymbol, Symbol>> allShadowsList = new LinkedList<Entry<QualifiedSymbol, Symbol>>();
-	protected final Package undefinedScope;
+	protected final UndefinedScope undefinedScope;
 	protected final List<SymbolContainer> symbolContainers = new LinkedList<SymbolContainer>();
-	protected final GlobalScopeImpl globalScope = new GlobalScopeImpl(this);
+	protected final GlobalScopeImpl globalScope;
 	
 	protected boolean mangle = true;
 	
@@ -58,7 +57,8 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	public RuntimeImpl() {
 		super(null, null);
 		try {
-			this.undefinedScope = new PackageImpl(this, new PositionString("\000c\0001<GLOBAL>\000c", PositionBean.ZERO));
+			this.undefinedScope = new UndefinedScope(this);
+			this.globalScope = new GlobalScopeImpl(this);
 			this.voidType = new VoidTypeImpl(this);
 			
 			addPrimitiveClass(boolean.class);
@@ -260,17 +260,21 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	@Override
 	public void useImports(
 			Iterator<Entry<PositionString, PositionString>> imports)
-			throws InvalidIdentifierException {
+			throws InvalidIdentifierException, DuplicateIdentifierException {
 		while(imports.hasNext()) {
 			final Entry<PositionString, PositionString> next = imports.next();
 			final PositionString path = next.getKey();
 			final PositionString alias = next.getValue();
 			useImport(path, alias);
 		}
+		List<SymbolContainer> unqualifiedSymbols = globalScope.qualifyAllSymbols();
+		if(unqualifiedSymbols != null && !unqualifiedSymbols.isEmpty()) {
+			throw new RuntimeException("The imports have (an) unqualified symbol(s): " + unqualifiedSymbols);
+		}
 	}
 
 	@Override
-	public void useImport(PositionString path, PositionString alias) {
+	public void useImport(PositionString path, PositionString alias) throws InvalidIdentifierException, DuplicateIdentifierException {
 		globalScope.useImport(path, alias);
 	}
 	

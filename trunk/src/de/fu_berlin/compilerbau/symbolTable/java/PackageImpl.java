@@ -41,21 +41,25 @@ class PackageImpl extends SymbolContainerImpl implements Package {
 		super(runtime, runtime);
 		this.name = name;
 		
-		boolean first = true;
-		final StringBuilder destionationName = new StringBuilder();
-		for(final String pathComponent : name.toString().split("\\.")) {
-			if(!first) {
-				destionationName.append('.');
-			} else {
-				first = false;
+		if(name != null) {
+			boolean first = true;
+			final StringBuilder destionationName = new StringBuilder();
+			for(final String pathComponent : name.toString().split("\\.")) {
+				if(!first) {
+					destionationName.append('.');
+				} else {
+					first = false;
+				}
+				final String mangledName = runtime.mangleName(pathComponent);
+				if(mangledName == null || !runtime.isValidIdentifier(mangledName)) {
+					throw new InvalidIdentifierException(runtime, name);
+				}
+				destionationName.append(mangledName);
 			}
-			final String mangledName = runtime.mangleName(pathComponent);
-			if(mangledName == null || !runtime.isValidIdentifier(mangledName)) {
-				throw new InvalidIdentifierException(runtime, name);
-			}
-			destionationName.append(mangledName);
+			this.destinationName = destionationName.toString();
+		} else {
+			this.destinationName = null;
 		}
-		this.destinationName = destionationName.toString();
 	}
 
 	@Override
@@ -161,13 +165,12 @@ class PackageImpl extends SymbolContainerImpl implements Package {
 		return getRuntime().lookTreeUp(symbol);
 	}
 	
-	protected final Package pkg = this;
 	protected final SymbolSplitter.QualifiedSymbolCtor classCtor = new SymbolSplitter.QualifiedSymbolCtor() {
 
 		@Override
 		public QualifiedSymbol newInstance(PositionString str)
 				throws InvalidIdentifierException {
-			return new ClassImpl(getRuntime(), pkg, null, null, null, str);
+			return new ClassImpl(getRuntime(), PackageImpl.this, null, null, null, str);
 		}
 		
 	};
@@ -176,7 +179,7 @@ class PackageImpl extends SymbolContainerImpl implements Package {
 		@Override
 		public QualifiedSymbol newInstance(PositionString str)
 				throws InvalidIdentifierException {
-			return new InterfaceImpl(getRuntime(), pkg, null, null, str);
+			return new InterfaceImpl(getRuntime(), PackageImpl.this, null, null, str);
 		}
 		
 	};
