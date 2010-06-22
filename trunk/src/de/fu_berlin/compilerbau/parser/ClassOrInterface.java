@@ -33,7 +33,7 @@ public abstract class ClassOrInterface extends SyntaxTreeNode {
 		} else if (node.getName().equals("interface")) {
 			return new Interface(node);
 		} else
-			ErrorHandler.error(node, "'calss' or 'interface' expected");
+			ErrorHandler.error(node, "'class' or 'interface' expected");
 		return null;
 	}
 	// BEGIN get-Methoden für Builder
