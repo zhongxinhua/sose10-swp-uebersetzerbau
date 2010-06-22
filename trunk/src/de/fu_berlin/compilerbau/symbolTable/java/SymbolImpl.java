@@ -3,8 +3,6 @@ package de.fu_berlin.compilerbau.symbolTable.java;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
 
 import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
@@ -46,41 +44,13 @@ class SymbolImpl implements Symbol {
 		return runtime;
 	}
 	
-	private static final Boolean[][] IMPLICATIONS = {
-		/*                       UNQUALIFIED, CLASS,  CLASS_OR_INTERFACE, CONSTRUCTOR, INTERFACE, MEMBER, PACKAGE, RUNTIME, VARIABLE, SCOPE, PRIMITIVE_TYPE, ARRAY_TYPE, VOID,  METHOD*/
-		/*UNQUALIFIED*/        { null,        null,   null,               null,        null,      null,   null,    null,    null,     null,  null,           null,       null,  null  },
-		/*CLASS*/              { null,        TRUE,   TRUE,               FALSE,       FALSE,     FALSE,  FALSE,   FALSE,   FALSE,    TRUE,  FALSE,          FALSE,      FALSE, FALSE },
-		/*CLASS_OR_INTERFACE*/ { null,        FALSE,  TRUE,               FALSE,       FALSE,     FALSE,  FALSE,   FALSE,   FALSE,    FALSE, FALSE,          FALSE,      FALSE, FALSE },
-		/*CONSTRUCTOR*/        { null,        FALSE,  FALSE,              TRUE,        FALSE,     FALSE,  FALSE,   FALSE,   FALSE,    TRUE,  FALSE,          FALSE,      FALSE, TRUE  },
-		/*INTERFACE*/          { null,        FALSE,  TRUE,               FALSE,       TRUE,      FALSE,  FALSE,   FALSE,   FALSE,    FALSE, FALSE,          FALSE,      FALSE, FALSE },
-		/*MEMBER*/             { null,        FALSE,  FALSE,              FALSE,       FALSE,     TRUE,   FALSE,   FALSE,   TRUE,     FALSE, FALSE,          FALSE,      FALSE, FALSE },
-		/*PACKAGE*/            { null,        FALSE,  FALSE,              FALSE,       FALSE,     FALSE,  TRUE,    FALSE,   FALSE,    FALSE, FALSE,          FALSE,      FALSE, FALSE },
-		/*RUNTIME*/            { null,        FALSE,  FALSE,              FALSE,       FALSE,     FALSE,  FALSE,   TRUE,    FALSE,    FALSE, FALSE,          FALSE,      FALSE, FALSE },
-		/*VARIABLE*/           { null,        FALSE,  FALSE,              FALSE,       FALSE,     FALSE,  FALSE,   FALSE,   TRUE,     FALSE, FALSE,          FALSE,      FALSE, FALSE },
-		/*SCOPE*/              { null,        FALSE,  FALSE,              FALSE,       FALSE,     FALSE,  FALSE,   FALSE,   FALSE,    TRUE,  FALSE,          FALSE,      FALSE, FALSE },
-		/*PRIMITIVE_TYPE*/     { null,        TRUE,   TRUE,               FALSE,       FALSE,     FALSE,  FALSE,   FALSE,   FALSE,    FALSE, TRUE,           FALSE,      FALSE, FALSE },
-		/*ARRAY_TYPE*/         { null,        TRUE,   TRUE,               FALSE,       FALSE,     FALSE,  FALSE,   FALSE,   FALSE,    FALSE, FALSE,          TRUE,       FALSE, FALSE },
-		/*VOID*/               { null,        TRUE,   TRUE,               FALSE,       FALSE,     FALSE,  FALSE,   FALSE,   FALSE,    FALSE, TRUE,           FALSE,      TRUE,  FALSE },
-		/*METHOD*/             { null,        FALSE,  FALSE,              FALSE,       FALSE,     FALSE,  FALSE,   FALSE,   FALSE,    TRUE,  FALSE,          FALSE,      FALSE, TRUE  }
-	};
-	static {
-		if(IMPLICATIONS.length != SymbolType.values().length) {
-			throw new RuntimeException("IMPLICATION.length != SymbolType.values().length");
-		}
-		for(Boolean[] IMPLICATIONS_LINE : IMPLICATIONS) {
-			if(IMPLICATIONS_LINE.length != SymbolType.values().length) {
-				throw new RuntimeException("IMPLICATIONS_LINE.length != SymbolType.values().length");
-			}
-		}
-	}
-	
 	@Override
-	public Boolean hasType(SymbolType leftType) {
+	public Boolean hasType(SymbolType rightType) {
 		if(!(this instanceof QualifiedSymbol)) {
 			return null;
 		}
-		final SymbolType rightType = ((QualifiedSymbol)this).getType();
-		final Boolean result = IMPLICATIONS[rightType.ordinal()][leftType.ordinal()];
+		final SymbolType leftType = ((QualifiedSymbol)this).getType();
+		final Boolean result = SymbolType.implicates(leftType, rightType);
 		return result;
 	}
 	

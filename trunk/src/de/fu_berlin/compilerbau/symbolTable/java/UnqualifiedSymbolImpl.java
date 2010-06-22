@@ -30,7 +30,7 @@ class UnqualifiedSymbolImpl implements UnqualifiedSymbol, Comparable<Symbol> {
 	static {
 		REPLICATIONS.put(CLASS_OR_INTERFACE, new SymbolType[] { PRIMITIVE_TYPE, CLASS, INTERFACE, ARRAY_TYPE, VOID });
 		REPLICATIONS.put(METHOD,             new SymbolType[] { CONSTRUCTOR });
-		REPLICATIONS.put(SCOPE,              new SymbolType[] { RUNTIME, METHOD, PACKAGE, SCOPE });
+		REPLICATIONS.put(SCOPE,              new SymbolType[] { RUNTIME, METHOD, PACKAGE });
 		REPLICATIONS.put(VARIABLE,           new SymbolType[] { MEMBER });
 	}
 
@@ -50,29 +50,6 @@ class UnqualifiedSymbolImpl implements UnqualifiedSymbol, Comparable<Symbol> {
 			Entry<SymbolType, Likelyness> next = likeliness_.next();
 			likelyness.put(next.getKey(), next.getValue());
 		}
-		
-		boolean hasChanges;
-		do {
-			hasChanges = false;
-			for(final Entry<SymbolType, Likelyness> left : likelyness.entrySet()) {
-				// left → right
-				final SymbolType leftSymbol = left.getKey();
-				final Likelyness leftLikelyness = left.getValue();
-				if(leftLikelyness != IMPOSSIBLE) {
-					SymbolType[] replications = REPLICATIONS.get(leftSymbol);
-					if(replications == null) {
-						continue;
-					}
-					for(final SymbolType rightSymbol : replications) {
-						final Likelyness rightLikelyness = likelyness.get(rightSymbol);
-						if(leftLikelyness.compareTo(rightLikelyness) > 0) {
-							likelyness.put(rightSymbol, leftLikelyness);
-							hasChanges = true;
-						}
-					}
-				}
-			}
-		} while(hasChanges);
 	}
 
 	UnqualifiedSymbolImpl(PositionString call, Runtime runtime,

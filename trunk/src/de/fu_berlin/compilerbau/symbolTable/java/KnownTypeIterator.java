@@ -24,13 +24,14 @@ class KnownTypeIterator implements Iterator<Map.Entry<SymbolType, Likelyness>> {
 	
 	@Override
 	public Map.Entry<SymbolType, Likelyness> next() throws NoSuchElementException {
-		SymbolType[] values = SymbolType.values();
+		final SymbolType[] values = SymbolType.values();
 		if(current >= values.length) {
 			throw new NoSuchElementException();
 		}
-		SymbolType symbolType = values[current ++];
-		return new Pair<SymbolType, Likelyness>(symbolType, symbolType == actualtype ?
-				Likelyness.YES : Likelyness.IMPOSSIBLE);
+		final SymbolType symbolType = values[current ++];
+		
+		final Likelyness likelyness = SymbolType.implicates(actualtype, symbolType) == Boolean.TRUE ? Likelyness.YES : Likelyness.IMPOSSIBLE;
+		return new Pair<SymbolType, Likelyness>(symbolType, likelyness);
 	}
 	
 	@Override
