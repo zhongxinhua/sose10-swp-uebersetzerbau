@@ -108,6 +108,23 @@ public interface Runtime extends SymbolContainer {
 	void useImports(Iterator<Map.Entry<PositionString,PositionString>> imports) throws InvalidIdentifierException, DuplicateIdentifierException;
 	
 	/**
+	 * Tries to convert all unqualified symbols to qualified ones.
+	 * @return List of all unqualified symbols. null or empty indicates no unqualified symbols left.
+	 * @throws InvalidIdentifierException 
+	 * @throws WrongModifierException 
+	 * @throws ShadowedIdentifierException 
+	 * @throws DuplicateIdentifierException 
+	 */
+	Set<UnqualifiedSymbol> qualifyAllSymbols() throws DuplicateIdentifierException, ShadowedIdentifierException, WrongModifierException, InvalidIdentifierException;
+	
+	/**
+	 * @return immutable list
+	 */
+	Set<? extends UnqualifiedSymbol> getUnqualifiedSymbols();
+	
+	boolean hasUnqualifiedSymbols();
+	
+	/**
 	 * Guess what? Don't use it ...
 	 * @throws InvalidIdentifierException 
 	 * @throws DuplicateIdentifierException 

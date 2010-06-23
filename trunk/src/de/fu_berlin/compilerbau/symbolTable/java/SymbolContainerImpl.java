@@ -1,7 +1,6 @@
 package de.fu_berlin.compilerbau.symbolTable.java;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
@@ -36,17 +35,6 @@ abstract class SymbolContainerImpl extends SymbolImpl implements SymbolContainer
 		Runtime runtime = getRuntime();
 		UnqualifiedSymbol uniqualifiedSymbol = runtime.getUnqualifiedSymbol(name);
 		return lookTreeUp(uniqualifiedSymbol);
-	}
-	
-	@Override
-	public boolean hasUnqualifiedSymbols() {
-		return getUnqualifiedSymbols().size() > 0;
-	}
-
-	@Override
-	public List<SymbolContainer> qualifyAllSymbols() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 	
 	@Override

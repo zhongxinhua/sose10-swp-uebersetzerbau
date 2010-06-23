@@ -20,7 +20,6 @@ import de.fu_berlin.compilerbau.parser.Module;
 import de.fu_berlin.compilerbau.parser.ReturnStatement;
 import de.fu_berlin.compilerbau.parser.ScopeStatement;
 import de.fu_berlin.compilerbau.parser.Statement;
-import de.fu_berlin.compilerbau.symbolTable.ArrayType;
 import de.fu_berlin.compilerbau.symbolTable.ClassOrInterface;
 import de.fu_berlin.compilerbau.symbolTable.GetModifier;
 import de.fu_berlin.compilerbau.symbolTable.Method;
@@ -31,11 +30,8 @@ import de.fu_berlin.compilerbau.symbolTable.Scope;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.Variable;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ContainerSymbolsException;
-import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
-import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
-import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.Visibility;
 
 public class Annotator {
@@ -48,6 +44,7 @@ public class Annotator {
 		// TODO imports übergeben
 		try {
 			annotateModule(ast.getRoot());
+			runtime.qualifyAllSymbols();
 		} catch (ContainerSymbolsException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -58,7 +55,6 @@ public class Annotator {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		runtime.qualifyAllSymbols();
 	}
 
 	protected void annotateModule(Module module)

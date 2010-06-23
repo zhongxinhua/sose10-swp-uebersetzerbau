@@ -1,7 +1,6 @@
 package de.fu_berlin.compilerbau.symbolTable.java;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -10,7 +9,6 @@ import de.fu_berlin.compilerbau.symbolTable.ClassOrInterface;
 import de.fu_berlin.compilerbau.symbolTable.Package;
 import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
-import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
@@ -30,12 +28,6 @@ class GlobalScopeImpl extends PackageImpl {
 	@Override
 	public Map<QualifiedSymbol, Set<Symbol>> getShadowedSymbols() {
 		return Collections.EMPTY_MAP;
-	}
-
-	@Override
-	public Set<? extends UnqualifiedSymbol> getUnqualifiedSymbols() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 	
 	protected final SymbolSplitter.QualifiedSymbolCtor coiCtor = new SymbolSplitter.QualifiedSymbolCtor() {
@@ -61,12 +53,6 @@ class GlobalScopeImpl extends PackageImpl {
 			return result;
 		}
 		return getRuntime().lookTreeUp(symbol);
-	}
-
-	@Override
-	public List<SymbolContainer> qualifyAllSymbols() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

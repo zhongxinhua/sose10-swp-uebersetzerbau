@@ -1,7 +1,6 @@
 package de.fu_berlin.compilerbau.symbolTable;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,30 +13,12 @@ import de.fu_berlin.compilerbau.util.PositionString;
  * @author kijewski
  */
 public interface SymbolContainer extends Symbol {
-
-	/**
-	 * recursively
-	 * @return immutable list
-	 */
-	Set<? extends UnqualifiedSymbol> getUnqualifiedSymbols();
-	
-	/**
-	 * recursively
-	 */
-	boolean hasUnqualifiedSymbols();
 	
 	/**
 	 * Returns a list of all symbols occurring twice in the same scope of visibility.
 	 * @return [ [ occurrence ] ]
 	 */
 	Map<QualifiedSymbol, Set<Symbol>> getShadowedSymbols();
-	
-	/**
-	 * Tries to convert all unqualified symbols to qualified ones.
-	 * @return List of all containers having containing unqualified symbols* or
-	 * 	null if all symbols are qualified. *) May be transitive or maybe not.
-	 */
-	List<SymbolContainer> qualifyAllSymbols();
 	
 	/**
 	 * Tries to lookup a symbol. Returns unqualified symbol if not found.

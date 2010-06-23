@@ -207,12 +207,6 @@ class PackageImpl extends SymbolContainerImpl implements Package {
 	}
 
 	@Override
-	public Set<? extends UnqualifiedSymbol> getUnqualifiedSymbols() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public String getDestinationName() {
 		return destinationName;
 	}

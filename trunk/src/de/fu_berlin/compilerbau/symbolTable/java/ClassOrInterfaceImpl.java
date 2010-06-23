@@ -100,12 +100,6 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 	}
 
 	@Override
-	public Set<? extends UnqualifiedSymbol> getUnqualifiedSymbols() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public QualifiedSymbol lookTreeUp(UnqualifiedSymbol symbol) throws InvalidIdentifierException {
 		if(symbol.is(SymbolType.METHOD) != Likelyness.IMPOSSIBLE) {
 			MethodImpl oldsymbol = new MethodImpl(getRuntime(), this, symbol.getCall(), null, null, null);

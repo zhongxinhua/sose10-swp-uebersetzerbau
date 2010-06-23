@@ -92,12 +92,6 @@ class MethodImpl extends ScopeImpl implements Method {
 	}
 
 	@Override
-	public Set<? extends UnqualifiedSymbol> getUnqualifiedSymbols() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public String getDestinationName() {
 		return destionationName;
 	}

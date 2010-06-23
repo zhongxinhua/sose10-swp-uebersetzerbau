@@ -19,12 +19,14 @@ import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
+import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbolsMap;
 import de.fu_berlin.compilerbau.symbolTable.Variable;
 import static de.fu_berlin.compilerbau.symbolTable.SymbolType.*;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
+import de.fu_berlin.compilerbau.symbolTable.exceptions.SymbolTableException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.Likelyness;
 import de.fu_berlin.compilerbau.util.Punycode;
@@ -44,6 +46,7 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	protected final UndefinedScope undefinedScope;
 	protected final List<SymbolContainer> symbolContainers = new LinkedList<SymbolContainer>();
 	protected final GlobalScopeImpl globalScope;
+	protected final UnqualifiedSymbolsMap<UnqualifiedSymbol> unqualifiedSymbolsMap = new UnqualifiedSymbolsMapImpl<UnqualifiedSymbol>();
 	
 	protected boolean mangle = true;
 	
@@ -267,15 +270,29 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 			final PositionString alias = next.getValue();
 			useImport(path, alias);
 		}
-		List<SymbolContainer> unqualifiedSymbols = globalScope.qualifyAllSymbols();
-		if(unqualifiedSymbols != null && !unqualifiedSymbols.isEmpty()) {
-			throw new RuntimeException("The imports have (an) unqualified symbol(s): " + unqualifiedSymbols);
+		try {
+			Set<UnqualifiedSymbol> unqualifiedSymbols = qualifyAllSymbols();
+			if(unqualifiedSymbols != null && !unqualifiedSymbols.isEmpty()) {
+				throw new RuntimeException("The imports have (an) unqualified symbol(s): " + unqualifiedSymbols);
+			}
+		} catch (SymbolTableException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
 	@Override
 	public void useImport(PositionString path, PositionString alias) throws InvalidIdentifierException, DuplicateIdentifierException {
 		globalScope.useImport(path, alias);
+	}
+
+	@Override
+	public Set<UnqualifiedSymbol> qualifyAllSymbols() throws DuplicateIdentifierException, ShadowedIdentifierException, WrongModifierException, InvalidIdentifierException {
+		return unqualifiedSymbolsMap.qualifyAllSymbols();
+	}
+
+	@Override
+	public boolean hasUnqualifiedSymbols() {
+		return unqualifiedSymbolsMap.hasUnqualifiedSymbols();
 	}
 	
 }
