@@ -52,18 +52,18 @@ public interface Runtime extends SymbolContainer {
 	 * @return A unqualified symbol. Give it to a {@link SymbolContainer container}!
 	 * @throws RuntimeException A symbol occurred twice.
 	 */
-	UnqualifiedSymbol getUnqualifiedSymbol(PositionString name, Iterator<Map.Entry<SymbolType,Likelyness>> likeliness);
+	UnqualifiedSymbol getUnqualifiedSymbol(PositionString name, SymbolContainer container, Iterator<Map.Entry<SymbolType,Likelyness>> likeliness);
 	
 	/**
 	 * The actual type is known.
 	 * @see #getUnqualifiedSymbol(PositionString, Iterator)
 	 */
-	UnqualifiedSymbol getUnqualifiedSymbol(PositionString name, SymbolType type);
+	UnqualifiedSymbol getUnqualifiedSymbol(PositionString name, SymbolContainer container, SymbolType type);
 	
 	/**
 	 * @see #getUnqualifiedSymbol(PositionString, Iterator)
 	 */
-	UnqualifiedSymbol getUnqualifiedSymbol(PositionString name);
+	UnqualifiedSymbol getUnqualifiedSymbol(PositionString name, SymbolContainer container);
 	
 	/**
 	 * returns the type representing void
@@ -123,6 +123,9 @@ public interface Runtime extends SymbolContainer {
 	Set<? extends UnqualifiedSymbol> getUnqualifiedSymbols();
 	
 	boolean hasUnqualifiedSymbols();
+	
+	@InternalMethod
+	UnqualifiedSymbolsMap<UnqualifiedSymbol> getUnqualifiedSymbolsMap();
 	
 	/**
 	 * Guess what? Don't use it ...

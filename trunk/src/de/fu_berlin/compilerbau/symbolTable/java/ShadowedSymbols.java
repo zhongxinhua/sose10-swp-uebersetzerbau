@@ -40,7 +40,7 @@ class ShadowedSymbols {
 	
 	public void test(PositionString name, QualifiedSymbol newSymbol) throws ShadowedIdentifierException, InvalidIdentifierException {
 		final Runtime rt = container.getRuntime();
-		final Symbol shadowed = container.lookTreeUp(rt.getUnqualifiedSymbol(name));
+		final Symbol shadowed = container.lookTreeUp(rt.getUnqualifiedSymbol(name, container));
 		if(shadowed != null) {
 			if(rt.getThrowsAtShadowing()) {
 				throw new ShadowedIdentifierException(container, newSymbol, shadowed);

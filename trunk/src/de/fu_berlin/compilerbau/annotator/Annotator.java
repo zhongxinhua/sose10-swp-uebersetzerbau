@@ -100,7 +100,7 @@ public class Annotator {
 			throws ContainerSymbolsException, WrongModifierException,
 			InvalidIdentifierException {
 		// füge Elternklasse ein
-		Symbol symParent = runtime.getUnqualifiedSymbol(class_.getSuper());
+		Symbol symParent = runtime.tryGetQualifiedSymbol(class_.getSuper());
 
 		// füge Interfaces ein
 		List<Symbol> implements_ = new LinkedList<Symbol>();
@@ -137,7 +137,7 @@ public class Annotator {
 			throws ContainerSymbolsException, WrongModifierException,
 			InvalidIdentifierException {
 		// ermittle Rückgabewert
-		Symbol symReturnType = runtime.getUnqualifiedSymbol(function
+		Symbol symReturnType = runtime.tryGetQualifiedSymbol(function
 				.getReturnType());
 
 		// ermittle Parameter

@@ -23,6 +23,10 @@ public interface UnqualifiedSymbol extends Symbol {
 	/**
 	 * Internal method to determine the type of the actual symbol.
 	 */
+	@InternalMethod
 	Map<SymbolType,Likelyness> getLikelynessPerType();
+	
+	@InternalMethod
+	SymbolContainer getContainer();
 	
 }

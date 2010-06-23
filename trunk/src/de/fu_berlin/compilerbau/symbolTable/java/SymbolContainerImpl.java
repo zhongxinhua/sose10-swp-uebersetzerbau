@@ -26,20 +26,20 @@ abstract class SymbolContainerImpl extends SymbolImpl implements SymbolContainer
 	@Override
 	public QualifiedSymbol getQualifiedSymbol(PositionString name, SymbolType type) throws InvalidIdentifierException {
 		Runtime runtime = getRuntime();
-		UnqualifiedSymbol uniqualifiedSymbol = runtime.getUnqualifiedSymbol(name, type);
+		UnqualifiedSymbol uniqualifiedSymbol = runtime.getUnqualifiedSymbol(name, this, type);
 		return lookTreeUp(uniqualifiedSymbol);
 	}
 	
 	@Override
 	public QualifiedSymbol getQualifiedSymbol(PositionString name) throws InvalidIdentifierException {
 		Runtime runtime = getRuntime();
-		UnqualifiedSymbol uniqualifiedSymbol = runtime.getUnqualifiedSymbol(name);
+		UnqualifiedSymbol uniqualifiedSymbol = runtime.getUnqualifiedSymbol(name, this);
 		return lookTreeUp(uniqualifiedSymbol);
 	}
 	
 	@Override
 	public Symbol tryGetQualifiedSymbol(PositionString name, Iterator<Map.Entry<SymbolType,Likelyness>> likeliness) throws InvalidIdentifierException{
-		final UnqualifiedSymbol unqualifiedSymbol = getRuntime().getUnqualifiedSymbol(name, likeliness);
+		final UnqualifiedSymbol unqualifiedSymbol = getRuntime().getUnqualifiedSymbol(name, this, likeliness);
 		final QualifiedSymbol qualifiedSymbol = lookTreeUp(unqualifiedSymbol);
 		if(qualifiedSymbol != null) {
 			return qualifiedSymbol;
@@ -50,7 +50,7 @@ abstract class SymbolContainerImpl extends SymbolImpl implements SymbolContainer
 	
 	@Override
 	public Symbol tryGetQualifiedSymbol(PositionString name, SymbolType type) throws InvalidIdentifierException {
-		final UnqualifiedSymbol unqualifiedSymbol = getRuntime().getUnqualifiedSymbol(name, type);
+		final UnqualifiedSymbol unqualifiedSymbol = getRuntime().getUnqualifiedSymbol(name, this, type);
 		final QualifiedSymbol qualifiedSymbol = lookTreeUp(unqualifiedSymbol);
 		if(qualifiedSymbol != null) {
 			return qualifiedSymbol;
@@ -61,7 +61,7 @@ abstract class SymbolContainerImpl extends SymbolImpl implements SymbolContainer
 
 	@Override
 	public Symbol tryGetQualifiedSymbol(PositionString name) throws InvalidIdentifierException {
-		final UnqualifiedSymbol unqualifiedSymbol = getRuntime().getUnqualifiedSymbol(name);
+		final UnqualifiedSymbol unqualifiedSymbol = getRuntime().getUnqualifiedSymbol(name, this);
 		final QualifiedSymbol qualifiedSymbol = lookTreeUp(unqualifiedSymbol);
 		if(qualifiedSymbol != null) {
 			return qualifiedSymbol;

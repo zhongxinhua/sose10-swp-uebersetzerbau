@@ -53,7 +53,8 @@ class SymbolSplitter {
 				}
 				
 				final PositionString subCallStr = subCall.toPositionString();
-				final UnqualifiedSymbolImpl subCallSym = new UnqualifiedSymbolImpl(subCallStr, runtime, likelynessPerType);
+				final UnqualifiedSymbolImpl subCallSym =
+						new UnqualifiedSymbolImpl(subCallStr, runtime, self, likelynessPerType);
 				return container.lookTreeDown(subCallSym);
 			}
 		}

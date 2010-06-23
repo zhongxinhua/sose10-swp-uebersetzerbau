@@ -23,6 +23,7 @@ class UnqualifiedSymbolImpl implements UnqualifiedSymbol, Comparable<Symbol> {
 	
 	protected final Map<SymbolType, Likelyness> likelyness = new EnumMap<SymbolType, Likelyness>(SymbolType.class);
 	protected final PositionString call;
+	protected final SymbolContainer container;
 
 	protected SymbolImpl storageSymbol;
 	
@@ -34,17 +35,18 @@ class UnqualifiedSymbolImpl implements UnqualifiedSymbol, Comparable<Symbol> {
 		REPLICATIONS.put(VARIABLE,           new SymbolType[] { MEMBER });
 	}
 
-	UnqualifiedSymbolImpl(PositionString call, Runtime runtime) {
+	UnqualifiedSymbolImpl(PositionString call, Runtime runtime, SymbolContainer container) {
 		this.storageSymbol = new SymbolImpl(runtime, null);
 		this.call = call;
+		this.container = container;
 		
 		for(SymbolType t : SymbolType.values()) {
 			likelyness.put(t, MAYBE);
 		}
 	}
 
-	UnqualifiedSymbolImpl(PositionString call, Runtime runtime, Iterator<Entry<SymbolType, Likelyness>> likeliness_) {
-		this(call, runtime);
+	UnqualifiedSymbolImpl(PositionString call, Runtime runtime, SymbolContainer container, Iterator<Entry<SymbolType, Likelyness>> likeliness_) {
+		this(call, runtime, container);
 		
 		while(likeliness_.hasNext()) {
 			Entry<SymbolType, Likelyness> next = likeliness_.next();
@@ -52,10 +54,11 @@ class UnqualifiedSymbolImpl implements UnqualifiedSymbol, Comparable<Symbol> {
 		}
 	}
 
-	UnqualifiedSymbolImpl(PositionString call, Runtime runtime,
+	UnqualifiedSymbolImpl(PositionString call, Runtime runtime, SymbolContainer container,
 			Map<SymbolType, Likelyness> likelynesses) {
 		this.storageSymbol = new SymbolImpl(runtime, (Package)null);
 		this.call = call;
+		this.container = container;
 		likelyness.putAll(likelynesses);
 	}
 
@@ -77,6 +80,11 @@ class UnqualifiedSymbolImpl implements UnqualifiedSymbol, Comparable<Symbol> {
 	@Override
 	public Map<SymbolType, Likelyness> getLikelynessPerType() {
 		return likelyness;
+	}
+
+	@Override
+	public SymbolContainer getContainer() {
+		return container;
 	}
 
 	//*****************************************************************************

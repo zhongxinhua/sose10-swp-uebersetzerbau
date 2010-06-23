@@ -110,15 +110,15 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	}
 	
 	@Override
-	public UnqualifiedSymbol getUnqualifiedSymbol(PositionString name,
+	public UnqualifiedSymbol getUnqualifiedSymbol(PositionString name, SymbolContainer container,
 			Iterator<Map.Entry<SymbolType, Likelyness>> likeliness) throws RuntimeException {
-		return new UnqualifiedSymbolImpl(name, this, likeliness);
+		return new UnqualifiedSymbolImpl(name, this, container, likeliness);
 	}
 	
 	@Override
-	public UnqualifiedSymbol getUnqualifiedSymbol(PositionString name, SymbolType type) {
+	public UnqualifiedSymbol getUnqualifiedSymbol(PositionString name, SymbolContainer container, SymbolType type) {
 		KnownTypeIterator iterator = new KnownTypeIterator(type);
-		return getUnqualifiedSymbol(name, iterator);
+		return getUnqualifiedSymbol(name, container, iterator);
 	}
 	
 	@Override
@@ -176,8 +176,8 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	}
 
 	@Override
-	public UnqualifiedSymbol getUnqualifiedSymbol(PositionString name) {
-		return new UnqualifiedSymbolImpl(name, this);
+	public UnqualifiedSymbol getUnqualifiedSymbol(PositionString name, SymbolContainer container) {
+		return new UnqualifiedSymbolImpl(name, this, container);
 	}
 
 	@Override
@@ -293,6 +293,11 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	@Override
 	public boolean hasUnqualifiedSymbols() {
 		return unqualifiedSymbolsMap.hasUnqualifiedSymbols();
+	}
+
+	@Override
+	public UnqualifiedSymbolsMap<UnqualifiedSymbol> getUnqualifiedSymbolsMap() {
+		return unqualifiedSymbolsMap;
 	}
 	
 }

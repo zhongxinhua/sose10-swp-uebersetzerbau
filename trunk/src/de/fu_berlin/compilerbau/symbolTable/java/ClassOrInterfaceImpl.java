@@ -14,9 +14,13 @@ import de.fu_berlin.compilerbau.symbolTable.Package;
 import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
+import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
+import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbolsMap;
 import de.fu_berlin.compilerbau.symbolTable.Variable;
+import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbolsMap.ReplaceFunResult;
+import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbolsMap.ReplaceFunc;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
@@ -48,8 +52,34 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 			this.destinationName = null;
 		}
 		if(implements_ != null) {
+			UnqualifiedSymbolsMap<UnqualifiedSymbol> unqualifiedSymbolsMap = runtime.getUnqualifiedSymbolsMap();
 			while(implements_.hasNext()) {
-				interfaces.add(implements_.next());
+				final Symbol next = implements_.next();
+				if(next.hasType(SymbolType.INTERFACE) == null) {
+					ReplaceFunc replaceFunc = new UnqualifiedSymbolsMap.ReplaceFunc() {
+						
+						@Override
+						public ReplaceFunResult replace()
+								throws DuplicateIdentifierException,
+								ShadowedIdentifierException,
+								WrongModifierException,
+								InvalidIdentifierException {
+							final SymbolContainer container = ((UnqualifiedSymbol)next).getContainer();
+							final PositionString call = ((UnqualifiedSymbol)next).getCall();
+							final QualifiedSymbol qualifiedSymbol = container.getQualifiedSymbol(call, SymbolType.INTERFACE);
+							if(qualifiedSymbol != null) {
+								interfaces.remove(next);
+								interfaces.add(qualifiedSymbol);
+								return ReplaceFunResult.REPLACED;
+							} else {
+								return ReplaceFunResult.NOT_REPLACED;
+							}
+						}
+						
+					};
+					unqualifiedSymbolsMap.addUnqualifiedSymbol((UnqualifiedSymbol) next, replaceFunc);
+				}
+				interfaces.add(next);
 			}
 		}
 	}

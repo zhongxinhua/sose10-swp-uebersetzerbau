@@ -77,7 +77,7 @@ class GlobalScopeImpl extends PackageImpl {
 		}
 		final String pkgName = path.toString().substring(0, lastColon);
 		final PositionString pkgString = new PositionString(pkgName, path);
-		final UnqualifiedSymbol pkgUSym = getRuntime().getUnqualifiedSymbol(pkgString, SymbolType.PACKAGE);
+		final UnqualifiedSymbol pkgUSym = getRuntime().getUnqualifiedSymbol(pkgString, getRuntime(), SymbolType.PACKAGE);
 		final Package pkg = (Package) getRuntime().lookTreeDown(pkgUSym);
 		if(pkg == null) {
 			throw new InvalidIdentifierException(this, pkgString);
@@ -88,7 +88,8 @@ class GlobalScopeImpl extends PackageImpl {
 				useImport(coi, null);
 			}
 		} else {
-			final UnqualifiedSymbol coiUSym = getRuntime().getUnqualifiedSymbol(new PositionString(coiString, path), SymbolType.CLASS_OR_INTERFACE);
+			final UnqualifiedSymbol coiUSym = getRuntime().getUnqualifiedSymbol(
+					new PositionString(coiString, path), getRuntime(), SymbolType.CLASS_OR_INTERFACE);
 			final ClassOrInterface coi = (ClassOrInterface) pkg.lookTreeDown(coiUSym);
 			if(coi == null) {
 				throw new InvalidIdentifierException(this, pkgString);
