@@ -12,7 +12,7 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierExceptio
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
 
-public class InterfaceImpl extends ClassOrInterfaceImpl implements Interface {
+class InterfaceImpl extends ClassOrInterfaceImpl implements Interface {
 	
 	protected final StreamPosition position;
 
