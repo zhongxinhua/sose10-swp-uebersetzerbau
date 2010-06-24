@@ -9,8 +9,16 @@ import java.util.TreeSet;
 import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
+import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
+import de.fu_berlin.compilerbau.symbolTable.SymbolType;
+import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
+import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbolsMap;
+import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbolsMap.ReplaceFunResult;
+import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbolsMap.ReplaceFunc;
+import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
+import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.Pair;
 import de.fu_berlin.compilerbau.util.PositionString;
 
@@ -26,15 +34,42 @@ class ShadowedSymbols {
 
 	private static final long serialVersionUID = -8115798161952915022L;
 	
-	private Set<Symbol> put(QualifiedSymbol newSymbol, Symbol oldSymbol) {
+	private Set<Symbol> put(QualifiedSymbol newSymbol, final Symbol oldSymbol) {
 		String name = newSymbol.getName();
-		Set<Symbol> result = names.get(name);
-		if(result == null) {
+		final Set<Symbol> result_ = names.get(name);
+		final Set<Symbol> result;
+		if(result_ != null) {
+			result = result_;
+		} else {
 			result = new TreeSet<Symbol>();
 			list.put(newSymbol, result);
 			names.put(name, result);
 		}
 		result.add(oldSymbol);
+		if(oldSymbol.hasType(SymbolType.VOID) == null) {
+			ReplaceFunc replaceFunc = new UnqualifiedSymbolsMap.ReplaceFunc() {
+				
+				@Override
+				public ReplaceFunResult replace()
+						throws DuplicateIdentifierException,
+						ShadowedIdentifierException,
+						WrongModifierException,
+						InvalidIdentifierException {
+					final SymbolContainer container = ((UnqualifiedSymbol)oldSymbol).getContainer();
+					final PositionString call = ((UnqualifiedSymbol)oldSymbol).getCall();
+					final QualifiedSymbol qualifiedSymbol = container.getQualifiedSymbol(call);
+					if(qualifiedSymbol != null) {
+						result.remove(oldSymbol);
+						result.add(qualifiedSymbol);
+						return ReplaceFunResult.REPLACED;
+					} else {
+						return ReplaceFunResult.NOT_REPLACED;
+					}
+				}
+				
+			};
+			newSymbol.getRuntime().getUnqualifiedSymbolsMap().addUnqualifiedSymbol((UnqualifiedSymbol) oldSymbol, replaceFunc);
+		}
 		return result;
 	}
 	

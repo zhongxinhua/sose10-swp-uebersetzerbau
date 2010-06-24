@@ -12,9 +12,13 @@ import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
+import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
+import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbolsMap;
 import de.fu_berlin.compilerbau.symbolTable.Variable;
+import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbolsMap.ReplaceFunResult;
+import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbolsMap.ReplaceFunc;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
@@ -25,13 +29,37 @@ import de.fu_berlin.compilerbau.util.StreamPosition;
 
 class ArrayTypeImpl extends ClassImpl implements ArrayType {
 	
-	protected final Symbol componentType;
+	protected Symbol componentType;
 	protected final int dimension;
 
 	public ArrayTypeImpl(Runtime runtime, Symbol componentType, int dimension) throws InvalidIdentifierException {
 		super(runtime, runtime.getUndefinedScope(), null, null, null, null);
 		this.componentType = componentType;
 		this.dimension = dimension;
+
+		if(componentType.hasType(SymbolType.CLASS_OR_INTERFACE) == null) {
+			ReplaceFunc replaceFunc = new UnqualifiedSymbolsMap.ReplaceFunc() {
+				
+				@Override
+				public ReplaceFunResult replace()
+						throws DuplicateIdentifierException,
+						ShadowedIdentifierException,
+						WrongModifierException,
+						InvalidIdentifierException {
+					final SymbolContainer container = ((UnqualifiedSymbol)ArrayTypeImpl.this.componentType).getContainer();
+					final PositionString call = ((UnqualifiedSymbol)ArrayTypeImpl.this.componentType).getCall();
+					final QualifiedSymbol qualifiedSymbol = container.getQualifiedSymbol(call, SymbolType.CLASS_OR_INTERFACE);
+					if(qualifiedSymbol != null) {
+						ArrayTypeImpl.this.componentType = qualifiedSymbol;
+						return ReplaceFunResult.REPLACED;
+					} else {
+						return ReplaceFunResult.NOT_REPLACED;
+					}
+				}
+				
+			};
+			runtime.getUnqualifiedSymbolsMap().addUnqualifiedSymbol((UnqualifiedSymbol) componentType, replaceFunc);
+		}
 	}
 
 	public ArrayTypeImpl(Runtime rt, Class<?> clazz) throws InvalidIdentifierException {

@@ -235,8 +235,7 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 
 	@Override
 	public Set<? extends UnqualifiedSymbol> getUnqualifiedSymbols() {
-		// TODO Auto-generated method stub
-		return null;
+		return unqualifiedSymbolsMap.getUnqualifiedSymbols();
 	}
 
 	@Override

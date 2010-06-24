@@ -15,10 +15,17 @@ import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Scope;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
+import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
+import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbolsMap;
 import de.fu_berlin.compilerbau.symbolTable.Variable;
+import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbolsMap.ReplaceFunResult;
+import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbolsMap.ReplaceFunc;
+import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
+import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
+import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.Likelyness;
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
@@ -28,7 +35,7 @@ class MethodImpl extends ScopeImpl implements Method {
 	protected final ClassOrInterface parent;
 	protected final PositionString name;
 	protected final String destionationName;
-	protected final Symbol resultType;
+	protected Symbol resultType;
 	protected final List<Variable> parameters = new LinkedList<Variable>();
 	protected final Modifier modifier;
 
@@ -49,9 +56,33 @@ class MethodImpl extends ScopeImpl implements Method {
 		this.modifier = modifier;
 		if(parameters != null) {
 			while(parameters.hasNext()) {
-				Variable e = parameters.next();
-				this.parameters.add(e);
+				final Variable next = parameters.next();
+				this.parameters.add(next);
 			}
+		}
+		
+		if(resultType != null && resultType.hasType(SymbolType.CLASS_OR_INTERFACE) == null) {
+			ReplaceFunc replaceFunc = new UnqualifiedSymbolsMap.ReplaceFunc() {
+				
+				@Override
+				public ReplaceFunResult replace()
+						throws DuplicateIdentifierException,
+						ShadowedIdentifierException,
+						WrongModifierException,
+						InvalidIdentifierException {
+					final SymbolContainer container = ((UnqualifiedSymbol)MethodImpl.this.resultType).getContainer();
+					final PositionString call = ((UnqualifiedSymbol)MethodImpl.this.resultType).getCall();
+					final QualifiedSymbol qualifiedSymbol = container.getQualifiedSymbol(call, SymbolType.CLASS_OR_INTERFACE);
+					if(qualifiedSymbol != null) {
+						MethodImpl.this.resultType = qualifiedSymbol;
+						return ReplaceFunResult.REPLACED;
+					} else {
+						return ReplaceFunResult.NOT_REPLACED;
+					}
+				}
+				
+			};
+			runtime.getUnqualifiedSymbolsMap().addUnqualifiedSymbol((UnqualifiedSymbol) resultType, replaceFunc);
 		}
 	}
 

@@ -3,17 +3,53 @@ package de.fu_berlin.compilerbau.symbolTable.java;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
+import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
+import de.fu_berlin.compilerbau.symbolTable.SymbolType;
+import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
+import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbolsMap;
+import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbolsMap.ReplaceFunResult;
+import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbolsMap.ReplaceFunc;
+import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
+import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
+import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
+import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
+import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
 
 class Mention implements Map.Entry<Symbol, StreamPosition>, Comparable<Map.Entry<Symbol, StreamPosition>> {
 	
-	protected final Symbol from;
+	protected Symbol from;
 	protected final StreamPosition position;
 	
 	public Mention(Symbol from, StreamPosition position) {
 		this.position = position;
 		this.from = from;
+
+		if(from.hasType(SymbolType.CLASS) == null) {
+			ReplaceFunc replaceFunc = new UnqualifiedSymbolsMap.ReplaceFunc() {
+				
+				@Override
+				public ReplaceFunResult replace()
+						throws DuplicateIdentifierException,
+						ShadowedIdentifierException,
+						WrongModifierException,
+						InvalidIdentifierException {
+					final SymbolContainer container = ((UnqualifiedSymbol)Mention.this.from).getContainer();
+					final PositionString call = ((UnqualifiedSymbol)Mention.this.from).getCall();
+					final QualifiedSymbol qualifiedSymbol = container.getQualifiedSymbol(call);
+					if(qualifiedSymbol != null) {
+						Mention.this.from = qualifiedSymbol;
+						return ReplaceFunResult.REPLACED;
+					} else {
+						return ReplaceFunResult.NOT_REPLACED;
+					}
+				}
+				
+			};
+			from.getRuntime().getUnqualifiedSymbolsMap().addUnqualifiedSymbol((UnqualifiedSymbol) from, replaceFunc);
+		}
 	}
 
 	@Override

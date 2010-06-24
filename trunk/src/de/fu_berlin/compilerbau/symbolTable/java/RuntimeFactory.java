@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -22,7 +21,6 @@ import de.fu_berlin.compilerbau.symbolTable.Package;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
-import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Variable;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.SymbolTableException;
@@ -114,14 +112,7 @@ public class RuntimeFactory {
 		}
 
 		try {
-			Set<UnqualifiedSymbol> unqualifiedSymbols = result.qualifyAllSymbols();
-			if(unqualifiedSymbols != null && !unqualifiedSymbols.isEmpty()) {
-				System.err.println("Runtime contains unqualified symbol(s) in");
-				for(UnqualifiedSymbol symbol : unqualifiedSymbols) {
-					System.err.println("\t" + symbol);
-				}
-				throw new RuntimeException("Runtime contains unqualified symbols!");
-			}
+			result.qualifyAllSymbols();
 		} catch (SymbolTableException e) {
 			throw new RuntimeException(e);
 		}

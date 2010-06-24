@@ -36,7 +36,8 @@ class UnqualifiedSymbolsMapImpl<U extends UnqualifiedSymbol>
 		final Iterator<Map.Entry<UnqualifiedSymbol, List<ReplaceFunc>>> symbolsIterator =
 				entrySet().iterator();
 		while(symbolsIterator.hasNext()) {
-			final List<ReplaceFunc> replacers = symbolsIterator.next().getValue();
+			final Map.Entry<UnqualifiedSymbol, List<ReplaceFunc>> symbolAndReplacers = symbolsIterator.next();
+			final List<ReplaceFunc> replacers = symbolAndReplacers.getValue();
 			final Iterator<ReplaceFunc> replacersIterator = replacers.iterator();
 			while(replacersIterator.hasNext()) {
 				final ReplaceFunc replacer = replacersIterator.next();
@@ -55,6 +56,11 @@ class UnqualifiedSymbolsMapImpl<U extends UnqualifiedSymbol>
 	@Override
 	public boolean hasUnqualifiedSymbols() {
 		return !isEmpty();
+	}
+
+	@Override
+	public Set<? extends UnqualifiedSymbol> getUnqualifiedSymbols() {
+		return keySet();
 	}
 
 }

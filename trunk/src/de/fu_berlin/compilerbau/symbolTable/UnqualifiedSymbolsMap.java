@@ -33,4 +33,6 @@ public interface UnqualifiedSymbolsMap<U extends UnqualifiedSymbol> {
 	
 	boolean hasUnqualifiedSymbols();
 
+	public Set<? extends UnqualifiedSymbol> getUnqualifiedSymbols();
+
 }

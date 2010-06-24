@@ -14,8 +14,13 @@ import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Scope;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
+import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
+import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
+import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbolsMap;
 import de.fu_berlin.compilerbau.symbolTable.Variable;
+import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbolsMap.ReplaceFunResult;
+import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbolsMap.ReplaceFunc;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
@@ -29,13 +34,37 @@ class ClassImpl extends ClassOrInterfaceImpl implements Class {
 	protected final Map<Constructor, ConstructorImpl> ctors = new TreeMap<Constructor, ConstructorImpl>(ConstructorImpl.COMPARATOR);
 	protected final ShadowedSymbols shadowedSymbols = new ShadowedSymbols(this);
 	protected final Scope staticBlock;
-	protected final Symbol extends_;
+	protected Symbol extends_;
 
 	public ClassImpl(Runtime runtime, Package parent, Symbol extends_, Iterator<Symbol> implements_,
 			Modifier modifier, PositionString canonicalName) throws InvalidIdentifierException {
 		super(runtime, parent, implements_, modifier, canonicalName);
 		this.extends_ = extends_;
 		this.staticBlock = new ScopeImpl(runtime, this);
+
+		if(extends_ != null && extends_.hasType(SymbolType.CLASS) == null) {
+			ReplaceFunc replaceFunc = new UnqualifiedSymbolsMap.ReplaceFunc() {
+				
+				@Override
+				public ReplaceFunResult replace()
+						throws DuplicateIdentifierException,
+						ShadowedIdentifierException,
+						WrongModifierException,
+						InvalidIdentifierException {
+					final SymbolContainer container = ((UnqualifiedSymbol)ClassImpl.this.extends_).getContainer();
+					final PositionString call = ((UnqualifiedSymbol)ClassImpl.this.extends_).getCall();
+					final QualifiedSymbol qualifiedSymbol = container.getQualifiedSymbol(call, SymbolType.CLASS);
+					if(qualifiedSymbol != null) {
+						ClassImpl.this.extends_ = qualifiedSymbol;
+						return ReplaceFunResult.REPLACED;
+					} else {
+						return ReplaceFunResult.NOT_REPLACED;
+					}
+				}
+				
+			};
+			runtime.getUnqualifiedSymbolsMap().addUnqualifiedSymbol((UnqualifiedSymbol) extends_, replaceFunc);
+		}
 	}
 
 	@Override
