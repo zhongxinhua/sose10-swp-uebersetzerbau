@@ -1,19 +1,21 @@
 package de.fu_berlin.compilerbau.start;
 
 /**
- * @author rene, stefan
+ * @author rene
+ * @author stefan
  */
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Vector;
 
 import javax.tools.JavaCompiler;
@@ -21,6 +23,7 @@ import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 
+import de.fu_berlin.compilerbau.annotator.Annotator;
 import de.fu_berlin.compilerbau.builder.Builder;
 import de.fu_berlin.compilerbau.builder.Director;
 import de.fu_berlin.compilerbau.builder.JavaBuilder;
@@ -30,6 +33,8 @@ import de.fu_berlin.compilerbau.directoryWriter.ZipDirectoryWriter;
 import de.fu_berlin.compilerbau.dom.DomCreator;
 import de.fu_berlin.compilerbau.dom.DomNode;
 import de.fu_berlin.compilerbau.parser.AbstractSyntaxTree;
+import de.fu_berlin.compilerbau.symbolTable.Runtime;
+import de.fu_berlin.compilerbau.symbolTable.java.RuntimeFactory;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
 
 /**
@@ -39,6 +44,7 @@ class Start {
 	
 	/** The name of the generated JAR file */
 	private static final String JAR_NAME = "compiler.jar";
+	protected static final String RT_JAR = "/usr/lib/jvm/java-6-openjdk/jre/lib/rt.jar";
 	
 	/**
 	 * Does not return.
@@ -56,8 +62,7 @@ class Start {
 		System.exit(isError ? 1 : 0);
 	}
 
-	public static void main(final String[] args) throws MalformedURLException, IOException {
-		ErrorHandler.init(true); //true==show debug information
+	public static void main(final String[] args) throws Throwable {
 		
 		final Iterator<String> i = Arrays.asList(args).iterator();
 		
@@ -91,10 +96,10 @@ class Start {
 			} else if("-h".equals(arg) || "-help".equals(arg)) {
 				printHelp(false);
 			} else if(
-					source != null ||       // source may not be re-set
-					arg.length() == 0 ||    // empty file name??
-					arg.charAt(0) != '-' || // "-" means stdin
-					i.hasNext()             // there may not be any further arguments!
+				source != null ||       // source may not be re-set
+				arg.length() == 0 ||    // empty file name??
+				arg.charAt(0) != '-' || // "-" means stdin
+				i.hasNext()             // there may not be any further arguments!
 			) {
 				printHelp(true);
 			} else {
@@ -102,33 +107,70 @@ class Start {
 			}
 		}
 		
-		final Reader in;
+		final Start start = new Start(classpath, source, destPath);
 		try {
-			if(source == null || "-".equals(source)) {
-				in = new InputStreamReader(System.in);
+			final boolean result = start.compile();
+			if(result) {
+				System.exit(0);
 			} else {
-				in = new FileReader(source);
+				System.exit(1);
 			}
-		} catch(FileNotFoundException e) {
-			throw new RuntimeException("Could not open source.", e);
+		} catch(Throwable e) {
+			e.printStackTrace();
+			System.exit(1);
 		}
 		
-		try {
-			DomCreator.init(in);
-		} catch(IOException e) {
-			throw new RuntimeException("Could not initialize DOM.", e);
+	}
+
+	protected final String classpath, source, destPath;
+	protected Runtime runtime;
+	
+	protected Start(String classpath, String source, String destPath) {
+		this.classpath = classpath;
+		this.source = source;
+		this.destPath = destPath;
+		rtLoaderThread.start();
+	}
+
+	protected final Thread rtLoaderThread = new Thread(new Runnable() {
+		
+		@Override
+		public void run() {
+			try {
+				final LinkedList<URL> cp = new LinkedList<URL>();
+				if(classpath != null) {
+					for(String s : classpath.split(":")) {
+						cp.add(new File(s).toURI().toURL());
+					}
+				}
+				final URL[] cpJARs = cp.toArray(new URL[cp.size()]);
+				final URL rtJAR = new File(RT_JAR).toURI().toURL();
+				Start.this.runtime = RuntimeFactory.newRuntime(cpJARs, rtJAR);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 		}
+		
+	}, "rt-loader");
+	
+	protected boolean compile() throws Throwable {
+		
+		ErrorHandler.init(true); //true==show debug information
+		
+		final Reader in;
+		if(source == null || "-".equals(source)) {
+			in = new InputStreamReader(System.in);
+		} else {
+			in = new FileReader(source);
+		}
+		
+		DomCreator.init(in);
 		
 		//XML parsen
 		DomNode node = DomCreator.createDOM();
 		
 		//Syntaxbaum erstellen
 		AbstractSyntaxTree stree = new AbstractSyntaxTree(node);
-		
-		//Baum annotieren
-		//URL RT_JAR = new URL("file:///C:/Program Files (x86)/Java/jre1.5.0_14/lib/rt.jar");  
-		//de.fu_berlin.compilerbau.symbolTable.Runtime runtime = RuntimeFactory.newRuntime(null, new URL[] {}, RT_JAR);
-		//Annotator annotator = new AnnotatorImpl(runtime, stree);
 		
 		// Ausgabe von Fehlern und ggf. Abbruch
 		if(ErrorHandler.errorOccured()) {
@@ -137,34 +179,31 @@ class Start {
 			
 			// Schlecht!
 			// sollte evtl. der ErrorHandler uebernehmen
-			System.exit(1);
+			return false;
 		} else if(ErrorHandler.getWarningCount() > 0) {
 			System.err.println(ErrorHandler.getWarningCount() + " warning(s) occured.");
 		}
 		
+		rtLoaderThread.join();
+		if(runtime == null) {
+			return false;
+		}
+		
+		// TODO: imports
+		
+		new Annotator(runtime, stree);
+		
 		//Ausgabe, wenn keine Fehler aufgetreten sind
 		DirectoryWriter directoryWriter;
 		if("-".equals(destPath)) {
-			try {
-				directoryWriter = new ZipDirectoryWriter(System.out);
-			} catch(IOException e) {
-				throw new RuntimeException("Could not open STDOUT for writing.");
-			}
+			directoryWriter = new ZipDirectoryWriter(System.out);
 		} else {
 			directoryWriter = new PhysicalDirectoryWriter(new File(destPath));
 		}
 		
 		Builder builder = new JavaBuilder(stree, classpath);
-		try {
-			Director.build(builder, directoryWriter);
-		} catch(IOException e) {
-			throw new RuntimeException("Could not write compiled code.", e);
-		}
-		try {
-			directoryWriter.close();
-		} catch(IOException e) {
-			throw new RuntimeException("Could not close output.", e);
-		}
+		Director.build(builder, directoryWriter);
+		directoryWriter.close();
 		
 		File[] fileList = getJavaFiles(destPath);
 		
@@ -172,25 +211,24 @@ class Start {
 		StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
 		
 		Iterable<? extends JavaFileObject> compilationUnit =
-	           fileManager.getJavaFileObjectsFromFiles(Arrays.asList(fileList));
-	    compiler.getTask(null, fileManager, null, null, null, compilationUnit).call();
-	    
-	    try {
-			fileManager.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+			fileManager.getJavaFileObjectsFromFiles(Arrays.asList(fileList));
+		compiler.getTask(null, fileManager, null, null, null, compilationUnit).call();
+		
+		fileManager.close();
+		
+		return true;
+		
 	}
 	
-	static private File[] getJavaFiles(String rootPath) {
+	private File[] getJavaFiles(String rootPath) {
 		Vector<File> fileList = new Vector<File>();
 		File dir = new File(rootPath);
 		File[] files = dir.listFiles();
 		for(File f : files) {
-		    if(f.isFile() && f.getName().endsWith(".java")) fileList.add(f);
-		    else if(f.isDirectory()) {	    	
-		    	fileList.addAll(Arrays.asList(getJavaFiles(f.getAbsolutePath())));
-		    }
+			if(f.isFile() && f.getName().endsWith(".java")) fileList.add(f);
+			else if(f.isDirectory()) {	    	
+				fileList.addAll(Arrays.asList(getJavaFiles(f.getAbsolutePath())));
+			}
 		}
 		
 		return (File[]) fileList.toArray(new File[fileList.size()]);	

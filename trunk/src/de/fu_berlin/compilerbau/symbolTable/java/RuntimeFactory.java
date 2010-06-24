@@ -189,8 +189,6 @@ public class RuntimeFactory {
 			return null;
 		}
 		Package pkg = (Package)pkgSymbol;
-		
-		System.err.println("Reading: " + pkgName + "/" + className);
 
 		Symbol[] ifSymbols = javaToCompilerTypes(rt, clazz.getInterfaces());
 		
@@ -227,8 +225,7 @@ public class RuntimeFactory {
 					positionStrings.put(fieldName, name);
 				}
 				final Symbol type = javaToCompilerType(rt, field.getType());
-				Symbol symbol = clazzSymbol.addMember(name, type, modifiers);
-				System.err.println("\t" + symbol);
+				clazzSymbol.addMember(name, type, modifiers);
 			}
 			
 			for(Constructor<?> ctor : clazz.getDeclaredConstructors()) {
@@ -237,8 +234,7 @@ public class RuntimeFactory {
 				}
 				final NativeModifier modifiers = new NativeModifier(ctor.getModifiers());
 				final Iterator<Variable> parameters = new ArgumentIterator(rt, ctor.getParameterTypes());
-				Symbol symbol = clazzSymbol.addConstructor(PositionBean.ZERO, parameters, modifiers);
-				System.err.println("\t" + symbol);
+				clazzSymbol.addConstructor(PositionBean.ZERO, parameters, modifiers);
 			}
 		} else {
 			coiSymbol = pkg.addInterface(classLookupName, implements_, clazzModifiers);
@@ -259,13 +255,9 @@ public class RuntimeFactory {
 				positionStrings.put(methodName, name);
 			}
 			
-			Symbol symbol = coiSymbol.addMethod(name, resultType, parameters, modifiers);
-			
-			System.err.println("\t" + symbol);
+			coiSymbol.addMethod(name, resultType, parameters, modifiers);
 		}
 
-		
-		System.err.println("\t" + coiSymbol + "\n");
 		return coiSymbol;
 		
 	}
