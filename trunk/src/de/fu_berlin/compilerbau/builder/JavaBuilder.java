@@ -211,19 +211,18 @@ public class JavaBuilder extends Builder {
 			_code.append(" = ");
 			boolean isString = decl.getType().equals("String");
 			if(isString){
-				_code.append("new String(");
+				_code.append("new String(\"");
 			}
 			buildExpressionStatement(decl.getValue());
 			if(isString){
-				_code.append(")");
+				_code.append("\")");
 			}
 		}
 		
 		else if(decl.isArray()) {
-			_code.append(" = new " + decl.getType()); 
-			for(int i=0; i<decl.getDimension(); ++i) { 
-				_code.append("[1]"); 
-			} 
+
+				_code.append("= null"); 
+			
 		}
 		
 		_code.append(";\n");

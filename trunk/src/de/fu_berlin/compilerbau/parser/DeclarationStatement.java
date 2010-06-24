@@ -65,7 +65,7 @@ public class DeclarationStatement extends Statement {
 
 		// check needed attribute: name
 		if (node.hasAttribute("name")
-				&& node.getAttributeValue("name").length() > 0) {
+				&& node.getAttributeValue("name").trim().length() > 0) {
 			//Symboltabellenanbindung-> �berpr�fe reservierte/vergebene Namen
 				//Symboltable.check(node.getAttributeValue("name"));
 			//
@@ -100,7 +100,9 @@ public class DeclarationStatement extends Statement {
 				&& (node.getAttributeValue("static").length() != 0)) {
 			if (node.getAttributeValue("static").equals("yes")) {
 				this.isStatic = true;
-			} else {
+			}else if (node.getAttributeValue("static").equals("no")) {
+				this.isStatic = false;
+			}else {
 				ErrorHandler.error(node,
 						"'static' attribute parse error: 'yes' expected");
 			}
@@ -111,6 +113,8 @@ public class DeclarationStatement extends Statement {
 				&& (node.getAttributeValue("final").length() != 0)) {
 			if (node.getAttributeValue("final").equals("yes")) {
 				isFinal = true;
+			} else if (node.getAttributeValue("final").equals("no")) {
+				isFinal = false;
 			} else {
 				ErrorHandler.error(node,
 						"'final' attribute parse error: 'yes' expected");

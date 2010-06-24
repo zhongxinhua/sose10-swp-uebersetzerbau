@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
+import de.fu_berlin.compilerbau.parser.Case;
 import de.fu_berlin.compilerbau.symbolTable.ArrayType;
 import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.Package;
@@ -221,6 +222,56 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	@Override
 	public boolean isNameManglingEnabled() {
 		return mangle;
+	}
+	
+	public boolean isReservedIdentifier(String name){
+		if(name.equals("break")){
+			return true;
+		}else if(name.equals("choose")){
+			return true;
+		}else if(name.equals("class")){
+			return true;
+		}else if(name.equals("continue")){
+			return true;
+		}else if(name.equals("do")){
+			return true;
+		}else if(name.equals("extends")){
+			return true;
+		}else if(name.equals("final")){
+			return true;
+		}else if(name.equals("float")){
+			return true;
+		}else if(name.equals("function")){
+			return true;
+		}else if(name.equals("implements")){
+			return true;
+		}else if(name.equals("import")){
+			return true;
+		}else if(name.equals("int")){
+			return true;
+		}else if(name.equals("interface")){
+			return true;
+		}else if(name.equals("module")){
+			return true;
+		}else if(name.equals("new")){
+			return true;
+		}else if(name.equals("ref")){
+			return true;
+		}else if(name.equals("return")){
+			return true;
+		}else if(name.equals("set")){
+			return true;
+		}else if(name.equals("super")){
+			return true;
+		}else if(name.equals("this")){
+			return true;
+		}else if(name.equals("void")){
+			return true;
+		}else if(name.equals("while")){
+			return true;
+		}else{
+			return false;
+		}
 	}
 
 	@Override
