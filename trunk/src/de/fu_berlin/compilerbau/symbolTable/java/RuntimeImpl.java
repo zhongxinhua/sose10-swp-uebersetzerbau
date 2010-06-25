@@ -232,8 +232,6 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	public boolean isReservedIdentifier(String name){
 		if(name.equals("break")){
 			return true;
-		}else if(name.equals("choose")){
-			return true;
 		}else if(name.equals("class")){
 			return true;
 		}else if(name.equals("continue")){
@@ -260,11 +258,7 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 			return true;
 		}else if(name.equals("new")){
 			return true;
-		}else if(name.equals("ref")){
-			return true;
 		}else if(name.equals("return")){
-			return true;
-		}else if(name.equals("set")){
 			return true;
 		}else if(name.equals("super")){
 			return true;

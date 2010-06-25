@@ -87,6 +87,10 @@ public class RuntimeFactory {
 					String className = fileName.replaceAll("/", "\\.");
 					className = className.substring(0, className.length() - DOT_CLASS.length());
 					
+					if(!className.startsWith("java.") && !className.startsWith("javax.")) {
+						continue; // skip
+					}
+					
 					Class<?> clazz = Class.forName(className, false, loader);
 					if(clazz.isSynthetic() || clazz.isAnonymousClass()) {
 						continue;

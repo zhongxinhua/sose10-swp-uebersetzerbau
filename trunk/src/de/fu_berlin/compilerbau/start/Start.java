@@ -109,14 +109,14 @@ class Start {
 		try {
 			final boolean result = start.compile();
 			if(result) {
+				System.err.println("\nCompiled.");
 				System.exit(0);
-			} else {
-				System.exit(1);
 			}
 		} catch(Throwable e) {
 			e.printStackTrace();
-			System.exit(1);
 		}
+		System.err.println("\nCompiling failed.");
+		System.exit(1);
 		
 	}
 
@@ -166,6 +166,9 @@ class Start {
 		
 		//XML parsen
 		DomNode node = DomCreator.createDOM();
+		if(node == null) {
+			return false; // input was empty
+		}
 		
 		//Syntaxbaum erstellen
 		AbstractSyntaxTree stree = new AbstractSyntaxTree(node);
