@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import static java.lang.reflect.Modifier.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
@@ -94,6 +95,10 @@ public class RuntimeFactory {
 					Class<?> clazz = Class.forName(className, false, loader);
 					if(clazz.isSynthetic() || clazz.isAnonymousClass()) {
 						continue;
+					}
+					
+					if(( clazz.getModifiers() & (PROTECTED|PUBLIC)) == 0) {
+						continue; // skip package-private and private classes
 					}
 					
 					// TODO: Bahandlung für clazz.isMemberClass();
@@ -222,8 +227,14 @@ public class RuntimeFactory {
 				if(field.isSynthetic()) {
 					continue;
 				}
-				final NativeModifier modifiers = new NativeModifier(field.getModifiers());
-				String fieldName = field.getName();
+				
+				final int javaModifiers = field.getModifiers();
+				if((javaModifiers & (PROTECTED|PUBLIC)) == 0) {
+					continue; // skip package-private and private fields
+				}
+				
+				final NativeModifier modifiers = new NativeModifier(javaModifiers);
+				final String fieldName = field.getName();
 				PositionString name = positionStrings.get(fieldName);
 				if(name == null) {
 					name = new PositionString(field.getName(), PositionBean.ZERO);
@@ -237,7 +248,13 @@ public class RuntimeFactory {
 				if(ctor.isSynthetic()) {
 					continue;
 				}
-				final NativeModifier modifiers = new NativeModifier(ctor.getModifiers());
+				
+				final int javaModifiers = ctor.getModifiers();
+				if((javaModifiers & (PROTECTED|PUBLIC)) == 0) {
+					continue; // skip package-private and private fields
+				}
+				
+				final NativeModifier modifiers = new NativeModifier(javaModifiers);
 				final Iterator<Variable> parameters = new ArgumentIterator(rt, ctor.getParameterTypes());
 				clazzSymbol.addConstructor(PositionBean.ZERO, parameters, modifiers);
 			}
@@ -250,7 +267,12 @@ public class RuntimeFactory {
 				continue;
 			}
 			
-			final NativeModifier modifiers = new NativeModifier(method.getModifiers());
+			final int javaModifiers = method.getModifiers();
+			if((javaModifiers & (PROTECTED|PUBLIC)) == 0) {
+				continue; // skip package-private and private methods
+			}
+			
+			final NativeModifier modifiers = new NativeModifier(javaModifiers);
 			final Iterator<Variable> parameters = new ArgumentIterator(rt, method.getParameterTypes());
 			final Symbol resultType = javaToCompilerType(rt, method.getReturnType());
 			String methodName = method.getName();
