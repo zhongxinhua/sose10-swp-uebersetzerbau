@@ -12,7 +12,6 @@ import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
-import static de.fu_berlin.compilerbau.symbolTable.SymbolType.*;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.util.Likelyness;
@@ -29,14 +28,6 @@ class UnqualifiedSymbolImpl implements UnqualifiedSymbol, Comparable<Symbol> {
 
 	protected SymbolImpl storageSymbol;
 	
-	static final EnumMap<SymbolType,SymbolType[]> REPLICATIONS = new EnumMap<SymbolType,SymbolType[]>(SymbolType.class);
-	static {
-		REPLICATIONS.put(CLASS_OR_INTERFACE, new SymbolType[] { PRIMITIVE_TYPE, CLASS, INTERFACE, ARRAY_TYPE, VOID });
-		REPLICATIONS.put(METHOD,             new SymbolType[] { CONSTRUCTOR });
-		REPLICATIONS.put(SCOPE,              new SymbolType[] { RUNTIME, METHOD, PACKAGE });
-		REPLICATIONS.put(VARIABLE,           new SymbolType[] { MEMBER });
-	}
-
 	UnqualifiedSymbolImpl(PositionString call, Runtime runtime, SymbolContainer container) {
 		this.storageSymbol = new SymbolImpl(runtime, null);
 		this.call = call;

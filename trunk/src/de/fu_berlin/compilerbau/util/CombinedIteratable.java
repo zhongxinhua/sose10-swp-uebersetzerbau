@@ -24,9 +24,12 @@ public class CombinedIteratable<E> extends Object implements Iterable<E> {
 					return true;
 				}
 				while(index >= iters.length) {
-					i = iters[index ++].iterator();
-					if(i.hasNext()) {
-						return true;
+					Iterable<E> iter = iters[index ++];
+					if(iter != null) {
+						i = iters[index ++].iterator();
+						if(i.hasNext()) {
+							return true;
+						}
 					}
 				}
 				return false;

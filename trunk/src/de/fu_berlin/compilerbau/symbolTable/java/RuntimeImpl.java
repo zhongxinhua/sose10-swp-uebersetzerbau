@@ -207,6 +207,10 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 
 	@Override
 	public boolean isValidIdentifier(String id) {
+		if(isReservedIdentifier(id)) {
+			return false;
+		}
+		
 		// TODO Auto-generated method stub
 		return true;
 	}
