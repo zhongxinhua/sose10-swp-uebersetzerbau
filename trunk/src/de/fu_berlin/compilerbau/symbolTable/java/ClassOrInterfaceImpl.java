@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import de.fu_berlin.compilerbau.symbolTable.ArrayType;
 import de.fu_berlin.compilerbau.symbolTable.ClassOrInterface;
 import de.fu_berlin.compilerbau.symbolTable.Method;
 import de.fu_berlin.compilerbau.symbolTable.Modifier;
@@ -169,6 +170,43 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 	@Override
 	public String getCanonicalDestinationName() {
 		return ((Package)getParent()).getCanonicalDestinationName() + "." + getDestinationName();
+	}
+
+	@Override
+	public boolean isSame(ClassOrInterface right) throws InvalidIdentifierException {
+		if(getType() != right.getType()) {
+			return false;
+		}
+		switch(getType()) {
+			case INTERFACE:
+			case CLASS:
+				return COMPARATOR.compare(this, (ClassOrInterface)right) == 0;
+			case ARRAY_TYPE:
+				if(((ArrayType)this).getDimension() != ((ArrayType)right).getDimension()) {
+					return false;
+				}
+				Symbol leftCT = ((ArrayType)this).getComponentType();
+				Symbol rightCT = ((ArrayType)this).getComponentType();
+				if(leftCT.hasType(SymbolType.CLASS_OR_INTERFACE) != null) {
+					if(rightCT.hasType(SymbolType.CLASS_OR_INTERFACE) == null) {
+						rightCT = ((UnqualifiedSymbol)rightCT).qualify();
+					}
+					return COMPARATOR.compare((ClassOrInterface)leftCT, (ClassOrInterface)rightCT) == 0;
+				} else {
+					if(rightCT.hasType(SymbolType.CLASS_OR_INTERFACE) == null) {
+						return leftCT.compareTo(rightCT) == 0;
+					} else if(rightCT.hasType(SymbolType.CLASS_OR_INTERFACE) == null) {
+						leftCT = ((UnqualifiedSymbol)leftCT).qualify();
+					}
+					return COMPARATOR.compare((ClassOrInterface)leftCT, (ClassOrInterface)rightCT) == 0;
+				}
+			case PRIMITIVE_TYPE:
+				return this == right; // there is just one instance per primitive type
+			case VOID:
+				return true; // there is just one instance of void
+			default:
+				throw new RuntimeException("Not a valid class or interface: " + getType());
+		}
 	}
 
 }

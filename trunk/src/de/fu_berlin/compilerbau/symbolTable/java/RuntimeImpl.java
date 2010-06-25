@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
-import de.fu_berlin.compilerbau.parser.Case;
 import de.fu_berlin.compilerbau.symbolTable.ArrayType;
 import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.Package;

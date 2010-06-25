@@ -14,6 +14,7 @@ import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import static de.fu_berlin.compilerbau.symbolTable.SymbolType.*;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
+import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.util.Likelyness;
 import de.fu_berlin.compilerbau.util.StreamPosition;
 import static de.fu_berlin.compilerbau.util.Likelyness.*;
@@ -142,6 +143,23 @@ class UnqualifiedSymbolImpl implements UnqualifiedSymbol, Comparable<Symbol> {
 		}
 		
 		return lStr.compareTo(rStr);
+	}
+	
+	protected QualifiedSymbol qualifiedSymbol;
+	@Override
+	public QualifiedSymbol qualify() throws InvalidIdentifierException {
+		if(qualifiedSymbol == null) {
+			qualifiedSymbol = container.getQualifiedSymbol(call);
+		}
+		return qualifiedSymbol;
+	}
+	
+	@Override
+	public QualifiedSymbol qualify(SymbolType type) throws InvalidIdentifierException {
+		if(qualifiedSymbol == null) {
+			qualifiedSymbol = container.getQualifiedSymbol(call, type);
+		}
+		return qualifiedSymbol;
 	}
 
 }

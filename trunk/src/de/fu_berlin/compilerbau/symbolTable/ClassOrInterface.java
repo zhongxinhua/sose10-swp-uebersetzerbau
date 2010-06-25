@@ -28,4 +28,6 @@ public interface ClassOrInterface extends SymbolContainer, QualifiedSymbol, HasC
 	 */
 	Set<Symbol> getImplementedInterfaces();
 	
+	boolean isSame(ClassOrInterface right) throws InvalidIdentifierException;
+	
 }
