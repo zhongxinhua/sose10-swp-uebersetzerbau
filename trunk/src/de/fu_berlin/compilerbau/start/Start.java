@@ -6,11 +6,12 @@ package de.fu_berlin.compilerbau.start;
  */
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.InputStreamReader;
+import java.io.FileInputStream;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -121,6 +122,7 @@ class Start {
 	}
 
 	protected final String classpath, source, destPath;
+	protected final Thread currentThread = Thread.currentThread();
 	protected Runtime runtime;
 	
 	protected Start(String classpath, String source, String destPath) {
@@ -145,6 +147,8 @@ class Start {
 				final URL rtJAR = new File(RT_JAR).toURI().toURL();
 				Start.this.runtime = RuntimeFactory.newRuntime(cpJARs, rtJAR);
 			} catch (Exception e) {
+				// Start.this.currentThread.stop(new InterruptedException());
+				Start.this.currentThread.interrupt();
 				throw new RuntimeException(e);
 			}
 		}
@@ -156,15 +160,16 @@ class Start {
 		ErrorHandler.init(true); //true==show debug information
 		
 		final Reader in;
+		final ReadableByteChannel channel;
 		if(source == null || "-".equals(source)) {
-			in = new InputStreamReader(System.in);
+			channel = Channels.newChannel(System.in);
 		} else {
-			in = new FileReader(source);
+			channel = new FileInputStream(source).getChannel();
 		}
-		
-		DomCreator.init(in);
+		in = Channels.newReader(channel, "UTF-8");
 		
 		//XML parsen
+		DomCreator.init(in);
 		DomNode node = DomCreator.createDOM();
 		if(node == null) {
 			return false; // input was empty
