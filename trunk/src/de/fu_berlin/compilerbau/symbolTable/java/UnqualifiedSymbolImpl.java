@@ -25,6 +25,7 @@ class UnqualifiedSymbolImpl implements UnqualifiedSymbol, Comparable<Symbol> {
 	protected final Map<SymbolType, Likelyness> likelyness = new EnumMap<SymbolType, Likelyness>(SymbolType.class);
 	protected final PositionString call;
 	protected final SymbolContainer container;
+	protected QualifiedSymbol qualifiedSymbol;
 
 	protected SymbolImpl storageSymbol;
 	
@@ -87,6 +88,22 @@ class UnqualifiedSymbolImpl implements UnqualifiedSymbol, Comparable<Symbol> {
 	public SymbolContainer getContainer() {
 		return container;
 	}
+	
+	@Override
+	public QualifiedSymbol qualify() throws InvalidIdentifierException {
+		if(qualifiedSymbol == null) {
+			qualifiedSymbol = container.getQualifiedSymbol(call);
+		}
+		return qualifiedSymbol;
+	}
+	
+	@Override
+	public QualifiedSymbol qualify(SymbolType type) throws InvalidIdentifierException {
+		if(qualifiedSymbol == null) {
+			qualifiedSymbol = container.getQualifiedSymbol(call, type);
+		}
+		return qualifiedSymbol;
+	}
 
 	//*****************************************************************************
 	// Symbol:
@@ -143,23 +160,6 @@ class UnqualifiedSymbolImpl implements UnqualifiedSymbol, Comparable<Symbol> {
 		}
 		
 		return lStr.compareTo(rStr);
-	}
-	
-	protected QualifiedSymbol qualifiedSymbol;
-	@Override
-	public QualifiedSymbol qualify() throws InvalidIdentifierException {
-		if(qualifiedSymbol == null) {
-			qualifiedSymbol = container.getQualifiedSymbol(call);
-		}
-		return qualifiedSymbol;
-	}
-	
-	@Override
-	public QualifiedSymbol qualify(SymbolType type) throws InvalidIdentifierException {
-		if(qualifiedSymbol == null) {
-			qualifiedSymbol = container.getQualifiedSymbol(call, type);
-		}
-		return qualifiedSymbol;
 	}
 
 }

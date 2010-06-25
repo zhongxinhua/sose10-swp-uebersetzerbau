@@ -12,7 +12,6 @@ import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
-import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbolsMap;
@@ -46,9 +45,7 @@ class ArrayTypeImpl extends ClassImpl implements ArrayType {
 						ShadowedIdentifierException,
 						WrongModifierException,
 						InvalidIdentifierException {
-					final SymbolContainer container = ((UnqualifiedSymbol)ArrayTypeImpl.this.componentType).getContainer();
-					final PositionString call = ((UnqualifiedSymbol)ArrayTypeImpl.this.componentType).getCall();
-					final QualifiedSymbol qualifiedSymbol = container.getQualifiedSymbol(call, SymbolType.CLASS_OR_INTERFACE);
+					final QualifiedSymbol qualifiedSymbol = ((UnqualifiedSymbol)ArrayTypeImpl.this.componentType).qualify();
 					if(qualifiedSymbol != null) {
 						ArrayTypeImpl.this.componentType = qualifiedSymbol;
 						return ReplaceFunResult.REPLACED;

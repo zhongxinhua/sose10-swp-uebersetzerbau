@@ -15,7 +15,6 @@ import de.fu_berlin.compilerbau.symbolTable.Package;
 import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
-import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbolsMap;
@@ -65,9 +64,7 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 								ShadowedIdentifierException,
 								WrongModifierException,
 								InvalidIdentifierException {
-							final SymbolContainer container = ((UnqualifiedSymbol)next).getContainer();
-							final PositionString call = ((UnqualifiedSymbol)next).getCall();
-							final QualifiedSymbol qualifiedSymbol = container.getQualifiedSymbol(call, SymbolType.INTERFACE);
+							final QualifiedSymbol qualifiedSymbol = ((UnqualifiedSymbol)next).qualify();
 							if(qualifiedSymbol != null) {
 								interfaces.remove(next);
 								interfaces.add(qualifiedSymbol);

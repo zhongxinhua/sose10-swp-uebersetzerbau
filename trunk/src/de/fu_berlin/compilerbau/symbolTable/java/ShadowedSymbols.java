@@ -9,7 +9,6 @@ import java.util.TreeSet;
 import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
-import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbolsMap;
@@ -55,9 +54,7 @@ class ShadowedSymbols {
 						ShadowedIdentifierException,
 						WrongModifierException,
 						InvalidIdentifierException {
-					final SymbolContainer container = ((UnqualifiedSymbol)oldSymbol).getContainer();
-					final PositionString call = ((UnqualifiedSymbol)oldSymbol).getCall();
-					final QualifiedSymbol qualifiedSymbol = container.getQualifiedSymbol(call);
+					final QualifiedSymbol qualifiedSymbol = ((UnqualifiedSymbol)oldSymbol).qualify();
 					if(qualifiedSymbol != null) {
 						result.remove(oldSymbol);
 						result.add(qualifiedSymbol);

@@ -109,16 +109,23 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 		this.throwsAtShadowing = throwsAtShadowing;
 	}
 	
+	protected final UnqualifiedSymbolGenerator unqualifiedSymbolGenerator =
+			new UnqualifiedSymbolGenerator(this);
+
+	@Override
+	public UnqualifiedSymbol getUnqualifiedSymbol(PositionString name, SymbolContainer container) {
+		return unqualifiedSymbolGenerator.getUnqualifiedSymbol(name, container);
+	}
+	
 	@Override
 	public UnqualifiedSymbol getUnqualifiedSymbol(PositionString name, SymbolContainer container,
 			Iterator<Map.Entry<SymbolType, Likelyness>> likeliness) throws RuntimeException {
-		return new UnqualifiedSymbolImpl(name, this, container, likeliness);
+		return unqualifiedSymbolGenerator.getUnqualifiedSymbol(name, container, likeliness);
 	}
 	
 	@Override
 	public UnqualifiedSymbol getUnqualifiedSymbol(PositionString name, SymbolContainer container, SymbolType type) {
-		KnownTypeIterator iterator = new KnownTypeIterator(type);
-		return getUnqualifiedSymbol(name, container, iterator);
+		return unqualifiedSymbolGenerator.getUnqualifiedSymbol(name, container, type);
 	}
 	
 	@Override
@@ -173,11 +180,6 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	@Override
 	public Map<QualifiedSymbol, Set<Symbol>> getShadowedSymbols() {
 		return shadowedSymbols.list;
-	}
-
-	@Override
-	public UnqualifiedSymbol getUnqualifiedSymbol(PositionString name, SymbolContainer container) {
-		return new UnqualifiedSymbolImpl(name, this, container);
 	}
 
 	@Override

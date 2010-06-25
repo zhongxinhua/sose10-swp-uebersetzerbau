@@ -14,7 +14,6 @@ import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Scope;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
-import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbolsMap;
@@ -51,9 +50,7 @@ class ClassImpl extends ClassOrInterfaceImpl implements Class {
 						ShadowedIdentifierException,
 						WrongModifierException,
 						InvalidIdentifierException {
-					final SymbolContainer container = ((UnqualifiedSymbol)ClassImpl.this.extends_).getContainer();
-					final PositionString call = ((UnqualifiedSymbol)ClassImpl.this.extends_).getCall();
-					final QualifiedSymbol qualifiedSymbol = container.getQualifiedSymbol(call, SymbolType.CLASS);
+					final QualifiedSymbol qualifiedSymbol = ((UnqualifiedSymbol)ClassImpl.this.extends_).qualify();
 					if(qualifiedSymbol != null) {
 						ClassImpl.this.extends_ = qualifiedSymbol;
 						return ReplaceFunResult.REPLACED;

@@ -96,6 +96,7 @@ public class RuntimeFactory {
 
 					String pkgName = className.substring(0, className.lastIndexOf('.'));
 					className = className.substring(pkgName.length() + 1);
+					System.err.println("Loading: " + pkgName + "/" + className);
 					try {
 						populateFromNativeClass(result, pkgName, className, clazz); // indentation too big ...
 					} catch(SymbolTableException e) {

@@ -15,7 +15,6 @@ import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Scope;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
-import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbolsMap;
@@ -70,9 +69,7 @@ class MethodImpl extends ScopeImpl implements Method {
 						ShadowedIdentifierException,
 						WrongModifierException,
 						InvalidIdentifierException {
-					final SymbolContainer container = ((UnqualifiedSymbol)MethodImpl.this.resultType).getContainer();
-					final PositionString call = ((UnqualifiedSymbol)MethodImpl.this.resultType).getCall();
-					final QualifiedSymbol qualifiedSymbol = container.getQualifiedSymbol(call, SymbolType.CLASS_OR_INTERFACE);
+					final QualifiedSymbol qualifiedSymbol = ((UnqualifiedSymbol)MethodImpl.this.resultType).qualify();
 					if(qualifiedSymbol != null) {
 						MethodImpl.this.resultType = qualifiedSymbol;
 						return ReplaceFunResult.REPLACED;

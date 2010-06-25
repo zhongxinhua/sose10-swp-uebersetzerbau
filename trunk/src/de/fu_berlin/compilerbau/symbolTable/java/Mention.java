@@ -5,7 +5,6 @@ import java.util.Map.Entry;
 
 import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
-import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbolsMap;
@@ -15,7 +14,6 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierExcept
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
-import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
 
 class Mention implements Map.Entry<Symbol, StreamPosition>, Comparable<Map.Entry<Symbol, StreamPosition>> {
@@ -36,9 +34,7 @@ class Mention implements Map.Entry<Symbol, StreamPosition>, Comparable<Map.Entry
 						ShadowedIdentifierException,
 						WrongModifierException,
 						InvalidIdentifierException {
-					final SymbolContainer container = ((UnqualifiedSymbol)Mention.this.from).getContainer();
-					final PositionString call = ((UnqualifiedSymbol)Mention.this.from).getCall();
-					final QualifiedSymbol qualifiedSymbol = container.getQualifiedSymbol(call);
+					final QualifiedSymbol qualifiedSymbol = ((UnqualifiedSymbol)Mention.this.from).qualify();
 					if(qualifiedSymbol != null) {
 						Mention.this.from = qualifiedSymbol;
 						return ReplaceFunResult.REPLACED;

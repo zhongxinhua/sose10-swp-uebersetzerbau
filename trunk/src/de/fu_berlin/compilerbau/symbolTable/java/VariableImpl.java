@@ -51,9 +51,7 @@ class VariableImpl extends SymbolImpl implements Variable {
 						ShadowedIdentifierException,
 						WrongModifierException,
 						InvalidIdentifierException {
-					final SymbolContainer container = ((UnqualifiedSymbol)VariableImpl.this.variableType).getContainer();
-					final PositionString call = ((UnqualifiedSymbol)VariableImpl.this.variableType).getCall();
-					final QualifiedSymbol qualifiedSymbol = container.getQualifiedSymbol(call, SymbolType.CLASS_OR_INTERFACE);
+					final QualifiedSymbol qualifiedSymbol = ((UnqualifiedSymbol)VariableImpl.this.variableType).qualify();
 					if(qualifiedSymbol != null) {
 						VariableImpl.this.variableType = qualifiedSymbol;
 						return ReplaceFunResult.REPLACED;
