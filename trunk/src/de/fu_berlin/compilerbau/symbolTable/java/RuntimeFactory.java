@@ -12,6 +12,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.Callable;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -45,6 +49,90 @@ public class RuntimeFactory {
 		// void
 	}
 	
+	protected static final class LoaderThread implements Runnable {
+
+		protected final JarInputStream jarInputStream;
+		protected final PackageLoader loader;
+		protected final BlockingDeque<Callable<ClassOrInterface>> queue;
+		protected final RuntimeImpl runtime;
+		protected final AtomicInteger semaphore;
+		protected final Object notifier;
+		
+		public LoaderThread(JarInputStream jarInputStream, PackageLoader loader,
+				BlockingDeque<Callable<ClassOrInterface>> queue, RuntimeImpl runtime,
+				AtomicInteger semaphore, Object notifier) {
+			this.jarInputStream = jarInputStream;
+			this.loader = loader;
+			this.queue = queue;
+			this.runtime = runtime;
+			this.semaphore = semaphore;
+			this.notifier = notifier;
+		}
+
+		@Override
+		public void run() {
+			try {
+				for(;;) {
+					final JarEntry entry;
+					synchronized (jarInputStream) {
+						entry = jarInputStream.getNextJarEntry();
+					}
+					if(entry == null) {
+						break;
+					}
+
+					final String fileName = entry.getName();
+					if(!fileName.endsWith(DOT_CLASS)) {
+						continue;
+					}
+					
+					String className = fileName.replaceAll("/", "\\.");
+					className = className.substring(0, className.length() - DOT_CLASS.length());
+					
+					if(!className.startsWith("java.") && !className.startsWith("javax.")) {
+						continue; // skip
+					}
+					
+					final Class<?> clazz = Class.forName(className, false, loader);
+					if(clazz.isSynthetic() || clazz.isAnonymousClass()) {
+						continue;
+					}
+					
+					if((clazz.getModifiers() & (PROTECTED|PUBLIC)) == 0) {
+						continue; // skip package-private and private classes
+					}
+					
+					// TODO: Bahandlung für clazz.isMemberClass();
+
+					final String pkgName = className.substring(0, className.lastIndexOf('.'));
+					final String simplyfiedClassName = className.substring(pkgName.length() + 1);
+					
+					final Callable<ClassOrInterface> call = new Callable<ClassOrInterface>() {
+
+						@Override
+						public ClassOrInterface call() throws SymbolTableException {
+							System.err.println("Reading: " + pkgName + "/" + simplyfiedClassName);
+							final ClassOrInterface result =
+								populateFromNativeClass(runtime, pkgName, simplyfiedClassName, clazz);
+							return result;
+						}
+						
+					};
+					
+					queue.put(call);
+					synchronized (notifier) {
+						notifier.notify();
+					}
+				}
+			} catch (Throwable e) {
+				throw new RuntimeException(e);
+			} finally {
+				semaphore.incrementAndGet();
+			}
+		}
+
+	}
+	
 	/**
 	 * Returns a new {@link Runtime runtime}.
 	 * @param imports Imports to be known [(package name, alias)].
@@ -71,51 +159,50 @@ public class RuntimeFactory {
 		} catch(SymbolTableException e) {
 			throw new RuntimeException("Could not populate Runtime with Java's packages.", e);
 		}
-
+		
+		final Thread[] loaderThreads = new Thread[java.lang.Runtime.getRuntime().availableProcessors() + 1];
 		for(URL url : loader.getURLs()) {
-			URLConnection openConnection = url.openConnection();
+			final URLConnection openConnection = url.openConnection();
 			openConnection.connect();
-			InputStream inputStream = openConnection.getInputStream();
-			JarInputStream jarInputStream = new JarInputStream(inputStream);
+			final InputStream inputStream = openConnection.getInputStream();
+			final JarInputStream jarInputStream = new JarInputStream(inputStream);
+			final AtomicInteger semaphore = new AtomicInteger(-loaderThreads.length);
+			final Object notifier = new Object();
+			
+			final BlockingDeque<Callable<ClassOrInterface>> queue = new LinkedBlockingDeque<
+					Callable<ClassOrInterface>>(30);
+			for(int i = 0; i < loaderThreads.length; ++i) {
+				loaderThreads[i] = new Thread(new LoaderThread(jarInputStream, loader, queue,
+						result, semaphore, notifier));
+			}
+			
+			for(Thread thread : loaderThreads) {
+				thread.start();
+			}
 
 			try {
-				for(JarEntry entry; (entry = jarInputStream.getNextJarEntry()) != null;) {
-					String fileName = entry.getName();
-					if(!fileName.endsWith(DOT_CLASS)) {
-						continue;
+				outer:for(;;) {
+					final Callable<ClassOrInterface> job;
+					inner:for(;;) {
+						final Callable<ClassOrInterface> job_ = queue.poll();
+						if(job_ != null) {
+							job = job_;
+							break;
+						} else {
+							if(semaphore.get() >= 0) {
+								break outer;
+							} else {
+								synchronized (notifier) {
+									notifier.wait(0, 10 * 1000);
+									continue inner;
+								}
+							}
+						}
 					}
-					
-					String className = fileName.replaceAll("/", "\\.");
-					className = className.substring(0, className.length() - DOT_CLASS.length());
-					
-					if(!className.startsWith("java.") && !className.startsWith("javax.")) {
-						continue; // skip
-					}
-					
-					Class<?> clazz = Class.forName(className, false, loader);
-					if(clazz.isSynthetic() || clazz.isAnonymousClass()) {
-						continue;
-					}
-					
-					if(( clazz.getModifiers() & (PROTECTED|PUBLIC)) == 0) {
-						continue; // skip package-private and private classes
-					}
-					
-					// TODO: Bahandlung für clazz.isMemberClass();
-
-					String pkgName = className.substring(0, className.lastIndexOf('.'));
-					className = className.substring(pkgName.length() + 1);
-					System.err.println("Loading: " + pkgName + "/" + className);
-					try {
-						populateFromNativeClass(result, pkgName, className, clazz); // indentation too big ...
-					} catch(SymbolTableException e) {
-						// throw new RuntimeException("Internal error.", e);
-						// TODO: wieso passiert das?
-						e.printStackTrace();
-					}
+					job.call();
 				}
-			} catch(ClassNotFoundException e) {
-				throw new RuntimeException("A class in a JAR could not be loaded.", e);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
 			}
 			
 			jarInputStream.close();
