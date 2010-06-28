@@ -131,6 +131,9 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 
 	@Override
 	public QualifiedSymbol lookTreeUp(UnqualifiedSymbol symbol) throws InvalidIdentifierException {
+		if(symbol == null) {
+			return null;
+		}
 		if(symbol.is(SymbolType.METHOD) != Likelyness.IMPOSSIBLE) {
 			MethodImpl oldsymbol = new MethodImpl(getRuntime(), this, symbol.getCall(), null, null, null);
 			MethodImpl result = methods.get(oldsymbol);

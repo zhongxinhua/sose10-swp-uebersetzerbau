@@ -53,6 +53,9 @@ class ScopeImpl extends SymbolContainerImpl implements Scope {
 
 	@Override
 	public QualifiedSymbol lookTreeUp(UnqualifiedSymbol symbol) throws InvalidIdentifierException {
+		if(symbol == null) {
+			return null;
+		}
 		if(symbol.is(SymbolType.VARIABLE) != Likelyness.IMPOSSIBLE) {
 			VariableImpl needle = new VariableImpl(getRuntime(), null, symbol.getCall(), null, null);
 			VariableImpl result = variables.get(needle);

@@ -51,6 +51,7 @@ public interface Runtime extends SymbolContainer {
 	 * {@link SymbolContainer container}.
 	 * @param likeliness A list of "likelinesses" regarding a {@link SymbolType symbol type}.
 	 * @return A unqualified symbol. Give it to a {@link SymbolContainer container}!
+	 * @return null, if name was null
 	 * @throws RuntimeException A symbol occurred twice.
 	 */
 	UnqualifiedSymbol getUnqualifiedSymbol(PositionString name, SymbolContainer container, Iterator<Map.Entry<SymbolType,Likelyness>> likeliness);

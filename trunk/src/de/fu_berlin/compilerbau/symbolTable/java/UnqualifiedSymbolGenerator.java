@@ -69,6 +69,9 @@ class UnqualifiedSymbolGenerator {
 	}
 	
 	public UnqualifiedSymbol getUnqualifiedSymbol(PositionString name, SymbolContainer container) {
+		if(name == null) {
+			return null;
+		}
 		final Binary c = new Binary(name, container);
 		UnqualifiedSymbol result = Binary.map.get(c);
 		if(result == null) {
@@ -84,6 +87,9 @@ class UnqualifiedSymbolGenerator {
 	}
 	
 	public UnqualifiedSymbol getUnqualifiedSymbol(PositionString name, SymbolContainer container, SymbolType type) {
+		if(name == null) {
+			return null;
+		}
 		final Ternary c = new Ternary(name, container, type);
 		UnqualifiedSymbol result = Ternary.map.get(c);
 		if(result == null) {

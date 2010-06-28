@@ -193,6 +193,9 @@ class MethodImpl extends ScopeImpl implements Method {
 
 	@Override
 	public QualifiedSymbol lookTreeUp(UnqualifiedSymbol symbol) throws InvalidIdentifierException {
+		if(symbol == null) {
+			return null;
+		}
 		if(symbol.is(SymbolType.VARIABLE) != Likelyness.IMPOSSIBLE) {
 			VariableImpl result = new VariableImpl(getRuntime(), this, symbol.getCall(), null, null);
 			if(result != null) {

@@ -24,6 +24,7 @@ public interface SymbolContainer extends Symbol {
 	 * Tries to lookup a symbol. Returns unqualified symbol if not found.
 	 * @see #getUnqualifiedSymbol(PositionString, Iterator)
 	 * @see SymbolContainer#lookup(UnqualifiedSymbol)
+	 * @return null if name was null
 	 */
 	Symbol tryGetQualifiedSymbol(PositionString name, Iterator<Map.Entry<SymbolType,Likelyness>> likeliness) throws InvalidIdentifierException;
 	
@@ -41,7 +42,7 @@ public interface SymbolContainer extends Symbol {
 	/**
 	 * @see #lookup(UnqualifiedSymbol)
 	 * @see Runtime#getUnqualifiedSymbol(PositionString, SymbolType)
-	 * @return null if not found
+	 * @return null if not found or name was null
 	 * @throws InvalidIdentifierException 
 	 */
 	@InternalMethod
@@ -49,7 +50,7 @@ public interface SymbolContainer extends Symbol {
 	
 	/**
 	 * @see #lookup(UnqualifiedSymbol)
-	 * @return null if not found
+	 * @return null if not found or name was null
 	 * @throws InvalidIdentifierException 
 	 */
 	@InternalMethod
@@ -57,12 +58,14 @@ public interface SymbolContainer extends Symbol {
 	
 	/**
 	 * Being in a scope, looking downwards for a symbol.
+	 * @return null, if symbol was null
 	 */
 	@InternalMethod
 	QualifiedSymbol lookTreeUp(UnqualifiedSymbol symbol) throws InvalidIdentifierException;
 
 	/**
 	 * Being in a scope, looking upwards for a symbol.
+	 * @return null, if symbol was null
 	 */
 	@InternalMethod
 	QualifiedSymbol lookTreeDown(UnqualifiedSymbol symbol) throws InvalidIdentifierException;

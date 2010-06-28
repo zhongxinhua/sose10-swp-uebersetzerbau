@@ -150,6 +150,9 @@ class PackageImpl extends SymbolContainerImpl implements Package {
 
 	@Override
 	public QualifiedSymbol lookTreeUp(UnqualifiedSymbol symbol) throws InvalidIdentifierException {
+		if(symbol == null) {
+			return null;
+		}
 		if(symbol.is(SymbolType.CLASS) != Likelyness.IMPOSSIBLE) {
 			ClassImpl result = new ClassImpl(getRuntime(), this, null, null, null, symbol.getCall());
 			if(result != null) {
@@ -186,6 +189,9 @@ class PackageImpl extends SymbolContainerImpl implements Package {
 
 	@Override
 	public QualifiedSymbol lookTreeDown(UnqualifiedSymbol symbol) throws InvalidIdentifierException {
+		if(symbol == null) {
+			return null;
+		}
 		if(symbol.is(SymbolType.CLASS_OR_INTERFACE) != Likelyness.IMPOSSIBLE) {
 			ClassOrInterfaceImpl impl = new ClassOrInterfaceImpl(getRuntime(), this, null, null, symbol.getCall());
 			ClassOrInterfaceImpl result = classesAndInterfaces.get(impl);

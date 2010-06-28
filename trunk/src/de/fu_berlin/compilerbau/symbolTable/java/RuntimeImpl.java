@@ -148,6 +148,9 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	
 	@Override
 	public QualifiedSymbol lookTreeDown(UnqualifiedSymbol symbol) throws InvalidIdentifierException {
+		if(symbol == null) {
+			return null;
+		}
 		if(symbol.is(PRIMITIVE_TYPE) != IMPOSSIBLE) {
 			PrimitiveTypeImpl result = primitiveTypesByName.get(symbol.getCall().toString());
 			if(result != null) {

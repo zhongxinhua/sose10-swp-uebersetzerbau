@@ -42,6 +42,9 @@ class GlobalScopeImpl extends PackageImpl {
 
 	@Override
 	public QualifiedSymbol lookTreeDown(UnqualifiedSymbol symbol) throws InvalidIdentifierException {
+		if(symbol == null) {
+			return null;
+		}
 		SymbolSplitter.lookup(getRuntime(), this, symbol, cois, coiCtor);
 		return null;
 	}
