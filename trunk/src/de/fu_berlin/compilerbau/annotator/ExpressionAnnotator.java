@@ -97,6 +97,7 @@ public class ExpressionAnnotator {
 	
 	
 	protected Symbol annotateBinaryOperation(SymbolContainer container, BinaryOperation operation) {
+		
 		return null;
 		//TODO
 	}
@@ -131,8 +132,7 @@ public class ExpressionAnnotator {
 	protected Symbol annotateFunctionCall(SymbolContainer container, FunctionCall call) throws InvalidIdentifierException {
 		//check symbol
 		final PositionString name = call.getName();
-		Symbol symbol = container.getQualifiedSymbol(name);
-		ErrorHandler.debugMsg(call, "annotating function call \""+name+"\"");		
+		Symbol symbol = container.getQualifiedSymbol(name);		
 		assert(symbol.hasType(SymbolType.METHOD));
 		Method symFunction = (Method) symbol;
 		

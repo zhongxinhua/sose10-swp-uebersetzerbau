@@ -31,7 +31,7 @@ public class FunctionCall extends Expression { // a(b,c)
 	
 	@Override
 	public String toString() {
-		return "functionCall("+name+")";
+		return "functionCall "+name+"(...)";
 	}
 	//BEGIN get-Methoden f�r Builder
 	public PositionString getName(){

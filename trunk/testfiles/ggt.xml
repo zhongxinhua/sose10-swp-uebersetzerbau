@@ -24,11 +24,11 @@
       
       <decl type="int" name="ggt1"/>
       <decl type="int" name="ggt2"/>
-      <call exec="print('ggt1: ')"/>
-	  <call exec="read()" value="ggt1"/>
-      <call exec="print('ggt2: ')"/>
-	  <call exec="read()" value="ggt2"/>
-      <call exec="print(Mathe.ggt(ggt1,ggt2))"/>
+      <call exec="System.out.println('ggt1: ')"/>
+	  <set  name="ggt1" value="read()"/>
+      <call exec="System.out.println('ggt2: ')"/>
+	  <set  name="ggt2" value="read()"/>
+      <call exec="System.out.println(Mathe.ggt(ggt1,ggt2))"/>
   </function>
 </class>
 </module>
