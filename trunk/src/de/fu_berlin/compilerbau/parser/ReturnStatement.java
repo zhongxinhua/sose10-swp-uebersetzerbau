@@ -41,12 +41,14 @@ public class ReturnStatement extends Statement {
 					+ " body forbidden!");
 		}
 	}
-	//BEGIN get-Methoden für Builder
+	//BEGIN get-Methoden fï¿½r Builder
 	public Expression getValue(){
 		return value;
 	}
-	//END get-Methoden für Builder
+	//END get-Methoden fï¿½r Builder
 	
-	
-
+	@Override
+	public String toString() {
+		return "return "+value.toString()+";";
+	}
 }

@@ -41,5 +41,10 @@ public class ScopeStatement extends Statement {
 	public List<Statement> getBody() {
 		return body;		
 	} 
+	
+	@Override
+	public String toString() {
+		return "{...}";
+	}
 
 }

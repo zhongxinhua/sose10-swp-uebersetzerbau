@@ -45,4 +45,8 @@ public class ImplementsStatement extends Statement {
 	}
 	// END get-Methoden für Builder
 
+	@Override
+	public String toString() {
+		return "implements "+name;
+	}
 }

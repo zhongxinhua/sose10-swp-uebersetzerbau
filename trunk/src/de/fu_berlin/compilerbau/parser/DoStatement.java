@@ -62,4 +62,8 @@ public class DoStatement extends Statement {
 	}
 	// END get-Methoden f�r Builder
 
+	@Override
+	public String toString() {
+		return "while("+test.toString()+") {...}";
+	}
 }

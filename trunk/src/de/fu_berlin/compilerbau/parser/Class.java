@@ -98,4 +98,9 @@ public class Class extends ClassOrInterface {
 		return functions;
 	}
 	// END get-Methoden f�r Builder
+	
+	@Override
+	public String toString() {
+		return "class "+name;
+	}
 }

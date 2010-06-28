@@ -68,5 +68,10 @@ public class Interface extends ClassOrInterface {
 		}
 
 	}
+	
+	@Override
+	public String toString() {
+		return "interface "+name;
+	}
 
 }

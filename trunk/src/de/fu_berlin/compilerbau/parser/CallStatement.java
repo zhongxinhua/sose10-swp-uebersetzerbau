@@ -53,5 +53,12 @@ public class CallStatement extends Statement {
 	}
 	
 	public Expression getCall() { return call; }
+	
+	//TODO diesen mist hier entfernen, was soll denn das?
 	public PositionString getValue() { return value; }
+	
+	@Override
+	public String toString() {
+		return call.toString()+";";
+	}
 }

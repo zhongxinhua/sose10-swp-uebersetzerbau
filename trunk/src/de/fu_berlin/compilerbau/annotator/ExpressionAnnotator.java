@@ -17,11 +17,13 @@ import de.fu_berlin.compilerbau.parser.expressions.NullLiteral;
 import de.fu_berlin.compilerbau.parser.expressions.ObjectCreation;
 import de.fu_berlin.compilerbau.parser.expressions.StringLiteral;
 import de.fu_berlin.compilerbau.parser.expressions.UnaryOperation;
+import de.fu_berlin.compilerbau.symbolTable.ClassOrInterface;
 import de.fu_berlin.compilerbau.symbolTable.Constructor;
 import de.fu_berlin.compilerbau.symbolTable.Method;
 import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Scope;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
+import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.Variable;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
@@ -38,64 +40,74 @@ public class ExpressionAnnotator {
 	
 	/**
 	 * annotates an expression
-	 * @param scope
+	 * @param container
 	 * @param expression
 	 * @throws InvalidIdentifierException
 	 */
-	protected Symbol annotateExpression(Scope scope, Expression expression) throws InvalidIdentifierException {
+	protected Symbol annotateExpression(SymbolContainer container, Expression expression) throws InvalidIdentifierException {
 		if(expression instanceof ArrayAccess)
-			return annotateArrayAccess(scope, (ArrayAccess) expression);
+			return annotateArrayAccess(container, (ArrayAccess) expression);
 		else if(expression instanceof ArrayCreation)
-			return annotateArrayCreation(scope, (ArrayCreation) expression);
+			return annotateArrayCreation(container, (ArrayCreation) expression);
 		else if(expression instanceof BinaryOperation)
-			return annotateBinaryOperation(scope, (BinaryOperation) expression);
+			return annotateBinaryOperation(container, (BinaryOperation) expression);
 		else if(expression instanceof Literal) 
-			return annotateLiteral(scope, (Literal) expression);
+			return annotateLiteral(container, (Literal) expression);
 		else if(expression instanceof FunctionCall)
-			return annotateFunctionCall(scope, (FunctionCall) expression);
+			return annotateFunctionCall(container, (FunctionCall) expression);
 		else if(expression instanceof Identifier)
-			return annotateIdentifier(scope, (Identifier) expression);
+			return annotateIdentifier(container, (Identifier) expression);
 		else if(expression instanceof MemberAccess)
-			return annotateMemberAccess(scope, (MemberAccess) expression);
+			return annotateMemberAccess(container, (MemberAccess) expression);
 		else if(expression instanceof UnaryOperation)
-			return annotateUnaryOperation(scope, (UnaryOperation) expression);
-		throw new RuntimeException("will never be reached... cookies");
+			return annotateUnaryOperation(container, (UnaryOperation) expression);
+		throw new RuntimeException("will never be reached... cookies"+expression);
 	}
 	
-	protected Symbol annotateArrayAccess(Scope scope, ArrayAccess access) throws InvalidIdentifierException {
+	protected Symbol annotateArrayAccess(SymbolContainer container, ArrayAccess access) throws InvalidIdentifierException {
 		//add mention
-		Symbol symbol = scope.getQualifiedSymbol(access.getName());
-		scope.addMention(symbol, access);
+		Symbol symbol = container.getQualifiedSymbol(access.getName());
+		assert(symbol.hasType(SymbolType.VARIABLE));
+		Variable symVariable = (Variable) symbol;
+		assert(symVariable.getVariableType().hasType(SymbolType.ARRAY_TYPE));
+		container.addMention(symbol, access);
 		
 		//check indices
 		for(Expression index : access.getIndices()) {
-			Symbol symIndex = annotateExpression(scope, index);
+			Symbol symIndex = annotateExpression(container, index);
 		}
 		
 		return symbol;
 	}
 	
-	protected Symbol annotateArrayCreation(Scope scope, ArrayCreation creation) throws InvalidIdentifierException {
-		Symbol firstType = null;
+	protected Symbol annotateArrayCreation(SymbolContainer container, ArrayCreation creation) throws InvalidIdentifierException {
+		Symbol arrayType = null;
 		for(Expression expression : creation.getElements()) {
-			Symbol type = annotateExpression(scope, expression);
+			Symbol type = annotateExpression(container, expression);
+			if(arrayType == null) {
+				arrayType = type;
+				continue;
+			}
+
+			//TODO
+			//if(type.compareTo(o))
 		}
-		return null;
+		return arrayType;
 	}
 	
 	
-	protected Symbol annotateBinaryOperation(Scope scope, BinaryOperation operation) {
+	protected Symbol annotateBinaryOperation(SymbolContainer container, BinaryOperation operation) {
 		return null;
 		//TODO
 	}
 	
 	/**
 	 * annotates a literal with its type
-	 * @param scope
+	 * @param container
 	 * @param literal
 	 * @return the type of the literal
 	 */
-	protected Symbol annotateLiteral(Scope scope, Literal literal) {
+	protected Symbol annotateLiteral(SymbolContainer container, Literal literal) {
 		Symbol symbol = null;
 		if(literal instanceof NullLiteral)
 			symbol = runtime.getVoid();
@@ -111,15 +123,15 @@ public class ExpressionAnnotator {
 
 	/**
 	 * annotates a function call
-	 * @param scope
+	 * @param container
 	 * @param call
 	 * @return the return type of the function
 	 * @throws InvalidIdentifierException
 	 */
-	protected Symbol annotateFunctionCall(Scope scope, FunctionCall call) throws InvalidIdentifierException {
+	protected Symbol annotateFunctionCall(SymbolContainer container, FunctionCall call) throws InvalidIdentifierException {
 		//check symbol
 		final PositionString name = call.getName();
-		Symbol symbol = scope.getQualifiedSymbol(name);
+		Symbol symbol = container.getQualifiedSymbol(name);
 		ErrorHandler.debugMsg(call, "annotating function call \""+name+"\"");		
 		assert(symbol.hasType(SymbolType.METHOD));
 		Method symFunction = (Method) symbol;
@@ -143,7 +155,7 @@ public class ExpressionAnnotator {
 			Variable symArg    = itSyms.next();
 			Expression exprArg = itExpr.next();
 			Symbol neededType = symArg.getVariableType();
-			Symbol actualType = annotateExpression(scope, exprArg);
+			Symbol actualType = annotateExpression(container, exprArg);
 			checkType(exprArg, neededType, actualType);
 		}
 		return symFunction.getReturnType();
@@ -156,27 +168,37 @@ public class ExpressionAnnotator {
 	
 	/**
 	 * annotates an identifier
-	 * @param scope
+	 * @param container
 	 * @param identifier
 	 * @return the type of the identifier
 	 * @throws InvalidIdentifierException
 	 */
-	protected Symbol annotateIdentifier(Scope scope, Identifier identifier) throws InvalidIdentifierException {
-		QualifiedSymbol symbol = scope.getQualifiedSymbol(identifier.getName());
+	protected Symbol annotateIdentifier(SymbolContainer container, Identifier identifier) throws InvalidIdentifierException {
+		QualifiedSymbol symbol = container.getQualifiedSymbol(identifier.getName());
 		assert(symbol.hasType(SymbolType.VARIABLE));
 		identifier.setSymbol(symbol);
-		scope.addMention(symbol, identifier);
+		container.addMention(symbol, identifier);
 		return ((Variable) symbol).getVariableType();
 	}
 	
-	protected Symbol annotateMemberAccess(Scope scope, MemberAccess memberAccess) throws InvalidIdentifierException {
-		Symbol symParent = annotateExpression(scope, memberAccess.getParent());
+	/**
+	 * annotates a member relation
+	 * @param container
+	 * @param memberAccess
+	 * @return the type of the member
+	 * @throws InvalidIdentifierException
+	 */
+	protected Symbol annotateMemberAccess(SymbolContainer container, MemberAccess memberAccess) throws InvalidIdentifierException {
+		Symbol symParent = annotateExpression(container, memberAccess.getParent());
 		assert(symParent.hasType(SymbolType.CLASS_OR_INTERFACE));
-			
-		return null;
+		ClassOrInterface symClassOrIFace = (ClassOrInterface) symParent;
+		
+		Symbol symChild = annotateExpression(symClassOrIFace, memberAccess.getChild());
+		assert(symChild.hasType(SymbolType.CLASS_OR_INTERFACE)); //includes primitive types
+		return symChild;
 	}
 	
-	protected Symbol annotateUnaryOperation(Scope scope, UnaryOperation operation) {
+	protected Symbol annotateUnaryOperation(SymbolContainer container, UnaryOperation operation) {
 		switch(operation.getUnaryOperator()) {
 			case MINUS:
 			case PLUS:  
@@ -186,6 +208,7 @@ public class ExpressionAnnotator {
 			case PREDEC:
 			case PREINC:
 		}
+		//TODO
 		return null;
 	}
 }

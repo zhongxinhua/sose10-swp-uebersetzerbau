@@ -32,4 +32,9 @@ public class ContinueStatement extends Statement {
 			ErrorHandler.error(node, this.getClass().toString()+" body forbidden!");
 		}
 	}
+	
+	@Override
+	public String toString() {
+		return "continue;";
+	}
 }

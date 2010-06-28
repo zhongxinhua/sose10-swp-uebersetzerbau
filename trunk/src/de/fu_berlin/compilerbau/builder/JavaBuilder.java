@@ -335,7 +335,7 @@ public class JavaBuilder extends Builder {
 	protected void buildSetStatement(SetStatement obj) throws IOException {
 		buildExpressionStatement(obj.getLValue());
 		_code.append("=");
-		buildExpressionStatement(obj.getRLValue());
+		buildExpressionStatement(obj.getRValue());
 		_code.append(";\n");
 	}
 

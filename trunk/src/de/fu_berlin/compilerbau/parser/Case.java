@@ -60,4 +60,8 @@ public class Case extends Statement {
 	}
 	// END get-Methoden fuer Builder
 
+	@Override
+	public String toString() {
+		return "case("+test.toString()+"): ...";
+	}
 }

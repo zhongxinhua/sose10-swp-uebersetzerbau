@@ -95,4 +95,9 @@ public class Module extends SyntaxTreeNode {
 	public List<Interface> getInterfaces() {
 		return interfaces;
 	}
+	
+	@Override
+	public String toString() {
+		return "module "+name;
+	}
 }

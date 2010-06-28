@@ -142,4 +142,15 @@ public class Function extends SyntaxTreeNode {
 	public boolean isFinal() { return isFinal; }
 	public List<Statement> getBody() { return body; }
 	public List<DeclarationStatement> getArguments() { return arguments; }
+	
+	@Override
+	public String toString() {
+		String strParams = "";
+		if(arguments.size()>0) {
+			DeclarationStatement lastArg = arguments.get(arguments.size()-1);
+			for(DeclarationStatement arg  : arguments)
+				strParams += arg.getName() + (lastArg != arg ? "," : "");
+		}
+		return "function "+name+"("+strParams+")";
+	}
 }

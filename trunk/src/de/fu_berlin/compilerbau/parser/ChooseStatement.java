@@ -53,5 +53,9 @@ public class ChooseStatement extends Statement {
 		return cases;
 	}
 	// END get-Methoden f�r Builder
-
+	
+	@Override
+	public String toString() {
+		return "choose{...}";
+	}
 }

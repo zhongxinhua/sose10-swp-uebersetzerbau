@@ -34,5 +34,10 @@ public class BreakStatement extends Statement {
 					+ " body forbidden!");
 		}
 	}
+	
+	@Override
+	public String toString() {
+		return "break;";
+	}
 
 }

@@ -157,4 +157,9 @@ public class DeclarationStatement extends Statement {
 		return dimension > 0;
 	}
 	// END get-Methoden f�r Builder
+	
+	@Override
+	public String toString() {
+		return type+" "+name+(value != null ? " = "+value : "");
+	}
 }

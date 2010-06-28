@@ -43,4 +43,9 @@ public class ExtendsStatement extends Statement {
 		return name;
 	}
 	// END get-Methoden für Builder
+	
+	@Override
+	public String toString() {
+		return "extends "+name;
+	}
 }

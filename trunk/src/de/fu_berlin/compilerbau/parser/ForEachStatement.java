@@ -63,4 +63,9 @@ public class ForEachStatement extends Statement {
 	public List<Statement> getBody(){
 		return body;
 	}
+	
+	@Override
+	public String toString() {
+		return "foreach("+element+" : "+values+")";
+	}
 }

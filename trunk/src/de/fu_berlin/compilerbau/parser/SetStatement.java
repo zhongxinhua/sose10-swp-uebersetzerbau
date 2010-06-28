@@ -56,10 +56,14 @@ public class SetStatement extends Statement {
 		return lvalue;
 		
 	}
-	public Expression getRLValue(){
+	public Expression getRValue(){
 		return rvalue;
 		
 	}
 	
+	@Override
+	public String toString() {
+		return lvalue.toString() + " = " + rvalue.toString() + ";";
+	}
 
 }
