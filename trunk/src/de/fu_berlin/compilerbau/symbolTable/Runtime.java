@@ -76,7 +76,7 @@ public interface Runtime extends SymbolContainer {
 	ArrayType getArrayType(Symbol componentType, int dimension);
 	
 	/**
-	 * This method makes the input name a valid identifier for Java.
+	 * This method translates the input name into a valid Java identifier.
 	 * E.g. "Übersetzerbau" could become a puny code like name "$Zbersetzerbau$clb",
 	 * "эксперимент" could become "$Ze1aaigmhjjgr5i".
 	 * 
@@ -129,7 +129,7 @@ public interface Runtime extends SymbolContainer {
 	 * Returns {@link Comparator} comparing <code>E</code>
 	 * @param <E> Class to compare: {@link ClassOrInterface}, {@link Method}, {@link Package} or {@link Variable}.
 	 * @param clazz E.class
-	 * @return null if the class was not expected to has a comparator
+	 * @return null if the class was not expected to have a comparator
 	 */
 	<E extends HasComparator<E>> Comparator<E> getComparator(java.lang.Class<E> clazz);
 	
