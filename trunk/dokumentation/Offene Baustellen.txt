@@ -11,11 +11,6 @@ DOM-Parser und StreamPositions mit einem Eingabedateinamen.
 
 *******************************************************************************
 
-Die Bezeichner von StreamPosition sinnvoll™ machen: character sollte
-eigentlich coloumn sein.
-
-*******************************************************************************
-
 StreamPosition.getStart() ist Unsinn, weil es nicht beachtet, welche Codierung
 die Eingabe hatte.
 
