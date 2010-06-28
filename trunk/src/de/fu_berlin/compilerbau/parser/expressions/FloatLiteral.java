@@ -5,6 +5,7 @@ package de.fu_berlin.compilerbau.parser.expressions;
  * Fließkommaausdruck dar.
  * @author Markus
  */
+@SuppressWarnings("serial")
 public class FloatLiteral extends Literal {
 	private float value;
 	

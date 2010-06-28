@@ -5,6 +5,7 @@ package de.fu_berlin.compilerbau.parser.expressions;
  * Ganzzahlwert dar.
  * @author Markus
  */
+@SuppressWarnings("serial")
 public class IntegerLiteral extends Literal {
 	private int value;
 	

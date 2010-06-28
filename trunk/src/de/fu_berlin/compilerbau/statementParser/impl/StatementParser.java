@@ -82,6 +82,12 @@ import de.fu_berlin.compilerbau.util.*;
  * produziert einen Syntaxbaum für den enthaltenen Ausdruck.
  */
 public class StatementParser {
+	private static final StreamPosition dummyPosition = new StreamPosition() {
+		private static final long serialVersionUID = 1L;
+		public int getStart() {	return 0; }
+		public int getLine() { return 0; }
+		public int getColumn() {	return 0; }
+	};;;
 	private Iterator<StatementNode> tokens;
 	private StatementNode current;
 
@@ -92,7 +98,7 @@ public class StatementParser {
 	 * @author Markus
 	 */
 	public enum ExpressionType {
-		RVALUE, LVALUE, FUNCTIONCALL
+		RVALUE, LVALUE, FUNCTIONCALL, IDENTIFIER
 	}
 
 	public StatementParser() {
@@ -120,7 +126,7 @@ public class StatementParser {
 				return 1;
 			}
 
-			public int getCharacter() {
+			public int getColumn() {
 				return 0;
 			}
 		}), type);
@@ -154,6 +160,12 @@ public class StatementParser {
 		next();
 		Expression result;
 		switch (type) {
+		case IDENTIFIER:
+			result = factor();
+			if (!isIdentifier(result))
+				ErrorHandler.error(current,
+						"the expression is not a valid identifier!");
+			return result;
 		case LVALUE:
 			result = factor();
 			if (!isLValue(result))
@@ -169,6 +181,17 @@ public class StatementParser {
 		default: // RVALUE
 			return expression();
 		}
+	}
+
+	/**
+	 * überprüft ob ein gegebener Ausdruck ein Bezeichner ist
+	 * 
+	 * @param expr
+	 *            der Ausdruck
+	 * @return true, wenn ein Ausdruck ein Bezeichner ist
+	 */
+	private boolean isIdentifier(Expression expr) {
+		return expr instanceof Identifier;
 	}
 
 	/**
@@ -457,7 +480,8 @@ public class StatementParser {
 						+ current.getType() + " found.");
 				break;
 			}
-			return new ObjectCreation(name, actualArguments(TokenType.PAREN_OPEN));
+			return new ObjectCreation(new PositionString(name, dummyPosition),
+					actualArguments(TokenType.PAREN_OPEN));
 		}
 		if (op != null)
 			next();
@@ -516,16 +540,16 @@ public class StatementParser {
 			next();
 
 			switch (current.getType()) {
-			case PAREN_OPEN: //Funktionsaufruf
+			case PAREN_OPEN: // Funktionsaufruf
 				List<Expression> arguments = actualArguments(TokenType.PAREN_OPEN);
-				result = new FunctionCall(name, arguments);
+				result = new FunctionCall(new PositionString(name, dummyPosition), arguments);
 				break;
-			case BRACKET_OPEN: //Arrayzugriff
+			case BRACKET_OPEN: // Arrayzugriff
 				List<Expression> indicies = arrayAccess();
-				result = new ArrayAccess(name, indicies);
+				result = new ArrayAccess(new PositionString(name, dummyPosition), indicies);
 				break;
-			default:          //einfacher Bezeichner
-				result = new Identifier(name);
+			default: // einfacher Bezeichner
+				result = new Identifier(new PositionString(name, dummyPosition));
 			}
 			break;
 		case PAREN_OPEN: // Unterausdruck
@@ -550,6 +574,7 @@ public class StatementParser {
 				if (next().getType() != TokenType.ID) {
 					ErrorHandler.error(null, "identifier expected but "
 							+ current.getType() + " found.");
+			
 					break;
 				}
 
@@ -564,14 +589,14 @@ public class StatementParser {
 				switch (current.getType()) {
 				case PAREN_OPEN:
 					List<Expression> arguments = actualArguments(TokenType.PAREN_OPEN);
-					rhs = new FunctionCall(name, arguments);
+					rhs = new FunctionCall(new PositionString(name, dummyPosition), arguments);
 					break;
 				case BRACKET_OPEN:
 					List<Expression> indicies = arrayAccess();
-					rhs = new ArrayAccess(name, indicies);
+					rhs = new ArrayAccess(new PositionString(name, dummyPosition), indicies);
 					break;
 				default:
-					rhs = new Identifier(name);
+					rhs = new Identifier(new PositionString(name, dummyPosition));
 				}
 				chain.add(rhs);
 			} while (current.getType() == TokenType.DOT);
@@ -662,7 +687,9 @@ public class StatementParser {
 	 * parst eine Funktionsparameterliste der Form (Ausdruck, Ausdruck,
 	 * Ausdruck,...)
 	 * 
-	 * @param startToken ist entweder BRACE_OPEN oder PAREN_OPEN. Hiermit wird zur richtigen abschließenden Klammer gematcht.
+	 * @param startToken
+	 *            ist entweder BRACE_OPEN oder PAREN_OPEN. Hiermit wird zur
+	 *            richtigen abschließenden Klammer gematcht.
 	 * 
 	 * @return liefert eine Liste von Ausdrücken zurück
 	 */
@@ -688,8 +715,9 @@ public class StatementParser {
 				break;
 			case BRACE_CLOSE:
 			case PAREN_CLOSE:
-				if( (startToken == TokenType.BRACE_OPEN && current.getType() == TokenType.BRACE_CLOSE) ||
-					(startToken == TokenType.PAREN_OPEN && current.getType() == TokenType.PAREN_CLOSE) ) {
+				if ((startToken == TokenType.BRACE_OPEN && current.getType() == TokenType.BRACE_CLOSE)
+						|| (startToken == TokenType.PAREN_OPEN && current
+								.getType() == TokenType.PAREN_CLOSE)) {
 					next();
 					break Loop;
 				}

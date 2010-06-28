@@ -22,6 +22,7 @@ import de.fu_berlin.compilerbau.parser.ScopeStatement;
 import de.fu_berlin.compilerbau.parser.Statement;
 import de.fu_berlin.compilerbau.symbolTable.ClassOrInterface;
 import de.fu_berlin.compilerbau.symbolTable.GetModifier;
+import de.fu_berlin.compilerbau.symbolTable.Member;
 import de.fu_berlin.compilerbau.symbolTable.Method;
 import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.Package;
@@ -30,8 +31,11 @@ import de.fu_berlin.compilerbau.symbolTable.Scope;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.Variable;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ContainerSymbolsException;
+import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
+import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
+import de.fu_berlin.compilerbau.util.ErrorHandler;
 import de.fu_berlin.compilerbau.util.Visibility;
 
 public class Annotator {
@@ -39,29 +43,61 @@ public class Annotator {
 	protected final static Modifier PUBLIC_MODIFIER = GetModifier.getModifier(
 			Visibility.PUBLIC, false, false, false);
 
+	private static class ExpressionMention {
+		Scope scope;
+		Statement exprStatement;
+	}
+	
+	private List<ExpressionMention> mentions;
+	private void rememberExpression(Scope scope, Statement stmt) {
+		ExpressionMention mention = new ExpressionMention();
+		mention.scope = scope;
+		mention.exprStatement = stmt;
+		mentions.add(mention);
+	}
+	
 	public Annotator(Runtime runtime, AbstractSyntaxTree ast) {
 		this.runtime = runtime;
-		// TODO imports übergeben
+		this.mentions = new LinkedList<ExpressionMention>();
+		firstPass(ast);
+		secondPass();
+	}
+
+	private void firstPass(AbstractSyntaxTree ast) {
 		try {
 			annotateModule(ast.getRoot());
 			runtime.qualifyAllSymbols();
 		} catch (ContainerSymbolsException e) {
-			// TODO Auto-generated catch block
+			ErrorHandler.error(null, "was?");
 			e.printStackTrace();
 		} catch (WrongModifierException e) {
-			// TODO Auto-generated catch block
+			ErrorHandler.error(null, "was? 2");
 			e.printStackTrace();
 		} catch (InvalidIdentifierException e) {
-			// TODO Auto-generated catch block
+			ErrorHandler.error(null, "invalid identifier");
 			e.printStackTrace();
 		}
 	}
+	
+	private void secondPass() {
+		for(ExpressionMention mention : mentions ) 
+			reannotateStatement(mention.scope, mention.exprStatement);
+	}
 
+	/**
+	 * annotates a module node in the syntax tree
+	 * 
+	 * @param module
+	 * @throws ContainerSymbolsException
+	 * @throws WrongModifierException
+	 * @throws InvalidIdentifierException
+	 */
 	protected void annotateModule(Module module)
 			throws ContainerSymbolsException, WrongModifierException,
 			InvalidIdentifierException {
 		// Module
-		Package symModule = runtime.addPackage(module.getName(), PUBLIC_MODIFIER);
+		Package symModule = runtime.addPackage(module.getName(),
+				PUBLIC_MODIFIER);
 		module.setSymbol(symModule);
 
 		// Interfaces
@@ -73,6 +109,15 @@ public class Annotator {
 			annotateClass(symModule, clazz);
 	}
 
+	/**
+	 * annotates an interface node in the syntax tree
+	 * 
+	 * @param pack
+	 * @param iface
+	 * @throws ContainerSymbolsException
+	 * @throws WrongModifierException
+	 * @throws InvalidIdentifierException
+	 */
 	protected void annotateInterface(Package pack, Interface iface)
 			throws ContainerSymbolsException, WrongModifierException,
 			InvalidIdentifierException {
@@ -95,12 +140,23 @@ public class Annotator {
 			annotateFunction(symInterface, func);
 	}
 
+	/**
+	 * annotates a class node in the syntax tree
+	 * 
+	 * @param pack
+	 * @param class_
+	 * @throws ContainerSymbolsException
+	 * @throws WrongModifierException
+	 * @throws InvalidIdentifierException
+	 */
 	protected void annotateClass(Package pack,
 			de.fu_berlin.compilerbau.parser.Class class_)
 			throws ContainerSymbolsException, WrongModifierException,
 			InvalidIdentifierException {
 		// füge Elternklasse ein
-		Symbol symParent = runtime.tryGetQualifiedSymbol(class_.getSuper());
+		Symbol symParent = null;
+		if(class_.getSuper()!=null)
+			symParent = runtime.tryGetQualifiedSymbol(class_.getSuper());
 
 		// füge Interfaces ein
 		List<Symbol> implements_ = new LinkedList<Symbol>();
@@ -115,87 +171,305 @@ public class Annotator {
 		de.fu_berlin.compilerbau.symbolTable.Class symClass = null;
 		symClass = pack.addClass(class_.getName(), symParent, implements_
 				.iterator(), PUBLIC_MODIFIER);
+		class_.setSymbol(symClass);
 
 		// füge Attribute ein
 		for (DeclarationStatement decl : class_.getDeclarations())
-			annotateDeclaration(symClass, decl);
+			annotateMember(symClass, decl);
 
 		// füge Funktionen ein
 		for (Function func : class_.getFunctions())
 			annotateFunction(symClass, func);
 	}
 
-	protected void annotateDeclaration(
+	/**
+	 * annotates a declaration node as member of a class in the syntax tree
+	 * 
+	 * @param class_
+	 * @param decl
+	 * @throws InvalidIdentifierException
+	 * @throws ContainerSymbolsException
+	 * @throws WrongModifierException
+	 */
+	protected void annotateMember(
 			de.fu_berlin.compilerbau.symbolTable.Class class_,
 			DeclarationStatement decl) throws InvalidIdentifierException,
 			ContainerSymbolsException, WrongModifierException {
 		Symbol type = runtime.tryGetQualifiedSymbol(decl.getType());
-		class_.addMember(decl.getName(), type, PUBLIC_MODIFIER);
+		if (decl.isArray())
+			type = runtime.getArrayType(type, decl.getDimension());
+		Modifier modifier = GetModifier.getModifier(Visibility.PUBLIC, decl
+				.isStatic(), decl.isFinal(), false);
+		Member symMember = class_.addMember(decl.getName(), type, modifier);
+		decl.setSymbol(symMember);
 	}
 
+	/**
+	 * annotates a function node of a class or interface in the syntax tree
+	 * 
+	 * @param owner
+	 * @param function
+	 * @throws ContainerSymbolsException
+	 * @throws WrongModifierException
+	 * @throws InvalidIdentifierException
+	 */
 	protected void annotateFunction(ClassOrInterface owner, Function function)
 			throws ContainerSymbolsException, WrongModifierException,
 			InvalidIdentifierException {
 		// ermittle Rückgabewert
 		Symbol symReturnType = runtime.tryGetQualifiedSymbol(function
 				.getReturnType());
+		if (function.returnsArray())
+			symReturnType = runtime.getArrayType(symReturnType, function
+					.getReturnTypeDimension());
 
 		// ermittle Parameter
 		List<Variable> parameters = new LinkedList<Variable>();
 		for (DeclarationStatement decl : function.getArguments()) {
 			Symbol type = runtime.tryGetQualifiedSymbol(decl.getType());
-			// if(decl.isArray())
-			// type =
-			// TODO: arrays!!!
+			if (decl.isArray())
+				type = runtime.getArrayType(type, decl.getDimension());
 			Modifier modifier = GetModifier.getModifier(Visibility.PUBLIC, decl
 					.isStatic(), decl.isFinal(), false);
-			parameters.add(runtime.getNewVariableForParameter(decl.getName(), type,
-					modifier));
+			Variable var = runtime.getNewVariableForParameter(decl.getName(),
+					type, modifier);
+			parameters.add(var);
+			decl.setSymbol(var);
 		}
 
 		// füge Funktion ein
 		Method symMethod = owner.addMethod(function.getName(), symReturnType,
-				parameters.iterator(), GetModifier.getModifier(Visibility.PUBLIC,
-						function.isStatic(), function.isStatic(), false));
+				parameters.iterator(), GetModifier.getModifier(
+						Visibility.PUBLIC, function.isStatic(), function
+								.isStatic(), false));
 		function.setSymbol(symMethod);
 
 		// füge Statements ein
-		annotateStatements(symMethod.getScope(), function.getBody());
+		if(function.hasBody())
+			annotateStatements(symMethod.getScope(), function.getBody());
 	}
 
-	protected void annotateStatements(Scope scope, List<Statement> body) {
-				Scope symScope;
-				for(Statement stmt : body) {
-					if(stmt instanceof BreakStatement) { /*nothing...*/ }
-					else if(stmt instanceof ContinueStatement)	{ /*nothing...*/ }
-					
-					else if(stmt instanceof CallStatement)	{ /*nothing...*/ }
-					else if(stmt instanceof ReturnStatement)	{ /*nothing...*/ }
-					else if(stmt instanceof DeclarationStatement)	{ /*nothing...*/ }
-					
-					else if(stmt instanceof ChooseStatement)	{ 
-						stmt.setSymbol(symScope = scope.addScope());
-						ChooseStatement cstmt = (ChooseStatement) stmt;
-						for(Case case_ : cstmt.getCases()) {
-							Scope caseScope = symScope.addScope();
-							//TODO test expression
-							annotateStatements(caseScope, case_.getBody());
-						}
-					}
-					else if(stmt instanceof DoStatement)	{ 
-						stmt.setSymbol(symScope = scope.addScope());
-						//TODO test expression
-						annotateStatements(symScope, ((DoStatement) stmt).getBody());
-					}
-					else if(stmt instanceof ForEachStatement)	{ 
-						stmt.setSymbol(symScope = scope.addScope());
-						
-					}					
-					
-					else if(stmt instanceof ScopeStatement)	{
-						stmt.setSymbol(symScope = scope.addScope());
-						annotateStatements(symScope, ((ScopeStatement) stmt).getBody());
-					}
-				}
+	/**
+	 * annotates a list of statements
+	 * @param scope
+	 * @param body
+	 * @throws DuplicateIdentifierException
+	 * @throws ShadowedIdentifierException
+	 * @throws InvalidIdentifierException
+	 * @throws WrongModifierException
+	 */
+	protected void annotateStatements(Scope scope, List<Statement> body) throws DuplicateIdentifierException, ShadowedIdentifierException, InvalidIdentifierException, WrongModifierException {
+		for (Statement stmt : body) {
+			if (stmt instanceof BreakStatement) 
+				annotateBreakStatement(scope, (BreakStatement) stmt);
+			else if (stmt instanceof ContinueStatement)
+				annotateContinueStatement(scope, (ContinueStatement) stmt);
+			else if (stmt instanceof CallStatement) 
+				annotateCallStatement(scope, (CallStatement) stmt);
+			else if (stmt instanceof ReturnStatement) 
+				annotateReturnStatement(scope, (ReturnStatement) stmt);
+			else if (stmt instanceof DeclarationStatement) 
+				annotateDeclarationStatement(scope, (DeclarationStatement) stmt);
+			else if (stmt instanceof ChooseStatement) 
+				annotateChooseStatement(scope, (ChooseStatement) stmt);
+			else if (stmt instanceof DoStatement)
+				annotateDoStatement(scope, (DoStatement) stmt);
+			else if (stmt instanceof ForEachStatement)
+				annotateForEachStatement(scope, (ForEachStatement) stmt);
+			else if (stmt instanceof ScopeStatement) 
+				annotateScopeStatement(scope, (ScopeStatement) stmt);
+			else
+				ErrorHandler.error(null, "unknown statement ("+stmt.getClass().toString()+")");
+		}
+	}
+	
+	/**
+	 * re-annotates a list of statements (second pass) for fetching expressions
+	 * @param scope
+	 * @param body
+	 * @throws DuplicateIdentifierException
+	 * @throws ShadowedIdentifierException
+	 * @throws InvalidIdentifierException
+	 * @throws WrongModifierException
+	 */
+	protected void reannotateStatement(Scope scope, Statement stmt) {
+		if (stmt instanceof CallStatement) 
+			reannotateCallStatement(scope, (CallStatement) stmt);
+		else if (stmt instanceof ReturnStatement) 
+			reannotateReturnStatement(scope, (ReturnStatement) stmt);
+		else if (stmt instanceof DeclarationStatement) 
+			reannotateDeclarationStatement(scope, (DeclarationStatement) stmt);
+		else if (stmt instanceof Case) 
+			reannotateCaseStatement(scope, (Case) stmt);
+		else if (stmt instanceof DoStatement)
+			reannotateDoStatement(scope, (DoStatement) stmt);
+		else if (stmt instanceof ForEachStatement)
+			reannotateForEachStatement(scope, (ForEachStatement) stmt);
+	}
+
+	/**
+	 * annotates a break statement
+	 * @param scope
+	 * @param stmt
+	 */
+	protected void annotateBreakStatement(Scope scope, BreakStatement stmt) { /* do nothing */ }
+	
+	/**
+	 * annotates a continue statement
+	 * @param scope
+	 * @param stmt
+	 */
+	protected void annotateContinueStatement(Scope scope, ContinueStatement stmt) { /* do nothing */ }
+	
+	/**
+	 * annotates a CallStatement
+	 * @param scope
+	 * @param stmt
+	 */
+	protected void annotateCallStatement(Scope scope, CallStatement stmt) {
+		rememberExpression(scope, stmt);
+	}
+	
+	protected void reannotateCallStatement(Scope scope, CallStatement stmt) {
+		//TODO
+		stmt.getCall();
+	}
+	
+	/**
+	 * annotates a ReturnStatement
+	 * @param scope
+	 * @param stmt
+	 */
+	protected void annotateReturnStatement(Scope scope, ReturnStatement stmt) {
+		rememberExpression(scope, stmt);
+	}
+	
+	protected void reannotateReturnStatement(Scope scope, ReturnStatement stmt) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	/**
+	 * annotates a declaration statement
+	 * @param scope
+	 * @param stmt
+	 * @throws InvalidIdentifierException
+	 * @throws DuplicateIdentifierException
+	 * @throws ShadowedIdentifierException
+	 * @throws WrongModifierException
+	 */
+	protected void annotateDeclarationStatement(Scope scope, DeclarationStatement stmt) throws InvalidIdentifierException, DuplicateIdentifierException, ShadowedIdentifierException, WrongModifierException {
+		//add variable to scope
+		Symbol symType = runtime.tryGetQualifiedSymbol(stmt.getType());
+		scope.addVariable(stmt.getName(), symType, PUBLIC_MODIFIER);
+		
+		//note expression
+		rememberExpression(scope, stmt);
+	}
+	
+	protected void reannotateDeclarationStatement(Scope scope,
+			DeclarationStatement stmt) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	/**
+	 * annotates a choose statement
+	 * 
+	 * @param scope the scope, where the choose statement lies in
+	 * @param stmt the choose statement
+	 * @throws WrongModifierException 
+	 * @throws InvalidIdentifierException 
+	 * @throws ShadowedIdentifierException 
+	 * @throws DuplicateIdentifierException 
+	 */
+	protected void annotateChooseStatement(Scope scope, ChooseStatement stmt) throws DuplicateIdentifierException, ShadowedIdentifierException, InvalidIdentifierException, WrongModifierException {
+		scope = scope.addScope();
+		stmt.setSymbol(scope);
+		for (Case case_ : stmt.getCases()) {
+			//create scope
+			Scope caseScope = scope.addScope();
+			case_.setSymbol(caseScope);
+		
+			//note expression
+			rememberExpression(caseScope, case_);
+			
+			//proceed with statements
+			annotateStatements(caseScope, case_.getBody());
+		}
+	}
+	
+	protected void reannotateCaseStatement(Scope scope, Case stmt) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	/**
+	 * annotates a do statement
+	 * @param scope the scope, where the do statement lies in
+	 * @param stmt the do statement
+	 * @throws WrongModifierException 
+	 * @throws InvalidIdentifierException 
+	 * @throws ShadowedIdentifierException 
+	 * @throws DuplicateIdentifierException 
+	 */
+	protected void annotateDoStatement(Scope scope, DoStatement stmt) throws DuplicateIdentifierException, ShadowedIdentifierException, InvalidIdentifierException, WrongModifierException {
+		//create a scope for the loop
+		scope = scope.addScope();
+		stmt.setSymbol(scope);
+		
+		//note test expression
+		rememberExpression(scope, stmt);
+		
+		//proceed with body statements
+		annotateStatements(scope, stmt.getBody());
+	}
+
+	protected void reannotateDoStatement(Scope scope, DoStatement stmt) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	/**
+	 * annotates a ForEachStatement
+	 * @param scope
+	 * @param stmt
+	 * @throws DuplicateIdentifierException
+	 * @throws ShadowedIdentifierException
+	 * @throws InvalidIdentifierException
+	 * @throws WrongModifierException
+	 */
+	protected void annotateForEachStatement(Scope scope, ForEachStatement stmt) throws DuplicateIdentifierException, ShadowedIdentifierException, InvalidIdentifierException, WrongModifierException {
+		//create a scope for the loop
+		scope = scope.addScope();
+		stmt.setSymbol(scope);
+		
+		//note expression
+		rememberExpression(scope, stmt);
+		
+		//proceed with body statements
+		annotateStatements(scope, stmt.getBody());
+	}
+	
+	protected void reannotateForEachStatement(Scope scope, ForEachStatement stmt) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	/**
+	 * annotates a scope statement
+	 * @param scope the scope, where the scope statement lies in
+	 * @param stmt the scope statement
+	 * @throws DuplicateIdentifierException
+	 * @throws ShadowedIdentifierException
+	 * @throws InvalidIdentifierException
+	 * @throws WrongModifierException
+	 */
+	protected void annotateScopeStatement(Scope scope, ScopeStatement stmt) throws DuplicateIdentifierException, ShadowedIdentifierException, InvalidIdentifierException, WrongModifierException {
+		//create a new scope
+		scope = scope.addScope();
+		stmt.setSymbol(scope);
+		//proceed with body statements
+		annotateStatements(scope, stmt.getBody());
 	}
 }

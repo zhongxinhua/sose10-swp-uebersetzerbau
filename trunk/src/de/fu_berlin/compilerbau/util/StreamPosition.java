@@ -20,5 +20,5 @@ public interface StreamPosition extends Serializable {
 	/**
 	 * n'th character of line
 	 */
-	int getCharacter();
+	int getColumn();
 }

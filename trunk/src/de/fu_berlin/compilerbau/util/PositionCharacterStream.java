@@ -69,7 +69,7 @@ public class PositionCharacterStream extends PositionBean
 		++this.start;
 		++this.character;
 		if(result == '\n' || result == '\r') {
-			this.character = DEFAULT_POSITION.getCharacter();
+			this.character = DEFAULT_POSITION.getColumn();
 			++this.line;
 			if(result == '\r') {
 				final int next = reader.read();

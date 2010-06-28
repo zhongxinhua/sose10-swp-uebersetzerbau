@@ -5,6 +5,7 @@ package de.fu_berlin.compilerbau.parser.expressions;
  * Ausdruck dar auf dem eine unäre Operation ausgeführt wird.
  * @author Markus
  */
+@SuppressWarnings("serial")
 public class UnaryOperation extends Expression {
 	public enum UnaryOperator {
 		NOT, PLUS, MINUS, PREINC, PREDEC, POSTINC, POSTDEC

@@ -69,7 +69,7 @@ class Mention implements Map.Entry<Symbol, StreamPosition>, Comparable<Map.Entry
 		if(l != 0) {
 			return l;
 		}
-		final int c = position.getCharacter() - right.getValue().getCharacter();
+		final int c = position.getColumn() - right.getValue().getColumn();
 		if(c != 0) {
 			return c;
 		} else if(from == right.getKey()) {

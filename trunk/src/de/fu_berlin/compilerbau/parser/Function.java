@@ -18,6 +18,9 @@ import de.fu_berlin.compilerbau.util.PositionString;
  * </ul>
  * The &ltfunction/&gt statement <b>has four</b> optional attributes:
  * <ul>
+ * <li>returns - declares the type of the return value
+ * <li>dim - declares the dimension of the return type
+ * <li>static - determines whether the function is static. The {@link String}
  * <li>returns - declares the {@link Type} of the return value</li>
  * <li>dim - declares the dimension of the return value (default=0)</li>
  * <li>static - determines whether the function is static. The {@link String}</li>
@@ -42,19 +45,19 @@ import de.fu_berlin.compilerbau.util.PositionString;
  */
 public class Function extends SyntaxTreeNode {
 	private PositionString name;
-	private PositionString return_type;
+	private int returnTypeDimension;
+	private PositionString returnType;
 	// default: NO
 	private boolean isStatic = false;
 	// default: NO
 	private boolean isFinal = false;
-	private int dim = 0;
 	private List<Statement> body = new LinkedList<Statement>();
 	private List<DeclarationStatement> arguments = new LinkedList<DeclarationStatement>();
 
 	public Function(DomNode node) {
 		// check needed attribute: name
 		if (node.hasAttribute("name")
-				&& node.getAttributeValue("name").trim().length() > 0) {
+				&& node.getAttributeValue("name").length() > 0) {
 			name = node.getAttribute("name");
 		} else {
 			ErrorHandler.error(node,
@@ -63,35 +66,32 @@ public class Function extends SyntaxTreeNode {
 		// check optional attribute: returns
 		if (node.hasAttribute("returns")
 				&& node.getAttributeValue("returns").length() > 0) {
-			return_type = node.getAttribute("returns");
-			if (return_type == null) {
+			returnType = node.getAttribute("returns");
+			if (returnType == null) {
 				ErrorHandler.error(node,
 						"'type' attribute parse error: unknown type: "
 								+ node.getAttributeValue("type"));
 			}
 		}
 		// check optional attribute: dim
+		returnTypeDimension = 0;
 		if (node.hasAttribute("dim")
-				&& !node.getAttributeValue("dim").equals("")) {
+				&& node.getAttributeValue("dim").length() > 0) {
 			try {
-				this.dim = Integer.parseInt(node.getAttributeValue("dim")
-						.toString());
-			} catch (Exception e) {
-				ErrorHandler.error(node, "'dim' attribute parse error: "
-						+ e.getMessage());
+				returnTypeDimension = Integer.parseInt(node.getAttributeValue("dim"));
+			} catch(NumberFormatException e) {
+				ErrorHandler.error(node.getAttribute("dim"), "dim-attribute expects an integer value");
 			}
-
 		}
+			
 		// check optional attribute: static
 		if (node.hasAttribute("static")
 				&& (node.getAttributeValue("static").length() != 0)) {
 			if (node.getAttributeValue("static").equals("yes")) {
 				this.isStatic = true;
-			} else if (node.getAttributeValue("static").equals("no")) {
-				this.isStatic = false;
-			}else {
+			} else {
 				ErrorHandler.error(node,
-						"'static' attribute parse error: 'yes or no' expected");
+						"'static' attribute parse error: 'yes' expected");
 			}
 		}
 		// check optional attribute: final
@@ -99,11 +99,9 @@ public class Function extends SyntaxTreeNode {
 				&& (node.getAttributeValue("final").length() != 0)) {
 			if (node.getAttributeValue("final").equals("yes")) {
 				isFinal = true;
-			} else if (node.getAttributeValue("final").equals("no")) {
-				isFinal = false;
-			}else {
+			} else {
 				ErrorHandler.error(node,
-						"'final' attribute parse error: 'yes or no' expected");
+						"'final' attribute parse error: 'yes' expected");
 			}
 		}
 
@@ -136,7 +134,9 @@ public class Function extends SyntaxTreeNode {
 	}
 
 	public boolean hasBody() { return !body.isEmpty(); }
-	public PositionString getReturnType() { return return_type; }
+	public PositionString getReturnType() { return returnType; }
+	public int getReturnTypeDimension() { return returnTypeDimension; }
+	public boolean returnsArray() { return returnTypeDimension>0; }
 	public PositionString getName() { return name; }
 	public boolean isStatic() { return isStatic; }
 	public boolean isFinal() { return isFinal; }

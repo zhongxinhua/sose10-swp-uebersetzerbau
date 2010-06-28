@@ -5,6 +5,7 @@ package de.fu_berlin.compilerbau.parser.expressions;
  * den Wert NULL dar.
  * @author Markus
  */
+@SuppressWarnings("serial")
 public class NullLiteral extends Literal {
 	public static final NullLiteral NULL = new NullLiteral();
 	

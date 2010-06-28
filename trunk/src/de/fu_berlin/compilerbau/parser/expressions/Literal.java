@@ -10,6 +10,7 @@ package de.fu_berlin.compilerbau.parser.expressions;
  * @see NullLiteral
  * @author Markus
  */
+@SuppressWarnings("serial")
 public abstract class Literal extends Expression {
 	@Override
 	public void printTree(int deep) {

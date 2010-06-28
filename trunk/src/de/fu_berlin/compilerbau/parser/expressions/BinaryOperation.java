@@ -5,6 +5,7 @@ package de.fu_berlin.compilerbau.parser.expressions;
  * einer binären Operation verbindet. 
  * @author Markus
  */
+@SuppressWarnings("serial")
 public class BinaryOperation extends Expression { // a+b
 	public enum BinaryOperator {
 		ADD, SUBSTRACT, TIMES, DIVIDES, MODULOS, GREATER_THAN, LESS_THAN, GREATER_EQUAL,

@@ -7,6 +7,7 @@ package de.fu_berlin.compilerbau.parser.expressions;
  * eigentliche Member.
  * @author Markus
  */
+@SuppressWarnings("serial")
 public class MemberAccess extends Expression {	
 	private Expression child;
 	private Expression parent;

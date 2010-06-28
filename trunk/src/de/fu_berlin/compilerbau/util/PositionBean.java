@@ -18,11 +18,11 @@ public class PositionBean implements StreamPosition {
 	public PositionBean(StreamPosition pos) {
 		this.start = pos.getStart();
 		this.line = pos.getLine();
-		this.character = pos.getCharacter();
+		this.character = pos.getColumn();
 	}
 	
 	@Override
-	public int getCharacter() {
+	public int getColumn() {
 		return character;
 	}
 	

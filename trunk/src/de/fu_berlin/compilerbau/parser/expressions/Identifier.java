@@ -1,14 +1,17 @@
 package de.fu_berlin.compilerbau.parser.expressions;
 
+import de.fu_berlin.compilerbau.util.PositionString;
+
 /**
  * Ein Identifier stellt im abstrakten Syntaxbaum einen 
  * Bezeichner dar. Es wird auch für Memberzugriffe verwendet.
  * @author Markus
  */
+@SuppressWarnings("serial")
 public class Identifier extends Expression {
-	private CharSequence name;
+	private PositionString name;
 	
-	public Identifier(CharSequence name) {
+	public Identifier(PositionString name) {
 		this.name = name;
 	}
 	
@@ -23,7 +26,7 @@ public class Identifier extends Expression {
 		System.out.println(this);
 	}
 	//BEGIN get-Methoden f�r Builder
-	public CharSequence getName(){
+	public PositionString getName(){
 		return name;
 	}
 	//END get-Methoden f�r Builder

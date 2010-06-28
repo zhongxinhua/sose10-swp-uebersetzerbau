@@ -31,7 +31,7 @@ public class ErrorHandler {
 	private static void msg(PrintStream dstOut, StreamPosition position, String prefix, String msg) {
 		dstOut.print(prefix);
 		if(position != null)
-			dstOut.print(" @ ("+position.getLine()+" : "+position.getCharacter()+")");		
+			dstOut.print(" @ ("+position.getLine()+" : "+position.getColumn()+")");		
 		dstOut.print(": ");
 		dstOut.println(msg);
 	}

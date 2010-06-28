@@ -40,7 +40,7 @@ class XmlNodeIterator implements Iterator<XmlNode> {
 			return parent.getNext();
 		} catch(IOException e) {
 			e.printStackTrace(); // could be re-thrown as a RuntimeException ...
-			return new XmlNodeImpl(parent.getStart(), parent.getLine(), parent.getCharacter(), NodeType.NT_ERROR, null, null);
+			return new XmlNodeImpl(parent.getStart(), parent.getLine(), parent.getColumn(), NodeType.NT_ERROR, null, null);
 		}
 	}
 	

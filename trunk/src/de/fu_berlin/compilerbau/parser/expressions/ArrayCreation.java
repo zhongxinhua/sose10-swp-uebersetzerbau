@@ -7,6 +7,7 @@ import java.util.List;
  * von geschweiften Klammern dar.
  * @author Markus
  */
+@SuppressWarnings("serial")
 public class ArrayCreation extends Expression {
 	private List<Expression> elements;
 	

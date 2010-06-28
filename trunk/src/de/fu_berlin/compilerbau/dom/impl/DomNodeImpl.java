@@ -113,8 +113,8 @@ public class DomNodeImpl implements DomNode {
 	}
 
 	@Override
-	public int getCharacter() {
-		return _nodeName.getCharacter();
+	public int getColumn() {
+		return _nodeName.getColumn();
 	}
 
 	@Override

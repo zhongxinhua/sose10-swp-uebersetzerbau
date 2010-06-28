@@ -5,6 +5,7 @@ package de.fu_berlin.compilerbau.parser.expressions;
  * elementaren Stringausdruck dar.
  * @author Markus
  */
+@SuppressWarnings("serial")
 public class StringLiteral extends Literal {
 	CharSequence value;
 	

@@ -39,7 +39,7 @@ class StatementNodeIterator implements Iterator<StatementNode> {
 		
 		final int start = stream.getStart();
 		final int line = stream.getLine();
-		final int character = stream.getCharacter();
+		final int character = stream.getColumn();
 		
 		TokenType type = null;
 		final char next = stream.next();

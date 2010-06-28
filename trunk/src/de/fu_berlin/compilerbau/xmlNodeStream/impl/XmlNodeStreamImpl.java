@@ -44,8 +44,8 @@ class XmlNodeStreamImpl implements XmlNodeStream {
 	}
 
 	@Override
-	public int getCharacter() {
-		return stream.getCharacter();
+	public int getColumn() {
+		return stream.getColumn();
 	}
 
 	@Override
@@ -135,7 +135,7 @@ class XmlNodeStreamImpl implements XmlNodeStream {
 		
 		final int start = stream.getStart();
 		final int line = stream.getLine();
-		final int character = stream.getCharacter();
+		final int character = stream.getColumn();
 		
 		for(;;) {
 			final int c;
