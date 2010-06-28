@@ -1,5 +1,6 @@
 package de.fu_berlin.compilerbau.symbolTable;
 
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -123,6 +124,14 @@ public interface Runtime extends SymbolContainer {
 	Set<? extends UnqualifiedSymbol> getUnqualifiedSymbols();
 	
 	boolean hasUnqualifiedSymbols();
+	
+	/**
+	 * Returns {@link Comparator} comparing <code>E</code>
+	 * @param <E> Class to compare: {@link ClassOrInterface}, {@link Method}, {@link Package} or {@link Variable}.
+	 * @param clazz E.class
+	 * @return null if the class was not expected to has a comparator
+	 */
+	<E extends HasComparator<E>> Comparator<E> getComparator(java.lang.Class<E> clazz);
 	
 	@InternalMethod
 	UnqualifiedSymbolsMap<UnqualifiedSymbol> getUnqualifiedSymbolsMap();

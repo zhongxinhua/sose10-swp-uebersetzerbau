@@ -42,7 +42,7 @@ class VariableImpl extends SymbolImpl implements Variable {
 		this.modifier = modifier;
 		this.variableType = variableType;
 		
-		if(variableType.hasType(SymbolType.CLASS_OR_INTERFACE) == null) {
+		if(variableType != null && variableType.hasType(SymbolType.CLASS_OR_INTERFACE) == null) {
 			ReplaceFunc replaceFunc = new UnqualifiedSymbolsMap.ReplaceFunc() {
 				
 				@Override

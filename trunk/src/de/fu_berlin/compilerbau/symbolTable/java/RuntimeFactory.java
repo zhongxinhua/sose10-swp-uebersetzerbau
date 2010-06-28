@@ -173,7 +173,7 @@ public class RuntimeFactory {
 					Callable<ClassOrInterface>>(30);
 			for(int i = 0; i < loaderThreads.length; ++i) {
 				loaderThreads[i] = new Thread(new LoaderThread(jarInputStream, loader, queue,
-						result, semaphore, notifier));
+						result, semaphore, notifier), "LoaderThread-" + (i+1));
 			}
 			
 			for(Thread thread : loaderThreads) {

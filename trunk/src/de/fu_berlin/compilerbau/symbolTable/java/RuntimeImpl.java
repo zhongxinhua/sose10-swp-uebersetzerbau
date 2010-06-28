@@ -1,6 +1,7 @@
 package de.fu_berlin.compilerbau.symbolTable.java;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -10,7 +11,10 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
+import de.fu_berlin.compilerbau.parser.ClassOrInterface;
 import de.fu_berlin.compilerbau.symbolTable.ArrayType;
+import de.fu_berlin.compilerbau.symbolTable.HasComparator;
+import de.fu_berlin.compilerbau.symbolTable.Method;
 import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.Package;
 import de.fu_berlin.compilerbau.symbolTable.PrimitiveType;
@@ -347,6 +351,23 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	@Override
 	public UnqualifiedSymbolsMap<UnqualifiedSymbol> getUnqualifiedSymbolsMap() {
 		return unqualifiedSymbolsMap;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <E extends HasComparator<E>> Comparator<E> getComparator(
+			Class<E> clazz) {
+		if(clazz == ClassOrInterface.class || clazz == ClassOrInterfaceImpl.class) {
+			return (Comparator<E>) ClassOrInterfaceImpl.COMPARATOR;
+		} else if(clazz == Method.class || clazz == MethodImpl.class) {
+			return (Comparator<E>) MethodImpl.COMPARATOR;
+		} else if(clazz == Package.class || clazz == PackageImpl.class) {
+			return (Comparator<E>) PackageImpl.COMPARATOR;
+		} else if(clazz == Variable.class || clazz == VariableImpl.class) {
+			return (Comparator<E>) VariableImpl.COMPARATOR;
+		} else {
+			return null;
+		}
 	}
 	
 }
