@@ -22,7 +22,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
  * @see {@link Class}
  */
 public class ImplementsStatement extends Statement {
-	PositionString name;
+	private PositionString name;
 
 	public ImplementsStatement(DomNode node) {
 		// check needed attribute: name
@@ -39,11 +39,11 @@ public class ImplementsStatement extends Statement {
 		}
 
 	}
-	// BEGIN get-Methoden fÃ¼r Builder
+	// BEGIN get-Methoden für Builder
 	public PositionString getName(){
 		return name;
 	}
-	// END get-Methoden fÃ¼r Builder
+	// END get-Methoden für Builder
 
 	@Override
 	public String toString() {

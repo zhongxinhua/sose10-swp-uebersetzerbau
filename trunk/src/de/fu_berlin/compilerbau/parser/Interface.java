@@ -29,14 +29,6 @@ public class Interface extends ClassOrInterface {
 	private List<Function> functions;
 	private List<ExtendsStatement> extensions = new LinkedList<ExtendsStatement>();
 
-	public List<Function> getFunctions() {
-		return functions;
-	}
-	
-	public List<ExtendsStatement> getExtensions() {
-		return extensions;
-	}
-
 	public Interface(DomNode node) {
 		// check needed attribute: name
 		if (node.hasAttribute("name")
@@ -67,6 +59,14 @@ public class Interface extends ClassOrInterface {
 			}
 		}
 
+	}
+	
+	public List<Function> getFunctions() {
+		return functions;
+	}
+	
+	public List<ExtendsStatement> getExtensions() {
+		return extensions;
 	}
 	
 	@Override

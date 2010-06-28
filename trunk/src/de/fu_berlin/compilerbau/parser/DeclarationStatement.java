@@ -10,7 +10,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
  * <b>Description</b><br> {@link DeclarationStatement} is a subclass of
  * {@link Statement} representing a &ltdecl/&gt statement. It is common used as
  * a variable with an explicit type, but may also be declared as an array (with
- * attribute dim="x", where x > 1) or as an objectreference.<br>
+ * attribute dim="x", where x >= 1) or as an objectreference.<br>
  * 
  * <p>
  * <b>Specification</b><br>
@@ -52,7 +52,7 @@ public class DeclarationStatement extends Statement {
 		if (node.hasAttribute("type")
 				&& node.getAttributeValue("type").length() > 0) {
 			this.type = node.getAttribute("type");
-			// nicht besonders schï¿½n, aber funzt
+			// nicht besonders schön,
 			if (type == null) {
 				ErrorHandler.error(node,
 						"'type' attribute parse error: unknown type: "
@@ -128,7 +128,7 @@ public class DeclarationStatement extends Statement {
 		}
 	}
 
-	// BEGIN get-Methoden fï¿½r Builder
+	// BEGIN get-Methoden für Builder
 	public PositionString getType() {
 		return type;
 	}
@@ -156,7 +156,7 @@ public class DeclarationStatement extends Statement {
 	public boolean isArray() {
 		return dimension > 0;
 	}
-	// END get-Methoden fï¿½r Builder
+	// END get-Methoden für Builder
 	
 	@Override
 	public String toString() {

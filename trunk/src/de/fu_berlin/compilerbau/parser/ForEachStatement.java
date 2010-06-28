@@ -5,15 +5,14 @@ import java.util.List;
 
 import de.fu_berlin.compilerbau.dom.DomNode;
 import de.fu_berlin.compilerbau.parser.expressions.Expression;
-import de.fu_berlin.compilerbau.parser.expressions.Identifier;
 import de.fu_berlin.compilerbau.statementParser.impl.StatementParser.ExpressionType;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
 import de.fu_berlin.compilerbau.util.PositionString;
 
 public class ForEachStatement extends Statement {
-	PositionString element;
-	Expression values;
-	List<Statement> body = new LinkedList<Statement>();	
+	private PositionString element;
+	private Expression values;
+	private List<Statement> body = new LinkedList<Statement>();	
 	
 	public ForEachStatement(DomNode node) {
 		//<foreach element="abc"  values="xyz" /> 

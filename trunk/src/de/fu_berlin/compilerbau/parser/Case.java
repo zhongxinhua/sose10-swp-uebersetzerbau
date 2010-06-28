@@ -30,8 +30,8 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
  * 
  */
 public class Case extends Statement {
-	Expression test;
-	List<Statement> body = new LinkedList<Statement>();
+	private Expression test;
+	private List<Statement> body = new LinkedList<Statement>();
 	
 	public Case(DomNode node) {
 		// check needed attribute: test

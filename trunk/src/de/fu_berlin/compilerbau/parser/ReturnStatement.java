@@ -23,7 +23,7 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
  * 
  */
 public class ReturnStatement extends Statement {
-	Expression value;
+	private Expression value;
 
 	public ReturnStatement(DomNode node) {
 		// check needed attribute: name

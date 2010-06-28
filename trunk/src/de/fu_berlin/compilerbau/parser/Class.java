@@ -32,11 +32,11 @@ import de.fu_berlin.compilerbau.util.PositionString;
  * 
  */
 public class Class extends ClassOrInterface {
-	PositionString parent;
-	List<ImportStatement> imports = new LinkedList<ImportStatement>();
-	List<ImplementsStatement> implementations = new LinkedList<ImplementsStatement>();
-	List<DeclarationStatement> declarations = new LinkedList<DeclarationStatement>();
-	List<Function> functions = new LinkedList<Function>();
+	private PositionString parent;
+	private List<ImportStatement> imports = new LinkedList<ImportStatement>();
+	private List<ImplementsStatement> implementations = new LinkedList<ImplementsStatement>();
+	private List<DeclarationStatement> declarations = new LinkedList<DeclarationStatement>();
+	private List<Function> functions = new LinkedList<Function>();
 
 	public Class(DomNode node) {
 		// check needed attribute: name

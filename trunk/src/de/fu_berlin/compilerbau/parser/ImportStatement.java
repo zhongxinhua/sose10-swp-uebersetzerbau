@@ -22,7 +22,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
  */
 public class ImportStatement extends SyntaxTreeNode {
 
-	PositionString name;
+	private PositionString name;
 
 	public ImportStatement(DomNode node) {
 		// check needed attribute: name

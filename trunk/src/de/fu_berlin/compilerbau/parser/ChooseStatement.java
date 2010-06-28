@@ -27,7 +27,7 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
  */
 
 public class ChooseStatement extends Statement {
-	List<Case> cases = new LinkedList<Case>();
+	private List<Case> cases = new LinkedList<Case>();
 
 	public ChooseStatement(DomNode node) {
 		// check for empty attribute list
@@ -48,11 +48,11 @@ public class ChooseStatement extends Statement {
 					+ " at least one child needed!");
 		}
 	}
-	// BEGIN get-Methoden fï¿½r Builder
+	// BEGIN get-Methoden für Builder
 	public List<Case> getCases(){
 		return cases;
 	}
-	// END get-Methoden fï¿½r Builder
+	// END get-Methoden für Builder
 	
 	@Override
 	public String toString() {

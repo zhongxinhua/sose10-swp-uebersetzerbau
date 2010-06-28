@@ -32,8 +32,8 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
  * 
  */
 public class DoStatement extends Statement {
-	Expression test;
-	List<Statement> body = new LinkedList<Statement>();
+	private Expression test;
+	private List<Statement> body = new LinkedList<Statement>();
 
 	public DoStatement(DomNode node) {
 		// check needed attribute: test
@@ -53,14 +53,14 @@ public class DoStatement extends Statement {
 			}
 		}
 	}
-	// BEGIN get-Methoden fï¿½r Builder
+	// BEGIN get-Methoden für Builder
 	public Expression getTest(){
 		return test;
 	}
 	public List<Statement> getBody(){
 		return body;
 	}
-	// END get-Methoden fï¿½r Builder
+	// END get-Methoden für Builder
 
 	@Override
 	public String toString() {
