@@ -24,6 +24,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import de.fu_berlin.compilerbau.symbolTable.ClassOrInterface;
 import de.fu_berlin.compilerbau.symbolTable.Method;
@@ -43,6 +44,7 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierExceptio
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.Likelyness;
+import de.fu_berlin.compilerbau.util.PairIterator;
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
 
@@ -227,6 +229,40 @@ class MethodImpl extends ScopeImpl implements Method {
 	@Override
 	public String getCanonicalDestinationName() {
 		return ((ClassOrInterface)getParent()).getCanonicalDestinationName() + "." + getDestinationName();
+	}
+
+	@Override
+	public Boolean isCompatatibleToParameters(Iterable<Symbol> parameterTypes) throws InvalidIdentifierException {
+		for(Entry<Variable, Symbol> params : new PairIterator<Variable, Symbol>(parameters, parameterTypes)) {
+			final Variable methodVariable = params.getKey();
+			final Symbol expectedType = params.getValue();
+			if(methodVariable == null || expectedType == null) { // the parameters to not have the same length
+				return Boolean.FALSE;
+			}
+			final Symbol methodType = methodVariable.getVariableType();
+			
+			final ClassOrInterface methodVariableCOI, expectedTypeCOI;
+			
+			if(methodType.hasType(SymbolType.CLASS_OR_INTERFACE) == Boolean.TRUE) {
+				expectedTypeCOI = (ClassOrInterface) methodType;
+			} else {
+				expectedTypeCOI = (ClassOrInterface) ((UnqualifiedSymbol)methodType).qualify(SymbolType.CLASS_OR_INTERFACE);
+			}
+			
+			if(expectedType.hasType(SymbolType.CLASS_OR_INTERFACE) == Boolean.TRUE) {
+				methodVariableCOI = (ClassOrInterface) expectedType;
+			} else {
+				methodVariableCOI = (ClassOrInterface) ((UnqualifiedSymbol)expectedType).qualify(SymbolType.CLASS_OR_INTERFACE);
+			}
+			
+			if(methodVariableCOI == null || expectedTypeCOI == null) {
+				return null;
+			} else if(!methodVariableCOI.canBeCastInto(expectedTypeCOI)) {
+				return Boolean.FALSE;
+			}
+		}
+		
+		return Boolean.TRUE;
 	}
 
 }

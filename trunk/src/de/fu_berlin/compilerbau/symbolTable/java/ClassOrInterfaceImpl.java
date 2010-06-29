@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.Map.Entry;
 
 import de.fu_berlin.compilerbau.symbolTable.ArrayType;
 import de.fu_berlin.compilerbau.symbolTable.Class;
@@ -46,7 +45,6 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierExcept
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
-import de.fu_berlin.compilerbau.util.PairIterator;
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
 
@@ -259,36 +257,8 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 		final ArrayList<Method> result = new ArrayList<Method>(methods);
 		for(final Iterator<Method> i = result.iterator(); i.hasNext(); /*void*/) {
 			final Method method = i.next();
-			final List<Variable> methodParameters = method.getParameters();
-			for(Entry<Variable, Symbol> params : new PairIterator<Variable, Symbol>(methodParameters, parameterTypes)) {
-				final Variable methodVariable = params.getKey();
-				final Symbol expectedType = params.getValue();
-				if(methodVariable == null || expectedType == null) {
-					i.remove();
-					break;
-				}
-				final Symbol methodType = methodVariable.getVariableType();
-				
-				final ClassOrInterface methodVariableCOI, expectedTypeCOI;
-				
-				if(methodType.hasType(SymbolType.CLASS_OR_INTERFACE) == Boolean.TRUE) {
-					expectedTypeCOI = (ClassOrInterface) methodType;
-				} else {
-					expectedTypeCOI = (ClassOrInterface) ((UnqualifiedSymbol)methodType).qualify(SymbolType.CLASS_OR_INTERFACE);
-				}
-				
-				if(expectedType.hasType(SymbolType.CLASS_OR_INTERFACE) == Boolean.TRUE) {
-					methodVariableCOI = (ClassOrInterface) expectedType;
-				} else {
-					methodVariableCOI = (ClassOrInterface) ((UnqualifiedSymbol)expectedType).qualify(SymbolType.CLASS_OR_INTERFACE);
-				}
-				
-				if(methodVariableCOI != null && expectedTypeCOI!= null) {
-					if(!methodVariableCOI.canBeCastInto(expectedTypeCOI)) {
-						i.remove();
-						break;
-					}
-				}
+			if(method.isCompatatibleToParameters(parameterTypes) == Boolean.FALSE) {
+				i.remove();
 			}
 		}
 		return null;

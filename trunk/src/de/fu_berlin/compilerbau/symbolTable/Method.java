@@ -19,6 +19,8 @@ package de.fu_berlin.compilerbau.symbolTable;
 
 import java.util.List;
 
+import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
+
 /**
  * This is a method of a {@link ClassOrInterface class or interface}.
  * {@link Constructor Constructors} are methods as well.
@@ -40,5 +42,13 @@ public interface Method extends Scope, QualifiedSymbol, HasComparator<Method> {
 	 * @return most likely {@code this}
 	 */
 	Scope getScope();
+	
+
+	
+	/**
+	 * @return null if indeterminable
+	 * @throws InvalidIdentifierException 
+	 */
+	Boolean isCompatatibleToParameters(Iterable<Symbol> parameterTypes) throws InvalidIdentifierException;
 	
 }
