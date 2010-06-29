@@ -132,8 +132,12 @@ public class ExpressionAnnotator {
 	protected Symbol annotateFunctionCall(SymbolContainer container, FunctionCall call) throws InvalidIdentifierException {
 		//check symbol
 		final PositionString name = call.getName();
-		Symbol symbol = container.getQualifiedSymbol(name);		
-		assert(symbol.hasType(SymbolType.METHOD));
+		Symbol symbol = container.getQualifiedSymbol(name);
+		try{
+			assert(symbol.hasType(SymbolType.METHOD) == Boolean.TRUE);
+		}catch(Throwable t) {
+			System.out.println("penis");
+		}
 		Method symFunction = (Method) symbol;
 		
 		//check if contructor
@@ -143,9 +147,10 @@ public class ExpressionAnnotator {
 		//check arguments count
 		final int neededParamCount = symFunction.getParameters().size();
 		final int actualParamCount = call.getArguments().size();
+		final Symbol returnType = symFunction.getReturnType()!=null ? symFunction.getReturnType() : runtime.getVoid();
 		if(neededParamCount != actualParamCount) {
 			ErrorHandler.error(call, "function \""+name+"\" needs "+neededParamCount+" arguments (not "+actualParamCount+")");
-			return symFunction.getReturnType();
+			return returnType;
 		}
 		
 		//check arguments types
@@ -158,7 +163,7 @@ public class ExpressionAnnotator {
 			Symbol actualType = annotateExpression(container, exprArg);
 			checkType(exprArg, neededType, actualType);
 		}
-		return symFunction.getReturnType();
+		return returnType;
 	}
 	
 	protected void checkType(StreamPosition position, Symbol neededType, Symbol actualType) {
@@ -174,9 +179,6 @@ public class ExpressionAnnotator {
 	 * @throws InvalidIdentifierException
 	 */
 	protected Symbol annotateIdentifier(SymbolContainer container, Identifier identifier) throws InvalidIdentifierException {
-		if(identifier.getName().equals("out")) {
-			System.err.println("1");
-		}
 		Symbol symbol = container.tryGetQualifiedSymbol(identifier.getName());
 		identifier.setSymbol(symbol);
 		container.addMention(symbol, identifier);

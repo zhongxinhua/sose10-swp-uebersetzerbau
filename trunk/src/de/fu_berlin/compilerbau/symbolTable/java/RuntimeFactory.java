@@ -28,6 +28,8 @@ import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.Callable;
@@ -44,8 +46,11 @@ import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.Variable;
+import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
+import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.SymbolTableException;
+import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.PositionBean;
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.Visibility;
@@ -234,6 +239,20 @@ public class RuntimeFactory {
 		try {
 			result.useImport(new PositionString("java.lang.*", PositionBean.ZERO), null);
 		} catch (SymbolTableException e) {
+			throw new RuntimeException(e);
+		}
+		
+		//built-in functions
+		try {
+			//TODO
+			de.fu_berlin.compilerbau.symbolTable.Class class_ = result.undefinedScope.addClass(new PositionString("IO", PositionBean.ZERO), null, null, null);
+			class_.addMethod(new PositionString("read", PositionBean.ZERO), result.getPrimitiveType(int.class), null, null);
+			List<Variable> printParams = new LinkedList<Variable>();
+			printParams.add(result.getNewVariableForParameter(new PositionString("str", PositionBean.ZERO), result.getPrimitiveType(String.class), null));
+			class_.addMethod(new PositionString("print", PositionBean.ZERO), result.getVoid(), printParams.iterator(), null);
+			
+			result.globalScope.useImport(class_, null);
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 		

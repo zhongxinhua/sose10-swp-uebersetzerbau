@@ -47,4 +47,9 @@ public interface ClassOrInterface extends SymbolContainer, QualifiedSymbol, HasC
 	
 	boolean isSame(ClassOrInterface right) throws InvalidIdentifierException;
 	
+	/**
+	 * @return empty set or null if name was not found
+	 */
+	Set<Method> getMethodsByName(PositionString name);
+	
 }

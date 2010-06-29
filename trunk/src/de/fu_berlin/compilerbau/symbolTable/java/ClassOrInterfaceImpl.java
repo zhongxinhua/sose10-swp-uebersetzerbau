@@ -53,6 +53,7 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 	protected final Set<Symbol> interfaces = new TreeSet<Symbol>();
 	protected final Map<Method, MethodImpl> methods = new TreeMap<Method, MethodImpl>(MethodImpl.COMPARATOR);
 	protected final ShadowedSymbols shadowedSymbols = new ShadowedSymbols(this);
+	protected final Map<String, Set<Method>> methodsByName = new TreeMap<String, Set<Method>>();
 
 	public ClassOrInterfaceImpl(Runtime runtime, Package parent, Iterator<Symbol> implements_,
 			Modifier modifier, PositionString name) throws InvalidIdentifierException {
@@ -112,6 +113,14 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 		}
 		shadowedSymbols.test(name, newSymbol);
 		methods.put(newSymbol, newSymbol);
+		
+		Set<Method> methodByName = methodsByName.get(name.toString());
+		if(methodByName == null) {
+			methodByName = new TreeSet<Method>(MethodImpl.COMPARATOR);
+			methodsByName.put(name.toString(), methodByName);
+		}
+		methodByName.add(newSymbol);
+		
 		return newSymbol;
 	}
 
@@ -229,6 +238,11 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 			default:
 				throw new RuntimeException("Not a valid class or interface: " + getType());
 		}
+	}
+
+	@Override
+	public Set<Method> getMethodsByName(PositionString name) {
+		return methodsByName.get(name.toString());
 	}
 
 }

@@ -25,9 +25,9 @@
       <decl type="int" name="ggt1"/>
       <decl type="int" name="ggt2"/>
       <call exec="System.out.println('ggt1: ')"/>
-	  <set  name="ggt1" value="read()"/>
+	  <set  name="ggt1" value="IO.read()"/>
       <call exec="System.out.println('ggt2: ')"/>
-	  <set  name="ggt2" value="read()"/>
+	  <set  name="ggt2" value="IO.read()"/>
       <call exec="System.out.println(Mathe.ggt(ggt1,ggt2))"/>
   </function>
 </class>
