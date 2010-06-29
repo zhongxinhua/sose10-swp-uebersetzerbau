@@ -251,7 +251,7 @@ class ClassOrInterfaceImpl<A> extends SymbolContainerImpl implements ClassOrInte
 	}
 
 	@Override
-	public List<Method> getMethodsByName(PositionString name, List<Symbol> parameterTypes) throws InvalidIdentifierException {
+	public List<Method> getMethodsByName(PositionString name, Iterable<Symbol> parameterTypes) throws InvalidIdentifierException {
 		final Set<Method> methods = methodsByName.get(name.toString());
 		if(methods == null) {
 			return null;

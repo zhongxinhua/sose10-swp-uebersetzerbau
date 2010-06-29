@@ -57,7 +57,7 @@ public interface ClassOrInterface extends SymbolContainer, QualifiedSymbol, HasC
 	 * @return empty set or null if name was not found
 	 * @throws InvalidIdentifierException 
 	 */
-	List<Method> getMethodsByName(PositionString name, List<Symbol> parameterTypes) throws InvalidIdentifierException;
+	List<Method> getMethodsByName(PositionString name, Iterable<Symbol> parameterTypes) throws InvalidIdentifierException;
 	
 	/**
 	 * @return null if indeterminable
