@@ -18,6 +18,7 @@
 package de.fu_berlin.compilerbau.symbolTable;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
@@ -51,5 +52,22 @@ public interface ClassOrInterface extends SymbolContainer, QualifiedSymbol, HasC
 	 * @return empty set or null if name was not found
 	 */
 	Set<Method> getMethodsByName(PositionString name);
+	
+	/**
+	 * @return empty set or null if name was not found
+	 * @throws InvalidIdentifierException 
+	 */
+	List<Method> getMethodsByName(PositionString name, List<Symbol> parameterTypes) throws InvalidIdentifierException;
+	
+	/**
+	 * @return null if indeterminable
+	 * @throws InvalidIdentifierException 
+	 */
+	Boolean canBeCastInto(Symbol targetType) throws InvalidIdentifierException;
+	
+	/**
+	 * @see #canBeCastInto(Symbol)
+	 */
+	Boolean canBeCastInto(ClassOrInterface targetType) throws InvalidIdentifierException;
 	
 }

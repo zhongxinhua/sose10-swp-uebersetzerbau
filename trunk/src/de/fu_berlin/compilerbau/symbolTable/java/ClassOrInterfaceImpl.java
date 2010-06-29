@@ -17,14 +17,18 @@
 
 package de.fu_berlin.compilerbau.symbolTable.java;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 
 import de.fu_berlin.compilerbau.symbolTable.ArrayType;
+import de.fu_berlin.compilerbau.symbolTable.Class;
 import de.fu_berlin.compilerbau.symbolTable.ClassOrInterface;
 import de.fu_berlin.compilerbau.symbolTable.Method;
 import de.fu_berlin.compilerbau.symbolTable.Modifier;
@@ -42,10 +46,11 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierExcept
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
+import de.fu_berlin.compilerbau.util.PairIterator;
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
 
-class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterface {
+class ClassOrInterfaceImpl<A> extends SymbolContainerImpl implements ClassOrInterface {
 	
 	protected final PositionString name;
 	protected final String destinationName;
@@ -243,6 +248,78 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 	@Override
 	public Set<Method> getMethodsByName(PositionString name) {
 		return methodsByName.get(name.toString());
+	}
+
+	@Override
+	public List<Method> getMethodsByName(PositionString name, List<Symbol> parameterTypes) throws InvalidIdentifierException {
+		final Set<Method> methods = methodsByName.get(name.toString());
+		if(methods == null) {
+			return null;
+		}
+		final ArrayList<Method> result = new ArrayList<Method>(methods);
+		for(final Iterator<Method> i = result.iterator(); i.hasNext(); /*void*/) {
+			final Method method = i.next();
+			final List<Variable> methodParameters = method.getParameters();
+			for(Entry<Variable, Symbol> params : new PairIterator<Variable, Symbol>(methodParameters, parameterTypes)) {
+				final Variable methodVariable = params.getKey();
+				final Symbol expectedType = params.getValue();
+				if(methodVariable == null || expectedType == null) {
+					i.remove();
+					break;
+				}
+				final Symbol methodType = methodVariable.getVariableType();
+				
+				final ClassOrInterface methodVariableCOI, expectedTypeCOI;
+				
+				if(methodType.hasType(SymbolType.CLASS_OR_INTERFACE) == Boolean.TRUE) {
+					expectedTypeCOI = (ClassOrInterface) methodType;
+				} else {
+					expectedTypeCOI = (ClassOrInterface) ((UnqualifiedSymbol)methodType).qualify(SymbolType.CLASS_OR_INTERFACE);
+				}
+				
+				if(expectedType.hasType(SymbolType.CLASS_OR_INTERFACE) == Boolean.TRUE) {
+					methodVariableCOI = (ClassOrInterface) expectedType;
+				} else {
+					methodVariableCOI = (ClassOrInterface) ((UnqualifiedSymbol)expectedType).qualify(SymbolType.CLASS_OR_INTERFACE);
+				}
+				
+				if(methodVariableCOI != null && expectedTypeCOI!= null) {
+					if(!methodVariableCOI.canBeCastInto(expectedTypeCOI)) {
+						i.remove();
+						break;
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public Boolean canBeCastInto(Symbol targetType) throws InvalidIdentifierException {
+		final ClassOrInterface dest;
+		final Boolean hasType = targetType.hasType(SymbolType.CLASS_OR_INTERFACE);
+		if(hasType == Boolean.TRUE) {
+			dest = (ClassOrInterface)targetType;
+		} else if(hasType == null) {
+			dest = (ClassOrInterface) ((UnqualifiedSymbol)targetType).qualify(SymbolType.CLASS_OR_INTERFACE);
+			if(dest == null) {
+				return null;
+			}
+		} else {
+			throw new RuntimeException("That is not a class or interface: " + targetType);
+		}
+		return canBeCastInto(dest);
+	}
+
+	@Override
+	public Boolean canBeCastInto(ClassOrInterface targetType) throws InvalidIdentifierException {
+		if(compareTo(targetType) == 0) {
+			return Boolean.TRUE;
+		} else if(hasType(SymbolType.CLASS) == Boolean.TRUE) {
+			return canBeCastInto(((Class)this).getSuperClass());
+		} else {
+			return false;
+		}
 	}
 
 }
