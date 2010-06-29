@@ -30,6 +30,7 @@ import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
+import de.fu_berlin.compilerbau.util.ErrorHandler;
 import de.fu_berlin.compilerbau.util.PositionString;
 
 class GlobalScopeImpl extends PackageImpl {
@@ -62,8 +63,12 @@ class GlobalScopeImpl extends PackageImpl {
 		if(symbol == null) {
 			return null;
 		}
-		SymbolSplitter.lookup(getRuntime(), this, symbol, cois, coiCtor);
-		return null;
+		QualifiedSymbol result = SymbolSplitter.lookup(getRuntime(), this, symbol, cois, coiCtor);
+		if(result == null) {
+			final ClassOrInterfaceImpl oldSymbol = new ClassOrInterfaceImpl(getRuntime(), this, null, null, symbol.getCall());
+			result = cois.get(oldSymbol);
+		}
+		return result;
 	}
 
 	@Override
@@ -120,6 +125,7 @@ class GlobalScopeImpl extends PackageImpl {
 
 	protected void useImport(ClassOrInterface value, PositionString alias) throws DuplicateIdentifierException, InvalidIdentifierException {
 		
+		ErrorHandler.debugMsg(null, value.toString());
 		final ClassOrInterface key;
 		if(alias == null) {
 			key = value;

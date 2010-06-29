@@ -174,11 +174,20 @@ public class ExpressionAnnotator {
 	 * @throws InvalidIdentifierException
 	 */
 	protected Symbol annotateIdentifier(SymbolContainer container, Identifier identifier) throws InvalidIdentifierException {
-		QualifiedSymbol symbol = container.getQualifiedSymbol(identifier.getName());
-		assert(symbol.hasType(SymbolType.VARIABLE));
+		if(identifier.getName().equals("out")) {
+			System.err.println("1");
+		}
+		Symbol symbol = container.tryGetQualifiedSymbol(identifier.getName());
 		identifier.setSymbol(symbol);
 		container.addMention(symbol, identifier);
-		return ((Variable) symbol).getVariableType();
+		
+		if(symbol.hasType(SymbolType.VARIABLE) == Boolean.TRUE) {
+			return ((Variable) symbol).getVariableType();
+		} else if(symbol.hasType(SymbolType.CLASS_OR_INTERFACE) == Boolean.TRUE) {
+			return symbol;
+		} else {
+			throw new RuntimeException("Symbol not found :( " + identifier + " in " + container); // TODO: Fehler
+		}
 	}
 	
 	/**

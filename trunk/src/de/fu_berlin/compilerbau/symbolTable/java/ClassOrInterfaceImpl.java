@@ -42,7 +42,6 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierExcept
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
-import de.fu_berlin.compilerbau.util.Likelyness;
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
 
@@ -151,13 +150,17 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 		if(symbol == null) {
 			return null;
 		}
-		if(symbol.is(SymbolType.METHOD) != Likelyness.IMPOSSIBLE) {
-			MethodImpl oldsymbol = new MethodImpl(getRuntime(), this, symbol.getCall(), null, null, null);
-			MethodImpl result = methods.get(oldsymbol);
-			if(result != null) {
-				return result;
-			}
+		
+		final MethodImpl method = new MethodImpl(getRuntime(), this, symbol.getCall(), null, null, null);
+		MethodImpl result = methods.get(method);
+		if(result != null) {
+			return result;
 		}
+		
+		if(result != null) {
+			return result;
+		}
+		
 		return getRuntime().lookTreeUp(symbol);
 	}
 

@@ -63,9 +63,9 @@ class Start {
 	private static final String JAR_NAME = "compiler.jar";
 	
 	//Markus
-	//protected static final String RT_JAR = "testfiles/small_runtime.jar";
+	protected static final String RT_JAR = "testfiles/small_runtime.jar";
 	//Rene
-	protected static final String RT_JAR = "/usr/lib/jvm/java-6-openjdk/jre/lib/rt.jar";
+	//protected static final String RT_JAR = "/usr/lib/jvm/java-6-openjdk/jre/lib/rt.jar";
 	
 	/**
 	 * Does not return.

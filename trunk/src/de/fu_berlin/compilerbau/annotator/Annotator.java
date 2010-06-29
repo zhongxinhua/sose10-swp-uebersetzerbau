@@ -39,6 +39,7 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierExceptio
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
+import de.fu_berlin.compilerbau.util.PositionBean;
 import de.fu_berlin.compilerbau.util.Visibility;
 
 public class Annotator {
@@ -68,7 +69,9 @@ public class Annotator {
 		this.mentions = new LinkedList<ExpressionMention>();
 		this.exprAnnotator = new ExpressionAnnotator(runtime);
 		firstPass(ast);
+		ErrorHandler.debugMsg(null, "First pass completed.");
 		secondPass();
+		ErrorHandler.debugMsg(null, "Second pass completed.");
 	}
 
 	private void firstPass(AbstractSyntaxTree ast) {
@@ -250,6 +253,7 @@ public class Annotator {
 					.isStatic(), decl.isFinal(), false);
 			Variable var = runtime.getNewVariableForParameter(decl.getName(),
 					type, modifier);
+			ErrorHandler.debugMsg(null, "new Parameter "+var);
 			parameters.add(var);
 			decl.setSymbol(var);
 		}
@@ -427,7 +431,8 @@ public class Annotator {
 			WrongModifierException {
 		// add variable to scope
 		Symbol symType = runtime.tryGetQualifiedSymbol(stmt.getType());
-		scope.addVariable(stmt.getName(), symType, PUBLIC_MODIFIER);
+		Variable variable = scope.addVariable(stmt.getName(), symType, PUBLIC_MODIFIER);
+		ErrorHandler.debugMsg(null, "new Variable "+variable);
 
 		// note expression
 		if(stmt.getValue() != null)

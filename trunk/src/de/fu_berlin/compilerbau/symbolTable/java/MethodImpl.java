@@ -74,6 +74,7 @@ class MethodImpl extends ScopeImpl implements Method {
 			while(parameters.hasNext()) {
 				final Variable next = parameters.next();
 				this.parameters.add(next);
+				variables.put(next, (VariableImpl) next);
 			}
 		}
 		
@@ -214,7 +215,8 @@ class MethodImpl extends ScopeImpl implements Method {
 			return null;
 		}
 		if(symbol.is(SymbolType.VARIABLE) != Likelyness.IMPOSSIBLE) {
-			VariableImpl result = new VariableImpl(getRuntime(), this, symbol.getCall(), null, null);
+			final VariableImpl search = new VariableImpl(getRuntime(), this, symbol.getCall(), null, null);
+			final VariableImpl result = variables.get(search);
 			if(result != null) {
 				return result;
 			}

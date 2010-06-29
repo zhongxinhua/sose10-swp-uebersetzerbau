@@ -63,7 +63,7 @@ class SymbolImpl implements Symbol {
 	
 	@Override
 	public Boolean hasType(SymbolType rightType) {
-		if(!(this instanceof QualifiedSymbol)) {
+		if(rightType == null || !(this instanceof QualifiedSymbol)) {
 			return null;
 		}
 		final SymbolType leftType = ((QualifiedSymbol)this).getType();

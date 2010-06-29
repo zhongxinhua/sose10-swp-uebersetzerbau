@@ -133,4 +133,19 @@ class ClassImpl extends ClassOrInterfaceImpl implements Class {
 		return staticBlock;
 	}
 
+	@Override
+	public QualifiedSymbol lookTreeUp(UnqualifiedSymbol symbol) throws InvalidIdentifierException {
+		if(symbol == null) {
+			return null;
+		}
+		
+		VariableImpl variable = new VariableImpl(getRuntime(), this, symbol.getCall(), null, null);
+		MemberImpl result = members.get(variable);
+		if(result != null) {
+			return result;
+		}
+		
+		return super.lookTreeUp(symbol);
+	}
+
 }
