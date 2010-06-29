@@ -50,7 +50,7 @@ import de.fu_berlin.compilerbau.util.PairIterator;
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
 
-class ClassOrInterfaceImpl<A> extends SymbolContainerImpl implements ClassOrInterface {
+class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterface {
 	
 	protected final PositionString name;
 	protected final String destinationName;
