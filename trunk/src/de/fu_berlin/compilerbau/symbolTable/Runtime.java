@@ -89,6 +89,11 @@ public interface Runtime extends SymbolContainer {
 	 */
 	Void getVoid();
 	
+	/**
+	 * returns the type representing null
+	 */
+	Null getNull();
+	
 	List<Entry<QualifiedSymbol,Symbol>> getAllShadowsList();
 	
 	ArrayType getArrayType(Symbol componentType, int dimension);

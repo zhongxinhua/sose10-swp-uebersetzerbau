@@ -34,7 +34,7 @@ class SymbolSplitter {
 	
 	public static interface QualifiedSymbolCtor {
 		
-		QualifiedSymbol newInstance(PositionString str) throws InvalidIdentifierException;
+		Object newInstance(PositionString str) throws InvalidIdentifierException;
 		
 	}
 
@@ -58,7 +58,7 @@ class SymbolSplitter {
 				builder.append(list.get(h));
 			}
 			
-			final QualifiedSymbol qs = ctor.newInstance(builder.toPositionString());
+			final Object qs = ctor.newInstance(builder.toPositionString());
 			final SymbolContainer container = containers.get(qs);
 			if(container != null) {
 				final PositionString p1 = list.get(i);

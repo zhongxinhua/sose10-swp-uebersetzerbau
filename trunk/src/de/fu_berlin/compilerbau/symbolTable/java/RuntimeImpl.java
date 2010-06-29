@@ -33,6 +33,7 @@ import de.fu_berlin.compilerbau.symbolTable.ArrayType;
 import de.fu_berlin.compilerbau.symbolTable.HasComparator;
 import de.fu_berlin.compilerbau.symbolTable.Method;
 import de.fu_berlin.compilerbau.symbolTable.Modifier;
+import de.fu_berlin.compilerbau.symbolTable.Null;
 import de.fu_berlin.compilerbau.symbolTable.Package;
 import de.fu_berlin.compilerbau.symbolTable.PrimitiveType;
 import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
@@ -68,6 +69,7 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	protected final List<SymbolContainer> symbolContainers = new LinkedList<SymbolContainer>();
 	protected final GlobalScopeImpl globalScope;
 	protected final UnqualifiedSymbolsMap<UnqualifiedSymbol> unqualifiedSymbolsMap = new UnqualifiedSymbolsMapImpl<UnqualifiedSymbol>();
+	protected final Null nullSymbol;
 	
 	protected boolean mangle = true;
 	
@@ -83,7 +85,11 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 		try {
 			this.undefinedScope = new UndefinedScope(this);
 			this.globalScope = new GlobalScopeImpl(this);
+			
 			this.voidType = new VoidTypeImpl(this);
+			this.nullSymbol = new NullImpl(this);
+			
+			globalScope.useStaticImport(nullSymbol, null);
 			
 			addPrimitiveClass(boolean.class);
 			addPrimitiveClass(byte.class);
@@ -94,6 +100,8 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 			addPrimitiveClass(long.class);
 			addPrimitiveClass(short.class);
 		} catch (InvalidIdentifierException e) {
+			throw new RuntimeException(e);
+		} catch (DuplicateIdentifierException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -388,6 +396,11 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	public Null getNull() {
+		return nullSymbol;
 	}
 	
 }

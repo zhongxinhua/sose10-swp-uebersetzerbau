@@ -36,6 +36,8 @@ class GlobalScopeImpl extends PackageImpl {
 	
 	protected final Map<ClassOrInterface,ClassOrInterface> cois =
 			new TreeMap<ClassOrInterface,ClassOrInterface>(ClassOrInterfaceImpl.COMPARATOR);
+	protected final Map<PositionString,QualifiedSymbol> staticImports =
+			new TreeMap<PositionString,QualifiedSymbol>();
 
 	public GlobalScopeImpl(RuntimeImpl runtime) throws InvalidIdentifierException {
 		super(runtime, null);
@@ -56,6 +58,15 @@ class GlobalScopeImpl extends PackageImpl {
 		}
 		
 	};
+	
+	protected final SymbolSplitter.QualifiedSymbolCtor positionStringNoopCtor = new SymbolSplitter.QualifiedSymbolCtor() {
+
+		@Override
+		public Object newInstance(PositionString str) {
+			return str;
+		}
+		
+	};
 
 	@Override
 	public QualifiedSymbol lookTreeDown(UnqualifiedSymbol symbol) throws InvalidIdentifierException {
@@ -63,10 +74,15 @@ class GlobalScopeImpl extends PackageImpl {
 			return null;
 		}
 		QualifiedSymbol result = SymbolSplitter.lookup(getRuntime(), this, symbol, cois, coiCtor);
-		if(result == null) {
-			final ClassOrInterfaceImpl oldSymbol = new ClassOrInterfaceImpl(getRuntime(), this, null, null, symbol.getCall());
-			result = cois.get(oldSymbol);
+		if(result != null) {
+			return result;
 		}
+		result = cois.get(new ClassOrInterfaceImpl(getRuntime(), this, null, null, symbol.getCall()));
+		if(result != null) {
+			return result;
+		}
+		result = staticImports.get(symbol.getCall());
+		
 		return result;
 	}
 
@@ -134,6 +150,20 @@ class GlobalScopeImpl extends PackageImpl {
 			throw new DuplicateIdentifierException(this, value, duplicate);
 		}
 		cois.put(key, value);
+	}
+	
+	protected void useStaticImport(QualifiedSymbol value, PositionString alias) throws DuplicateIdentifierException {
+		final PositionString key;
+		if(alias == null) {
+			key = new PositionString(value.getDestinationName(), value.getPosition());
+		} else {
+			key = alias;
+		}
+		final QualifiedSymbol duplicate = staticImports.get(key);
+		if(duplicate != null) {
+			throw new DuplicateIdentifierException(this, value, duplicate);
+		}
+		staticImports.put(key, value);
 	}
 
 }

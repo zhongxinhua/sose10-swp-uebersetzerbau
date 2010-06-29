@@ -242,13 +242,16 @@ public class RuntimeFactory {
 		//built-in functions
 		try {
 			//TODO
-			de.fu_berlin.compilerbau.symbolTable.Class class_ = result.undefinedScope.addClass(new PositionString("IO", PositionBean.ZERO), null, null, null);
-			class_.addMethod(new PositionString("read", PositionBean.ZERO), result.getPrimitiveType(int.class), null, null);
+			de.fu_berlin.compilerbau.symbolTable.Class predefined = result.undefinedScope.addClass(new PositionString("Predefined", PositionBean.ZERO), null, null, null);
+			de.fu_berlin.compilerbau.symbolTable.Method read =
+				predefined.addMethod(new PositionString("read", PositionBean.ZERO), result.getPrimitiveType(int.class), null, null);
 			List<Variable> printParams = new LinkedList<Variable>();
 			printParams.add(result.getNewVariableForParameter(new PositionString("str", PositionBean.ZERO), result.getPrimitiveType(String.class), null));
-			class_.addMethod(new PositionString("print", PositionBean.ZERO), result.getVoid(), printParams.iterator(), null);
-			
-			result.globalScope.useImport(class_, null);
+			de.fu_berlin.compilerbau.symbolTable.Method print =
+				predefined.addMethod(new PositionString("print", PositionBean.ZERO), result.getVoid(), printParams.iterator(), null);
+
+			result.globalScope.useStaticImport(read, null);
+			result.globalScope.useStaticImport(print, null);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

@@ -49,7 +49,7 @@ public class XmlDecoder<BackingBuffer extends Appendable> implements Appendable,
 	protected final char[] entityCharacters = new char[16];
 	
 	/**
-	 * Number of characters between the ampersand and the semicolon (inclusively).
+	 * Number of characters between the ampersand (inclusively) and the semicolon (exclusively).
 	 * @see #entityCharacter
 	 */
 	protected int entityCharacterAt = 0;
