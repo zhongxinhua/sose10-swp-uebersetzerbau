@@ -19,6 +19,10 @@ package de.fu_berlin.compilerbau.util;
 
 import java.io.Reader;
 
+/**
+ * A {@link Reader} that reads from a {@linl CharSequence}.
+ * @author rene
+ */
 public class CharSequenceReader extends Reader {
 	
 	protected final CharSequence data;

@@ -26,7 +26,8 @@ import java.util.NoSuchElementException;
 import java.util.Stack;
 
 /**
- * 
+ * An {@link Iterator iterator} that reads from a {@link Reader} and
+ * knows how many characters it read.
  * @author Kijewski
  */
 public class PositionCharacterStream extends PositionBean
