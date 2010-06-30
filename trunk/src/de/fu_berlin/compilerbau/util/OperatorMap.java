@@ -61,6 +61,7 @@ final public class OperatorMap {
 		int.class, long.class, short.class };
 	protected static final Class<?>[] NUMBERS = new Class<?>[] { byte.class, double.class, float.class,
 			int.class, long.class, short.class };
+	protected static final Class<?>[] REALS = new Class<?>[] { double.class, float.class };
 	
 	protected static final String[] COMPARATIONS = new String[] {"<", "<=", "==", "!=", ">=", ">" };
 	protected static final String[] ARITHMETIC_OPS = new String[] { "*", "/", "%", "+", "-" };
@@ -112,9 +113,39 @@ final public class OperatorMap {
 			}
 		}
 		
-		// TODO: arith
+		// arithmetic operations: A × A → A
+		for(final Class<?> type : NUMBERS) {
+			for(final String artithOp : ARITHMETIC_OPS) {
+				final OperatorTriple operatorTriple = new OperatorTriple(type, type, artithOp);
+				OPERATIONS.put(operatorTriple, type);
+			}
+		}
+		
+		// mixed arithmetic operations: Z × R → R, R × Z → R
+		for(final Class<?> realNumberType : REALS) {
+			for(final Class<?> integerType : NUMBERS) {
+				for(final String artithOp : ARITHMETIC_OPS) {
+					final OperatorTriple intLeftTriple = new OperatorTriple(integerType, realNumberType, artithOp);
+					OPERATIONS.put(intLeftTriple, realNumberType);
+					
+					final OperatorTriple intRightTriple = new OperatorTriple(realNumberType, integerType, artithOp);
+					OPERATIONS.put(intRightTriple, realNumberType);
+				}
+			}
+		}
 	}
 	
-	public static 
+	/**
+	 * Returns the resulting type of this operation.
+	 * @param left a primitive type
+	 * @param right a primitive type
+	 * @param operator e.g. "==", "<", "&", "+"
+	 * @return null if not abgeschlossen (ka was das auf englisch heißt)
+	 */
+	public static Class<?> getResultingType(Class<?> left, Class<?> right, String operator) {
+		final OperatorTriple operatorTriple = new OperatorTriple(left, right, operator);
+		final Class<?> result = OPERATIONS.get(operatorTriple);
+		return result;
+	}
 	
 }
