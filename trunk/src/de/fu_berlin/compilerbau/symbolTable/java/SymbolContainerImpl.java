@@ -44,7 +44,12 @@ abstract class SymbolContainerImpl extends SymbolImpl implements SymbolContainer
 	public QualifiedSymbol getQualifiedSymbol(PositionString name, SymbolType type) throws InvalidIdentifierException {
 		Runtime runtime = getRuntime();
 		UnqualifiedSymbol uniqualifiedSymbol = runtime.getUnqualifiedSymbol(name, this, type);
-		return lookTreeUp(uniqualifiedSymbol);
+		QualifiedSymbol result = lookTreeUp(uniqualifiedSymbol);
+		if(result.hasType(type)) {
+			return result;
+		} else {
+			return null;
+		}
 	}
 	
 	@Override

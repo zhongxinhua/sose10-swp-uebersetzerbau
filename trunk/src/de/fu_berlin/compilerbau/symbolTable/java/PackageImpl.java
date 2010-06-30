@@ -37,7 +37,6 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierExcept
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
-import de.fu_berlin.compilerbau.util.Likelyness;
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
 
@@ -170,18 +169,17 @@ class PackageImpl extends SymbolContainerImpl implements Package {
 		if(symbol == null) {
 			return null;
 		}
-		if(symbol.is(SymbolType.CLASS) != Likelyness.IMPOSSIBLE) {
-			ClassImpl result = new ClassImpl(getRuntime(), this, null, null, null, symbol.getCall());
-			if(result != null) {
-				return result;
-			}
+		
+		QualifiedSymbol result = new ClassImpl(getRuntime(), this, null, null, null, symbol.getCall());
+		if(result != null) {
+			return result;
 		}
-		if(symbol.is(SymbolType.INTERFACE) != Likelyness.IMPOSSIBLE) {
-			InterfaceImpl result = new InterfaceImpl(getRuntime(), this, null, null, symbol.getCall());
-			if(result != null) {
-				return result;
-			}
+		
+		result = new InterfaceImpl(getRuntime(), this, null, null, symbol.getCall());
+		if(result != null) {
+			return result;
 		}
+		
 		return getRuntime().lookTreeUp(symbol);
 	}
 	
@@ -209,17 +207,18 @@ class PackageImpl extends SymbolContainerImpl implements Package {
 		if(symbol == null) {
 			return null;
 		}
-		if(symbol.is(SymbolType.CLASS_OR_INTERFACE) != Likelyness.IMPOSSIBLE) {
-			ClassOrInterfaceImpl impl = new ClassOrInterfaceImpl(getRuntime(), this, null, null, symbol.getCall());
-			ClassOrInterfaceImpl result = classesAndInterfaces.get(impl);
-			if(result != null) {
-				return result;
-			}
-		}
-		QualifiedSymbol result = SymbolSplitter.lookup(getRuntime(), this, symbol, classes, classCtor);
+		
+		ClassOrInterfaceImpl impl = new ClassOrInterfaceImpl(getRuntime(), this, null, null, symbol.getCall());
+		QualifiedSymbol result = classesAndInterfaces.get(impl);
 		if(result != null) {
 			return result;
 		}
+		
+		result = SymbolSplitter.lookup(getRuntime(), this, symbol, classes, classCtor);
+		if(result != null) {
+			return result;
+		}
+		
 		return SymbolSplitter.lookup(getRuntime(), this, symbol, interfaces, interfaceCtor);
 	}
 

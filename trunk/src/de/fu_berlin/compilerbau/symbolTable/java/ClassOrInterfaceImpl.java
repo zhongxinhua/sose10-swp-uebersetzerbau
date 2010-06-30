@@ -32,6 +32,7 @@ import de.fu_berlin.compilerbau.symbolTable.ClassOrInterface;
 import de.fu_berlin.compilerbau.symbolTable.Method;
 import de.fu_berlin.compilerbau.symbolTable.Modifier;
 import de.fu_berlin.compilerbau.symbolTable.Package;
+import de.fu_berlin.compilerbau.symbolTable.PrimitiveType;
 import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
@@ -285,6 +286,8 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 	public Boolean canBeCastInto(ClassOrInterface targetType) throws InvalidIdentifierException {
 		if(compareTo(targetType) == 0) {
 			return Boolean.TRUE;
+		} else if(hasType(SymbolType.PRIMITIVE_TYPE) == Boolean.TRUE) {
+			return PrimitiveTypeImpl.canBeCastInto((PrimitiveType)this, targetType);
 		} else if(hasType(SymbolType.CLASS) == Boolean.TRUE) {
 			return canBeCastInto(((Class)this).getSuperClass());
 		} else {

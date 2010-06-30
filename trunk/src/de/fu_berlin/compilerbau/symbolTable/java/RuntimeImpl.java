@@ -43,7 +43,6 @@ import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbolsMap;
 import de.fu_berlin.compilerbau.symbolTable.Variable;
-import static de.fu_berlin.compilerbau.symbolTable.SymbolType.*;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
@@ -52,7 +51,6 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.SymbolTableException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.Likelyness;
 import de.fu_berlin.compilerbau.util.Punycode;
-import static de.fu_berlin.compilerbau.util.Likelyness.*;
 import de.fu_berlin.compilerbau.util.PositionString;
 
 
@@ -176,23 +174,20 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 		if(symbol == null) {
 			return null;
 		}
-		if(symbol.is(PRIMITIVE_TYPE) != IMPOSSIBLE) {
-			PrimitiveTypeImpl result = primitiveTypesByName.get(symbol.getCall().toString());
-			if(result != null) {
-				return result;
-			}
+		
+		QualifiedSymbol result = primitiveTypesByName.get(symbol.getCall().toString());
+		if(result != null) {
+			return result;
 		}
 		
-		if(symbol.is(PACKAGE) != IMPOSSIBLE) {
-			final PositionString call = symbol.getCall();
-			
-			final PackageImpl pkgResult = packages.get(new PackageImpl(this, call));
-			if(pkgResult != null) {
-				return pkgResult;
-			}
+		final PositionString call = symbol.getCall();
+		
+		final PackageImpl pkgResult = packages.get(new PackageImpl(this, call));
+		if(pkgResult != null) {
+			return pkgResult;
 		}
 		
-		final QualifiedSymbol result = SymbolSplitter.lookup(this, this, symbol, packages, pkgCtor);
+		result = SymbolSplitter.lookup(this, this, symbol, packages, pkgCtor);
 		if(result != null) {
 			return result;
 		}

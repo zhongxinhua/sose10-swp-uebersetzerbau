@@ -43,7 +43,6 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierExcept
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
-import de.fu_berlin.compilerbau.util.Likelyness;
 import de.fu_berlin.compilerbau.util.PairIterator;
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
@@ -216,13 +215,13 @@ class MethodImpl extends ScopeImpl implements Method {
 		if(symbol == null) {
 			return null;
 		}
-		if(symbol.is(SymbolType.VARIABLE) != Likelyness.IMPOSSIBLE) {
-			final VariableImpl search = new VariableImpl(getRuntime(), this, symbol.getCall(), null, null);
-			final VariableImpl result = variables.get(search);
-			if(result != null) {
-				return result;
-			}
+		
+		final VariableImpl search = new VariableImpl(getRuntime(), this, symbol.getCall(), null, null);
+		final VariableImpl result = variables.get(search);
+		if(result != null) {
+			return result;
 		}
+		
 		return getParent().lookTreeUp(symbol);
 	}
 

@@ -18,10 +18,13 @@
 package de.fu_berlin.compilerbau.symbolTable.java;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import de.fu_berlin.compilerbau.symbolTable.ClassOrInterface;
 import de.fu_berlin.compilerbau.symbolTable.Constructor;
 import de.fu_berlin.compilerbau.symbolTable.GetModifier;
 import de.fu_berlin.compilerbau.symbolTable.Member;
@@ -129,6 +132,76 @@ class PrimitiveTypeImpl extends ClassOrInterfaceImpl implements PrimitiveType {
 	@Override
 	public String getCanonicalDestinationName() {
 		return getDestinationName();
+	}
+
+	public static final Map<Class<?>, Set<String>> primitiveTypeCompatibility =
+			new HashMap<Class<?>, Set<String>>();
+	static {
+		final HashSet<String> boolean_ = new HashSet<String>();
+		primitiveTypeCompatibility.put(boolean.class, boolean_);
+		boolean_.add(boolean.class.getCanonicalName());
+		boolean_.add(Boolean.class.getCanonicalName());
+		boolean_.add(Object.class.getCanonicalName());
+		
+		final HashSet<String> char_ = new HashSet<String>();
+		primitiveTypeCompatibility.put(char.class, char_);
+		char_.add(char.class.getCanonicalName());
+		char_.add(Character.class.getCanonicalName());
+		char_.add(Object.class.getCanonicalName());
+		
+		final HashSet<String> double_ = new HashSet<String>();
+		primitiveTypeCompatibility.put(double.class, double_);
+		double_.add(double.class.getCanonicalName());
+		double_.add(Double.class.getCanonicalName());
+		double_.add(Number.class.getCanonicalName());
+		double_.add(Object.class.getCanonicalName());
+		
+		final HashSet<String> float_ = new HashSet<String>();
+		primitiveTypeCompatibility.put(float.class, float_);
+		float_.add(float.class.getCanonicalName());
+		float_.add(Float.class.getCanonicalName());
+		for(String e : double_) {
+			float_.add(e);
+		}
+		
+		final HashSet<String> long_ = new HashSet<String>();
+		primitiveTypeCompatibility.put(float.class, long_);
+		long_.add(long.class.getCanonicalName());
+		long_.add(Long.class.getCanonicalName());
+		for(String e : float_) {
+			long_.add(e);
+		}
+		
+		final HashSet<String> int_ = new HashSet<String>();
+		primitiveTypeCompatibility.put(float.class, int_);
+		int_.add(int.class.getCanonicalName());
+		int_.add(Integer.class.getCanonicalName());
+		for(String e : long_) {
+			int_.add(e);
+		}
+		
+		final HashSet<String> short_ = new HashSet<String>();
+		primitiveTypeCompatibility.put(short.class, short_);
+		short_.add(long.class.getCanonicalName());
+		short_.add(Long.class.getCanonicalName());
+		for(String e : int_) {
+			short_.add(e);
+		}
+		
+		final HashSet<String> byte_ = new HashSet<String>();
+		primitiveTypeCompatibility.put(byte.class, short_);
+		byte_.add(byte.class.getCanonicalName());
+		byte_.add(Byte.class.getCanonicalName());
+		for(String e : int_) {
+			short_.add(e);
+		}
+	}
+
+	public static Boolean canBeCastInto(PrimitiveType specialType, ClassOrInterface generalType) {
+		final String canonicalDestinationName = generalType.getCanonicalDestinationName();
+		final Set<String> set = primitiveTypeCompatibility.get(specialType);
+		final boolean result = set.contains(canonicalDestinationName);
+		return result;
 	}
 
 }

@@ -29,14 +29,12 @@ import de.fu_berlin.compilerbau.symbolTable.Runtime;
 import de.fu_berlin.compilerbau.symbolTable.Scope;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
-import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.UnqualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Variable;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
-import de.fu_berlin.compilerbau.util.Likelyness;
 import de.fu_berlin.compilerbau.util.PositionString;
 
 class ScopeImpl extends SymbolContainerImpl implements Scope {
@@ -73,13 +71,13 @@ class ScopeImpl extends SymbolContainerImpl implements Scope {
 		if(symbol == null) {
 			return null;
 		}
-		if(symbol.is(SymbolType.VARIABLE) != Likelyness.IMPOSSIBLE) {
-			VariableImpl needle = new VariableImpl(getRuntime(), null, symbol.getCall(), null, null);
-			VariableImpl result = variables.get(needle);
-			if(result != null) {
-				return result;
-			}
+		
+		VariableImpl needle = new VariableImpl(getRuntime(), null, symbol.getCall(), null, null);
+		VariableImpl result = variables.get(needle);
+		if(result != null) {
+			return result;
 		}
+		
 		return getParent().lookTreeUp(symbol);
 	}
 
