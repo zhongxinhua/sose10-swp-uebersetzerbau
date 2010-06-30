@@ -444,7 +444,7 @@ public class Annotator {
 			DuplicateIdentifierException, ShadowedIdentifierException,
 			WrongModifierException {
 		// add variable to scope
-		Symbol symType = runtime.tryGetQualifiedSymbol(stmt.getType());
+		Symbol symType = scope.tryGetQualifiedSymbol(stmt.getType());
 		Variable variable = scope.addVariable(stmt.getName(), symType, PUBLIC_MODIFIER);
 		ErrorHandler.debugMsg(null, "new Variable "+variable);
 

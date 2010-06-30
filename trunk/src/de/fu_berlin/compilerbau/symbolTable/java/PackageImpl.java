@@ -67,9 +67,12 @@ class PackageImpl extends SymbolContainerImpl implements Package {
 					first = false;
 				}
 				final String mangledName = runtime.mangleName(pathComponent);
+				// TODO: falsche Stelle für die Überprüfung
+				/*
 				if(mangledName == null || !runtime.isValidIdentifier(mangledName)) {
 					throw new InvalidIdentifierException(runtime, name);
 				}
+				*/
 				destionationName.append(mangledName);
 			}
 			this.destinationName = destionationName.toString();

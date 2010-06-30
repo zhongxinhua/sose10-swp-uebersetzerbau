@@ -66,11 +66,14 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 		this.name = name;
 		if(name != null) {
 			this.destinationName = runtime.mangleName(name.toString());
+			// TODO: falsche Stelle für die Überprüfung
+			/*
 			if(
 					(getType() == SymbolType.CLASS || getType() == SymbolType.INTERFACE) &&
 					(this.destinationName == null || !runtime.isValidIdentifier(this.destinationName))) {
 				throw new InvalidIdentifierException(this, name);
 			}
+			*/
 		} else {
 			this.destinationName = null;
 		}

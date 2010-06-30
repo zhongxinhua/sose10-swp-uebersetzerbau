@@ -50,9 +50,12 @@ class VariableImpl extends SymbolImpl implements Variable {
 		this.name = name;
 		if(name != null) {
 			this.destinationName = runtime.mangleName(name.toString());
+			// TODO: falsche Stelle für die Überprüfung
+			/*
 			if(destinationName == null || !runtime.isValidIdentifier(destinationName)) {
 				throw new InvalidIdentifierException(parent, name);
 			}
+			*/
 		} else {
 			this.destinationName = null;
 		}
