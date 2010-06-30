@@ -49,7 +49,6 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierExceptio
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.SymbolTableException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
-import de.fu_berlin.compilerbau.util.ErrorHandler;
 import de.fu_berlin.compilerbau.util.Likelyness;
 import de.fu_berlin.compilerbau.util.Punycode;
 import de.fu_berlin.compilerbau.util.PositionString;

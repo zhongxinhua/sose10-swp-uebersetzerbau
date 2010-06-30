@@ -24,6 +24,7 @@ import de.fu_berlin.compilerbau.symbolTable.Method;
 import de.fu_berlin.compilerbau.symbolTable.PrimitiveType;
 import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Scope;
+import de.fu_berlin.compilerbau.symbolTable.SetOfMethods;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
 import de.fu_berlin.compilerbau.symbolTable.SymbolContainer;
 import de.fu_berlin.compilerbau.symbolTable.SymbolType;
@@ -49,23 +50,29 @@ public class ExpressionAnnotator {
 	 * @throws ExpectedButFoundException 
 	 */
 	protected Symbol annotateExpression(SymbolContainer container, Expression expression) throws InvalidIdentifierException, ExpectedButFoundException {
-		if(expression instanceof ArrayAccess)
-			return annotateArrayAccess(container, (ArrayAccess) expression);
-		else if(expression instanceof ArrayCreation)
-			return annotateArrayCreation(container, (ArrayCreation) expression);
-		else if(expression instanceof BinaryOperation)
-			return annotateBinaryOperation(container, (BinaryOperation) expression);
-		else if(expression instanceof Literal) 
-			return annotateLiteral(container, (Literal) expression);
-		else if(expression instanceof FunctionCall)
-			return annotateFunctionCall(container, (FunctionCall) expression);
-		else if(expression instanceof Identifier)
-			return annotateIdentifier(container, (Identifier) expression);
-		else if(expression instanceof MemberAccess)
-			return annotateMemberAccess(container, (MemberAccess) expression);
-		else if(expression instanceof UnaryOperation)
-			return annotateUnaryOperation(container, (UnaryOperation) expression);
-		throw new RuntimeException("will never be reached... cookies"+expression);
+		Symbol symbol = expression.getSymbol();
+		if(symbol == null) {
+			if(expression instanceof ArrayAccess)
+				symbol = annotateArrayAccess(container, (ArrayAccess) expression);
+			else if(expression instanceof ArrayCreation)
+				symbol = annotateArrayCreation(container, (ArrayCreation) expression);
+			else if(expression instanceof BinaryOperation)
+				symbol = annotateBinaryOperation(container, (BinaryOperation) expression);
+			else if(expression instanceof Literal) 
+				symbol = annotateLiteral(container, (Literal) expression);
+			else if(expression instanceof FunctionCall)
+				symbol = annotateFunctionCall(container, (FunctionCall) expression);
+			else if(expression instanceof Identifier)
+				symbol = annotateIdentifier(container, (Identifier) expression);
+			else if(expression instanceof MemberAccess)
+				symbol = annotateMemberAccess(container, (MemberAccess) expression);
+			else if(expression instanceof UnaryOperation)
+				symbol = annotateUnaryOperation(container, (UnaryOperation) expression);
+			else
+				throw new RuntimeException("will never be reached... cookies"+expression);
+			expression.setSymbol(symbol);
+		}
+		return symbol;
 	}
 	
 	protected Symbol annotateArrayAccess(SymbolContainer container, ArrayAccess access) throws InvalidIdentifierException, ExpectedButFoundException {
@@ -157,6 +164,22 @@ public class ExpressionAnnotator {
 		literal.setSymbol(symbol);
 		return symbol;
 	}
+	
+	@SuppressWarnings("serial")
+	protected static final class InvalidIdentifierExceptionWrapperException extends RuntimeException {
+		public final InvalidIdentifierException e;
+		public InvalidIdentifierExceptionWrapperException(InvalidIdentifierException e) {
+			this.e = e;
+		}
+	}
+	
+	@SuppressWarnings("serial")
+	protected static final class ExpectedButFoundExceptionWrapperException extends RuntimeException {
+		public final ExpectedButFoundException e;
+		public ExpectedButFoundExceptionWrapperException(ExpectedButFoundException e) {
+			this.e = e;
+		}
+	}
 
 	/**
 	 * annotates a function call
@@ -166,41 +189,68 @@ public class ExpressionAnnotator {
 	 * @throws InvalidIdentifierException
 	 * @throws ExpectedButFoundException 
 	 */
-	protected Symbol annotateFunctionCall(SymbolContainer container, FunctionCall call) throws InvalidIdentifierException, ExpectedButFoundException {
-		//check symbol
-		final PositionString name = call.getName();
-		Symbol symbol = container.getQualifiedSymbol(name);
+	protected Symbol annotateFunctionCall(final SymbolContainer container, final FunctionCall call)
+			throws InvalidIdentifierException, ExpectedButFoundException {
+		
+		final Iterator<Expression> expressionsIterator = call.getArguments().iterator();
+		final Iterable<Symbol> parameterIteratable = new Iterable<Symbol>() {
+			@Override
+			public Iterator<Symbol> iterator() {
+				return new Iterator<Symbol>() {
+					@Override
+					public boolean hasNext() {
+						return expressionsIterator.hasNext();
+					}
+					@Override
+					public Symbol next() {
+						final Expression expression = expressionsIterator.next();
+						Symbol symbol;
+						try {
+							symbol = annotateExpression(container, expression);
+						} catch (InvalidIdentifierException e) {
+							throw new InvalidIdentifierExceptionWrapperException(e);
+						} catch (ExpectedButFoundException e) {
+							throw new ExpectedButFoundExceptionWrapperException(e);
+						}
+						return symbol;
+					}
+					@Override
+					public void remove() {
+						throw new UnsupportedOperationException();
+					}
+				};
+			}
+		};
+		
 		try {
-			assert(symbol.hasType(SymbolType.METHOD) == Boolean.TRUE);
-		} catch(Throwable t) {
-			System.out.println("lol");
+			final PositionString name = call.getName();
+			Symbol symbol = container.getQualifiedSymbol(name);
+			if(symbol == null) {
+				throw new RuntimeException("Identifier not found :( " + call + " in " + container); // TODO: Fehlertyp
+			} else if(symbol.hasType(SymbolType.METHOD) == Boolean.TRUE) {
+				if(((Method)symbol).isCompatatibleToParameters(parameterIteratable)) {
+					return ((Method)symbol).getReturnType();
+				} else {
+					throw new ExpectedButFoundException(call, call.toString(), symbol.toString());
+				}
+			} else if(symbol.hasType(SymbolType.SET_OF_METHODS) == Boolean.TRUE) {
+				final List<Method> methods = ((SetOfMethods)symbol).getContainedMethods(parameterIteratable);
+				if(methods == null || methods.isEmpty()) {
+					throw new RuntimeException("Identifier not found :( " + call + " in " + container); // TODO: Fehlertyp
+				} else if(methods.size() > 1) {
+					throw new RuntimeException("Multiple identifiers found :( " + call + " in " + container); // TODO: Fehlertyp
+				}
+				final Method method = methods.get(0);
+				return method.getReturnType();
+			} else {
+				throw new ExpectedButFoundException(call, call.toString(), symbol.toString());
+			}
+		} catch(InvalidIdentifierExceptionWrapperException e) {
+			throw e.e;
+		} catch(ExpectedButFoundExceptionWrapperException e) {
+			throw e.e;
 		}
-		Method symFunction = (Method) symbol;
 		
-		//check if contructor
-		if(call instanceof ObjectCreation)
-			assert(symbol.hasType(SymbolType.CONSTRUCTOR));
-		
-		//check arguments count
-		final int neededParamCount = symFunction.getParameters().size();
-		final int actualParamCount = call.getArguments().size();
-		final Symbol returnType = symFunction.getReturnType()!=null ? symFunction.getReturnType() : runtime.getVoid();
-		if(neededParamCount != actualParamCount) {
-			ErrorHandler.error(call, "function \""+name+"\" needs "+neededParamCount+" arguments (not "+actualParamCount+")");
-			return returnType;
-		}
-		
-		//check arguments types
-		Iterator<Variable> itSyms = symFunction.getParameters().iterator();
-		Iterator<Expression> itExpr = call.getArguments().iterator();
-		while(itSyms.hasNext()) {
-			Variable symArg    = itSyms.next();
-			Expression exprArg = itExpr.next();
-			Symbol neededType = symArg.getVariableType();
-			Symbol actualType = annotateExpression(container, exprArg);
-			checkType(exprArg, neededType, actualType);
-		}
-		return returnType;
 	}
 	
 	protected boolean checkType(StreamPosition position, Symbol neededType, Symbol actualType) throws InvalidIdentifierException {

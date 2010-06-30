@@ -15,7 +15,7 @@ final class OperatorTriple implements Comparable<OperatorTriple> {
 		this.operator = operator;
 	}
 	
-	public static final Comparator<OperatorTriple> COMPARATOR = new Comparator<OperatorTriple>() {
+	public static final Comparator<OperatorTriple> COMPARATOR= new Comparator<OperatorTriple>() {
 
 		/**
 		 * @see Comparator#compare(Object, Object)

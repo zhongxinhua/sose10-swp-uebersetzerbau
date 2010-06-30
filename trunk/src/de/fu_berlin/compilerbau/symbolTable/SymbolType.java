@@ -103,25 +103,31 @@ public enum SymbolType {
 	/**
 	 * @see Null
 	 */
-	NULL;
+	NULL,
+	
+	/**
+	 * @see SetOfMethods;
+	 */
+	SET_OF_METHODS;
 
 	private static final Boolean[][] IMPLICATIONS = {
 		/*                       UNQUALIFIED, CLASS,  CLASS_OR_INTERFACE, CONSTRUCTOR, INTERFACE, MEMBER, PACKAGE, RUNTIME, VARIABLE, SCOPE, PRIMITIVE_TYPE, ARRAY_TYPE, VOID,  METHOD, NULL*/
-		/*UNQUALIFIED*/        { null,        null,   null,               null,        null,      null,   null,    null,    null,     null,  null,           null,       null,  null,  null  },
-		/*CLASS*/              { null,        TRUE,   TRUE,               FALSE,       FALSE,     FALSE,  FALSE,   FALSE,   FALSE,    TRUE,  FALSE,          FALSE,      FALSE, FALSE, FALSE },
-		/*CLASS_OR_INTERFACE*/ { null,        FALSE,  TRUE,               FALSE,       FALSE,     FALSE,  FALSE,   FALSE,   FALSE,    FALSE, FALSE,          FALSE,      FALSE, FALSE, FALSE },
-		/*CONSTRUCTOR*/        { null,        FALSE,  FALSE,              TRUE,        FALSE,     FALSE,  FALSE,   FALSE,   FALSE,    TRUE,  FALSE,          FALSE,      FALSE, TRUE,  FALSE },
-		/*INTERFACE*/          { null,        FALSE,  TRUE,               FALSE,       TRUE,      FALSE,  FALSE,   FALSE,   FALSE,    FALSE, FALSE,          FALSE,      FALSE, FALSE, FALSE },
-		/*MEMBER*/             { null,        FALSE,  FALSE,              FALSE,       FALSE,     TRUE,   FALSE,   FALSE,   TRUE,     FALSE, FALSE,          FALSE,      FALSE, FALSE, FALSE },
-		/*PACKAGE*/            { null,        FALSE,  FALSE,              FALSE,       FALSE,     FALSE,  TRUE,    FALSE,   FALSE,    FALSE, FALSE,          FALSE,      FALSE, FALSE, FALSE },
-		/*RUNTIME*/            { null,        FALSE,  FALSE,              FALSE,       FALSE,     FALSE,  FALSE,   TRUE,    FALSE,    FALSE, FALSE,          FALSE,      FALSE, FALSE, FALSE },
-		/*VARIABLE*/           { null,        FALSE,  FALSE,              FALSE,       FALSE,     FALSE,  FALSE,   FALSE,   TRUE,     FALSE, FALSE,          FALSE,      FALSE, FALSE, FALSE },
-		/*SCOPE*/              { null,        FALSE,  FALSE,              FALSE,       FALSE,     FALSE,  FALSE,   FALSE,   FALSE,    TRUE,  FALSE,          FALSE,      FALSE, FALSE, FALSE },
-		/*PRIMITIVE_TYPE*/     { null,        TRUE,   TRUE,               FALSE,       FALSE,     FALSE,  FALSE,   FALSE,   FALSE,    FALSE, TRUE,           FALSE,      FALSE, FALSE, FALSE },
-		/*ARRAY_TYPE*/         { null,        TRUE,   TRUE,               FALSE,       FALSE,     FALSE,  FALSE,   FALSE,   FALSE,    FALSE, FALSE,          TRUE,       FALSE, FALSE, FALSE },
-		/*VOID*/               { null,        TRUE,   TRUE,               FALSE,       FALSE,     FALSE,  FALSE,   FALSE,   FALSE,    FALSE, TRUE,           FALSE,      TRUE,  FALSE, FALSE },
-		/*METHOD*/             { null,        FALSE,  FALSE,              FALSE,       FALSE,     FALSE,  FALSE,   FALSE,   FALSE,    TRUE,  FALSE,          FALSE,      FALSE, TRUE,  FALSE },
-		/*NULL*/               { null,        FALSE,  FALSE,              FALSE,       FALSE,     FALSE,  FALSE,   FALSE,   FALSE,    FALSE, FALSE,          FALSE,      FALSE, FALSE, TRUE  }
+		/*UNQUALIFIED*/        { null,        null,   null,               null,        null,      null,   null,    null,    null,     null,  null,           null,       null,  null,  null,  null  },
+		/*CLASS*/              { null,        TRUE,   TRUE,               FALSE,       FALSE,     FALSE,  FALSE,   FALSE,   FALSE,    TRUE,  FALSE,          FALSE,      FALSE, FALSE, FALSE, FALSE },
+		/*CLASS_OR_INTERFACE*/ { null,        FALSE,  TRUE,               FALSE,       FALSE,     FALSE,  FALSE,   FALSE,   FALSE,    FALSE, FALSE,          FALSE,      FALSE, FALSE, FALSE, FALSE },
+		/*CONSTRUCTOR*/        { null,        FALSE,  FALSE,              TRUE,        FALSE,     FALSE,  FALSE,   FALSE,   FALSE,    TRUE,  FALSE,          FALSE,      FALSE, TRUE,  FALSE, FALSE },
+		/*INTERFACE*/          { null,        FALSE,  TRUE,               FALSE,       TRUE,      FALSE,  FALSE,   FALSE,   FALSE,    FALSE, FALSE,          FALSE,      FALSE, FALSE, FALSE, FALSE },
+		/*MEMBER*/             { null,        FALSE,  FALSE,              FALSE,       FALSE,     TRUE,   FALSE,   FALSE,   TRUE,     FALSE, FALSE,          FALSE,      FALSE, FALSE, FALSE, FALSE },
+		/*PACKAGE*/            { null,        FALSE,  FALSE,              FALSE,       FALSE,     FALSE,  TRUE,    FALSE,   FALSE,    FALSE, FALSE,          FALSE,      FALSE, FALSE, FALSE, FALSE },
+		/*RUNTIME*/            { null,        FALSE,  FALSE,              FALSE,       FALSE,     FALSE,  FALSE,   TRUE,    FALSE,    FALSE, FALSE,          FALSE,      FALSE, FALSE, FALSE, FALSE },
+		/*VARIABLE*/           { null,        FALSE,  FALSE,              FALSE,       FALSE,     FALSE,  FALSE,   FALSE,   TRUE,     FALSE, FALSE,          FALSE,      FALSE, FALSE, FALSE, FALSE },
+		/*SCOPE*/              { null,        FALSE,  FALSE,              FALSE,       FALSE,     FALSE,  FALSE,   FALSE,   FALSE,    TRUE,  FALSE,          FALSE,      FALSE, FALSE, FALSE, FALSE },
+		/*PRIMITIVE_TYPE*/     { null,        TRUE,   TRUE,               FALSE,       FALSE,     FALSE,  FALSE,   FALSE,   FALSE,    FALSE, TRUE,           FALSE,      FALSE, FALSE, FALSE, FALSE },
+		/*ARRAY_TYPE*/         { null,        TRUE,   TRUE,               FALSE,       FALSE,     FALSE,  FALSE,   FALSE,   FALSE,    FALSE, FALSE,          TRUE,       FALSE, FALSE, FALSE, FALSE },
+		/*VOID*/               { null,        TRUE,   TRUE,               FALSE,       FALSE,     FALSE,  FALSE,   FALSE,   FALSE,    FALSE, TRUE,           FALSE,      TRUE,  FALSE, FALSE, FALSE },
+		/*METHOD*/             { null,        FALSE,  FALSE,              FALSE,       FALSE,     FALSE,  FALSE,   FALSE,   FALSE,    TRUE,  FALSE,          FALSE,      FALSE, TRUE,  FALSE, FALSE },
+		/*NULL*/               { null,        FALSE,  FALSE,              FALSE,       FALSE,     FALSE,  FALSE,   FALSE,   FALSE,    FALSE, FALSE,          FALSE,      FALSE, FALSE, TRUE,  FALSE },
+		/*SET_OF_METHODS*/     { null,        FALSE,  FALSE,              FALSE,       FALSE,     FALSE,  FALSE,   FALSE,   FALSE,    FALSE, FALSE,          FALSE,      FALSE, FALSE, FALSE, TRUE  }
 	};
 	static {
 		if(IMPLICATIONS.length != SymbolType.values().length) {

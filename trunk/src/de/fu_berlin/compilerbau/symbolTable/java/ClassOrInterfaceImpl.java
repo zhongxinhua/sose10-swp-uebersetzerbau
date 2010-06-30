@@ -164,14 +164,16 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 			return null;
 		}
 		
-		final MethodImpl method = new MethodImpl(getRuntime(), this, symbol.getCall(), null, null, null);
-		MethodImpl result = methods.get(method);
-		if(result != null) {
-			return result;
-		}
-		
-		if(result != null) {
-			return result;
+		Set<Method> methods = methodsByName.get(symbol.getCall());
+		if(methods != null) {
+			switch(methods.size()) {
+				case 0:
+					break;
+				case 1:
+					return methods.iterator().next();
+				default:
+					return new SetOfMethodsImpl(getRuntime(), this, symbol.getCall(), methods);
+			}
 		}
 		
 		return getParent().lookTreeUp(symbol);

@@ -1,34 +1,34 @@
 <module name="mathe">
-<class name="Mathe">
-  <function name="ggt"  returns="int" static="yes">
-      <arguments>
-          <decl type="int"  name="a"/>
-          <decl type="int" name="b"/>
-      </arguments>
-      <do test="b != 0">
-          <decl type="int"  name="h" value="a%b"/>
-          <set name="a" value="b"/>
-          <set name="b" value="h"/>
-      </do>
-      <return value="a"/>
-  </function>
-</class>
+	<class name="Mathe">
+		<function name="ggt" returns="int" static="yes">
+			<arguments>
+				<decl type="int" name="a" />
+				<decl type="int" name="b" />
+			</arguments>
+			<do test="b != 0">
+				<decl type="int" name="h" value="a%b" />
+				<set name="a" value="b" />
+				<set name="b" value="h" />
+			</do>
+			<return value="a" />
+		</function>
+	</class>
 
-<class name="Test">
-  <decl type="int" name="i" value="10*2"/>
-  <decl type="float" name="field" dim="1" value="{1.0, 2.4}"/>
-  <function name="main" static="yes">
-      <arguments>
-          <decl type="string" name="args" dim="1"/>
-      </arguments>
-      
-      <decl type="int" name="ggt1"/>
-      <decl type="int" name="ggt2"/>
-      <call exec="print('ggt1: ')"/>
-	  <set  name="ggt1" value="read()"/>
-      <call exec="print('ggt2: ')"/>
-	  <set  name="ggt2" value="read()"/>
-      <call exec="print(Mathe.ggt(ggt1,ggt2))"/>
-  </function>
-</class>
+	<class name="Test">
+		<decl type="int" name="i" value="10*2" />
+		<decl type="float" name="field" dim="1" value="{1.0, 2.4}" />
+		<function name="main" static="yes">
+			<arguments>
+				<decl type="string" name="args" dim="1" />
+			</arguments>
+
+			<decl type="int" name="ggt1" />
+			<decl type="int" name="ggt2" />
+			<call exec="print('ggt1: ')" />
+			<set name="ggt1" value="read()" />
+			<call exec="print('ggt2: ')" />
+			<set name="ggt2" value="read()" />
+			<call exec="print(Mathe.ggt(ggt1,ggt2))" />
+		</function>
+	</class>
 </module>

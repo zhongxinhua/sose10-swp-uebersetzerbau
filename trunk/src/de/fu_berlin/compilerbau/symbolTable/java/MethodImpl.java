@@ -186,7 +186,7 @@ class MethodImpl extends ScopeImpl implements Method {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(resultType.toString());
+		builder.append(resultType);
 		builder.append(' ');
 		builder.append(parent.getDestinationName());
 		builder.append('.');

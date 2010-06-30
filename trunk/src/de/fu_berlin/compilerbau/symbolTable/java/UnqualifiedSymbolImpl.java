@@ -167,7 +167,11 @@ class UnqualifiedSymbolImpl implements UnqualifiedSymbol, Comparable<Symbol> {
 			rStr = ((UnqualifiedSymbol)right).getCall().toString();
 		}
 		
-		return lStr.compareTo(rStr);
+		try {
+			return lStr.compareTo(rStr);
+		} catch(RuntimeException e) {
+			throw e;
+		}
 	}
 
 }

@@ -37,7 +37,6 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierExcept
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
-import de.fu_berlin.compilerbau.util.ErrorHandler;
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
 
@@ -172,12 +171,14 @@ class PackageImpl extends SymbolContainerImpl implements Package {
 			return null;
 		}
 		
-		QualifiedSymbol result = new ClassImpl(getRuntime(), this, null, null, null, symbol.getCall());
+		QualifiedSymbol oldSymbol = new ClassImpl(getRuntime(), this, null, null, null, symbol.getCall());
+		ClassOrInterfaceImpl result = classes.get(oldSymbol);
 		if(result != null) {
 			return result;
 		}
 		
-		result = new InterfaceImpl(getRuntime(), this, null, null, symbol.getCall());
+		oldSymbol = new InterfaceImpl(getRuntime(), this, null, null, symbol.getCall());
+		result = interfaces.get(oldSymbol);
 		if(result != null) {
 			return result;
 		}
