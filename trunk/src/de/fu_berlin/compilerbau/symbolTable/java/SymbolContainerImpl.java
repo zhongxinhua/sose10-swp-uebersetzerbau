@@ -45,7 +45,7 @@ abstract class SymbolContainerImpl extends SymbolImpl implements SymbolContainer
 		Runtime runtime = getRuntime();
 		UnqualifiedSymbol uniqualifiedSymbol = runtime.getUnqualifiedSymbol(name, this, type);
 		QualifiedSymbol result = lookTreeUp(uniqualifiedSymbol);
-		if(result.hasType(type)) {
+		if(result != null && result.hasType(type)) {
 			return result;
 		} else {
 			return null;
