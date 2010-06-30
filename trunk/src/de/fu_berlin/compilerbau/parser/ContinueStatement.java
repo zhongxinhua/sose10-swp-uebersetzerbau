@@ -20,9 +20,12 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
  * 
  */
 
+@SuppressWarnings("serial")
 public class ContinueStatement extends Statement {
 
 	public ContinueStatement(DomNode node) {
+		setPosition(node);
+		
 		//check for empty attribute list
 		if(!node.getAttributes().isEmpty()){
 			ErrorHandler.error(node, this.getClass().toString()+" attributes forbidden!");

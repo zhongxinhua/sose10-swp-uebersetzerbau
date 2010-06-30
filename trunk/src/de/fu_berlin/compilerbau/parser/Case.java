@@ -29,11 +29,14 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
  * @author Sam
  * 
  */
+@SuppressWarnings("serial")
 public class Case extends Statement {
 	private Expression test;
 	private List<Statement> body = new LinkedList<Statement>();
 	
 	public Case(DomNode node) {
+		setPosition(node);
+		
 		// check needed attribute: test
 		if (node.hasAttribute("test")
 				&& node.getAttributeValue("test").length() > 0) {

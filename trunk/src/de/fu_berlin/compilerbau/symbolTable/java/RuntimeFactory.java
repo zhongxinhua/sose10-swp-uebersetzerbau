@@ -246,7 +246,7 @@ public class RuntimeFactory {
 			de.fu_berlin.compilerbau.symbolTable.Method read =
 				predefined.addMethod(new PositionString("read", PositionBean.ZERO), result.getPrimitiveType(int.class), null, null);
 			List<Variable> printParams = new LinkedList<Variable>();
-			printParams.add(result.getNewVariableForParameter(new PositionString("str", PositionBean.ZERO), result.getPrimitiveType(String.class), null));
+			printParams.add(result.getNewVariableForParameter(new PositionString("str", PositionBean.ZERO), result.getQualifiedSymbol(new PositionString("java.lang.String", PositionBean.ZERO)), null));
 			de.fu_berlin.compilerbau.symbolTable.Method print =
 				predefined.addMethod(new PositionString("print", PositionBean.ZERO), result.getVoid(), printParams.iterator(), null);
 

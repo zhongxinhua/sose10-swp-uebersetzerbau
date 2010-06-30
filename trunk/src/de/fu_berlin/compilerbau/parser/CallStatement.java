@@ -25,12 +25,15 @@ import de.fu_berlin.compilerbau.util.PositionString;
  * 
  */
 
+@SuppressWarnings("serial")
 public class CallStatement extends Statement {
 
 	private Expression call;
 	private PositionString value = null;
 
 	public CallStatement(DomNode node) {
+		setPosition(node);
+		
 		// check needed attribute: exec
 		if (node.hasAttribute("exec")
 				&& node.getAttributeValue("exec").length() > 0) {

@@ -26,10 +26,13 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
  * 
  */
 
+@SuppressWarnings("serial")
 public class ChooseStatement extends Statement {
 	private List<Case> cases = new LinkedList<Case>();
 
 	public ChooseStatement(DomNode node) {
+		setPosition(node);
+		
 		// check for empty attribute list
 		if (!node.getAttributes().isEmpty()) {
 			ErrorHandler.error(node, this.getClass().toString()
@@ -48,11 +51,11 @@ public class ChooseStatement extends Statement {
 					+ " at least one child needed!");
 		}
 	}
-	// BEGIN get-Methoden für Builder
+	// BEGIN get-Methoden fï¿½r Builder
 	public List<Case> getCases(){
 		return cases;
 	}
-	// END get-Methoden für Builder
+	// END get-Methoden fï¿½r Builder
 	
 	@Override
 	public String toString() {

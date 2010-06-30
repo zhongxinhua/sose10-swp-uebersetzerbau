@@ -43,6 +43,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
  * @see {@link ReturnStatement}
  * 
  */
+@SuppressWarnings("serial")
 public class Function extends SyntaxTreeNode {
 	private PositionString name;
 	private int returnTypeDimension;
@@ -55,6 +56,8 @@ public class Function extends SyntaxTreeNode {
 	private List<DeclarationStatement> arguments = new LinkedList<DeclarationStatement>();
 
 	public Function(DomNode node) {
+		setPosition(node);
+		
 		// check needed attribute: name
 		if (node.hasAttribute("name")
 				&& node.getAttributeValue("name").length() > 0) {

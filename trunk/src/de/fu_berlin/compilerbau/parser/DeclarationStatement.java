@@ -38,6 +38,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
  * 
  */
 
+@SuppressWarnings("serial")
 public class DeclarationStatement extends Statement {
 
 	private PositionString type;
@@ -48,11 +49,13 @@ public class DeclarationStatement extends Statement {
 	private boolean isFinal = false;
 
 	public DeclarationStatement(DomNode node) {
+		setPosition(node);
+		
 		// check needed attribute: type
 		if (node.hasAttribute("type")
 				&& node.getAttributeValue("type").length() > 0) {
 			this.type = node.getAttribute("type");
-			// nicht besonders schön,
+			// nicht besonders schï¿½n,
 			if (type == null) {
 				ErrorHandler.error(node,
 						"'type' attribute parse error: unknown type: "
@@ -128,7 +131,7 @@ public class DeclarationStatement extends Statement {
 		}
 	}
 
-	// BEGIN get-Methoden für Builder
+	// BEGIN get-Methoden fï¿½r Builder
 	public PositionString getType() {
 		return type;
 	}
@@ -156,7 +159,7 @@ public class DeclarationStatement extends Statement {
 	public boolean isArray() {
 		return dimension > 0;
 	}
-	// END get-Methoden für Builder
+	// END get-Methoden fï¿½r Builder
 	
 	@Override
 	public String toString() {

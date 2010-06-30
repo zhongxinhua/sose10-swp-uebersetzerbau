@@ -174,7 +174,7 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 			return result;
 		}
 		
-		return getRuntime().lookTreeUp(symbol);
+		return getParent().lookTreeUp(symbol);
 	}
 
 	@Override

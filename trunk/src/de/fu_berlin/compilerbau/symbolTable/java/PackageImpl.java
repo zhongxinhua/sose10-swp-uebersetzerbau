@@ -37,6 +37,7 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.DuplicateIdentifierExcept
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
+import de.fu_berlin.compilerbau.util.ErrorHandler;
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
 
@@ -93,6 +94,7 @@ class PackageImpl extends SymbolContainerImpl implements Package {
 		
 		classes.put(newSymbol, newSymbol);
 		classesAndInterfaces.put(newSymbol, newSymbol);
+		
 		return newSymbol;
 	}
 

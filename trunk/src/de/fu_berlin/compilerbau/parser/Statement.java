@@ -26,6 +26,7 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
  * @author Sam
  * 
  */
+@SuppressWarnings("serial")
 public class Statement extends SyntaxTreeNode {
 	public static Statement build(DomNode node) {
 		

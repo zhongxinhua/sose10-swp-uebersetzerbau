@@ -31,11 +31,14 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
  * @author Sam
  * 
  */
+@SuppressWarnings("serial")
 public class DoStatement extends Statement {
 	private Expression test;
 	private List<Statement> body = new LinkedList<Statement>();
 
 	public DoStatement(DomNode node) {
+		setPosition(node);
+		
 		// check needed attribute: test
 		if (node.hasAttribute("test")
 				&& node.getAttributeValue("test").length() > 0) {
@@ -53,14 +56,14 @@ public class DoStatement extends Statement {
 			}
 		}
 	}
-	// BEGIN get-Methoden für Builder
+	// BEGIN get-Methoden fï¿½r Builder
 	public Expression getTest(){
 		return test;
 	}
 	public List<Statement> getBody(){
 		return body;
 	}
-	// END get-Methoden für Builder
+	// END get-Methoden fï¿½r Builder
 
 	@Override
 	public String toString() {

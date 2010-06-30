@@ -20,11 +20,14 @@ import de.fu_berlin.compilerbau.util.PositionString;
  * @author Sam
  * 
  */
+@SuppressWarnings("serial")
 public class ImportStatement extends SyntaxTreeNode {
 
 	private PositionString name;
 
 	public ImportStatement(DomNode node) {
+		setPosition(node);
+		
 		// check needed attribute: name
 		if (node.hasAttribute("name")
 				&& node.getAttributeValue("name").length() > 0) {

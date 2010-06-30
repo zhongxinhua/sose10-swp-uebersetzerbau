@@ -17,6 +17,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
  * @see {@link Interface}
  * 
  */
+@SuppressWarnings("serial")
 public abstract class ClassOrInterface extends SyntaxTreeNode {
 	//Wird in Class oder Interface belegt
 	protected PositionString name;
@@ -36,9 +37,9 @@ public abstract class ClassOrInterface extends SyntaxTreeNode {
 			ErrorHandler.error(node, "'class' or 'interface' expected");
 		return null;
 	}
-	// BEGIN get-Methoden für Builder
+	// BEGIN get-Methoden fï¿½r Builder
 	public PositionString getName() {
 		return name;
 	}
-	// END get-Methoden für Builder
+	// END get-Methoden fï¿½r Builder
 }

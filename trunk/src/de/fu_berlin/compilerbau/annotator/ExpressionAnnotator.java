@@ -3,6 +3,7 @@ package de.fu_berlin.compilerbau.annotator;
 import java.util.Iterator;
 import java.util.List;
 
+import de.fu_berlin.compilerbau.annotator.exceptions.ExpectedButFoundException;
 import de.fu_berlin.compilerbau.parser.expressions.ArrayAccess;
 import de.fu_berlin.compilerbau.parser.expressions.ArrayCreation;
 import de.fu_berlin.compilerbau.parser.expressions.BinaryOperation;
@@ -20,6 +21,7 @@ import de.fu_berlin.compilerbau.parser.expressions.UnaryOperation;
 import de.fu_berlin.compilerbau.symbolTable.ClassOrInterface;
 import de.fu_berlin.compilerbau.symbolTable.Constructor;
 import de.fu_berlin.compilerbau.symbolTable.Method;
+import de.fu_berlin.compilerbau.symbolTable.PrimitiveType;
 import de.fu_berlin.compilerbau.symbolTable.QualifiedSymbol;
 import de.fu_berlin.compilerbau.symbolTable.Scope;
 import de.fu_berlin.compilerbau.symbolTable.Symbol;
@@ -28,6 +30,7 @@ import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.Variable;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
+import de.fu_berlin.compilerbau.util.PositionBean;
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.StreamPosition;
 
@@ -43,8 +46,9 @@ public class ExpressionAnnotator {
 	 * @param container
 	 * @param expression
 	 * @throws InvalidIdentifierException
+	 * @throws ExpectedButFoundException 
 	 */
-	protected Symbol annotateExpression(SymbolContainer container, Expression expression) throws InvalidIdentifierException {
+	protected Symbol annotateExpression(SymbolContainer container, Expression expression) throws InvalidIdentifierException, ExpectedButFoundException {
 		if(expression instanceof ArrayAccess)
 			return annotateArrayAccess(container, (ArrayAccess) expression);
 		else if(expression instanceof ArrayCreation)
@@ -64,33 +68,64 @@ public class ExpressionAnnotator {
 		throw new RuntimeException("will never be reached... cookies"+expression);
 	}
 	
-	protected Symbol annotateArrayAccess(SymbolContainer container, ArrayAccess access) throws InvalidIdentifierException {
+	protected Symbol annotateArrayAccess(SymbolContainer container, ArrayAccess access) throws InvalidIdentifierException, ExpectedButFoundException {
 		//add mention
 		Symbol symbol = container.getQualifiedSymbol(access.getName());
-		assert(symbol.hasType(SymbolType.VARIABLE));
+		if(!symbol.hasType(SymbolType.VARIABLE)) {
+			throw new ExpectedButFoundException(access, "variable", symbol.toString());
+		}
 		Variable symVariable = (Variable) symbol;
-		assert(symVariable.getVariableType().hasType(SymbolType.ARRAY_TYPE));
+		if(!symVariable.getVariableType().hasType(SymbolType.ARRAY_TYPE))
+			throw new ExpectedButFoundException(access, "array", symVariable.getVariableType().toString());
 		container.addMention(symbol, access);
 		
 		//check indices
+		PrimitiveType expectedType = runtime.getPrimitiveType(int.class);
 		for(Expression index : access.getIndices()) {
-			Symbol symIndex = annotateExpression(container, index);
+			Symbol sym = null;
+			try {
+				sym = annotateExpression(container, index);
+				ClassOrInterface  symIndex = (ClassOrInterface) sym;
+				if(!expectedType.isSame(symIndex))
+					ErrorHandler.error(index, "expression must evaluate to an integer!");
+			} catch (ClassCastException e) {
+				throw new ExpectedButFoundException(index, "integer", sym.toString());
+			}
 		}
-		
 		return symbol;
 	}
 	
-	protected Symbol annotateArrayCreation(SymbolContainer container, ArrayCreation creation) throws InvalidIdentifierException {
+	/**
+	 * 
+	 * @param container
+	 * @param creation
+	 * @return
+	 * @throws InvalidIdentifierException
+	 * @throws ExpectedButFoundException 
+	 */
+	protected Symbol annotateArrayCreation(SymbolContainer container, ArrayCreation creation) throws InvalidIdentifierException, ExpectedButFoundException {
 		Symbol arrayType = null;
 		for(Expression expression : creation.getElements()) {
-			Symbol type = annotateExpression(container, expression);
+			Symbol exType = annotateExpression(container, expression);
+			ClassOrInterface type = null;
+			try {
+					type = (ClassOrInterface) exType;
+			} catch (ClassCastException e) {
+				ErrorHandler.error(expression, "typed symbol expected, but '"+exType+"' found.");
+				continue;
+			}
+			
 			if(arrayType == null) {
 				arrayType = type;
 				continue;
 			}
 
-			//TODO
-			//if(type.compareTo(o))
+			if(checkType(expression, arrayType, type)) {
+				//ok
+			} else if(checkType(expression, arrayType, type)){
+				arrayType = type;
+			} else
+				ErrorHandler.error(expression, "types are not compatible: '"+arrayType+"' and '"+type+"'");
 		}
 		return arrayType;
 	}
@@ -107,8 +142,9 @@ public class ExpressionAnnotator {
 	 * @param container
 	 * @param literal
 	 * @return the type of the literal
+	 * @throws InvalidIdentifierException 
 	 */
-	protected Symbol annotateLiteral(SymbolContainer container, Literal literal) {
+	protected Symbol annotateLiteral(SymbolContainer container, Literal literal) throws InvalidIdentifierException {
 		Symbol symbol = null;
 		if(literal instanceof NullLiteral)
 			symbol = runtime.getVoid();
@@ -117,7 +153,7 @@ public class ExpressionAnnotator {
 		else if(literal instanceof FloatLiteral)
 			symbol = runtime.getPrimitiveType(float.class);
 		else if(literal instanceof StringLiteral)
-			symbol = runtime.getPrimitiveType(String.class);
+			symbol = runtime.getQualifiedSymbol(new PositionString("java.lang.String", PositionBean.ZERO));
 		literal.setSymbol(symbol);
 		return symbol;
 	}
@@ -128,15 +164,16 @@ public class ExpressionAnnotator {
 	 * @param call
 	 * @return the return type of the function
 	 * @throws InvalidIdentifierException
+	 * @throws ExpectedButFoundException 
 	 */
-	protected Symbol annotateFunctionCall(SymbolContainer container, FunctionCall call) throws InvalidIdentifierException {
+	protected Symbol annotateFunctionCall(SymbolContainer container, FunctionCall call) throws InvalidIdentifierException, ExpectedButFoundException {
 		//check symbol
 		final PositionString name = call.getName();
 		Symbol symbol = container.getQualifiedSymbol(name);
-		try{
+		try {
 			assert(symbol.hasType(SymbolType.METHOD) == Boolean.TRUE);
-		}catch(Throwable t) {
-			System.out.println("penis");
+		} catch(Throwable t) {
+			System.out.println("lol");
 		}
 		Method symFunction = (Method) symbol;
 		
@@ -166,9 +203,17 @@ public class ExpressionAnnotator {
 		return returnType;
 	}
 	
-	protected void checkType(StreamPosition position, Symbol neededType, Symbol actualType) {
+	protected boolean checkType(StreamPosition position, Symbol neededType, Symbol actualType) throws InvalidIdentifierException {
 		ErrorHandler.debugMsg(position, "checking type (needed type: "+neededType+"; actual type: "+actualType+")");
-		//TODO
+		if(!(actualType.hasType(SymbolType.CLASS_OR_INTERFACE) && neededType.hasType(SymbolType.CLASS_OR_INTERFACE))) {
+			return false;
+		}
+		ClassOrInterface cNeeded = (ClassOrInterface) neededType;
+		ClassOrInterface cActual = (ClassOrInterface) actualType;
+		if(!cActual.canBeCastInto(cNeeded)) {
+			return false;
+		}
+		return true;
 	}
 	
 	/**
@@ -188,6 +233,8 @@ public class ExpressionAnnotator {
 		} else if(symbol.hasType(SymbolType.CLASS_OR_INTERFACE) == Boolean.TRUE) {
 			return symbol;
 		} else {
+			symbol = container.tryGetQualifiedSymbol(identifier.getName());
+			System.out.println(symbol);
 			throw new RuntimeException("Symbol not found :( " + identifier + " in " + container); // TODO: Fehler
 		}
 	}
@@ -198,8 +245,9 @@ public class ExpressionAnnotator {
 	 * @param memberAccess
 	 * @return the type of the member
 	 * @throws InvalidIdentifierException
+	 * @throws ExpectedButFoundException 
 	 */
-	protected Symbol annotateMemberAccess(SymbolContainer container, MemberAccess memberAccess) throws InvalidIdentifierException {
+	protected Symbol annotateMemberAccess(SymbolContainer container, MemberAccess memberAccess) throws InvalidIdentifierException, ExpectedButFoundException {
 		Symbol symParent = annotateExpression(container, memberAccess.getParent());
 		assert(symParent.hasType(SymbolType.CLASS_OR_INTERFACE));
 		ClassOrInterface symClassOrIFace = (ClassOrInterface) symParent;

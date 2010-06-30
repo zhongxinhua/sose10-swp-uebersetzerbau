@@ -9,12 +9,15 @@ import de.fu_berlin.compilerbau.statementParser.impl.StatementParser.ExpressionT
 import de.fu_berlin.compilerbau.util.ErrorHandler;
 import de.fu_berlin.compilerbau.util.PositionString;
 
+@SuppressWarnings("serial")
 public class ForEachStatement extends Statement {
 	private PositionString element;
 	private Expression values;
 	private List<Statement> body = new LinkedList<Statement>();	
 	
 	public ForEachStatement(DomNode node) {
+		setPosition(node);
+		
 		//<foreach element="abc"  values="xyz" /> 
 		if(!node.getName().equals("foreach")) {
 			ErrorHandler.error(node, "this is not a foreach statement!");

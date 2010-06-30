@@ -22,10 +22,13 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
  * @author Sam
  * 
  */
+@SuppressWarnings("serial")
 public class ReturnStatement extends Statement {
 	private Expression value;
 
 	public ReturnStatement(DomNode node) {
+		setPosition(node);
+		
 		// check needed attribute: name
 		if (node.hasAttribute("value")
 				&& node.getAttributeValue("value").length() > 0) {

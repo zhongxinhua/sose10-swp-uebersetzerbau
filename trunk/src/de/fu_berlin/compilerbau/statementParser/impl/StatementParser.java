@@ -532,6 +532,7 @@ public class StatementParser {
 			result = literal();
 			break;
 		case ID: // Bezeichner, Arrays und Funktionen
+			StreamPosition pos = current;
 			CharSequence name = null;
 			try {
 				name = current.getString();
@@ -551,6 +552,7 @@ public class StatementParser {
 			default: // einfacher Bezeichner
 				result = new Identifier(new PositionString(name, dummyPosition));
 			}
+			result.setPosition(pos);
 			break;
 		case PAREN_OPEN: // Unterausdruck
 			next();
@@ -623,21 +625,25 @@ public class StatementParser {
 		case STRING: // Strings
 			try {
 				result = new StringLiteral(current.getString());
+				result.setPosition(current);
 			} catch (IllegalAccessException e) {
 			}
 			break;
 		case NULL: // Null
 			result = NullLiteral.NULL;
+			result.setPosition(current);
 			break;
 		case FLOAT: // Fließkomma
 			try {
 				result = new FloatLiteral(current.getNumber());
+				result.setPosition(current);
 			} catch (IllegalAccessException e) {
 			}
 			break;
 		case INT: // Ganzzahl
 			try {
 				result = new IntegerLiteral(current.getNumber());
+				result.setPosition(current);
 			} catch (IllegalAccessException e) {
 			}
 			break;

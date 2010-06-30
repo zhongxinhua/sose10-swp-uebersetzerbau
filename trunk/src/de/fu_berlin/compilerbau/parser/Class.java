@@ -31,6 +31,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
  * @author Sam
  * 
  */
+@SuppressWarnings("serial")
 public class Class extends ClassOrInterface {
 	private PositionString parent;
 	private List<ImportStatement> imports = new LinkedList<ImportStatement>();
@@ -39,6 +40,8 @@ public class Class extends ClassOrInterface {
 	private List<Function> functions = new LinkedList<Function>();
 
 	public Class(DomNode node) {
+		setPosition(node);
+		
 		// check needed attribute: name
 		if (node.hasAttribute("name")
 				&& node.getAttributeValue("name").length() > 0) {

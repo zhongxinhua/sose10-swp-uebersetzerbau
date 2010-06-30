@@ -24,11 +24,14 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
  * 
  */
 
+@SuppressWarnings("serial")
 public class SetStatement extends Statement {
 	private Expression lvalue;
 	private Expression rvalue;
 
 	public SetStatement(DomNode node) {
+		setPosition(node);
+		
 		// check needed attribute: name
 		if (node.hasAttribute("name")
 				&& node.getAttributeValue("name").length() > 0) {

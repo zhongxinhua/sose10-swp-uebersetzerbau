@@ -3,6 +3,7 @@ package de.fu_berlin.compilerbau.annotator;
 import java.util.LinkedList;
 import java.util.List;
 
+import de.fu_berlin.compilerbau.annotator.exceptions.ExpectedButFoundException;
 import de.fu_berlin.compilerbau.parser.AbstractSyntaxTree;
 import de.fu_berlin.compilerbau.parser.BreakStatement;
 import de.fu_berlin.compilerbau.parser.CallStatement;
@@ -39,7 +40,6 @@ import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierExceptio
 import de.fu_berlin.compilerbau.symbolTable.exceptions.ShadowedIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.WrongModifierException;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
-import de.fu_berlin.compilerbau.util.PositionBean;
 import de.fu_berlin.compilerbau.util.Visibility;
 
 public class Annotator {
@@ -62,9 +62,7 @@ public class Annotator {
 		mentions.add(mention);
 	}
 
-	public Annotator(Runtime runtime, AbstractSyntaxTree ast)
-			throws InvalidIdentifierException, DuplicateIdentifierException,
-			ShadowedIdentifierException, WrongModifierException {
+	public Annotator(Runtime runtime, AbstractSyntaxTree ast) {
 		this.runtime = runtime;
 		this.mentions = new LinkedList<ExpressionMention>();
 		this.exprAnnotator = new ExpressionAnnotator(runtime);
@@ -82,23 +80,35 @@ public class Annotator {
 			throw new RuntimeException(e);
 		} 
 		
-		/*catch (ContainerSymbolsException e) {
-			ErrorHandler.error(null, "was?");
-			e.printStackTrace();
-		} catch (WrongModifierException e) {
-			ErrorHandler.error(null, "was? 2");
-			e.printStackTrace();
+		/*catch (WrongModifierException e) {
+			ErrorHandler.error(null, e.getMessage());
 		} catch (InvalidIdentifierException e) {
-			ErrorHandler.error(null, "invalid identifier");
-			e.printStackTrace();
-		}*/
+			ErrorHandler.error(null, e.getMessage());
+		} catch (ContainerSymbolsException e) {
+			ErrorHandler.error(null, e.getMessage());
+		} */
 	}
 
-	private void secondPass() throws InvalidIdentifierException,
-			DuplicateIdentifierException, ShadowedIdentifierException,
-			WrongModifierException {
+	private void secondPass() {
 		for (ExpressionMention mention : mentions)
-			reannotateStatement(mention.scope, mention.exprStatement);
+			try {
+				reannotateStatement(mention.scope, mention.exprStatement);
+			} catch(Exception e) {
+				ErrorHandler.error(null, e.getMessage());
+				throw new RuntimeException(e);
+			} 
+		  /*
+		  catch (DuplicateIdentifierException e) {
+				ErrorHandler.error(null, e.getMessage());
+			} catch (ShadowedIdentifierException e) {
+				ErrorHandler.error(null, e.getMessage());
+			} catch (InvalidIdentifierException e) {
+				ErrorHandler.error(null, e.getMessage());
+			} catch (WrongModifierException e) {
+				ErrorHandler.error(null, e.getMessage());
+			} catch (ExpectedButFoundException e) {
+				ErrorHandler.error(null, e.getMessage());
+			}*/
 	}
 
 	/**
@@ -108,10 +118,11 @@ public class Annotator {
 	 * @throws ContainerSymbolsException
 	 * @throws WrongModifierException
 	 * @throws InvalidIdentifierException
+	 * @throws ContainerSymbolsException 
 	 */
 	protected void annotateModule(Module module)
-			throws ContainerSymbolsException, WrongModifierException,
-			InvalidIdentifierException {
+			throws WrongModifierException,
+			InvalidIdentifierException, ContainerSymbolsException {
 		// Module
 		Package symModule = runtime.addPackage(module.getName(),
 				PUBLIC_MODIFIER);
@@ -323,10 +334,11 @@ public class Annotator {
 	 * @throws ShadowedIdentifierException
 	 * @throws DuplicateIdentifierException
 	 * @throws WrongModifierException
+	 * @throws ExpectedButFoundException 
 	 */
 	protected void reannotateStatement(Scope scope, Statement stmt)
 			throws InvalidIdentifierException, DuplicateIdentifierException,
-			ShadowedIdentifierException, WrongModifierException {
+			ShadowedIdentifierException, WrongModifierException, ExpectedButFoundException {
 		if (stmt instanceof CallStatement)
 			reannotateCallStatement(scope, (CallStatement) stmt);
 		else if (stmt instanceof ReturnStatement)
@@ -384,9 +396,10 @@ public class Annotator {
 	 * @param scope
 	 * @param stmt
 	 * @throws InvalidIdentifierException
+	 * @throws ExpectedButFoundException 
 	 */
 	protected void reannotateCallStatement(Scope scope, CallStatement stmt)
-			throws InvalidIdentifierException {
+			throws InvalidIdentifierException, ExpectedButFoundException {
 		stmt.setSymbol(exprAnnotator.annotateExpression(scope, stmt.getCall()));
 	}
 
@@ -406,9 +419,10 @@ public class Annotator {
 	 * @param scope
 	 * @param stmt
 	 * @throws InvalidIdentifierException
+	 * @throws ExpectedButFoundException 
 	 */
 	protected void reannotateReturnStatement(Scope scope, ReturnStatement stmt)
-			throws InvalidIdentifierException {
+			throws InvalidIdentifierException, ExpectedButFoundException {
 		// TODO get functions return type
 		if (stmt.getValue() != null)
 			exprAnnotator.annotateExpression(scope, stmt.getValue());
@@ -445,9 +459,10 @@ public class Annotator {
 	 * @param scope
 	 * @param stmt
 	 * @throws InvalidIdentifierException
+	 * @throws ExpectedButFoundException 
 	 */
 	protected void reannotateDeclarationStatement(Scope scope,
-			DeclarationStatement stmt) throws InvalidIdentifierException {
+			DeclarationStatement stmt) throws InvalidIdentifierException, ExpectedButFoundException {
 		exprAnnotator.annotateExpression(scope, stmt.getValue());
 		// TODO check types
 	}
@@ -488,9 +503,10 @@ public class Annotator {
 	 * @param scope
 	 * @param stmt
 	 * @throws InvalidIdentifierException
+	 * @throws ExpectedButFoundException 
 	 */
 	protected void reannotateCaseStatement(Scope scope, Case stmt)
-			throws InvalidIdentifierException {
+			throws InvalidIdentifierException, ExpectedButFoundException {
 		exprAnnotator.annotateExpression(scope, stmt.getTest());
 	}
 
@@ -526,9 +542,10 @@ public class Annotator {
 	 * @param scope
 	 * @param stmt
 	 * @throws InvalidIdentifierException
+	 * @throws ExpectedButFoundException 
 	 */
 	protected void reannotateDoStatement(Scope scope, DoStatement stmt)
-			throws InvalidIdentifierException {
+			throws InvalidIdentifierException, ExpectedButFoundException {
 		exprAnnotator.annotateExpression(scope, stmt.getTest());
 	}
 
@@ -565,10 +582,11 @@ public class Annotator {
 	 * @throws WrongModifierException
 	 * @throws ShadowedIdentifierException
 	 * @throws DuplicateIdentifierException
+	 * @throws ExpectedButFoundException 
 	 */
 	protected void reannotateForEachStatement(Scope scope, ForEachStatement stmt)
 			throws InvalidIdentifierException, DuplicateIdentifierException,
-			ShadowedIdentifierException, WrongModifierException {
+			ShadowedIdentifierException, WrongModifierException, ExpectedButFoundException {
 		Symbol symType = exprAnnotator.annotateExpression(scope, stmt
 				.getValues());
 		assert (symType.hasType(SymbolType.ARRAY_TYPE));
@@ -614,11 +632,14 @@ public class Annotator {
 	 * @param scope
 	 * @param stmt
 	 * @throws InvalidIdentifierException 
+	 * @throws ExpectedButFoundException 
 	 */
-	protected void reannotateSetStatement(Scope scope, SetStatement stmt) throws InvalidIdentifierException {
+	protected void reannotateSetStatement(Scope scope, SetStatement stmt) throws InvalidIdentifierException, ExpectedButFoundException {
 		Symbol symLValueType = exprAnnotator.annotateExpression(scope, stmt.getLValue());
 		Symbol symRValueType = exprAnnotator.annotateExpression(scope, stmt.getRValue());
-		//TODO check type...
+		if(!exprAnnotator.checkType(stmt, symLValueType, symRValueType)) {
+			
+		}
 		
 	}
 }

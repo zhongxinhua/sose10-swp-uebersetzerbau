@@ -25,11 +25,14 @@ import de.fu_berlin.compilerbau.util.ErrorHandler;
  * @author Sam
  * 
  */
+@SuppressWarnings("serial")
 public class Interface extends ClassOrInterface {
 	private List<Function> functions;
 	private List<ExtendsStatement> extensions = new LinkedList<ExtendsStatement>();
 
 	public Interface(DomNode node) {
+		setPosition(node);
+		
 		// check needed attribute: name
 		if (node.hasAttribute("name")
 				&& node.getAttributeValue("name").length() > 0) {

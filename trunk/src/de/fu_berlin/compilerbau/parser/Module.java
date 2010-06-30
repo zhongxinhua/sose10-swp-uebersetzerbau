@@ -32,6 +32,7 @@ import de.fu_berlin.compilerbau.util.PositionString;
  * @author Sam, stefan
  * 
  */
+@SuppressWarnings("serial")
 public class Module extends SyntaxTreeNode {
 	/**
 	 * name of the module
@@ -58,6 +59,8 @@ public class Module extends SyntaxTreeNode {
 	 *            {@link DomNode} representating a &ltmodule/&gt statement
 	 */
 	public Module(DomNode node) {
+		setPosition(node);
+		
 		// check needed attribute: name
 		if (node.hasAttribute("name")
 				&& node.getAttributeValue("name").length() > 0) {

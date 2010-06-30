@@ -21,10 +21,13 @@ import de.fu_berlin.compilerbau.util.PositionString;
  * @author Sam
  * @see {@link Class}
  */
+@SuppressWarnings("serial")
 public class ImplementsStatement extends Statement {
 	private PositionString name;
 
 	public ImplementsStatement(DomNode node) {
+		setPosition(node);
+		
 		// check needed attribute: name
 		if (node.hasAttribute("name")
 				&& node.getAttributeValue("name").length() > 0) {
@@ -39,11 +42,11 @@ public class ImplementsStatement extends Statement {
 		}
 
 	}
-	// BEGIN get-Methoden für Builder
+	// BEGIN get-Methoden fï¿½r Builder
 	public PositionString getName(){
 		return name;
 	}
-	// END get-Methoden für Builder
+	// END get-Methoden fï¿½r Builder
 
 	@Override
 	public String toString() {
