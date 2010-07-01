@@ -48,6 +48,7 @@ import de.fu_berlin.compilerbau.symbolTable.SymbolType;
 import de.fu_berlin.compilerbau.symbolTable.Variable;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.InvalidIdentifierException;
 import de.fu_berlin.compilerbau.symbolTable.exceptions.SymbolTableException;
+import de.fu_berlin.compilerbau.util.ErrorHandler;
 import de.fu_berlin.compilerbau.util.PositionBean;
 import de.fu_berlin.compilerbau.util.PositionString;
 import de.fu_berlin.compilerbau.util.Visibility;
@@ -130,7 +131,7 @@ public class RuntimeFactory {
 
 						@Override
 						public ClassOrInterface call() throws SymbolTableException {
-							System.err.println("Reading: " + pkgName + "/" + simplyfiedClassName);
+							ErrorHandler.debugMsg(null, "Reading: " + pkgName + "/" + simplyfiedClassName);
 							final ClassOrInterface result =
 								populateFromNativeClass(runtime, pkgName, simplyfiedClassName, clazz);
 							return result;
@@ -166,7 +167,8 @@ public class RuntimeFactory {
 		
 		final RuntimeImpl result = new RuntimeImpl();
 		result.setNameManglingEnabled(false);
-		
+
+		int packageCount = 0;
 		final PackageLoader loader = new PackageLoader(rtJar, classpath);
 		try {
 			for(java.lang.Package pkg : loader.getPackages()) {
@@ -174,6 +176,7 @@ public class RuntimeFactory {
 				PositionString name = new PositionString(pkgName, PositionBean.ZERO);
 				result.addPackage(name, PACKAGE_MODIFIER);
 				positionStrings.put(pkgName, name);
+				++packageCount;
 			}
 		} catch(SymbolTableException e) {
 			throw new RuntimeException("Could not populate Runtime with Java's packages.", e);
@@ -257,7 +260,14 @@ public class RuntimeFactory {
 		}
 		
 		final long end = System.currentTimeMillis();
-		System.err.println("Read runtime in " + (end-start)/1000f + " seconds.");
+		
+		ErrorHandler.debugMsg(null, "Read: " + packageCount + " packages");
+		ErrorHandler.debugMsg(null, "Read: " + classesNum + " classes");
+		ErrorHandler.debugMsg(null, "Read: " + interfacesNum + " interfaces");
+		ErrorHandler.debugMsg(null, "Read: " + methodsNum + " methods");
+		ErrorHandler.debugMsg(null, "Read: " + constructorsNum + " constructors");
+		ErrorHandler.debugMsg(null, "Read: " + fieldsNum + " fields");
+		ErrorHandler.debugMsg(null, "Read runtime in " + (end-start)/1000f + " seconds.");
 		
 		result.setNameManglingEnabled(true);
 		return result;
@@ -308,6 +318,8 @@ public class RuntimeFactory {
 		}
 	}
 	
+	protected static int classesNum, interfacesNum, methodsNum, constructorsNum, fieldsNum;
+	
 	private static ClassOrInterface populateFromNativeClass(final Runtime rt, String pkgName,
 			String className, Class<?> clazz) throws SymbolTableException {
 		
@@ -334,6 +346,8 @@ public class RuntimeFactory {
 		Iterator<Symbol> implements_ = Arrays.asList(ifSymbols).iterator();
 		ClassOrInterface coiSymbol;
 		if(!clazz.isInterface()) {
+			++classesNum;
+			
 			final Symbol extends_;
 			Class<?> superclass = clazz.getSuperclass();
 			if(superclass != null) {
@@ -350,6 +364,7 @@ public class RuntimeFactory {
 				if(field.isSynthetic()) {
 					continue;
 				}
+				++fieldsNum;
 				
 				final int javaModifiers = field.getModifiers();
 				if((javaModifiers & (PROTECTED|PUBLIC)) == 0) {
@@ -371,6 +386,7 @@ public class RuntimeFactory {
 				if(ctor.isSynthetic()) {
 					continue;
 				}
+				++constructorsNum;
 				
 				final int javaModifiers = ctor.getModifiers();
 				if((javaModifiers & (PROTECTED|PUBLIC)) == 0) {
@@ -382,6 +398,7 @@ public class RuntimeFactory {
 				clazzSymbol.addConstructor(PositionBean.ZERO, parameters, modifiers);
 			}
 		} else {
+			++interfacesNum;
 			coiSymbol = pkg.addInterface(classLookupName, implements_, clazzModifiers);
 		}
 		
@@ -389,6 +406,7 @@ public class RuntimeFactory {
 			if(method.isSynthetic()) {
 				continue;
 			}
+			++methodsNum;
 			
 			final int javaModifiers = method.getModifiers();
 			if((javaModifiers & (PROTECTED|PUBLIC)) == 0) {
