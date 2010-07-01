@@ -1,10 +1,5 @@
 package de.fu_berlin.compilerbau.builder;
 
-/**
- * @author stefan
- * @author Sam
- */
-
 import java.io.IOException;
 import java.util.List;
 
@@ -44,6 +39,10 @@ import de.fu_berlin.compilerbau.parser.expressions.BinaryOperation.BinaryOperato
 import de.fu_berlin.compilerbau.parser.expressions.UnaryOperation.UnaryOperator;
 import de.fu_berlin.compilerbau.util.ErrorHandler;
 
+/**
+ * @author stefan
+ * @author Sam
+ */
 public class JavaBuilder extends Builder {
 	private int _scannerId = 0; 
 	
@@ -107,7 +106,11 @@ public class JavaBuilder extends Builder {
 			_code.append("static ");
 		}
 
-		_code.append(func.getReturnType() + " ");
+		if(func.getReturnType() != null) {
+			_code.append(func.getReturnType() + " ");
+		} else {
+			_code.append("void ");
+		}
 
 		_code.append(func.getName() + " (");
 
@@ -139,19 +142,25 @@ public class JavaBuilder extends Builder {
 
 
 	protected void buildCallStatement(CallStatement obj) throws IOException {
-		FunctionCall fc = (FunctionCall)obj.getCall();
-		if(fc.getName().equals("print")) {
-			_code.append("System.out.println(");
-			for(Expression e : fc.getArguments()) {
-				buildExpressionStatement(e);
+		Expression call = obj.getCall();
+		if(call instanceof FunctionCall) {
+			FunctionCall fc = (FunctionCall)call;
+			if(fc.getName().equals("print")) {
+				_code.append("System.out.println(");
+				for(Expression e : fc.getArguments()) {
+					buildExpressionStatement(e);
+				}
+				_code.append(");\n");
+				return;
+			} else if (fc.getName().equals("read")) {
+				String scanner = "scanner"+ _scannerId++;
+				_code.append("java.util.Scanner " + scanner + " = new java.util.Scanner(System.in);\n");
+				_code.append(obj.getValue() + " = " + scanner + ".nextInt();\n");
+				return;
 			}
-			_code.append(");\n");
 		}
-		else if (fc.getName().equals("read")) {
-			String scanner = "scanner"+ _scannerId++;
-			_code.append("java.util.Scanner " + scanner + " = new java.util.Scanner(System.in);\n");
-			_code.append(obj.getValue() + " = " + scanner + ".nextInt();\n");
-		}
+		buildExpressionStatement(call);
+		_code.append(";\n");
 	}
 
 	protected void buildCase(Case obj) throws IOException {
@@ -325,9 +334,7 @@ public class JavaBuilder extends Builder {
 			buildSetStatement((SetStatement) obj);
 		} else {
 			// ERROR
-			System.err.println(this.getClass().toString()
-					+ " - Should not happen - buildStatement::"
-					+ obj.getClass().toString());
+			throw new RuntimeException("(Internal) Invalid statement: " + obj);
 		}
 
 	}
@@ -369,8 +376,7 @@ public class JavaBuilder extends Builder {
 			buildArrayCreation((ArrayCreation)obj);
 		} else {
 			// ERROR
-			System.err.println(this.getClass().toString()
-					+ " - Should not happen - buildExpresseionStatement");
+			throw new RuntimeException("(Internal) Invalid expression: " + obj);
 		}
 
 	}

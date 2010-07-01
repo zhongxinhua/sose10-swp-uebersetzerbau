@@ -19,16 +19,16 @@
 		<decl type="float" name="field" dim="1" value="{1.0, 2.4}" />
 		<function name="main" static="yes">
 			<arguments>
-				<decl type="string" name="args" dim="1" />
+				<decl type="String" name="args" dim="1" />
 			</arguments>
 
 			<decl type="int" name="ggt1" />
 			<decl type="int" name="ggt2" />
 			<call exec="print('ggt1: ')" />
-			<set name="ggt1" value="read()" />
+			<set name="ggt1" value="Integer.valueOf(System.console().readLine())" />
 			<call exec="print('ggt2: ')" />
-			<set name="ggt2" value="read()" />
-			<call exec="print(Mathe.ggt(ggt1,ggt2))" />
+			<set name="ggt2" value="Integer.valueOf(System.console().readLine())" />
+			<call exec="System.out.println(Mathe.ggt(ggt1,ggt2))" />
 		</function>
 	</class>
 </module>

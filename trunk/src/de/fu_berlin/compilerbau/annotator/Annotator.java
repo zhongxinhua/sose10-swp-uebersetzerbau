@@ -72,7 +72,7 @@ public class Annotator {
 		//ErrorHandler.debugMsg(null, "Second pass completed.");
 		
 		// TODO: secondPass funktioniert noch nicht richtig
-		ErrorHandler.debugMsg(null, "First pass skipped.");
+		ErrorHandler.debugMsg(null, "Second pass skipped.");
 	}
 
 	private void firstPass(AbstractSyntaxTree ast) {
