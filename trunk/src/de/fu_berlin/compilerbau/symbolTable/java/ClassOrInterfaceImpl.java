@@ -113,6 +113,9 @@ class ClassOrInterfaceImpl extends SymbolContainerImpl implements ClassOrInterfa
 			Iterator<Variable> parameters, Modifier modifier)
 			throws DuplicateIdentifierException, ShadowedIdentifierException,
 			WrongModifierException, InvalidIdentifierException {
+		if(!getRuntime().isValidIdentifier(name.toString())) {
+			throw new InvalidIdentifierException(this, name);
+		}
 		final MethodImpl newSymbol = new MethodImpl(getRuntime(), this, name, resultType, parameters, modifier);
 		final MethodImpl oldSymbol = methods.get(newSymbol);
 		if(oldSymbol != null) {

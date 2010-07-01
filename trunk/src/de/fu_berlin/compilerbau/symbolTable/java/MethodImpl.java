@@ -74,6 +74,10 @@ class MethodImpl extends ScopeImpl implements Method {
 		if(parameters != null) {
 			while(parameters.hasNext()) {
 				final Variable next = parameters.next();
+				final String varName = next.getDestinationName();
+				if(!getRuntime().isValidIdentifier(varName)) {
+					throw new InvalidIdentifierException(this, new PositionString(varName, next.getPosition()));
+				}
 				this.parameters.add(next);
 				variables.put(next, (VariableImpl) next);
 			}

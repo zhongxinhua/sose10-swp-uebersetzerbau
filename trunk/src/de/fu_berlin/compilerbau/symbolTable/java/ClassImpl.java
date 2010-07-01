@@ -98,6 +98,9 @@ class ClassImpl extends ClassOrInterfaceImpl implements Class {
 	public Member addMember(PositionString name, Symbol type, Modifier modifier)
 			throws DuplicateIdentifierException, ShadowedIdentifierException,
 			WrongModifierException, InvalidIdentifierException {
+		if(!getRuntime().isValidIdentifier(name.toString())) {
+			throw new InvalidIdentifierException(this, name);
+		}
 		final MemberImpl newSymbol = new MemberImpl(getRuntime(), this, name, type, modifier);
 		final MemberImpl oldSymbol = members.get(newSymbol);
 		if(oldSymbol != null) {

@@ -51,6 +51,9 @@ class ScopeImpl extends SymbolContainerImpl implements Scope {
 	public Variable addVariable(PositionString name, Symbol type,
 			Modifier modifier) throws DuplicateIdentifierException,
 			ShadowedIdentifierException, WrongModifierException, InvalidIdentifierException {
+		if(!getRuntime().isValidIdentifier(name.toString())) {
+			throw new InvalidIdentifierException(this, name);
+		}
 		VariableImpl newSymbol = new VariableImpl(getRuntime(), this, name, type, modifier);
 		final VariableImpl oldSymbol = variables.get(newSymbol);
 		if(oldSymbol != null) {

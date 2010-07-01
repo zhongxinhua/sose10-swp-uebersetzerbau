@@ -17,9 +17,11 @@
 
 package de.fu_berlin.compilerbau.symbolTable.java;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -107,6 +109,9 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 	@Override
 	public Package addPackage(PositionString name, Modifier modifier)
 			throws DuplicateIdentifierException, ShadowedIdentifierException, WrongModifierException, InvalidIdentifierException {
+		if(!getRuntime().isValidIdentifier(name.toString())) {
+			throw new InvalidIdentifierException(this, name);
+		}
 		PackageImpl newSymbol = new PackageImpl(this, name);
 		PackageImpl oldSymbol = packages.get(newSymbol);
 		if(oldSymbol != null) {
@@ -256,48 +261,12 @@ class RuntimeImpl extends SymbolContainerImpl implements Runtime {
 		return mangle;
 	}
 	
+	public static Set<String> reservedIdentifiers = new HashSet<String>(Arrays.asList(new String[] {
+			"break", "class", "continue", "do", "extends", "final", "float", "function", "implements",
+			"import", "int", "interface", "module", "new", "return", "super", "this", "void", "while" }));
+	
 	public boolean isReservedIdentifier(String name){
-		if(name.equals("break")){
-			return true;
-		}else if(name.equals("class")){
-			return true;
-		}else if(name.equals("continue")){
-			return true;
-		}else if(name.equals("do")){
-			return true;
-		}else if(name.equals("extends")){
-			return true;
-		}else if(name.equals("final")){
-			return true;
-		}else if(name.equals("float")){
-			return true;
-		}else if(name.equals("function")){
-			return true;
-		}else if(name.equals("implements")){
-			return true;
-		}else if(name.equals("import")){
-			return true;
-		}else if(name.equals("int")){
-			return true;
-		}else if(name.equals("interface")){
-			return true;
-		}else if(name.equals("module")){
-			return true;
-		}else if(name.equals("new")){
-			return true;
-		}else if(name.equals("return")){
-			return true;
-		}else if(name.equals("super")){
-			return true;
-		}else if(name.equals("this")){
-			return true;
-		}else if(name.equals("void")){
-			return true;
-		}else if(name.equals("while")){
-			return true;
-		}else{
-			return false;
-		}
+		return reservedIdentifiers.contains(name);
 	}
 
 	@Override

@@ -68,8 +68,11 @@ public class Annotator {
 		this.exprAnnotator = new ExpressionAnnotator(runtime);
 		firstPass(ast);
 		ErrorHandler.debugMsg(null, "First pass completed.");
-		secondPass();
-		ErrorHandler.debugMsg(null, "Second pass completed.");
+		//secondPass();
+		//ErrorHandler.debugMsg(null, "Second pass completed.");
+		
+		// TODO: secondPass funktioniert noch nicht richtig
+		ErrorHandler.debugMsg(null, "First pass skipped.");
 	}
 
 	private void firstPass(AbstractSyntaxTree ast) {
@@ -264,7 +267,7 @@ public class Annotator {
 					.isStatic(), decl.isFinal(), false);
 			Variable var = runtime.getNewVariableForParameter(decl.getName(),
 					type, modifier);
-			ErrorHandler.debugMsg(null, "new Parameter "+var);
+			ErrorHandler.debugMsg(var.getPosition(), "new Parameter "+var);
 			parameters.add(var);
 			decl.setSymbol(var);
 		}
@@ -446,7 +449,7 @@ public class Annotator {
 		// add variable to scope
 		Symbol symType = scope.tryGetQualifiedSymbol(stmt.getType());
 		Variable variable = scope.addVariable(stmt.getName(), symType, PUBLIC_MODIFIER);
-		ErrorHandler.debugMsg(null, "new Variable "+variable);
+		ErrorHandler.debugMsg(variable.getPosition(), "new Variable "+variable);
 
 		// note expression
 		if(stmt.getValue() != null)

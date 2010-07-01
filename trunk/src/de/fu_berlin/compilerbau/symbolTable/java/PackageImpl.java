@@ -86,6 +86,9 @@ class PackageImpl extends SymbolContainerImpl implements Package {
 			Iterator<Symbol> implements_, Modifier modifier)
 			throws DuplicateIdentifierException, ShadowedIdentifierException,
 			WrongModifierException, InvalidIdentifierException {
+		if(!getRuntime().isValidIdentifier(name.toString())) {
+			throw new InvalidIdentifierException(this, name);
+		}
 		final ClassImpl newSymbol = new ClassImpl(getRuntime(), this, extends_, implements_, modifier, name);
 		final Symbol duplicate = classesAndInterfaces.get(newSymbol);
 		if(duplicate != null) {
@@ -105,6 +108,9 @@ class PackageImpl extends SymbolContainerImpl implements Package {
 			Iterator<Symbol> extends_, Modifier modifier)
 			throws DuplicateIdentifierException, ShadowedIdentifierException,
 			WrongModifierException, InvalidIdentifierException {
+		if(!getRuntime().isValidIdentifier(name.toString())) {
+			throw new InvalidIdentifierException(this, name);
+		}
 		final InterfaceImpl newSymbol = new InterfaceImpl(getRuntime(), this, extends_, modifier, name);
 		final Symbol duplicate = classesAndInterfaces.get(newSymbol);
 		if(duplicate != null) {

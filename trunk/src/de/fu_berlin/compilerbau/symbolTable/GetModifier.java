@@ -65,6 +65,22 @@ public final class GetModifier {
 				public boolean isFinal() {
 					return isFinal;
 				}
+				
+				@Override
+				public String toString() {
+					final StringBuilder result = new StringBuilder();
+					result.append(visibility.name);
+					if(isStatic) {
+						result.append(" static");
+					}
+					if(isNative) {
+						result.append(" native");
+					}
+					if(isFinal) {
+						result.append(" final");
+					}
+					return result.toString();
+				}
 			};
 		}
 		return modifiers[position];
