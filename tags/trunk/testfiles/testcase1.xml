@@ -1,0 +1,46 @@
+<module name="testlib">
+    <class name="class">
+        <function name=" " returns="int">
+            <arguments>
+                  <decl type="int" name="123"/>
+                  <decl type="int" name="abc"/>
+            </arguments>
+
+            <choose>
+                <case test="123 < 0 || abc < 0 ">
+                    <return value="-10242835235012"/>
+                </case>
+                
+                <case test="false">
+	                <decl type="int" name="temp" value="base"/>
+                    <do test="expo>1">
+                        <decl type="int" name="nul"/>
+                        <set name="nul" value="temp*base"/>
+                        <set name="expo" value="expo-1"/>
+                    </do>
+        	        <return value="temp"/>
+                </case>
+                
+                <case test="true">
+	                <decl type="int" name="temp" value="base"/>
+                    <do test="expo>1">
+                        <set name="temp" value="temp*base"/>
+                        <set name="expo" value="expo-1"/>
+                    </do>
+        	        <return value="temp"/>
+                </case>
+                
+                <case test="true">
+	                <decl type="int" name="temp" value="base"/>
+                    <do test="expo>1">
+                        <set name="temp" value="temp*base"/>
+                        <set name="expo" value="expo-1"/>
+                    </do>
+        	        <return value="temp"/>
+                </case>
+            </choose>
+    
+            <return value="a"/>
+        </function>
+    </class>
+</module>

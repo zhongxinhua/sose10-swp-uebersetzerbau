@@ -1,0 +1,2 @@
+Hier kommt alles rein was den DOM in einen abstrakten Syntaxbaum umwandelt.
+Attributierung, Optimierung und Ausgabe?

@@ -1,0 +1,113 @@
+<module name="stdlib">
+<class name="Math">
+<function name="pow" returns="int" static="yes">
+    <arguments>
+          <decl type="int"  name="base"/>
+          <decl type="int" name="expo"/>
+    </arguments>
+
+    <choose>
+      <case test="base < 0 || expo<0 ">
+        <return value="-1"/>
+      </case>
+      <case test="true">
+	<decl type="int" name="temp" value="base"/>
+	<do test="expo>1">
+	  <set name="temp" value="temp*base"/>
+	  <set name="expo" value="expo-1"/>
+	</do>
+	<return value="temp"/>
+      </case>
+    </choose>
+    <return value="-1"/>
+  </function>
+  
+  <function name="sqrt" returns="float" static="yes">
+    <arguments>
+          <decl type="float"  name="root"/>
+    </arguments>
+    <choose>
+    <case test="root<0">
+      <return value="-1"/>
+    </case>
+    </choose>
+	<decl type="float"  name="s" value="0.0"/>
+	<decl type="float"  name="preci" value="0.0001"/>
+	 <do test="s*s < root">
+          <set name="s" value="s+preci"/>
+     </do>
+    <return value="s"/>
+  </function>
+
+
+  <function name="ggt"  returns="int" static="yes">
+      <arguments>
+          <decl type="int"  name="a"/>
+          <decl type="int" name="b"/>
+      </arguments>
+      <do test="b != 0">
+          <decl type="int"  name="h" value="a%b"/>
+          <set name="a" value="b"/>
+          <set name="b" value="h"/>
+      </do>
+      <return value="a"/>
+  </function>
+
+  <function name="fak"  returns="int" static="yes">
+    <arguments>
+	<decl type="int" name="n"/>
+    </arguments>
+    <choose>
+      <case test="n < 0">
+        <return value="-1"/>
+      </case>
+      <case test="n==0">
+	<return value="1"/>
+      </case>
+      <case test="n>0">
+	<decl type="int" name="temp" value="1"/>
+	<do test="n>0">
+	  <set name="temp" value="temp*n"/>
+	  <set name="n" value="n-1"/>
+	</do>
+	<return value="temp"/>
+      </case>
+    </choose>
+    <return value="-1"/>
+  </function>
+   
+ <function name="fib"  returns="int" static="yes">
+    <arguments>
+	<decl type="int" name="n"/>
+    </arguments>
+    <choose>
+      <case test="n >= 2">
+      <decl type="int" name="pred0" value="0"/>
+      <decl type="int" name="pred1" value="1"/>
+      
+      <decl type="int" name="curr" value="pred0+pred1"/>
+      <do test="n >= 2">
+        <decl type="int" name="cache" value="curr"/>
+	    <set name="curr" value="curr+pred0"/>
+	    <set name="pred1" value="pred0"/>
+	    <set name="pred0" value="cache"/>
+	    <set name="n" value="n-1"/>
+	  </do>
+	  <return value="curr"/>
+      </case>
+      
+      <case test="n == 1">
+        <return value="1"/>
+      </case>
+      <case test="n == 0">
+        <return value="0"/>
+      </case>
+      <case test="n < 0">
+        <return value="-1"/>
+      </case>
+    </choose>
+    <return value="-1"/>
+  </function>
+  
+</class>
+</module>

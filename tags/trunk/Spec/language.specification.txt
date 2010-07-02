@@ -1,0 +1,528 @@
+= Datentypen =
+Alles ist eine Referenz, es gibt keine elementaren Datentypen, sondern nur Objekte.
+
+= Grammatik =
+
+== Ausdrücke ==
+
+=== Operationen und Vorrangsregeln ===
+Dies sind alle Operationen, aufgelistet und getrennt nach absteigender Priorität.
+
+Operation                            Beschreibung              Assoziativität
+-----------------------------------------------------------------------------
+.                                    Mitgliedszugriff          rechts
+-----------------------------------------------------------------------------
+(...)                                Funktionsaufruf           rechts
+[...]                                Feldzugriff               rechts
+_++                                  Postinkrement             rechts
+_--                                  Postdekrement             rechts
+-----------------------------------------------------------------------------
+!_                                   Nicht                     rechts
+++_                                  Preinkrement              rechts
+--_                                  Predekrement              rechts
++_                                   Plus                      rechts
+-_                                   Minus                     rechts
+new                                  Objekterzeugung           rechts
+-----------------------------------------------------------------------------
+*                                    Multiplikation            links
+/                                    Division                  links
+%                                    Modulo                    links
+-----------------------------------------------------------------------------
++                                    Addition                  links
+-                                    Subtraktion               links
+-----------------------------------------------------------------------------
+<=                                   größer gleich             links
+>=                                   kleiner gleich            links
+<                                    größer                    links
+>                                    kleiner                   links
+-----------------------------------------------------------------------------
+!=                                   Test auf Ungleichheit     links
+==                                   Test auf Gleichheit       links
+-----------------------------------------------------------------------------
+&                                    Bitweises Und             links
+-----------------------------------------------------------------------------
+^                                    Bitweises Exklusives Oder links
+-----------------------------------------------------------------------------
+|                                    Bitweises Oder            links
+-----------------------------------------------------------------------------
+&&                                   Logisches Und             links
+-----------------------------------------------------------------------------
+||                                   Logisches Oder            links
+-----------------------------------------------------------------------------
+,                                    Komma
+-----------------------------------------------------------------------------
+
+
+Variablen
+
+Bezeichner:
+ * Unicode-Zeichen, nicht mit Zahl beginnend
+
+Schlüsselwörter (unvollständig):
+ * break
+ * choose
+ * class
+ * continue
+ * do
+ * extends
+ * final
+ * float
+ * function
+ * implements
+ * import
+ * int
+ * interface
+ * module
+ * new
+ * ref
+ * return
+ * set
+ * super
+ * this
+ * void
+ * while
+
+
+Typen:
+ * int
+ * float
+ * string
+ * reference/objekte (implizit)
+
+Boolean true ersetzt durch:
+ * genau dann wenn(int!=0)    //'!=0' kann dann weggelassen werden :-)
+ * genau dann wenn(float!=0)
+ * genau dann wenn(str!="")
+ * genau dann wenn(ref!=null)
+
+Arrays:
+ * man kann optional eine Dimension angeben, siehe unten
+ * intern werden Array mit einer Map realisiert
+ * wenn ein Index noch nicht belegt, wird eine Referenz null zurückgegeben
+
+Null-Werte:
+ * int i    = null wird in Ausdrücken ausgewertet zu 0.
+ * float f  = null wird in Ausdrücken ausgewertet zu 0.
+ * string s = null wird in Ausdrücken ausgewertet zu "".
+ * ref r    = null bleibt null.
+
+Ausdrücke
+Variablendeklaration:
+<decl name="name" type="Type" [value="Inner_Op"] [dim="Int"] [static="yes"] [final="yes"]/>
+
+Bsp1: einer Variablen "i" vom Typ int mit Wert 10*2 deklarieren:
+<decl type="int" name="i" value="10*2"/>
+
+Bsp2: eindimensionales float-Array mit dem Namen "field" und zwei Einträgen
+<decl type="float" name="field" dim="1" value="{1.0, 2.4}"/>
+
+Zuweisung:
+<set name="name" [index="Inner_Op,Inner_Op,Inner_Op"] value="Inner_Op"/>
+
+Bsp3: Wertzuweisung für das zweite Element des in Bsp2 definierten Arrays
+<set name="field" value="3.14" index="1"/>
+
+<--! Mögliches Feature für Arrays? Funktion keys() liefert alle belegten Indizis des Arrays
+a = new int[];
+a[12]=1223
+a[7]=13
+[....,13,...,1223,...] == [7->13,12->1223]
+a.keys() = [7,12]
+-->
+Innere Grammatik
+Inner_Op ::= Inner_Op [+|-] Inner_Op
+           | Inner_Op [*|/|%] Inner_Op
+           | Inner_Op
+siehe Operatorprioritätstabelle
+siehe Java-Sprachspezifikation
+
+Anweisungen
+Zuweisung
+ * siehe <set ...>
+
+Fallunterscheidung
+<choose>
+    <case test="Inner_Op">Anweisungen</case> <!-- "Anweisungen" ist ein Baum -->
+    <case test="Inner_Op">Anweisungen</case>
+    ...
+</choose>
+
+While-Schleife
+<do test="Inner_Op">
+  Anweisungen
+</do>
+
+For-Schleife
+durch <do/> realisiert
+
+Blöcke
+<scope>Anweisungen</scope>
+
+Break/Continue
+<break/>, <continue/>
+
+Return
+<return [value="Inner_Op"]/>
+
+Throw (Optional)
+<throw value="Inner_Op"/>
+
+Try-Catch (Optional)
+<try>
+    Anweisungen
+    [<catch name="name" type="type">
+        Anweisungen
+    </catch>]*
+    [<finally>
+        Anweisungen
+    </finally>]?
+</try>
+
+Methoden
+<function name="Bezeichner" returns="type" [static="yes"] [final="yes"]>
+    <arguments>
+        Variablendeklarationen
+    </arguments>
+    Anweisungen
+</function>
+
+Bsp1 - eine Methode "foo" die zwei Integer als Parameter erwartet und das Ergebnis zurückliefert. Anschließend erfolgt ein Aufruf der Methode.
+
+Methodendefinition:
+<function name="foo" returns="int">
+  <arguments>
+    <decl name="a" type="int"/>
+    <decl name="b" type="int"/>
+  </arguments>
+  <decl name="c" type="int" value="a+b+42"/>
+  <return value="c"/>
+</function>
+
+Methodenaufruf:
+<call exec="foo(10,20)"/>
+
+<set name="z" value="this.foo(10,20)"/>
+
+Datei
+Klassen
+<class name="name" [super="name"]>
+    [<import name="name"/>]*
+    [<implements name="name"/>]*
+    [Variablendeklaration|Method]*
+    [<static>Anweisungen*</static>]
+</class>
+Interface
+<interface name="name">
+    [<extends name="name"/>]*
+    [leere Methoden]*
+</interface>
+
+Modul
+<module name="packagename">
+  <import name="name" [as="name"]/>
+  [Klassendeklaration|Interfacedeklaration]*
+</module>
+
+Beispiele
+Beispiel für Arithmetik
+Euklidischer Algorithmus:
+<function name="ggt" returns="int">
+    <arguments>
+        <decl type="int" name="a"/>
+        <decl type="int" name="b"/>
+    </arguments>
+    <do test="b != 0">
+        <decl type="int" name="h" value="a%b"/>
+        <--! Vorschlag: Deklaration durch Elemente anstatt Attribute
+        
+        int i=0; vs. <decl type="int" name="i"/>
+        
+        <decl type="int" name="i"/>
+        
+        <int><a>10</a></int>
+        <decl int="10" name="a"/>
+        
+        <int>
+            <a>10</a>
+            asdhafjdkfjs    <-- wäre ein Kommentar
+            <b>20</b>
+        </int>
+        -->
+        <set name="a" value="b"/>
+        <set name="b" value="h"/>
+    </do>
+    <return value="a"/>
+</function>
+
+Bubblesort:
+<function name="bubblesort">
+    <arguments>
+        <decl type="int" dim="1" name="field"/>
+    </arguments>
+    <decl type="int" name="i" value="0"/>
+    <do test="i<field.length-2">
+        <decl type="int" name="j" value="i+1"/>
+        <do test="j<field.length-1">
+            <choose>
+                <case test="field[i]>field[j]">
+                    <decl type="int" name="temp" value="field[i]"/>
+                    <set name="field" index="i" value="field[j]"/>
+                    <set name="field" index="j" value="temp"/>
+                </case>
+            </choose>
+        </do>
+    </do>
+</function>
+
+Beispiel für Klassenvererbung
+<module name="personenverwaltung">
+    <interface name="Lebewesen">
+      <extends name="Molekülgruppe"/>
+    </interface>
+
+    <class name="Person">
+        <implements name="Lebewesen"/>
+        
+        <decl type="int"    name="age"/>
+        <decl type="string" name="name"/>
+        <decl type="int"    name="male"/>
+        <decl type="string" name="phone"/>
+        
+        <function name="toString()" returns="string">
+             <return value="name + '(' + age + ')'"/>
+        </function>
+    </class>
+    
+    <class name="Student" super="Person">
+        <decl type="int"  name="matrikelnr"/>
+        <function name="toString()" returns="string">
+              <return value="name + '(' + matrikelnr + ',' + age + ')'"/>
+        </function>
+        
+    </class>
+    
+    <class name="Mitarbeiter" super="Person">
+        <decl type="int"  name="personalnr"/>
+    </class>
+</module>
+
+Beispiel für Break/Continue und Klasse instanziieren, Methode aufrufen
+
+<class name="PrimeTest">
+...
+  <function name="isPrime()" returns="int">
+    <arguments>
+      <decl type="int" name="i"/>
+    </arguments>  
+    ...
+    ..
+    .
+    <return value="i"/>
+  </function>
+..
+.
+</class>
+
+<class name="test">
+  <decl type="int" name="i" value="3" />
+  <decl type="PrimeTest" name="pt" value="new PrimeTest(2)"/>
+  
+  Endlosschleife
+  <do test="true">
+    <set name="i" value="i+1"/>
+    <choose>
+      <case test="i%2==0">
+       <continue/>
+      </case>
+      <case test="true">
+        <choose>
+          <case test="i<100">
+            <call exec="pt.isPrime(i)"/>
+          </case>
+          <case test="true">
+            <break/>
+          </case>
+        </choose>
+      </case>  
+    </choose>
+  </do>
+</class>
+
+Aufteilung/Modularisierung
+ * XML-Parser
+   * bietet sich an, wenn wir uns zumindest an die XML-Syntax halten (würde ich aber bevorzugen).
+ * Validierer
+   * Dieses XML müsste man validieren und dabei einen abstrakten Syntaxbaum aufbauen.
+ * abstrakten Syntaxbaum (Composite-Pattern?)
+   * man bräuchte vorher eine Grammatik oder besser ein Übersetzungsschema.
+   * Der Syntaxbaum könnte dann um die semantischen Attribute erweitert werden. 
+   * Und eben um eine Methode die die einzelnen Knoten im Baum auswertet. 
+   * Dabei könnte auch gleich Zwischencode ausgegeben werden (ich denke hier kann man noch einiges modularisieren, ist mir zu viel auf einmal).
+ * baumartige Symboltabelle (Composite-Pattern?)
+ * Für den Zwischencode brauchen wir auch Strukturen, da wir ja Klassen und Funktionen haben wollen. Konkret heißt das: Es muss irgendwie eine „Zwischenklasse“ geben mit einer Sammlung von Methoden und Attributen. Die Symboltabelle wird Baumartig sein, da wir ja geschachtelte Scopes haben.
+ * Man könnte jetzt noch zwei Phasen „Optimierung“ einführen. Oder mehrere Optimierer die man dazwischen schaltet (zB als Liste von Commands (Pattern), ähnlich wie Filter). Optimieren kann man am Syntaxbaum und am Zwischencode. 
+ * Optimierungen:
+   * Eliminierung redundanter Ausdrücke (@Syntaxbaum)
+   * Konstantenfaltung (Konstante Ausdrücke werden zusammengefasst, @Syntaxbaum)
+   * Eliminierung von toten Programmcodes (@Syntaxbaum/Zwischencode)
+   * Vereinfachung von Berechnungen mithilfe von Rechengesetzen
+   * Schleifenoptimierungen (Ausdrücke in der Schleife, die sich nicht ändern, können rausgezogen werden,@Syntaxbaum/Zwischencode)
+   * Erkennung ungenutzter und uninitialisierter Variablen (@Syntaxbaum)
+   * Kopienverbreitung (manche Variablen überreichen nur einen Wert und haben sonst keine Funktion, diese kann man eliminieren, @Zwischencode)
+   * Kontrollflussoptimierungen (man kann die Anzahl der Sprünge reduzieren, @Zwischencode)
+ * Zum Schluss bräuchte man noch einen Klassenschreiber, der den Zwischencode zu Sourcecode schreibt. Da wir vielleicht noch Bytecode produzieren wollen, würde sich das Pattern „Builder“ vorteilhaft.
+ * Und ganz zum Schluss muss dann noch der Java-Compiler aufgerufen werden ^^.
+
+Kleines Beipiel zur Darstellung der einzelnen Phasen
+Source
+<module name="mathe">
+<class name="Math">
+  <function name="ggt"  returns="int" static="yes">
+      <arguments>
+          <decl type="int"  name="a"/>
+          <decl type="int" name="b"/>
+      </arguments>
+      <do test="b != 0">
+          <decl type="int"  name="h" value="a%b"/>
+          <set name="a" value="b"/>
+          <set name="b" value="h"/>
+      </do>
+      <return value="a"/>
+  </function>
+</class>
+
+<class name="Test">
+  <function name="main" static="yes">
+      <arguements>
+          <decl type="string" name="args" dim="1"/>
+      </arguements>
+      <call exec="print(Math.ggt(100,201))"/>
+  </function>
+</class>
+</module>
+
+Tokenstream (fertig)
+
+DOM (fertig)
+
+XMLNode {
+    name = "module"
+    List<XMLAttribute> attribute = { Attribute (name = "name", value = "mathe") }
+    List<XMLNode> childs = {
+        
+        XMLNode {
+            name = "class"
+            List<XMLAttribute> attribute = { Attribute (name = "name", value = "Math") }
+            
+            List<XMLNode> childs = {
+                
+                XMLNode {
+                    name = "function"
+                    List<XMLAttribute> attribute = { Attribute (name = "name", value = "ggt"),  Attribute (name = "returns", value = "int"), Attribute (name = "static", value = "yes")}
+                    
+                    ... Rest kann man sich denken
+                }
+                
+            }
+        }
+        
+        XMLNode {
+            name = "class"
+            List<XMLAttribute> attribute = { Attribute (name = "name", value = "Test") }
+            
+            List<XMLNode> childs = {
+                
+                ... Rest kann man sich denken
+            }
+        }
+    }
+}
+
+Abstrakter Syntaxbaum + Symboltabelle (in der Entwurfsphase)
+(noch Idee...)
+
+Module = {
+    Name = "mathe"
+    Imports = {}
+    Class = {
+        Name = "Math"
+        Properties = {}
+        Functions = {
+            Name = "ggt"
+            Returns = "int"
+            IsStatic = true
+            Arguments = {
+                (int, a),
+                (int, b)
+            }
+            Body = {
+                WhileStatement = {
+                    Test = {
+                        Operation = {
+                            Operator = "!="
+                            Left  = Identifier b
+                            Right = Number 0
+                        }
+                    }
+                    Body = {
+                        Declaration = {
+                            type = "int",
+                            name = "h"
+                            value = {
+                                Operation = {
+                                    Operator =  "%"
+                                    Left  =  Identifier a
+                                    Right =  Number b
+                                }
+                            }
+                        },
+                        Assignment = {
+                            Left = Identifier a
+                            Right = Identifier b
+                        },
+                        Assignment = {
+                            Left =  Identifier b
+                            Right =  Identifier h
+                        }
+                    }
+                },
+                ReturnStatement = {
+                    Expression = {Identifier a}
+                }
+            }
+        }
+    }
+    //... noch ne Klasse...
+}
+
+
+Zwischencode (brauchen wir nicht?!)
+
+Java-Source
+
+Hardcore (OPTIONAL!!!)
+Blockreferenzierung
+repeat
+ i += 1
+until i > 10
+
+<ref name="inc"/>
+<do test="i<=10">
+    <set i="i+1" ref="inc"/>
+</do>
+
+Methodenaufrufe
+Deklaration:
+bla(v=1,a=2,h=3,b:4)
+
+Aufruf: 
+bla(a=2,b=3)
+
+Exception
+try/catch
+
+
+Ablauf:
+Eingabe → (René) → StreamReader → (Stefan, Michael) → DOM → (Alex, Markus) → Java Objekten → {soll bis zum 21.05 nahezu fertig sein}() → Ziel 
+
+

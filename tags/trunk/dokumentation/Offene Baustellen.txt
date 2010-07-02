@@ -1,0 +1,29 @@
+*******************************************************************************
+
+Package-Namen mit Unicode-Zeichen werden nicht korrekt verstanden. Dem messe
+ich im Verhältnis zu landessprachigen Variablennamen eine geringe Priorität
+zu.
+
+*******************************************************************************
+
+Includes aus anderen Dateien und damit einhergehend ein nicht-statischer
+DOM-Parser und StreamPositions mit einem Eingabedateinamen.
+
+*******************************************************************************
+
+StreamPosition.getStart() ist Unsinn, weil es nicht beachtet, welche Codierung
+die Eingabe hatte.
+
+*******************************************************************************
+
+rt.jar wird nicht automatisch gefunden.
+
+*******************************************************************************
+
+XML-Entities in den Eingaben werden nicht geparst: &lt; bleibt &lt;.
+
+*******************************************************************************
+
+In Ausdrücken darf nicht "nul" stehen.
+
+*******************************************************************************

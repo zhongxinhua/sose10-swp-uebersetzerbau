@@ -1,0 +1,72 @@
+digraph XML {
+	start -> open [ label="<" ];
+	start -> error [ label=">" ];
+	start -> text [ label="[^<>]" ];
+	text -> text [ label="[^<>]" ];
+	text -> error [ label=">" ];
+	text -> open [ label="<" ];
+	
+	open -> comment0 [ label="!" ];
+	comment0 -> comment1 [ label="-" ];
+	comment0 -> error [ label="[^-\\[]" ];
+	comment1 -> comment [ label="-" ];
+	comment1 -> error [ label="[^-]" ];
+	comment -> comment2 [ label="-" ];
+	comment -> comment [ label="[^-]" ];
+	comment2 -> comment3 [ label="-" ];
+	comment2 -> comment [ label="[^-]" ];
+	comment3 -> start [ label=">" ];
+	comment3 -> error [ label="[^>]" ];
+	
+	comment0 -> cdata1 [ label="\\[" ];
+	cdata1 -> cdata [ label="cdata\\[" ];
+	cdata1 -> error [ label="{sonst}" ];
+	cdata -> cdata2 [ label="\\[" ];
+	cdata -> cdata [ label="[^\\]]" ];
+	cdata2 -> cdata3 [ label="\\]" ];
+	cdata2 -> cdata [ label="[^\\]]" ];
+	cdata3 -> start [ label=">" ];
+	cdata3 -> error [ label="[^>]" ];
+	
+	open -> close0 [ label="/" ];
+	close0 -> close [ label="[^\\w>]" ];
+	close0 -> error [ label="[\\w>]" ];
+	close -> close1 [ label="\\w" ];
+	close1 -> close1 [ label="\\w" ];
+	close -> start [ label=">" ];
+	close1 -> start [ label=">" ];
+	close1 -> error [ label="[^>]" ];
+	
+	open -> error [ label="[<>\"()=?{\\[\\]},;.:\\-#'+*~]" ];
+	
+	open -> tag [ label="{sonst}" ];
+	tag -> error [ label="[<>\"()=?{\\[\\]},;.\\-#'+*~]" ];
+	tag -> inner [ label="\\w" ];
+	tag -> inner_close [ label="/" ];
+	tag -> tag [ label="{sonst}" ];
+	
+	inner -> error [ label="[<\"()=?{\\[\\]},;.:\\-#'+*~]" ];
+	inner -> inner [ label="\\w" ];
+	
+	inner -> start [ label=">" ];
+	inner -> inner_close [ label="/" ];
+	inner_close -> start [ label=">" ];
+	inner_close -> error [ label="[^>]" ];
+	
+	inner -> attr [ label="{sonst}" ];
+	attr -> error [ label="[<>\"()?{\\[\\]},;.\\-#'+*~\\s]" ];
+	attr -> attr1 [ label="=" ];
+	attr -> attr [ label="{sonst}" ];
+	
+	attr1 -> attrQuot [ label="\"" ];
+	attrQuot -> attrQuot [ label="[^\"]" ];
+	attrQuot -> attr2 [ label="\"" ];
+	
+	attr1 -> attrApos [ label="'" ];
+	attrApos -> attrApos [ label="[^']" ];
+	attrApos -> attr2 [ label="'" ];
+	
+	attr2 -> inner_close [ label="/" ];
+	attr2 -> inner [ label="\\w" ];
+	attr2 -> error [ label="[^\\w/]" ];
+}

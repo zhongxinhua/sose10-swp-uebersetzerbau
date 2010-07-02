@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	
+	
+	<!--
+		XSD legt nicht den Wurzelknoten des Dokumentes fest.
+		Vielleicht aber auch ganz schick: So kann man auch Programmausschnitte validieren.
+	-->
+	
+	
+	<!--======================================================================-->
+	<!-- decl -->
+	<xsd:element name="decl">
+		<xsd:complexType mixed="true">
+			<xsd:attribute name="name" type="xsd:string" use="required" />
+			<xsd:attribute name="type" type="xsd:string" use="required" />
+			<xsd:attribute name="value" type="xsd:string" default="" use="optional" />
+			<xsd:attribute name="dim" type="xsd:integer" default="0" use="optional" />
+			<xsd:attribute name="static" type="xsd:string" default="no" use="optional" />
+			<xsd:attribute name="final" type="xsd:string" default="no" use="optional" />
+		</xsd:complexType>
+	</xsd:element>
+	<!--======================================================================-->
+	
+	
+	<!--======================================================================-->
+	<!-- arguments -->
+	<xsd:element name="arguments">
+		<xsd:complexType mixed="true">
+			<xsd:sequence minOccurs="1" maxOccurs="unbounded">
+				<xsd:element ref="decl" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<!--======================================================================-->
+	
+	
+	<!--======================================================================-->
+	<!-- extends -->
+	<xsd:element name="extends">
+		<xsd:complexType mixed="true">
+			<xsd:attribute name="name" type="xsd:string" use="required" />
+		</xsd:complexType>
+	</xsd:element>
+	<!--======================================================================-->
+	
+	
+	<!--======================================================================-->
+	<!-- interface -->
+	<xsd:element name="interface">
+		<xsd:complexType mixed="true">
+			<xsd:sequence>
+				<xsd:element ref="extends" minOccurs="0" maxOccurs="unbounded" />
+				<xsd:element name="function" minOccurs="0" maxOccurs="unbounded">
+					<xsd:complexType mixed="true">
+						<xsd:sequence minOccurs="0" maxOccurs="1">
+							<xsd:element ref="arguments" />
+						</xsd:sequence>
+						<xsd:attribute name="name" type="xsd:string" use="required" />
+						<xsd:attribute name="returns" type="xsd:string" default="void" use="optional" />
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+			<xsd:attribute name="name" type="xsd:string" use="required" />
+		</xsd:complexType>
+	</xsd:element>
+	<!--======================================================================-->
+	
+	
+	<!--======================================================================-->
+	<!-- set -->
+	<xsd:element name="set">
+		<xsd:complexType mixed="true">
+			<xsd:attribute name="name" type="xsd:string" use="required" />
+			<xsd:attribute name="index" type="xsd:string" use="optional" />
+			<xsd:attribute name="value" type="xsd:string" use="required" />
+		</xsd:complexType>
+	</xsd:element>
+	<!--======================================================================-->
+	
+	
+	<!--======================================================================-->
+	<!-- call -->
+	<xsd:element name="call">
+		<xsd:complexType mixed="true">
+			<xsd:attribute name="exec" type="xsd:string" use="required" />
+		</xsd:complexType>
+	</xsd:element>
+	<!--======================================================================-->
+	
+	
+	<!--======================================================================-->
+	<!-- case -->
+	<xsd:element name="case">
+		<xsd:complexType mixed="true">
+			<xsd:group ref="expression" minOccurs="0" maxOccurs="1" />
+			<xsd:attribute name="test" type="xsd:string" use="required" />
+		</xsd:complexType>
+	</xsd:element>
+	<!--======================================================================-->
+	
+	
+	<!--======================================================================-->
+	<!-- choose -->
+	<xsd:element name="choose">
+		<xsd:complexType mixed="true">
+			<xsd:sequence>
+				<xsd:element ref="case" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<!--======================================================================-->
+	
+	
+	<!--======================================================================-->
+	<!-- do -->
+	<xsd:element name="do">
+		<xsd:complexType mixed="true">
+			<xsd:group ref="expression" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:attribute name="test" type="xsd:string" use="required" />
+		</xsd:complexType>
+	</xsd:element>
+	<!--======================================================================-->
+	
+	
+	<!--======================================================================-->
+	<!-- catch -->
+	<xsd:element name="catch">
+		<xsd:complexType mixed="true">
+			<xsd:group ref="expression" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:attribute name="test" type="xsd:string" use="required" />
+		</xsd:complexType>
+	</xsd:element>
+	<!--======================================================================-->
+	
+	
+	<!--======================================================================-->
+	<!-- finally -->
+	<xsd:element name="finally">
+		<xsd:complexType mixed="true">
+			<xsd:group ref="expression" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:complexType>
+	</xsd:element>
+	<!--======================================================================-->
+	
+	
+	<!--======================================================================-->
+	<!-- try -->
+	<xsd:element name="try">
+		<xsd:complexType mixed="true">
+			<xsd:sequence>
+				<xsd:group ref="expression" minOccurs="0" maxOccurs="unbounded" />
+				<xsd:element ref="catch" minOccurs="0" maxOccurs="unbounded" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<!--======================================================================-->
+	
+	
+	<!--======================================================================-->
+	<!-- scope -->
+	<xsd:element name="scope">
+		<xsd:complexType mixed="true">
+			<xsd:group ref="expression" minOccurs="0" maxOccurs="1" />
+		</xsd:complexType>
+	</xsd:element>
+	<!--======================================================================-->
+	
+	
+	<!--======================================================================-->
+	<!-- break -->
+	<xsd:element name="break">
+		<xsd:complexType mixed="true" />
+	</xsd:element>
+	<!--======================================================================-->
+	
+	
+	<!--======================================================================-->
+	<!-- continue -->
+	<xsd:element name="continue">
+		<xsd:complexType mixed="true" />
+	</xsd:element>
+	<!--======================================================================-->
+	
+	
+	<!--======================================================================-->
+	<!-- throw -->
+	<xsd:element name="throw">
+		<xsd:complexType mixed="true">
+			<xsd:attribute name="value" type="xsd:string" use="required" />
+		</xsd:complexType>
+	</xsd:element>
+	<!--======================================================================-->
+	
+	
+	<!--======================================================================-->
+	<!-- return -->
+	<xsd:element name="return">
+		<xsd:complexType mixed="true">
+			<xsd:attribute name="value" type="xsd:string" use="optional" />
+		</xsd:complexType>
+	</xsd:element>
+	<!--======================================================================-->
+	
+	
+	<!--======================================================================-->
+	<!-- expression -->
+	<xsd:group name="expression">
+		<xsd:choice>
+			<xsd:element ref="decl" />
+			<xsd:element ref="set" />
+			<xsd:element ref="call" />
+			<xsd:element ref="choose" />
+			<xsd:element ref="do" />
+			<xsd:element ref="try" />
+			<xsd:element ref="break" />
+			<xsd:element ref="continue" />
+			<xsd:element ref="throw" />
+			<xsd:element ref="return" />
+		</xsd:choice>
+	</xsd:group>
+	<!--======================================================================-->
+	
+	
+	<!--======================================================================-->
+	<!-- function -->
+	<xsd:element name="function">
+		<xsd:complexType mixed="true">
+			<xsd:sequence>
+				<xsd:element ref="arguments" minOccurs="0" maxOccurs="1" />
+				<xsd:group ref="expression" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+			<xsd:attribute name="name" type="xsd:string" use="required" />
+			<xsd:attribute name="returns" type="xsd:string" default="void" use="optional" />
+			<xsd:attribute name="static" type="xsd:string" default="no" use="optional" />
+			<xsd:attribute name="final" type="xsd:string" default="no" use="optional" />
+		</xsd:complexType>
+	</xsd:element>
+	<!--======================================================================-->
+	
+	
+	<!--======================================================================-->
+	<!-- classBody -->
+	<xsd:group name="classBody">
+		<xsd:choice>
+			<xsd:element ref="decl" />
+			<xsd:element ref="function" />
+		</xsd:choice>
+	</xsd:group>
+	<!--======================================================================-->
+	
+	
+	<!--======================================================================-->
+	<!-- implements -->
+	<xsd:element name="implements">
+		<xsd:complexType mixed="true">
+			<xsd:attribute name="name" type="xsd:string" use="required" />
+		</xsd:complexType>
+	</xsd:element>
+	<!--======================================================================-->
+	
+	
+	<!--======================================================================-->
+	<!-- static -->
+	<xsd:element name="static">
+		<xsd:complexType mixed="true">
+			<xsd:group ref="expression" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:complexType>
+	</xsd:element>
+	<!--======================================================================-->
+	
+	
+	<!--======================================================================-->
+	<!-- class -->
+	<xsd:element name="class">
+		<xsd:complexType mixed="true">
+			<xsd:sequence>
+				<xsd:element ref="implements" minOccurs="0" maxOccurs="unbounded" />
+				<xsd:group ref="classBody" minOccurs="0" maxOccurs="unbounded" />
+				<xsd:element ref="static" minOccurs="0" maxOccurs="1" />
+			</xsd:sequence>
+			<xsd:attribute name="name" type="xsd:string" use="required" />
+			<xsd:attribute name="super" type="xsd:string" default="java.lang.Object" use="optional" />
+		</xsd:complexType>
+	</xsd:element>
+	<!--======================================================================-->
+	
+	
+	<!--======================================================================-->
+	<!-- import -->
+	<xsd:element name="import">
+		<xsd:complexType mixed="true">
+			<xsd:attribute name="name" type="xsd:string" use="required" />
+			<xsd:attribute name="as" type="xsd:string" use="optional" />
+		</xsd:complexType>
+	</xsd:element>
+	<!--======================================================================-->
+	
+	
+	<!--======================================================================-->
+	<!-- moduleBody -->
+	<xsd:group name="moduleBody">
+		<xsd:choice>
+			<xsd:element ref="interface" />
+			<xsd:element ref="class" />
+		</xsd:choice>
+	</xsd:group>
+	<!--======================================================================-->
+	
+	
+	<!--======================================================================-->
+	<!-- module -->
+	<xsd:element name="module">
+		<xsd:complexType mixed="true">
+			<xsd:sequence>
+				<xsd:element ref="import" minOccurs="0" maxOccurs="unbounded" />
+				<xsd:group ref="moduleBody" minOccurs="1" maxOccurs="unbounded" />
+			</xsd:sequence>
+			<xsd:attribute name="name" type="xsd:string" default="" use="optional" />
+		</xsd:complexType>
+	</xsd:element>
+	<!--======================================================================-->
+	
+	
+</xsd:schema>
