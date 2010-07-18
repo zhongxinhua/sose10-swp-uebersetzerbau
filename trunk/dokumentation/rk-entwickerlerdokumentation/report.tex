@@ -31,6 +31,8 @@
 \setcounter{tocdepth}{2}
 \setcounter{secnumdepth}{3}
 
+\newcommand{\xmlNote}[2]{\footnote{Spezifikation zu \href{http://www.w3.org/TR/2008/REC-xml-20081126/\#{#1}}{\texttt{#2}}.}}
+
 \begin{document}
 	\begin{titlepage}
 		\title{Softwareprojekt Übersetzerbau: \\ Entwicklerdokumentation} 
@@ -68,15 +70,64 @@
 		TODO
 		
 	\section{Teilprojekte}
-		Die einzelnen Teilprojekte sind für sich allein verwendbar, da sie jeweils
+		Die einzelnen Teilprojekte sind für sich allein verwendbar – die Verzahnung
+		mit anderen Komponenten ist minimal –, da sie jeweils
 		am Anfang der Bearbeitungskette stehen und bei wichtigen Designentscheidungen
 		darauf geachtet wurde, dass eine möglichst hohe Wiederverwendbarkeit gegeben
 		ist.
 		
-		\centering\includegraphics[width=1\textwidth]{flowchart/Diagram1.pdf}
+		\begin{figure}[ht]
+			\caption[Verlaufdiagramm]{Verlaufdiagramm (hier beschriebene Teile hervorgehoben)}
+			\fbox{\centering
+				\includegraphics[width=1\textwidth]{flowchart/Diagram1.pdf}
+			}
+		\end{figure}
 	
 		\subsection{XML-Lexer}
-			TODO
+			Der XML-Lexer {\em xmlNodeStream} vereinfacht die Arbeit des DOM-Parsers, indem er die syntaxtischen
+			Komponenten des Eingabestromes auftrennt, das heißt {\em tokenized}.
+			Die erkannten Komponenten sind Textknoten, Kommentare, Tags, Endtags, Attribute und Processing instructions.
+			
+			Als Eingabeformat wird XML 1.0 verwendet.%
+			\footnote{\href{http://www.w3.org/TR/2008/REC-xml-20081126/}{Extensible Markup Language (XML) 1.0 (Fifth Edition)}}
+			Es wurden bewusst Eineinfachungen jedenüber dem W3-Standard vorgenommen. Unter anderem sind
+			nicht wohlgeformte Ausdrücke nach Art \verb|<tag attr="a < b"/>| erlaubt.
+			Dieses Beispiel wäre aufgrund des Kleiner-Als-Zeichens im Attributewert
+			nach der Spezifikation verboten.\xmlNote{NT-AttValue}{AttValue}
+			
+			Die API des {\em xmlNodeStreams} ist an {\em StAX}, der \href{http://stax.codehaus.org/}{Streaming API for XML},
+			angelehnt. StAX hat sich seit der Spezifikation im \href{http://jcp.org/en/jsr/detail?id=173}{JSR 173} aus
+			dem Jahr 2006 zum Standard für einfaches Parsen von XML-Eingaben gemausert.
+			xmlNodeStream besitzt nicht dieselbe Mächtigkeit wie StAX und erfüllt in Folge dessen
+			nicht die komplette Spezifikation des W3-Consortiums, da der XML-Prolog\xmlNote{xmldoc}{prolog}
+			nicht als solcher verstanden wird:
+			\begin{itemize}
+				\item
+					Die XML-Deklaration\xmlNote{NT-XMLDecl}{XMLDecl} wird als
+					Processing instruction\xmlNote{NT-PI}{PI} verstanden.
+				\item
+					Die Doctype-Deklaration\xmlNote{NT-doctypedecl}{doctypedecl} wird nicht unterstützt.
+			\end{itemize}
+			Konkretere Informationen über den Informationsfluss stehen in der \hyperlink{XML-Lexer-API}{API-Referenz}.
+			
+			Der XML-Lexer überprüft die Eingabe nicht auf Wohlgeformtheit, das heißt, auch
+			\verb|<a></b>| würde nicht nicht als Fehler erkannt. Dies ist eine bewusste Designentscheidung,
+			die einerseits den Overhead durch eine solche Überprüfung verhindern soll – der DOM-Parser
+			führt eh über eine Überprüfung durch – und andererseits die Anwendungsmöglichkeiten der Implementierung
+			verbreitern soll: Gewöhnliche Webseiten sind selten wohlgeformtes XML. Dadurch,
+			dass {\em xmlNodeStream} agnostisch gegenüber Strukturfehlern ist, wäre er auch zum
+			Lexen von Internetseiten geeignet. Fehler wie fehlende abschließende Anführungszeichen werden
+			jedoch nicht übergangen, da sie eine aktive Fehlerkorrektur erforderten.
+			
+			{\em xmlNodeStream} implementiert das Iterator-Interface Javas, wodurch der Einstieg in die
+			Benutzung vereinfacht werden soll.
+			Das \href{http://c2.com/cgi/wiki?IteratorPattern}{Iteratorpattern} gehört zu im Buch
+			{\em Design Patterns: Elements of Reusable Object-Oriented Software}\footnote{ISBN \href
+			{https://portal.d-nb.de/opac.htm?method=simpleSearch&query=0201633612}{0-201-63361-2}}
+			beschriebenen Entwurfsmustern und ist deshalb vielen Entwicklern von objektorientiertem
+			Code geläufig.
+			
+			
 	
 		\subsection{Statement-Lexer}
 			TODO
@@ -115,7 +166,7 @@
 	\section{Anhang: API-Referenz}
 		TODO
 	
-		\subsection{XML-Lexer}
+		\subsection[XML-Lexer]{\hypertarget{XML-Lexer-API}{XML-Lexer}}
 			TODO
 	
 		\subsection{Statement-Lexer}
@@ -124,7 +175,9 @@
 		\subsection{Symboltabelle}
 			TODO
 	
-	\newpage
+	\section{Anhang: Eingebundene Bilder}
+		\listoffigures
+	
 	\section{Anhang: Lizenz}
 		Teile des Quelltextes des Softwareprojektes Übersetzerbau 2010 stehen unter der Freien
 		Lizenz \href{http://www.gnu.org/licenses/agpl-3.0.html}{GNU AGPL} in der Version 3.0.
