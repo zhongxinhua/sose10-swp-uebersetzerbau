@@ -1,6 +1,5 @@
-report.aux
-report.log
-report.out
-report.pdf
-report.toc
-texput.log
+*.aux
+*.log
+*.out
+*.pdf
+*.toc

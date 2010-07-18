@@ -12,6 +12,7 @@
 }
 \usepackage{tocstyle}
 \usepackage{multicol}
+\usepackage{tikz}
 
 \usetocstyle{allwithdot}
 \definecolor{darkblue}{rgb}{0,0,.5}
@@ -40,8 +41,8 @@
 	\end{titlepage}
 	
 	\begin{abstract}
-		Das Softwareprojekt 2010 setzte sich zum Ziel, einen XML nach Java-Source-Code
-		Übersetzter zu schreiben.
+		Das Softwareprojekt 2010 setzte sich zum Ziel, einen XML- nach Java-Source-Code-Übersetzter
+		zu schreiben.
 		
 		Dieses Dokument erklärt im Speziellen die Komponenten XML-Lexer, Statement-Lexer
 		und die Symboltabelle. Es richtet sich an Entwickler und enthält deshalb gegebenenfalls
@@ -62,12 +63,17 @@
 	
 	\parskip 7pt plus 5pt minus 3pt
 	
-	\setcounter{page}{4}
+	\setcounter{page}{1}
 	\section{Einleitung}
 		TODO
 		
 	\section{Teilprojekte}
-		TODO
+		Die einzelnen Teilprojekte sind für sich allein verwendbar, da sie jeweils
+		am Anfang der Bearbeitungskette stehen und bei wichtigen Designentscheidungen
+		darauf geachtet wurde, dass eine möglichst hohe Wiederverwendbarkeit gegeben
+		ist.
+		
+		\centering\includegraphics[width=1\textwidth]{flowchart/Diagram1.pdf}
 	
 		\subsection{XML-Lexer}
 			TODO
@@ -105,6 +111,7 @@
 	\section{Abschluss}
 		TODO
 	
+	\newpage
 	\section{Anhang: API-Referenz}
 		TODO
 	
@@ -117,10 +124,13 @@
 		\subsection{Symboltabelle}
 			TODO
 	
+	\newpage
 	\section{Anhang: Lizenz}
 		Teile des Quelltextes des Softwareprojektes Übersetzerbau 2010 stehen unter der Freien
-		Lizenz AGPL in der Version 3.0. Bindend ist hierbei nur der englische Originaltext, der
-		im nächsten Absatz angehängt wurde.
+		Lizenz \href{http://www.gnu.org/licenses/agpl-3.0.html}{GNU AGPL} in der Version 3.0.
+		Die Dokumentation selbst wird unter den Bedingungen der \href{http://www.gnu.org/licenses/fdl-1.3.html}{GNU FDL}
+		in der Version 1.3 weitergegeben.
+		Bindend sind nur die englischen Originaltext, die im nächsten Absatz angehängt sind.
 		
 		Sollten Sie den Quelltext zu anderen Konditionen weiterverwenden wollen, so setzen Sie
 		sich bitte mit mir in Verbindung:

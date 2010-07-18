@@ -1,9 +1,33 @@
-report.pdf: report.tex jhla4.sty
-	rm -f report.toc
-	pdflatex report.tex
-	pdflatex report.tex
+TARGETS = report.pdf
+SUBS = flowchart.MAKE-SUB
 
-clean: .PHONY
-	rm -rf report.aux report.log report.out report.pdf report.toc texput.log
+all: $(TARGETS) $(SUBS)
 
-.PHONY:
+report.pdf: report.tex jhla4.sty flowchart.MAKE-SUB
+
+%.pdf: %.tex
+	rm -f $(patsubst %.pdf,%.toc,$@)
+	pdflatex $<
+	pdflatex $<
+
+clean: clean-temps clean-subs
+	rm -f texput.log
+
+clean-temps: $(patsubst %.pdf,%.CLEAN-TMP,$(TARGETS))
+
+clean-subs: $(patsubst %.MAKE-SUB,%.CLEAN-DIR,$(SUBS))
+
+# Pseudo-Targets:
+
+%.MAKE-SUB :
+	cd $(patsubst %.MAKE-SUB,%,$@) ; $(MAKE) all
+
+%.CLEAN-TMP:
+	rm -f $(patsubst %.CLEAN-TMP,%.aux,$@)
+	rm -f $(patsubst %.CLEAN-TMP,%.log,$@)
+	rm -f $(patsubst %.CLEAN-TMP,%.out,$@)
+	rm -f $(patsubst %.CLEAN-TMP,%.pdf,$@)
+	rm -f $(patsubst %.CLEAN-TMP,%.toc,$@)
+
+%.CLEAN-DIR:
+	cd $(patsubst %.CLEAN-DIR,%,$@) ; $(MAKE) clean
