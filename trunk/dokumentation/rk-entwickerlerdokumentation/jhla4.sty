@@ -1,0 +1,61 @@
+% Document-Style Option JHLA4 for DIN A4 size by Jobst-Hartmut Lueddecke
+%
+% Rand 2cm rundherum
+%
+\typeout{Document Style Option `jhla4' V1.13 - 21.08.97 Lueddecke}
+%
+% Vertikaler Versatz des Druckers, sollte der obere Rand nicht stimmen
+% kann hier ge"andert werden
+\voffset-13mm
+%
+% Horizontaler Versatz des Druckers, sollte der rechte Rand nicht stimmen
+% kann hier ge"andert werden
+\hoffset-25mm
+%
+% feste Werte
+% ===========
+\baselineskip 12pt   % Basiszeilenhoehe
+\columnsep5mm        % Abstand zwischen den Spalten bei Spaltensatz
+\columnseprule0mm    % Trennstrich bei Spaltensatz ausgeschaltet 
+%\columnseprule0.2mm % Dicke des Trennstriches bei Spaltensatz (wenn verwendet) 
+\evensidemargin20mm  % Rechter Rand der linken Seite
+%\footheight 12pt     % H"ohe der Fu"szeile  
+\footnotesep 2pt     % Abstand zwischen zwei Fu"snoten  
+\footskip 24pt       % Abstand Unterkante Rumpf bis Unterkante Fu"szeile  
+\headheight 12pt     % H"ohe der Kopfzeile 
+\headsep 12pt        % Abstand Kopfzeile - Textanfang  
+\marginparwidth15mm  % Breite Randnotiz
+\marginparsep2.5mm   % Abstand Text - Randnotiz
+\marginparpush5mm    % Abstand Randnotiz - Randnotiz
+\oddsidemargin20mm   % Rechter Rand der rechten Seite
+\parindent 0pt       % Einzug bei Anf"angen von Abs"atzen  
+\topmargin 0pt       % Rand "uber der Kopfzeile 
+\topskip 10pt        % Oberkante Rumpf - Grundlinie 1. Zeile
+\textwidth168mm      % Textbreite   
+                     % Texth"ohe ohne Kopf und ohne Fu"szeile 
+\textheight = 59\baselineskip \advance\textheight by \topskip   
+\tabcolsep1mm        % Abstand innerhalb von Tabellenspalten   
+%
+% Stretchwerte
+% ============
+%
+\dblfloatsep 12pt plus 2pt minus 2pt     % Gleitpbj - Gleitopj ueber 2 Sp
+\dbltextfloatsep 20pt plus 2pt minus 4pt % Gleitobj ueber 2 Sp - Text
+\floatsep 12pt plus 2pt minus 2pt        % Gleitobj - Gleitobj 
+\intextsep 12pt plus 2pt minus 2pt       % Gleitobj - umgebender Text
+\itemsep 0pt plus 2pt                    % Item - Item = \itemsep + \parsep
+% \parskip 7pt plus 5pt minus 3pt          % Absatz - Absatz 
+\parsep 5pt plus 2pt minus 1pt           % Absatz - Item 
+\partopsep 2pt plus 1pt
+\textfloatsep 12pt plus 2pt minus 2pt    % Gleitobjekt - Textabsatz 
+\topsep 4pt plus 1pt
+%
+% =============================
+% Aenderungen fuer Gleitobjekte
+% =============================
+\setcounter{topnumber}{3}             % max. 3 Objekte oben
+\renewcommand{\topfraction}{1}        % max 100% Platz fuer Gleitobjekte
+\setcounter{bottomnumber}{2}          % max. 2 Objekte unten
+\setcounter{totalnumber}{5}           % max. 5 Objekte auf der Seite
+\renewcommand{\textfraction}{0}       % min. 0% Platz fuer Text auf der Seite
+\renewcommand{\floatpagefraction}{0.1}% jeweils ein 10tel pro Objekt
