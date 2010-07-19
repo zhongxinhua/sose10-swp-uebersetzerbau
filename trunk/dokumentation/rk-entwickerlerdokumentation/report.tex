@@ -13,13 +13,14 @@
 \usepackage{listings}
 
 \usetocstyle{allwithdot}
-\definecolor{darkblue}{rgb}{0,0,.5}
+
+\definecolor{darkblue}{rgb}{0,0,0.5}
+\definecolor{crimson}{rgb}{0.862745098,0.0784313725,0.235294118}
 
 \renewcommand{\listfigurename}{Abbildungsverzeichnis}
 \renewcommand{\lstlistingname}{Quelltext}
 \renewcommand{\lstlistlistingname}{Quelltextverzeichnis}
 
-%% Hier schreibt man die PDF Eigenschaften hinein:
 \hypersetup{
 	pdftitle={Software Projekt Uebersetzerbau 2010: Entwicklerdokumentation},
 	pdfauthor={Rene Kijewski},
@@ -35,6 +36,7 @@
 
 \newcommand{\xmlNote}[2]{\footnote{Spezifikation zu \href{http://www.w3.org/TR/2008/REC-xml-20081126/\#{#1}}{\texttt{#2}}.}}
 \newcommand{\link}[1]{\href{#1}{#1}}
+\newcommand{\TODO}{{\LARGE\bf\color{crimson} TODO}}
 
 \begin{document}
 	\begin{titlepage}
@@ -65,7 +67,6 @@
 	}
 	
 	\parskip 7pt plus 5pt minus 3pt
-	
 	\setcounter{page}{1}
 	\section{Einleitung}
 		Das Softwareprojekt Übersetzerbau 2010 machte es sich zur Aufgabe, eine selbst-erdachte Programmiersprache
@@ -100,15 +101,15 @@
 		\href{http://c2.com/cgi/wiki?FactoryMethodPattern}{\em Factory-Methode}.
 		Beide Pattern werden im Buch {\em Design Patterns: Elements of Reusable Object-Oriented Software}%
 		\footnote{ISBN \href{https://portal.d-nb.de/opac.htm?method=simpleSearch&query=0201633612}{0-201-63361-2}}
-		beschrieben und sind deshalb vielen Entwicklern von objektorientiertem Code geläufig.
+		beschrieben und sind vielen Entwicklern von objektorientiertem Code geläufig.
 		
 		Die einzelnen Komponenten trennen so weit wie möglich zwischen Interface und Implementierung.
-		Dies sollte es bei einer späteren Weiterarbeit an den Projekt vereinfachen, die Komponenten
+		Dies sollte es bei einer späteren Weiterarbeit am Projekt vereinfachen, die Komponenten
 		auszutauschen. Bei der Spezifikationsphase überlegten wir uns unter anderem, dass auch eine
 		Compilierung in Java-Bytecode nativ möglich sein sollte.%
 		\footnote{Das heißt, dass wir nicht von \texttt{javac} abhängig sein wollten.}
 		Zudem sollte auch die Ausgabesprache auswechselbar sein, so dass nur das Kernstück,
-		der Syntaxbaum, sowie das Interface der weiteren Komponenten, also Symboltabelle und Builder
+		der Syntaxbaum, sowie das Interface der weiteren Komponenten, also Symboltabelle und Builder,
 		unveränderlich wäre.
 		
 	\section{Teilprojekte}
@@ -118,7 +119,7 @@
 		\begin{figure}[ht]
 			\caption[Verlaufdiagramm]{Verlaufdiagramm (in diesem Dokument beschriebene Komponenten hervorgehoben)}
 			\fbox{\centering
-				\includegraphics[width=1\textwidth]{flowchart/Diagram1.pdf}
+				\includegraphics[width=1\textwidth]{graphiken/flowchart.pdf}
 			}
 		\end{figure}
 		
@@ -156,7 +157,7 @@
 			Konkretere Informationen über den Informationsfluss stehen in der \hyperlink{XML-Lexer-API}{API-Referenz}.
 			
 			Der XML-Lexer überprüft die Eingabe nicht auf Wohlgeformtheit, das heißt, auch
-			\verb|<a></b>| würde nicht nicht als Fehler erkannt. Dies ist eine bewusste Designentscheidung,
+			,,\verb|<a></b>|`` würde nicht nicht als Fehler erkannt. Dies ist eine bewusste Designentscheidung,
 			die einerseits den Overhead durch eine solche Überprüfung verhindern soll – der DOM-Parser
 			führt eh über eine Überprüfung durch – und andererseits die Anwendungsmöglichkeiten der Implementierung
 			verbreitern soll: Gewöhnliche Webseiten sind selten wohlgeformtes XML. Dadurch,
@@ -183,12 +184,12 @@
 					\item Schließendes Tag mit dem Namen \verb|module|.
 				\end{itemize}
 				An diesem Beispiel Erkennt man, dass das jedes eingelesene Token ein Tripel aus
-				(Typ, Name und Wert ist, wobei Name und/oder Wert auch leer beziehungsweise null sein können.
+				Typ, Name und Wert ist, wobei Name und/oder Wert auch leer beziehungsweise \texttt{null} sein können.
 			
 			\begin{figure}[ht]
 				\caption[Übergangstabelle der Eingabedaten]{\hypertarget{Uebergangsdiagramm_XML_Lexer}{Übergangstabelle der Eingabedaten}}
 				\fbox{\centering
-					\includegraphics[width=1.4\textwidth,angle=90]{xml/xml.pdf}
+					\includegraphics[width=1.4\textwidth,angle=90]{graphiken/xml.pdf}
 				}
 			\end{figure}
 			
@@ -213,7 +214,7 @@
 			als beim XML-Lexer geschieht.
 	
 		\subsection{Symboltabelle}
-			TODO
+			\TODO
 	
 	\section[Arbeitsverlauf]{\hypertarget{Arbeitsverlauf}{Arbeitsverlauf}}
 		Die Komponente des XML-Lexern wurde bereits am 30. April begonnen und ist deshalb
@@ -230,43 +231,42 @@
 			\href{http://www.graphviz.org/doc/info/lang.html}{DOT} festzuhalten. Zeichnungen auf
 			dem Papier erwiesen sich nicht als sachdienlich.
 			
-			TODO
+			\TODO
 	
 		\subsection{Statement-Lexer}
-			TODO
+			\TODO
 	
 		\subsection{Symboltabelle}
-			TODO
+			\TODO
 	
 	\section{Offene Baustellen}
-		TODO
+		\TODO
 	
 		\subsection{XML-Lexer}
-			TODO
+			\TODO
 	
 		\subsection{Statement-Lexer}
-			TODO
+			\TODO
 	
 		\subsection{Symboltabelle}
-			TODO
+			\TODO
 	
 	\section[Abschlussbemerkungen]{\hypertarget{Abschlussbemerkungen}{Abschlussbemerkungen}}
-		TODO
+		\TODO
+		
+	\section{API-Referenz}
+		\TODO
 	
-	\newpage
+		\subsection[XML-Lexer]{\hypertarget{XML-Lexer-API}{XML-Lexer}}
+			\TODO
+	
+		\subsection{Statement-Lexer}
+			\TODO
+	
+		\subsection{Symboltabelle}
+			\TODO
+	
 	\section{Anhang}
-		\subsection{API-Referenz}
-			TODO
-		
-			\subsubsection[XML-Lexer]{\hypertarget{XML-Lexer-API}{XML-Lexer}}
-				TODO
-		
-			\subsubsection{Statement-Lexer}
-				TODO
-		
-			\subsubsection{Symboltabelle}
-				TODO
-		
 		\subsection{Abbildungs- und Quelltextverzeichnis}
 			\listoffigures
 			\lstlistoflistings
@@ -283,12 +283,12 @@
 			\href{mailto:rene.kijewski@fu-berlin.de?subject=[SWP_CP_2010]}{rene.kijewski@fu-berlin.de}.
 			
 			\subsubsection{Quelltext}
-			\begin{multicols}{3}
-				{\tiny\input{agpl}}
-			\end{multicols}
+				\begin{multicols}{3}
+					{\tiny\input{agpl}}
+				\end{multicols}
 			
 			\subsubsection[Dieses Dokument]{Dieses Dokument}
-			\begin{multicols}{3}
-				{\tiny\input{gfdl}}
-			\end{multicols}
+				\begin{multicols}{3}
+					{\tiny\input{gfdl}}
+				\end{multicols}
 \end{document}

@@ -1,9 +1,9 @@
 TARGETS = report.pdf
-SUBS = flowchart.MAKE-SUB xml.MAKE-SUB
+SUBS = graphiken.MAKE-SUB
 
 all: $(TARGETS) $(SUBS)
 
-report.pdf: report.tex jhla4.sty flowchart.MAKE-SUB xml.MAKE-SUB
+report.pdf: report.tex jhla4.sty graphiken.MAKE-SUB
 
 %.pdf: %.tex
 	rm -f $(patsubst %.pdf,%.aux,$@)
@@ -23,7 +23,7 @@ clean-subs: $(patsubst %.MAKE-SUB,%.CLEAN-DIR,$(SUBS))
 
 # Pseudo-Targets:
 
-%.MAKE-SUB :
+%.MAKE-SUB:
 	cd $(patsubst %.MAKE-SUB,%,$@) ; $(MAKE) all
 
 %.CLEAN-TMP:
