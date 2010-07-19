@@ -17,9 +17,9 @@ report.pdf: report.tex jhla4.sty graphiken.MAKE-SUB
 clean: clean-temps clean-subs
 	rm -f texput.log
 
-clean-temps: $(patsubst %.pdf,%.CLEAN-TMP,$(TARGETS))
+clean-temps: $(TARGETS:pdf=CLEAN-TMP)
 
-clean-subs: $(patsubst %.MAKE-SUB,%.CLEAN-DIR,$(SUBS))
+clean-subs: $(SUBS:MAKE-SUB=CLEAN-DIR)
 
 # Pseudo-Targets:
 

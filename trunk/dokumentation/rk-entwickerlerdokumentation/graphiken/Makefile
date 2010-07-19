@@ -1,25 +1,22 @@
-TARGETS = xml.pdf Ausgaben.pdf flowchart.pdf
+DIAS = flowchart.pdf
+DOTS = xml.pdf Ausgaben.pdf
+TARGETS = $(DIAS) $(DOTS)
 
-all: $(TARGETS)
+all: dots dias
+dots: $(DOTS) .PHONY
+dias: $(DIAS) .PHONY
 
 %.pdf: %.eps
 	epstopdf --outfile=$@ --nocompress --res=600 $<
 
-%.eps-dia: %.dia
+$(DIAS:pdf=eps): %.eps: %.dia
 	dia -e $@ $< -t eps-builtin -n
 
-%.eps-dot: %.dot
+$(DOTS:pdf=eps): %.eps: %.dot
 	dot -o $@ $< -Teps
 
 clean:
-	rm -f ./*.pdf
-	rm -f ./*.eps
-	rm -f ./*.eps-dia
-	rm -f ./*.eps-dot
+	rm -f $(TARGETS)
+	rm -f $(TARGETS:pdf=eps)
 
-xml.eps: xml.eps-dot
-	cp $< $@
-Ausgaben.eps: Ausgaben.eps-dot
-	cp $< $@
-flowchart.eps: flowchart.eps-dia
-	cp $< $@
+.PHONY:
