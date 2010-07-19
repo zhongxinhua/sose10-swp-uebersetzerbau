@@ -8,6 +8,7 @@ report.pdf: report.tex jhla4.sty flowchart.MAKE-SUB xml.MAKE-SUB
 %.pdf: %.tex
 	rm -f $(patsubst %.pdf,%.lol,$@)
 	rm -f $(patsubst %.pdf,%.lof,$@)
+	rm -f $(patsubst %.pdf,%.out,$@)
 	rm -f $(patsubst %.pdf,%.toc,$@)
 	pdflatex $<
 	pdflatex $<
