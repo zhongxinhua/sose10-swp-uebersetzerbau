@@ -11,15 +11,8 @@
 \usepackage{tocstyle}
 \usepackage{multicol}
 \usepackage{listings}
-
-\usetocstyle{allwithdot}
-
-\definecolor{darkblue}{rgb}{0,0,0.5}
-\definecolor{crimson}{rgb}{0.862745098,0.0784313725,0.235294118}
-
-\renewcommand{\listfigurename}{Abbildungsverzeichnis}
-\renewcommand{\lstlistingname}{Quelltext}
-\renewcommand{\lstlistlistingname}{Quelltextverzeichnis}
+\usepackage{wrapfig}
+\usepackage{placeins}
 
 \hypersetup{
 	pdftitle={Software Projekt Uebersetzerbau 2010: Entwicklerdokumentation},
@@ -31,12 +24,22 @@
 	pdfkeywords={}
 }
 
+\definecolor{darkblue}{rgb}{0,0,0.5}
+\definecolor{crimson}{rgb}{0.862745098,0.0784313725,0.235294118}
+
+\usetocstyle{allwithdot}
 \setcounter{tocdepth}{3}
 \setcounter{secnumdepth}{3}
 
+\renewcommand{\listfigurename}{Abbildungsverzeichnis}
+\renewcommand{\lstlistingname}{Quelltext}
+\renewcommand{\lstlistlistingname}{Quelltextverzeichnis}
+
 \newcommand{\xmlNote}[2]{\footnote{Spezifikation zu \href{http://www.w3.org/TR/2008/REC-xml-20081126/\#{#1}}{\texttt{#2}}.}}
 \newcommand{\link}[1]{\href{#1}{#1}}
-\newcommand{\TODO}{{\LARGE\bf\color{crimson} TODO}}
+\newcommand{\TODO}{ {\LARGE\bf\color{crimson} TODO} }
+\newcommand{\n}{\linebreak[1]}
+\newcommand{\java}[1]{\lstinline[language=java,showstringspaces=true]{#1}}
 
 \begin{document}
 	\begin{titlepage}
@@ -119,7 +122,7 @@
 		\begin{figure}[ht]
 			\caption[Verlaufdiagramm]{Verlaufdiagramm (in diesem Dokument beschriebene Komponenten hervorgehoben)}
 			\fbox{\centering
-				\includegraphics[width=1\textwidth]{graphiken/flowchart.pdf}
+				\includegraphics[width=\textwidth]{graphiken/flowchart.pdf}
 			}
 		\end{figure}
 		
@@ -255,10 +258,49 @@
 		\TODO
 		
 	\section{API-Referenz}
-		\TODO
-	
 		\subsection[XML-Lexer]{\hypertarget{XML-Lexer-API}{XML-Lexer}}
-			\TODO
+			Der XML-Lexer trennt zwischen Interface und Implementierung.
+			Das Package des Interfaces heißt \texttt{de.{\n}fu\_berlin.{\n}compilerbau.{\n}xmlNodeStream};
+			die Implementierung befindet sich unter \texttt{de.{\n}fu\_berlin.{\n}compilerbau.{\n}xmlNodeStream.{\n}impl}.
+			
+			\subsubsection*{Interface}
+				\begin{wrapfigure}{R}{0.3\textwidth}
+					\vspace{-22pt}
+					\caption{Mögliche Rückgabewerte des Statement-Lexers nach Zustand}
+					\fbox{\centering
+						\includegraphics[width=0.3\textwidth]{graphiken/Ausgaben.pdf}
+					}
+					\vspace{-30pt}
+				\end{wrapfigure}
+				
+				Das Interface defininiert in \texttt{NodeType.java} die Arten der zu erkennenden Knoten.
+				Dies sind derzeit \texttt{NT\_TEXT}, \texttt{NT\_COMMENT}, \texttt{NT\_TAG}, \texttt{NT\_END\_TAG},
+				\texttt{NT\_ATTR}, \texttt{NT\_PI}, sowie für fehlerhaften Eingaben \texttt{NT\_ERROR}.
+				
+				Ein einzelnes gelesenes Token wird in einem \texttt{XmlNode} zurückgegeben, welches die Methoden
+				\texttt{NodeType getType()}, \texttt{PositionString getKey()} und \texttt{PositionString getValue()}
+				besitzt. Nicht für alle Tokenarten sind sowohl Key also auch Value gesetzt. Konsultieren dafür
+				bitte das entsprechende JavaDoc für \texttt{XmlNode}. Ein \texttt{XmlNode} implementiert das Interface
+				\texttt{StreamPosition}.
+				
+				Die letzte Komponente des Interfaces des XML-Lexers stellt \texttt{XmlNodeStream} dar, welches
+				angibt, dass die XmlNodeStreams das Interface \texttt{Iterable<{\n}XmlNode>}, \texttt{StreamPosition} und
+				\texttt{Closeable} erfüllen müssen.
+				
+				Wie in Abbildung 3 zu sehen, kann der XmlNodeStream nicht an jeder Stelle ein beliebiges Token zurückgeben.
+				So können unter anderem \texttt{NT\_ATTR} nur auf \texttt{NT\_ATTR} oder \texttt{NT\_TAG} folgen.
+				Bei der Benutzung von \texttt{XmlNodeStreamFactory} darf man sich darauf verlassen, dass dieser Contract
+				nicht verletzt wird.
+			
+			\subsubsection*{Implementierung}
+				Die Implementierung verfügt nur über eine öffentlich sichtbare Klasse, nämlich \texttt{XmlNodeStreamFactory}.
+				Die Klasse verfügt über drei statische Factory-Methoden
+				\begin{itemize}
+					\item \texttt{static XmlNodeStream createNewInstance(PositionString str);}
+					\item \texttt{static XmlNodeStream createNewInstance(Reader reader);}
+					\item \texttt{static XmlNodeStream createNewInstance(Reader reader, StreamPosition pos);}
+				\end{itemize}
+				Wobei die ersten beiden Methoden Wrapper für die letzte Methode darstellen.
 	
 		\subsection{Statement-Lexer}
 			\TODO

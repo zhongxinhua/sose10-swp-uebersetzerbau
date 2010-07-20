@@ -2,21 +2,27 @@ DIAS = flowchart.pdf
 DOTS = xml.pdf Ausgaben.pdf
 TARGETS = $(DIAS) $(DOTS)
 
-all: dots dias
-dots: $(DOTS) .PHONY
-dias: $(DIAS) .PHONY
+all: $(TARGETS)
+dots: $(DOTS)
+dias: $(DIAS)
 
 %.pdf: %.eps
 	epstopdf --outfile=$@ --nocompress --res=600 $<
 
 $(DIAS:pdf=eps): %.eps: %.dia
-	dia -e $@ $< -t eps-builtin -n
+	dia -t eps-builtin -n -e $@ $<
 
 $(DOTS:pdf=eps): %.eps: %.dot
-	dot -o $@ $< -Teps
+	dot -Teps -o $@ $<
 
 clean:
-	rm -f $(TARGETS)
-	rm -f $(TARGETS:pdf=eps)
+	$(RM) $(TARGETS)
+	$(RM) $(TARGETS:pdf=eps)
 
-.PHONY:
+clean-dias:
+	$(RM) $(DIAS)
+	$(RM) $(DIAS:pdf=eps)
+
+clean-dots:
+	$(RM) $(DOTS)
+	$(RM) $(DOTS:pdf=eps)
