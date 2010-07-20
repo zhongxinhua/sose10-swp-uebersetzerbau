@@ -6,7 +6,7 @@
 \usepackage{color}
 \usepackage[colorlinks=true,breaklinks=true,linkcolor=darkblue,urlcolor=darkblue]{hyperref}
 \usepackage{ngerman}
-\usepackage{times}
+\usepackage{libertine}
 \usepackage{graphicx}
 \usepackage{tocstyle}
 \usepackage{multicol}
@@ -52,10 +52,10 @@
 	\end{titlepage}
 	
 	\begin{abstract}
-		Das Softwareprojekt 2010 setzte sich zum Ziel, einen XML- nach Java-Source-Code-Übersetzter
+		Das Softwareprojekt 2010 setzte sich zum Ziel, einen XML- nach Java"=Source"=Code"=Übersetzter
 		zu schreiben.
 		
-		Dieses Dokument erklärt im Speziellen die Komponenten XML-Lexer, Statement-Lexer
+		Dieses Dokument erklärt im Speziellen die Komponenten XML"=Lexer, Statement"=Lexer
 		und die Symboltabelle. Es richtet sich an Entwickler und enthält deshalb gegebenenfalls
 		Jargon und versucht auch nicht, Sachverhalte zu vereinfachen.
 		
@@ -73,7 +73,7 @@
 	\parskip 7pt plus 5pt minus 3pt
 	\setcounter{page}{1}
 	\section{Einleitung}
-		Das Softwareprojekt Übersetzerbau 2010 machte es sich zur Aufgabe, eine selbst-erdachte Programmiersprache
+		Das Softwareprojekt Übersetzerbau 2010 machte es sich zur Aufgabe, eine selbst"=erdachte Programmiersprache
 		zu spezifizieren und einen Compiler für diese zu Implementieren.
 		
 		Die Projektgruppe, bestehend aus – in alphabetischer Ordnung –
@@ -83,15 +83,15 @@
 			Markus Rudolph,
 			René Kijewski und
 			Stefan Meißner,
-		entschied sich, eine XML-artige Eingabesprache zu benutzen, die
-		\href{http://java.sun.com/javase/6/}{Java-SE-6}-kompatiblen Sourcecode ausgibt.
+		entschied sich, eine XML"=artige Eingabesprache zu benutzen, die
+		\href{http://java.sun.com/javase/6/}{Java"=SE"=6}"=kompatiblen Sourcecode ausgibt.
 		Dementsprechend wurde auch Java 1.6 als Programmiersprache gewählt.
 		Als einheitliche Programmierungebung wurde \href{http://www.eclipse.org/galileo/}{Eclipse Galileo} verwandt.
 		Apache \href{http://subversion.apache.org/}{Subversion}, gehostet bei \href{http://dev.spline.de/}{Spline}, wurde als
 		Versionskontrollsystem benutzt. Der Quelltext kann von \link{https://dev.spline.de/svn/ss10-swp-uebersetzerbau/}
 		heruntergeladen werden.
 		
-		Ich übernahm die Komponenten XML- und Statement-Lexer, sowie die Implementierung einer Symboltabelle.
+		Ich übernahm die Komponenten XML"= und Statement"=Lexer, sowie die Implementierung einer Symboltabelle.
 		
 		Bei den von mir implementierten Teilprojekten achtete ich auf hohe Wiederverwendbarkeit
 		und versuchte, eine Benutzung besonders einfach zu gestalten. So legte ich größeren Wert darauf,
@@ -101,16 +101,16 @@
 		finden Sie weitere Informationen dazu.
 		
 		Um den Einstieg in die Nutzung zu Vereinfachen, verwandte ich ausgiebig die verbreitete Entwurfsmuster,
-		vorrangig das \href{http://c2.com/cgi/wiki?IteratorPattern}{\em Iterator-Patter} und die
-		\href{http://c2.com/cgi/wiki?FactoryMethodPattern}{\em Factory-Methode}.
-		Beide Pattern werden im Buch {\em Design Patterns: Elements of Reusable Object-Oriented Software}%
+		vorrangig das \href{http://c2.com/cgi/wiki?IteratorPattern}{\em Iterator"=Patter} und die
+		\href{http://c2.com/cgi/wiki?FactoryMethodPattern}{\em Factory"=Methode}.
+		Beide Pattern werden im Buch {\em Design Patterns: Elements of Reusable Object"=Oriented Software}%
 		\footnote{ISBN \href{https://portal.d-nb.de/opac.htm?method=simpleSearch&query=0201633612}{0-201-63361-2}}
 		beschrieben und sind vielen Entwicklern von objektorientiertem Code geläufig.
 		
 		Die einzelnen Komponenten trennen so weit wie möglich zwischen Interface und Implementierung.
 		Dies sollte es bei einer späteren Weiterarbeit am Projekt vereinfachen, die Komponenten
 		auszutauschen. Bei der Spezifikationsphase überlegten wir uns unter anderem, dass auch eine
-		Compilierung in Java-Bytecode nativ möglich sein sollte.%
+		Compilierung in Java"=Bytecode nativ möglich sein sollte.%
 		\footnote{Das heißt, dass wir nicht von \texttt{javac} abhängig sein wollten.}
 		Zudem sollte auch die Ausgabesprache auswechselbar sein, so dass nur das Kernstück,
 		der Syntaxbaum, sowie das Interface der weiteren Komponenten, also Symboltabelle und Builder,
@@ -127,14 +127,14 @@
 			}
 		\end{figure}
 		
-		Die Lexer-Komponenten benutzen jeweils einen Zeichenstrom als Eingabe. Die Rückgabedaten speichern die
+		Die Lexer"=Komponenten benutzen jeweils einen Zeichenstrom als Eingabe. Die Rückgabedaten speichern die
 		Stelle im Eingabestrom an der sie standen, so dass spätere Komponenten, wenn sie einen Fehler
 		in der Eingabe feststellen, eine geeignete Meldung samt Position ausgeben können.
 		Die Symboltabelle verwendet dasselbe Interface, um die Eingabeposition zu speichern, jedoch ist
 		die Bedeutung an dieser Stelle wahrscheinlich geringer als bei den Lexern.
 		
-		\subsection{XML-Lexer}
-			Der XML-Lexer {\em xmlNodeStream} vereinfacht die Arbeit des DOM-Parsers, indem er die syntaxtischen
+		\subsection{XML"=Lexer}
+			Der XML"=Lexer {\em xmlNodeStream} vereinfacht die Arbeit des DOM"=Parsers, indem er die syntaxtischen
 			Komponenten des Eingabestromes auftrennt, das heißt {\em tokenized}.
 			Die erkannten Komponenten sind Textknoten, Kommentare, Tags, Endtags, Attribute und Processing instructions.
 			
@@ -142,34 +142,34 @@
 			\footnote{\href{http://www.w3.org/TR/2008/REC-xml-20081126/}{Extensible Markup Language (XML) 1.0 (Fifth Edition)}}
 			Es wurden bewusst Eineinfachungen jedenüber dem W3-Standard vorgenommen. Unter anderem sind
 			nicht wohlgeformte Ausdrücke nach Art \verb|<tag attr="a < b"/>| erlaubt.
-			Dieses Beispiel wäre aufgrund des Kleiner-Als-Zeichens im Attributewert
+			Dieses Beispiel wäre aufgrund des Kleiner"=Als"=Zeichens im Attributewert
 			nach der Spezifikation verboten.\xmlNote{NT-AttValue}{AttValue}
 			
 			Die API des {\em xmlNodeStreams} ist an {\em StAX}, der \href{http://stax.codehaus.org/}{Streaming API for XML},
 			angelehnt. StAX hat sich seit der Spezifikation im \href{http://jcp.org/en/jsr/detail?id=173}{JSR 173} aus
-			dem Jahr 2006 als Standard für einfaches Parsen von XML-Eingaben etabliert.
+			dem Jahr 2006 als Standard für einfaches Parsen von XML"=Eingaben etabliert.
 			xmlNodeStream besitzt nicht dieselbe Mächtigkeit wie StAX und erfüllt in Folge dessen
-			nicht die komplette Spezifikation des W3-Consortiums, da der XML-Prolog\xmlNote{xmldoc}{prolog}
+			nicht die komplette Spezifikation des W3-Consortiums, da der XML"=Prolog\xmlNote{xmldoc}{prolog}
 			nicht als solcher verstanden wird:
 			\begin{itemize}
 				\item
-					Die XML-Deklaration\xmlNote{NT-XMLDecl}{XMLDecl} wird als
+					Die XML"=Deklaration\xmlNote{NT-XMLDecl}{XMLDecl} wird als
 					Processing instruction\xmlNote{NT-PI}{PI} verstanden.
 				\item
-					Die Doctype-Deklaration\xmlNote{NT-doctypedecl}{doctypedecl} wird nicht unterstützt.
+					Die Doctype"=Deklaration\xmlNote{NT-doctypedecl}{doctypedecl} wird nicht unterstützt.
 			\end{itemize}
-			Konkretere Informationen über den Informationsfluss stehen in der \hyperlink{XML-Lexer-API}{API-Referenz}.
+			Konkretere Informationen über den Informationsfluss stehen in der \hyperlink{XML-Lexer-API}{API"=Referenz}.
 			
-			Der XML-Lexer überprüft die Eingabe nicht auf Wohlgeformtheit, das heißt, auch
+			Der XML"=Lexer überprüft die Eingabe nicht auf Wohlgeformtheit, das heißt, auch
 			,,\verb|<a></b>|`` würde nicht nicht als Fehler erkannt. Dies ist eine bewusste Designentscheidung,
-			die einerseits den Overhead durch eine solche Überprüfung verhindern soll – der DOM-Parser
+			die einerseits den Overhead durch eine solche Überprüfung verhindern soll – der DOM"=Parser
 			führt eh über eine Überprüfung durch – und andererseits die Anwendungsmöglichkeiten der Implementierung
 			verbreitern soll: Gewöhnliche Webseiten sind selten wohlgeformtes XML. Dadurch,
 			dass {\em xmlNodeStream} agnostisch gegenüber Strukturfehlern ist, wäre er auch zum
 			Lexen von Internetseiten geeignet. Fehler wie fehlende abschließende Anführungszeichen werden
 			jedoch nicht übergangen, da sie eine aktive Fehlerkorrektur erforderten.
 			
-			{\em xmlNodeStream} implementiert das Iterator-Interface Javas, wodurch der Einstieg in die
+			{\em xmlNodeStream} implementiert das Iterator"=Interface Javas, wodurch der Einstieg in die
 			Benutzung vereinfacht werden soll.
 			
 			\subsubsection*{Beispiel}
@@ -179,7 +179,7 @@
 	Inhalt
 </module>
 				\end{lstlisting}
-				Die Eingabedatei obenstehende XML-Datei würde folgendermaßen erkannt:
+				Die Eingabedatei obenstehende XML"=Datei würde folgendermaßen erkannt:
 				\begin{itemize}
 					\item Processing instruction mit dem Namen \verb|xml| und Wert \verb|version="1.0"|.
 					\item Öffendes Tag mit dem Namen \verb|module|.
@@ -197,37 +197,37 @@
 				}
 			\end{figure}
 			
-		\subsection{Statement-Lexer}
-			Der Statement-Lexer hat eine ähnliche Aufgabe wie der XML-Lexer: Einen Eingabestrom in seine
+		\subsection{Statement"=Lexer}
+			Der Statement"=Lexer hat eine ähnliche Aufgabe wie der XML"=Lexer: Einen Eingabestrom in seine
 			Komponenten auftrennen. Das Lexen der Statements ist die Vorstufe zum Parsen.
 			
-			Der Statement-Lexer verwendet das Iterator-Interface, wobei die Rückgabedaten
+			Der Statement"=Lexer verwendet das Iterator"=Interface, wobei die Rückgabedaten
 			Tupel aus dem Typen des Datums und eventuell einem zugehörigen Wert, zum Beispiel bei Strings.
 			In der derzeitigen Implementierung gibt es 33 Arten von erkannten Token, sowie zwei
 			Statuscodes für das Eingabeende beziehungsweise bei lexikalisch fehlerhaften Eingaben.
 			Der Umfang der erkannten Eingabefehler ist gering; die Fehlererkennung geschieht im
-			{\em Statement-Parser}. Als Feher würde unter anderem ,,\verb|1a|`` erkannt; ,,\verb|a b c|`` hingegen nicht.
+			{\em Statement"=Parser}. Als Fehler würde unter anderem ,,\verb|1a|`` erkannt; ,,\verb|a b c|`` hingegen nicht.
 			
 			Die Syntax der Statements lehnt sich an Java\,SE\,6 an. Da Javas Operatoren nur ein oder
 			zwei Zeichen lang sind\footnote{Der Operator \texttt{{>}>{>}} wird nicht verstanden.} und es keine Zustände wie beim
-			Lexen von XML-Daten wird, wird keine Übergangstabelle benutzt, sondern ein \verb|switch|- und
-			\verb|if|-Konstrukt. Dies vereinfacht im Allgemeinen sowohl das Lesen und Schreiben des Lexers,
+			Lexen von XML"=Daten wird, wird keine Übergangstabelle benutzt, sondern ein \verb|switch|"= und
+			\verb|if|"=Konstrukt. Dies vereinfacht im Allgemeinen sowohl das Lesen und Schreiben des Lexers,
 			erschwert jedoch Spezialfälle. So wird zum Beispiel zum Erkennen der Token \verb|new| und
-			\verb|null| auf Tricks wie Push-Back-Buffer zurückgegriffen.
+			\verb|null| auf Tricks wie Push"=Back"=Buffer zurückgegriffen.
 			Ein entscheidender Vorteil ist jedoch, dass das Einlesen der Daten wesentlich schneller
-			als beim XML-Lexer geschieht.
+			als beim XML"=Lexer geschieht.
 	
 		\subsection{Symboltabelle}
 			\TODO
 	
 	\section[Arbeitsverlauf]{\hypertarget{Arbeitsverlauf}{Arbeitsverlauf}}
-		Die Komponente des XML-Lexern wurde bereits am 30. April begonnen und ist deshalb
-		wohl am ausführlichsten geprüft. Die Aufgabe des Statement-Lexers wiederum wurde
+		Die Programmierung des XML"=Lexers wurde bereits am 30. April begonnen; die Komponente ist deshalb
+		wohl am ausführlichsten getestet. Die Aufgabe des Statement"=Lexers wiederum wurde
 		am 19. Mai begonnen und die Arbeit an der Symboltabelle wurde am 28. Mai aufgenommen,
 		wudurch gerade für die letzte Aufgabe ein erheblicher Zeitdruck bestand.
 	
-		\subsection{XML-Lexer}
-			Die Arbeit am XML-Lexer verlief Verhältnismäßig zielgerichtet. In der Vorlesung
+		\subsection{XML"=Lexer}
+			Die Arbeit am XML"=Lexer verlief Verhältnismäßig zielgerichtet. In der Vorlesung
 			Übersetzerbau wurde ausgiebig erklärt, wie ein Parser geschrieben wird, so dass
 			sich die tatsächliche Umsetzung als einfach erwies. Probleme ergaben sich nur,
 			wenn ich Übergänge im Zustandsdiagramm (siehe \hyperlink{Uebergangsdiagramm_XML_Lexer}{Abbildung 2})
@@ -237,7 +237,7 @@
 			
 			\TODO
 	
-		\subsection{Statement-Lexer}
+		\subsection{Statement"=Lexer}
 			\TODO
 	
 		\subsection{Symboltabelle}
@@ -246,10 +246,10 @@
 	\section{Offene Baustellen}
 		\TODO
 	
-		\subsection{XML-Lexer}
+		\subsection{XML"=Lexer}
 			\TODO
 	
-		\subsection{Statement-Lexer}
+		\subsection{Statement"=Lexer}
 			\TODO
 	
 		\subsection{Symboltabelle}
@@ -258,16 +258,16 @@
 	\section[Abschlussbemerkungen]{\hypertarget{Abschlussbemerkungen}{Abschlussbemerkungen}}
 		\TODO
 		
-	\section{API-Referenz}
-		\subsection[XML-Lexer]{\hypertarget{XML-Lexer-API}{XML-Lexer}}
-			Der XML-Lexer trennt zwischen Interface und Implementierung.
+	\section{API"=Referenz}
+		\subsection[XML-Lexer]{\hypertarget{XML-Lexer-API}{XML"=Lexer}}
+			Der XML"=Lexer trennt zwischen Interface und Implementierung.
 			Das Package des Interfaces heißt \texttt{de.{\n}fu\_berlin.{\n}compilerbau.{\n}xmlNodeStream};
 			die Implementierung befindet sich unter \texttt{de.{\n}fu\_berlin.{\n}compilerbau.{\n}xmlNodeStream.{\n}impl}.
 			
 			\subsubsection*{Interface}
 				\begin{wrapfigure}{R}{0.3\textwidth}
 					\vspace{-22pt}
-					\caption{Mögliche Rückgabewerte des Statement-Lexers nach Zustand}
+					\caption{Mög\-li\-che Rück\-ga\-be\-wer\-te des State\-ment"=Le\-xers nach Zu\-stand}
 					\fbox{\centering
 						\includegraphics[width=0.3\textwidth]{graphiken/Ausgaben.pdf}
 					}
@@ -284,18 +284,18 @@
 				bitte das entsprechende JavaDoc für \texttt{XmlNode}. Ein \texttt{XmlNode} implementiert das Interface
 				\texttt{StreamPosition}.
 				
-				Die letzte Komponente des Interfaces des XML-Lexers stellt \texttt{XmlNodeStream} dar, welches
+				Die letzte Komponente des Interfaces des XML"=Lexers stellt \texttt{XmlNodeStream} dar, welches
 				angibt, dass die XmlNodeStreams das Interface \texttt{Iterable<{\n}XmlNode>}, \texttt{StreamPosition} und
 				\texttt{Closeable} erfüllen müssen.
 				
 				Wie in Abbildung 3 zu sehen, kann der XmlNodeStream nicht an jeder Stelle ein beliebiges Token zurückgeben.
-				So können unter anderem \texttt{NT\_ATTR} nur auf \texttt{NT\_ATTR} oder \texttt{NT\_TAG} folgen.
+				So kann unter anderem \texttt{NT\_ATTR} nur auf \texttt{NT\_ATTR} oder \texttt{NT\_TAG} folgen.
 				Bei der Benutzung von \texttt{XmlNodeStreamFactory} darf man sich darauf verlassen, dass dieser Contract
 				nicht verletzt wird.
 			
 			\subsubsection*{Implementierung}
 				Die Implementierung verfügt nur über eine öffentlich sichtbare Klasse, nämlich \texttt{XmlNodeStreamFactory}.
-				Die Klasse verfügt über drei statische Factory-Methoden
+				Die Klasse verfügt über drei statische Factory"=Methoden
 				\begin{itemize}
 					\item \texttt{static XmlNodeStream createNewInstance(PositionString str);}
 					\item \texttt{static XmlNodeStream createNewInstance(Reader reader);}
@@ -303,7 +303,7 @@
 				\end{itemize}
 				Wobei die ersten beiden Methoden Wrapper für die letzte Methode darstellen.
 	
-		\subsection{Statement-Lexer}
+		\subsection{Statement"=Lexer}
 			\TODO
 	
 		\subsection{Symboltabelle}
@@ -323,7 +323,7 @@
 			
 			Sollten Sie den Quelltext zu anderen Konditionen weiterverwenden wollen, so setzen Sie
 			sich bitte mit mir in Verbindung:
-			\href{mailto:rene.kijewski@fu-berlin.de?subject=[SWP_CP_2010]}{rene.kijewski@fu-berlin.de}.
+			\href{mailto:rene.kijewski@fu-berlin.de?subject=[SWP_CP_2010]}{rene.kijewski@fu"=berlin.de}.
 			
 			\subsubsection{Quelltext}
 				\begin{multicols}{3}
