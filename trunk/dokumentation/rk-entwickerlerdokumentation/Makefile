@@ -11,8 +11,8 @@ report.pdf: report.tex jhla4.sty graphiken.MAKE-SUB
 	$(RM) $(patsubst %.pdf,%.lof,$@)
 	$(RM) $(patsubst %.pdf,%.out,$@)
 	$(RM) $(patsubst %.pdf,%.toc,$@)
-	pdflatex $<
-	pdflatex $<
+	pdflatex -halt-on-error -interaction=errorstopmode $<
+	pdflatex -halt-on-error -interaction=errorstopmode $<
 
 clean: clean-temps clean-subs
 	$(RM) texput.log
