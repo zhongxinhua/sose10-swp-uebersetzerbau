@@ -76,7 +76,7 @@
 		Das Softwareprojekt Übersetzerbau 2010 machte es sich zur Aufgabe, eine selbst"=erdachte Programmiersprache
 		zu spezifizieren und einen Compiler für diese zu Implementieren.
 		
-		Die Projektgruppe, bestehend aus – in alphabetischer Ordnung –
+		Die Projektgruppe, bestehend aus -- in alphabetischer Ordnung --
 			Alexander Rau,
 			Ansgar Schneider,
 			Igor Merkulow,
@@ -117,8 +117,8 @@
 		unveränderlich wäre.
 		
 	\section{Teilprojekte}
-		Die einzelnen Teilprojekte sind für sich allein verwendbar – die Verzahnung
-		mit anderen Komponenten ist minimal –, da sie jeweils am Anfang der Bearbeitungskette stehen.
+		Die einzelnen Teilprojekte sind für sich allein verwendbar -- die Verzahnung
+		mit anderen Komponenten ist minimal --, da sie jeweils am Anfang der Bearbeitungskette stehen.
 		
 		\begin{figure}[ht]
 			\caption[Verlaufdiagramm]{Verlaufdiagramm (in diesem Dokument beschriebene Komponenten hervorgehoben)}
@@ -162,8 +162,8 @@
 			
 			Der XML"=Lexer überprüft die Eingabe nicht auf Wohlgeformtheit, das heißt, auch
 			,,\verb|<a></b>|`` würde nicht nicht als Fehler erkannt. Dies ist eine bewusste Designentscheidung,
-			die einerseits den Overhead durch eine solche Überprüfung verhindern soll – der DOM"=Parser
-			führt eh über eine Überprüfung durch – und andererseits die Anwendungsmöglichkeiten der Implementierung
+			die einerseits den Overhead durch eine solche Überprüfung verhindern soll -- der DOM"=Parser
+			führt eh über eine Überprüfung durch -- und andererseits die Anwendungsmöglichkeiten der Implementierung
 			verbreitern soll: Gewöhnliche Webseiten sind selten wohlgeformtes XML. Dadurch,
 			dass {\em xmlNodeStream} agnostisch gegenüber Strukturfehlern ist, wäre er auch zum
 			Lexen von Internetseiten geeignet. Fehler wie fehlende abschließende Anführungszeichen werden
@@ -225,23 +225,65 @@
 		wohl am ausführlichsten getestet. Die Aufgabe des Statement"=Lexers wiederum wurde
 		am 19. Mai begonnen und die Arbeit an der Symboltabelle wurde am 28. Mai aufgenommen,
 		wudurch gerade für die letzte Aufgabe ein erheblicher Zeitdruck bestand.
-	
+		
 		\subsection{XML"=Lexer}
-			Die Arbeit am XML"=Lexer verlief Verhältnismäßig zielgerichtet. In der Vorlesung
+			Die Arbeit am XML"=Lexer verlief verhältnismäßig zielgerichtet. In der Vorlesung
 			Übersetzerbau wurde ausgiebig erklärt, wie ein Parser geschrieben wird, so dass
 			sich die tatsächliche Umsetzung als einfach erwies. Probleme ergaben sich nur,
 			wenn ich Übergänge im Zustandsdiagramm (siehe \hyperlink{Uebergangsdiagramm_XML_Lexer}{Abbildung 2})
 			übersah, weshalb ich sehr schnell dazu überging, das Diagramm in der Sprache
 			\href{http://www.graphviz.org/doc/info/lang.html}{DOT} festzuhalten. Zeichnungen auf
 			dem Papier erwiesen sich nicht als sachdienlich.
+		
+			\TODO
+		
+		\subsection{Statement"=Lexer}
+			Der Statement"=Lexer wurde in kurzer Zeit geschrieben.
 			
 			\TODO
-	
-		\subsection{Statement"=Lexer}
-			\TODO
-	
+		
 		\subsection{Symboltabelle}
-			\TODO
+			Die Arbeit an der Symboltabelle erwies sind als kompliziert. Da die Aufgabe leider sehr spät erst
+			vergeben wurde und aufgrund der Anforderung, dass sie Typisierung beherrschen sollte, gehörte
+			die Symboltabelle planerisch zu den größten Komponenten.
+			
+			
+			Die Symboltabelle sollte zunächst für sämtlichen Zielsprachen gleich implementiert sein. Nachdem
+			ich mich jedoch weiter in die Thematik einlas, erwies sich das nicht als möglich, da die verschiedenen
+			Zielsysteme zu unterschiedlich sind. So haben verschiedene Programmiersprachen, selbst wenn man
+			sich auf objektorientierte Programmiersprachen beschränkt, wenig Gemeinsamkeiten. Als Beispiele gegenüber
+			Java sein die funktionale Programmiersprache \href{http://caml.inria.fr/ocaml/}{OCaml} und die prototypen"=basiere
+			Programmiersprache \href{http://www.ecma-international.org/publications/standards/Ecma-262.htm}{ECMAScript}
+			angeführt.
+			
+			Ich beschränkte mich auf die Umsetzung einer Symboltabelle, die Java 1.6 sowohl für die Ausgabe
+			nach Quelltext als auch Bytecode beherrt. Das Interface wiederum sollte so generisch gehalten werden,
+			dass später weitere Zielsysteme eingeführt werden könnten, wobei sich ein zu generischen Interface
+			als zu kompliziert -- und damit als unbenutzbar -- erwies. Herr Rudolf gab mir des Öfteren hinweise
+			auf Verbesserungsmöglichkeiten am Interface, die mir zuvor nicht einfielen. Wiederum war das Interface
+			dadurch während der gesamten Entwicklungszeit einem ständigen Wandel unterlegen, wobei ich mir eigentlich
+			eine schnelle Festlegung wünschte, gegen die ich die konkrete Implementierung entwickeln könnte.
+			Retrospektiv kann ich sagen, dass ich mich anfangs zu wenig mit meinen anderen Teammitgliedern
+			zusammengesetzt habe und deshalb nicht die Fülle der Anforderungen kannte.
+			
+			Bei der Programmierung an der Symboltabelle habe ich einige wertvolle Kenntnisse über die Interna
+			Javas gewonnen. Gerade bei der Reflexion"=API, die einem Programm zur Laufzeit Informationen über
+			das Klassen"= beziehungsweise Typsystem geben soll, habe ich erhebliche Wissensprünge gemacht,
+			die ich auch für andere Kurse nutzen konnte.\footnote{Siehe zum Beispiel \href
+			{https://dev.spline.de/svn/xmlproject10-group-x/trunk/controller/src/java/de/spline/dev/xmlproject10_group_x/imports/xmlContainers/Container.java}
+			{\texttt{Containers.java}} des XML"=Technologien"=Projekts} Leider erwies sich die sehr einfach zu
+			benutzende Reflexions"=API als Haupt"=Flaschenhals des gesamten Projektes, weshalb ich einige ,,halbherzige``
+			Behelfsmaßnahmen eingebaut habe -- {\em halbherzog} deshalb, weil ich das Problem nur versteckt und
+			nicht beseitigt habe. Die Reflexions"=API ist leider äußerst langsam und verbraucht große Mengen an
+			RAM"=Speicher, da die Inspizierten Klassen, sowie sämtliche (transitiven) Abhängigkeiten in den Speicher
+			geladen werden, wobei eigentlich nur die Struktur der Klasse bedeutsam für die Erfüllung der Aufgabe wäre.
+			
+			Als erste Behelfsmaßnahme werden nur noch Klassen in die Symboltabelle gelesen, die auch von außen sichtbar
+			sind, das heißt entweder \texttt{public} oder \texttt{protected} sind. Default"=Private und \texttt{private}"=Klassen
+			werden nicht mehr eingelesen. Jedoch offenbart diese Beschreibung bereits das größte Problem dieser Umsetzung:
+			Nur weil Klassen nicht adressierbar {\em wäre}, gilt das nicht für zum Beispiel Rückgabewerte. Als weitere
+			Maßnahme zum Beschleunigen habe ich das Laden parallelisiert, wodurch sich -- gefühlt --ein fast linearer Anstieg
+			der Geschwindigkeit mit der Zahl der Benutzen Rechenkernen ergab.
 	
 	\section{Offene Baustellen}
 		\TODO
@@ -253,9 +295,39 @@
 			\TODO
 	
 		\subsection{Symboltabelle}
-			\TODO
+			Um das Problem der hohen Ladezeit zu umgehen und den Speicherbedarf minimal zu halten wären zwei Ansätze,
+			idealer Weise kombiniert, gangbar.
+			\begin{itemize}
+				\item Die Reflexions"=API ist zu mächtig und schwerfällig. Ein manuelles Auslesen der klassenstruktur
+					auf Objekt"=Code"=Ebene ließe es zu, dass man unnötige Informationen nicht im Speicher hält beziehungsweise
+					gar nicht erst einliest.
+				\item \TODO
+			\end{itemize}
+			
+			Auch im weiteren Programmier"= und Testverlauf erwies sich, dass die Symboltabelle optimiert werden muss, um
+			nutzbar zu sein, da die Ladezeit auf Windows"=Laptops mehrere Minuten betrug. So machte es -- ich muss gestehen,
+			zu meiner Verwunderung -- einen enormen Unterschied, ob eine Stringeingabe gegen $10$ oder $\log 10$ Strings verglichen
+			wird, letzteres durch die Verwendung eines \verb|Set<String>|. Ein derzeit noch bestehendes Nadelöhr stellt die
+			Benutzung von \texttt{TreeMap}s dar, die ich an vielen Stellen verwende, da sie im Gegensatz zu \texttt{HashMap}s
+			nicht die Gefahr von Kollisionen in sich birgt. Vermutlich ist die Datenmenge klein genug, so dass es zu keinen
+			Kollisionen der Streuwerte käme.
 	
 	\section[Abschlussbemerkungen]{\hypertarget{Abschlussbemerkungen}{Abschlussbemerkungen}}
+		Eine Lexion des Projektes war, dass Besprechungen notwendig sind. Noch bevor man eine Idee umsetzt, sollte man
+		sich mit den betroffenen Teammitgliedern zusammen setzten und um gemeinsam die Implikationen abzuschätzen
+		oder Verbesserungsvorschläge einholen zu können. Ebenso lassen sich Beschreibungen wesentlich besser vis"=à"=vis
+		vermitteln als das mit Texten möglich wäre. Als Programmierer ist man häufig zu tief in der Materie drin, als dass
+		man sinnvolle Fragen abschätzen könnte, die in eine Dokumentation zu schreiben wären, wodurch zudem viel Zeit
+		mit dem Schreiben unnötiger Kommentare verloren geht. Ich denke, dass Pair"=Programming das Mittel der Wahl ist,
+		wenn es sich zeitlich organisieren lässt. Die Kommunikation über Chat oder Telefon kann leider nicht dasselbe leisten.
+		
+		Die wöchentlichen Teambesprechungen habe ich als reine Zeitverschwendung empfunden, da wöchentliche
+		Berichte gerade in der Anfangsphase eines Projektes -- über die das Projekt aufgrund des Zeitdrucks
+		auch nicht heraus kam -- viel zu selten sind und man zu viele für einen selbst unrelevante Informationen
+		anhören muss, so dass das Aufmerksamkeitsfenster bei relevanten Dingen bereits wieder geschlossen
+		sein kann. Dass die Teambesprechungen in unserem Fall um acht Uhr morgens waren, war der Aufmerksamkeit
+		ebenso nicht zuträglich.
+		
 		\TODO
 		
 	\section{API"=Referenz}
