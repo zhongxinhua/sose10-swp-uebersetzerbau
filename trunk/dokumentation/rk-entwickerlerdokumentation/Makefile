@@ -4,15 +4,13 @@ SUBS = graphiken.MAKE-SUB
 all: $(TARGETS) $(SUBS)
 
 report.pdf: report.tex jhla4.sty graphiken.MAKE-SUB
+report.aux report.lof report.lol report.toc: graphiken.MAKE-SUB
 
-%.pdf: %.tex
-	$(RM) $(patsubst %.pdf,%.aux,$@)
-	$(RM) $(patsubst %.pdf,%.lol,$@)
-	$(RM) $(patsubst %.pdf,%.lof,$@)
-	$(RM) $(patsubst %.pdf,%.out,$@)
-	$(RM) $(patsubst %.pdf,%.toc,$@)
+%.pdf: %.tex %.aux %.lof %.lol %.toc
 	pdflatex -halt-on-error -interaction=errorstopmode $<
-	pdflatex -halt-on-error -interaction=errorstopmode $<
+
+%.aux %.lof %.lol %.toc: %.tex
+	pdflatex -halt-on-error -interaction=errorstopmode -draftmode $<
 
 clean: clean-temps clean-subs
 	$(RM) texput.log

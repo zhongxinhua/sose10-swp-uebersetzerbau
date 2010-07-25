@@ -52,13 +52,11 @@
 	\end{titlepage}
 	
 	\begin{abstract}
-		Das Softwareprojekt 2010 setzte sich zum Ziel, einen XML- nach Java"=Source"=Code"=Übersetzter
+		Das Softwareprojekt Übersetzerbau 2010 setzte sich zum Ziel, einen XML- nach Java"=Source"=Code"=Übersetzter
 		zu schreiben.
-		
 		Dieses Dokument erklärt im Speziellen die Komponenten XML"=Lexer, Statement"=Lexer
 		und die Symboltabelle. Es richtet sich an Entwickler und enthält deshalb gegebenenfalls
 		Jargon und versucht auch nicht, Sachverhalte zu vereinfachen.
-		
 		Die entsprechende Kundenpräsentation, die sich nicht an Programmierer richtet, steht unter
 		\link{https://dev.spline.de/svn/ss10-swp-uebersetzerbau/trunk/dokumentation/rk-kundenpraesentation/rk-kundenpraesentation.pdf}
 		zur Verfügung.
@@ -121,7 +119,7 @@
 		mit anderen Komponenten ist minimal --, da sie jeweils am Anfang der Bearbeitungskette stehen.
 		
 		\begin{figure}[ht]
-			\caption[Verlaufdiagramm]{Verlaufdiagramm (in diesem Dokument beschriebene Komponenten hervorgehoben)}
+			\caption[Verlaufdiagramm]{\hypertarget{Verlaufdiagramm}{Verlaufdiagramm (in diesem Dokument beschriebene Komponenten hervorgehoben)}}
 			\fbox{\centering
 				\includegraphics[width=\textwidth]{graphiken/flowchart.pdf}
 			}
@@ -133,7 +131,7 @@
 		Die Symboltabelle verwendet dasselbe Interface, um die Eingabeposition zu speichern, jedoch ist
 		die Bedeutung an dieser Stelle wahrscheinlich geringer als bei den Lexern.
 		
-		\subsection{XML"=Lexer}
+		\subsection[XML"=Lexer]{\hypertarget{Teilprojekte_XML_Lexer}{XML"=Lexer}}
 			Der XML"=Lexer {\em xmlNodeStream} vereinfacht die Arbeit des DOM"=Parsers, indem er die syntaxtischen
 			Komponenten des Eingabestromes auftrennt, das heißt {\em tokenized}.
 			Die erkannten Komponenten sind Textknoten, Kommentare, Tags, Endtags, Attribute und Processing instructions.
@@ -141,7 +139,7 @@
 			Als Eingabeformat wird XML 1.0 verwendet.%
 			\footnote{\href{http://www.w3.org/TR/2008/REC-xml-20081126/}{Extensible Markup Language (XML) 1.0 (Fifth Edition)}}
 			Es wurden bewusst Eineinfachungen jedenüber dem W3-Standard vorgenommen. Unter anderem sind
-			nicht wohlgeformte Ausdrücke nach Art \verb|<tag attr="a < b"/>| erlaubt.
+			nicht wohlgeformte Ausdrücke nach Art ,,\verb|<tag attr="a < b"/>|`` erlaubt.
 			Dieses Beispiel wäre aufgrund des Kleiner"=Als"=Zeichens im Attributewert
 			nach der Spezifikation verboten.\xmlNote{NT-AttValue}{AttValue}
 			
@@ -254,7 +252,8 @@
 			sich auf objektorientierte Programmiersprachen beschränkt, wenig Gemeinsamkeiten. Als Beispiele gegenüber
 			Java sein die funktionale Programmiersprache \href{http://caml.inria.fr/ocaml/}{OCaml} und die prototypen"=basiere
 			Programmiersprache \href{http://www.ecma-international.org/publications/standards/Ecma-262.htm}{ECMAScript}
-			angeführt.
+			angeführt, deren Klassenkonzept keine Gemeinsamkeiten mit Java aufweisen, jedoch sinnvolle Zielsprachen
+			wären.
 			
 			Ich beschränkte mich auf die Umsetzung einer Symboltabelle, die Java 1.6 sowohl für die Ausgabe
 			nach Quelltext als auch Bytecode beherrt. Das Interface wiederum sollte so generisch gehalten werden,
@@ -273,7 +272,7 @@
 			{https://dev.spline.de/svn/xmlproject10-group-x/trunk/controller/src/java/de/spline/dev/xmlproject10_group_x/imports/xmlContainers/Container.java}
 			{\texttt{Containers.java}} des XML"=Technologien"=Projekts} Leider erwies sich die sehr einfach zu
 			benutzende Reflexions"=API als Haupt"=Flaschenhals des gesamten Projektes, weshalb ich einige ,,halbherzige``
-			Behelfsmaßnahmen eingebaut habe -- {\em halbherzog} deshalb, weil ich das Problem nur versteckt und
+			Behelfsmaßnahmen eingebaut habe -- {\em halbherzig} deshalb, weil ich das Problem nur versteckt und
 			nicht beseitigt habe. Die Reflexions"=API ist leider äußerst langsam und verbraucht große Mengen an
 			RAM"=Speicher, da die Inspizierten Klassen, sowie sämtliche (transitiven) Abhängigkeiten in den Speicher
 			geladen werden, wobei eigentlich nur die Struktur der Klasse bedeutsam für die Erfüllung der Aufgabe wäre.
@@ -282,35 +281,68 @@
 			sind, das heißt entweder \texttt{public} oder \texttt{protected} sind. Default"=Private und \texttt{private}"=Klassen
 			werden nicht mehr eingelesen. Jedoch offenbart diese Beschreibung bereits das größte Problem dieser Umsetzung:
 			Nur weil Klassen nicht adressierbar {\em wäre}, gilt das nicht für zum Beispiel Rückgabewerte. Als weitere
-			Maßnahme zum Beschleunigen habe ich das Laden parallelisiert, wodurch sich -- gefühlt --ein fast linearer Anstieg
+			Maßnahme zum Beschleunigen habe ich das Laden pa\-ral\-le\-li\-siert, wodurch sich -- gefühlt -- ein fast linearer Anstieg
 			der Geschwindigkeit mit der Zahl der Benutzen Rechenkernen ergab.
 	
 	\section{Offene Baustellen}
-		\TODO
+		Leider blieben aufgrund der geringen Projektdauer noch einige Komponenten fehlerhaft oder unvollständig.
+		Jene Verbesserungsvorschläge, die mir einfielen, hielt ich im \href
+		{https://dev.spline.de/svn/ss10-swp-uebersetzerbau/trunk/dokumentation/Offene\%20Baustellen.txt}
+		{\texttt{Offene Baustellen.txt}} beziehungsweise als \texttt{TODO}s an der Entsprechenden Stelle im
+		Quelltext fest. Die einzelnen Teilprojekte sind noch nicht ausreichend durch Unittests überprüft worden.
+		Bei einer Weiterarbeit an dem Projekt täten folgende Programmierer gut daran, zuerst Blackbox-Text
+		der einzelnen Komponenten durchzuführen, um eventuelle Verstöße gegen das Interface festzustellen.
 	
 		\subsection{XML"=Lexer}
-			\TODO
+			Der XML"=Lexer steht an erster Stelle in der des \hyperlink{Verlaufdiagramm}{Arbeitsablaufes} und kann deshalb,
+			trotz des Fehlens formeller Unittests als überprüft betrachtet werden. Eventuelle Fehler hätten sich
+			beim Gebrauch zeigen sollen.
+			
+			Offen ist noch die komplette Implementierung des XML"=1.0"=Standards, wie bereits
+			\hyperlink{Teilprojekte_XML_Lexer}{oben erwähnt}, wobei meines Erachtens der Mehrwert
+			durch die vollständige Implementierung des Standars nicht der Aufwand rechtfertigen
+			würde.
 	
 		\subsection{Statement"=Lexer}
-			\TODO
+			Der Statement"=Lexer enthält noch einen dokumentierten Fehler, dessen Ursache noch nicht ausgemacht werden konnte.
+			Der Bezeichner ,,\texttt{nul}`` ist nicht erlaubt, was mit der Implementierung der Erkennung des Keywords
+			\texttt{null} zusammenhängen wird. Das Erkennen der Schlüsselwörter ist derzeit suboptimal implementiert, da
+			mir leider bei bei der Arbeit an der Symboltabelle ein besserer Algorithmus einfiel.
+			
+			Derzeit werden wird die Eingabe mit einem Pushback"=Buffer eingelesen. Sollten Zeichen gelesen werden,
+			die nicht zu dem derzeitigen Token gehören, werden sie wieder in den Eingabestrom zurückgeschrieben.
+			Sollte nur ein Zeichen zurückgeschrieben werden müssen, arbeitet diese Methode performant und ist zudem
+			einfach zu implementieren. Sollten jedoch mehr Zeichen zurückzuschreiben sein, so kann sich diese Methode
+			als kompliziert zu warten erweisen. Zuerst schrieb ich einen Pushback"=Buffer mit einem Zeichen als
+			Pushback und schrieb ihn im weiteren Arbeitsverlauf zu einem allgemeinen Puffer um, in dem man beliebig
+			viele Zeichen zurückschreiben kann. Vermutlich ist mit dabei ein Fehler unterlaufen, der in den Beobachtung
+			resultiert, dass der Bezeichner ,,\texttt{nul}`` nicht erlaubt ist.
+			
+			Eine sinnvollere Implementierung als die gleichzeitige Überprüfung, ob in der Eingabe ein Identifier oder
+			ein Schlüsselwort steht, wäre, dass zuerst nur Identifier gelesen werden und, nachdem ein vollständiges
+			Token gelesen wurde, überprüft wird, ob dieses zu einem Schlüsselwort wie \texttt{null} gehört.
 	
 		\subsection{Symboltabelle}
+			Im weiteren Programmier"= und Testverlauf erwies sich, dass die Symboltabelle optimiert werden muss, um
+			nutzbar zu sein, da die Ladezeit auf Windows"=Laptops mehrere Minuten betrug. So machte es zum Beispiel -- und zwar in einem Maße,
+			das mich selbst erstaunt hat -- einen Unterschied, ob eine Stringeingabe gegen $10$ oder $\log 10$ Strings verglichen
+			wird, letzteres durch die Verwendung eines \verb|Set<String>|. Häufig ist der iterative Vergleich von von kleinen
+			Mengen von Werten, hier zirka zehn, schneller als ein optimierter, der in $\textsf O\!\left(\log n\right)$ arbeitet,
+			jedoch scheint der Vergleich von Strings in Java um mehrere Zehnerpotenzen langsamer als bei C zu sein.
+			
 			Um das Problem der hohen Ladezeit zu umgehen und den Speicherbedarf minimal zu halten wären zwei Ansätze,
 			idealer Weise kombiniert, gangbar.
 			\begin{itemize}
-				\item Die Reflexions"=API ist zu mächtig und schwerfällig. Ein manuelles Auslesen der klassenstruktur
+				\item
+					Die Reflexions"=API ist zu mächtig und schwerfällig. Ein manuelles Auslesen der klassenstruktur
 					auf Objekt"=Code"=Ebene ließe es zu, dass man unnötige Informationen nicht im Speicher hält beziehungsweise
 					gar nicht erst einliest.
-				\item \TODO
+				\item
+					Ein Nadelöhr stellt die
+					Benutzung von \texttt{TreeMap}s dar, die ich an vielen Stellen verwende, da sie im Gegensatz zu \texttt{HashMap}s
+					nicht die Gefahr von Kollisionen in sich bergen. Vermutlich ist die Datenmenge klein genug, so dass es zu keinen
+					Kollisionen der Streuwerte käme. Eine Überprüfung dieser Annahme wäre jedoch erforderlich.
 			\end{itemize}
-			
-			Auch im weiteren Programmier"= und Testverlauf erwies sich, dass die Symboltabelle optimiert werden muss, um
-			nutzbar zu sein, da die Ladezeit auf Windows"=Laptops mehrere Minuten betrug. So machte es -- ich muss gestehen,
-			zu meiner Verwunderung -- einen enormen Unterschied, ob eine Stringeingabe gegen $10$ oder $\log 10$ Strings verglichen
-			wird, letzteres durch die Verwendung eines \verb|Set<String>|. Ein derzeit noch bestehendes Nadelöhr stellt die
-			Benutzung von \texttt{TreeMap}s dar, die ich an vielen Stellen verwende, da sie im Gegensatz zu \texttt{HashMap}s
-			nicht die Gefahr von Kollisionen in sich birgt. Vermutlich ist die Datenmenge klein genug, so dass es zu keinen
-			Kollisionen der Streuwerte käme.
 	
 	\section[Abschlussbemerkungen]{\hypertarget{Abschlussbemerkungen}{Abschlussbemerkungen}}
 		Eine Lexion des Projektes war, dass Besprechungen notwendig sind. Noch bevor man eine Idee umsetzt, sollte man
@@ -376,7 +408,29 @@
 				Wobei die ersten beiden Methoden Wrapper für die letzte Methode darstellen.
 	
 		\subsection{Statement"=Lexer}
-			\TODO
+			Der Statement"=Lexer trennt zwischen Interface und Implementierung.
+			Das Package des Interfaces heißt \texttt{de.{\n}fu\_berlin.{\n}compilerbau.{\n}statementLexer};
+			die Implementierung befindet sich unter \texttt{de.{\n}fu\_berlin.{\n}compilerbau.{\n}statementLexer.{\n}impl}.
+			
+			Das Interface definiert in \texttt{TokenType.java} fünfunddreißig verschiedene Arten von gelesenen Tokens,
+			wobei \texttt{EOF} und \texttt{ERROR} Statusmeldungen darstellen. Die Tokenarten orientieren sich
+			an der Grammatik Javas und enthalten auch keine eigenen Elemente. Jedes gelesene Token wird in einem
+			\texttt{StatementNode} zurückgegeben, wobei ein Node ein Tupel aus dem Typen und optional einem Wert
+			darstellt.
+			Tokens tragen nur dann einen Wert, wenn sie vom Typ \texttt{ID}, \texttt{STRING}, \texttt{INT} oder
+			\texttt{REAL} sind. Zum Auslesen der Werte gibt es die Methoden
+			\begin{itemize}
+				\item \texttt{Object getValue() throws IllegalAccessException;}
+				\item \texttt{Number getNumber() throws IllegalAccessException;}
+				\item \texttt{CharSequence getString() throws IllegalAccessException;}
+			\end{itemize}
+			Eine \texttt{IllegalAccessException} wird geworfen, wenn das Token keinen (entsprechenden)
+			Wert enthält. \texttt{getNumber()} enthält nur für \texttt{INT} und \texttt{REAL} einen Wert;
+			\texttt{getString()} wiederum nur für \texttt{ID} und \texttt{STRING}.
+			
+			Das Tokenisieren geschieht über die Factory"=Methode \texttt{StatementLexer.tokenize(PositionCharacterStream)},
+			wobei der Rückgabewert ein \texttt{Iterable<StatementNode>} ist und somit über die Methoden \texttt{next()} und
+			\texttt{hasNext()} angesprochen werden kann.
 	
 		\subsection{Symboltabelle}
 			\TODO
