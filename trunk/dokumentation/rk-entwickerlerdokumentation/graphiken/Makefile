@@ -1,4 +1,4 @@
-DIAS = flowchart.pdf
+DIAS = flowchart.pdf Symboltable-inheritance.pdf
 DOTS = xml.pdf Ausgaben.pdf
 SVGS = Fub-logo.pdf
 TARGETS = $(DIAS) $(DOTS) $(SVGS)

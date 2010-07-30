@@ -119,7 +119,8 @@
 		mit anderen Komponenten ist minimal --, da sie jeweils am Anfang der Bearbeitungskette stehen.
 		
 		\begin{figure}[ht]
-			\caption[Verlaufdiagramm]{\hypertarget{Verlaufdiagramm}{Verlaufdiagramm (in diesem Dokument beschriebene Komponenten hervorgehoben)}}
+			\caption[Verlaufdiagramm]
+				{\hypertarget{Verlaufdiagramm}{Verlaufdiagramm (in diesem Dokument beschriebene Komponenten hervorgehoben)}}
 			\fbox{\centering
 				\includegraphics[width=\textwidth]{graphiken/flowchart.pdf}
 			}
@@ -245,7 +246,6 @@
 			vergeben wurde und aufgrund der Anforderung, dass sie Typisierung beherrschen sollte, gehörte
 			die Symboltabelle planerisch zu den größten Komponenten.
 			
-			
 			Die Symboltabelle sollte zunächst für sämtlichen Zielsprachen gleich implementiert sein. Nachdem
 			ich mich jedoch weiter in die Thematik einlas, erwies sich das nicht als möglich, da die verschiedenen
 			Zielsysteme zu unterschiedlich sind. So haben verschiedene Programmiersprachen, selbst wenn man
@@ -322,7 +322,7 @@
 			ein Schlüsselwort steht, wäre, dass zuerst nur Identifier gelesen werden und, nachdem ein vollständiges
 			Token gelesen wurde, überprüft wird, ob dieses zu einem Schlüsselwort wie \texttt{null} gehört.
 	
-		\subsection{Symboltabelle}
+		\subsection[Symboltabelle]{\hypertarget{Offene_Baustellen_Symboltabelle}{Symboltabelle}}
 			Im weiteren Programmier"= und Testverlauf erwies sich, dass die Symboltabelle optimiert werden muss, um
 			nutzbar zu sein, da die Ladezeit auf Windows"=Laptops mehrere Minuten betrug. So machte es zum Beispiel -- und zwar in einem Maße,
 			das mich selbst erstaunt hat -- einen Unterschied, ob eine Stringeingabe gegen $10$ oder $\log 10$ Strings verglichen
@@ -357,10 +357,38 @@
 		Berichte gerade in der Anfangsphase eines Projektes -- über die das Projekt aufgrund des Zeitdrucks
 		auch nicht heraus kam -- viel zu selten sind und man zu viele für einen selbst unrelevante Informationen
 		anhören muss, so dass das Aufmerksamkeitsfenster bei relevanten Dingen bereits wieder geschlossen
-		sein kann. Dass die Teambesprechungen in unserem Fall um acht Uhr morgens waren, war der Aufmerksamkeit
+		sein kann. Dass die Teambesprechungen in unserem Fall um acht Uhr morgens stattfanden, war der Aufmerksamkeit
 		ebenso nicht zuträglich.
 		
-		\TODO
+		Nichtsdestoweniger hat das Projekt Spaß gemacht, wobei leider einige -- meines Erachtens eklatante -- Fehler in
+		der Planung gemacht wurden. So haben wir viel zu viel Zeit damit aufgewendet, Lexer und Parser zu schreiben, wobei
+		es zu diesem Zwecke bereits viele gute Open"=Source Tools gäbe, die wir hätten stattdessen verwenden sollen.
+		Tatsächlich habe ich für die Verwendung einer XML"=ähnlichen Sprache optiert, damit wir einen vorhandene
+		DOM"=Parser hätten benutzen können.
+		
+		Ich für meinen Teil hatte mir erhofft, mehr über die Optimierung von Zwischencode zu lernen; andere Projektmitglieder
+		wiederum wollten eine Programmiersprache mit neuartigen Konzepten schaffen, wobei ich gerade Herrn Rudolfs Konzept einer
+		Zustandsmaschine interessant fand. Ebenso hörte sich das Konzept einer einsteigerfreundlichen Programmiersprache gut an.\footnote
+		{Ich muss gestehen, dass ich den Namen des Diplomstudenten vergessen habe.}
+		Retrospektiv muss ich sagen, dass wir uns als Gruppe zu wenig Zeit genommmen haben, uns über die Möglichkeiten
+		klarzuwerden. Leider haben wir die Konzeptphase zu schnell abschließen wollen, wobei ich jedoch hoffe, so einen
+		Fehler in Zukunft nicht mehr zu machen.
+		
+		Zur Eskalation am Ende des Projektes hat meinerseits gerade geführt, dass das Projekt nicht die Dinge umfasste,
+		die wir uns am Anfang vorgestellt haben. Ich wollte Probleme offen ansprechen, um sie eventuell besser angehen zu
+		können -- Probleme, die nicht angesprochen werden, werden sich nur vergrößern. Leider ist mein Ton wohl zu aggressiv
+		rübergekommen, wodurch ich jene Problem wohl nur noch verstärkt habe.
+		
+		Ferner hat jedoch die strikte Trennung zwischen ,,Management`` und den Programmieren zur Eskalation beigetragen
+		oder hat sie erst möglich gemacht. Es bestand ein großes Misstrauen zwischen mir und dem ,,Management``,
+		unter anderem geschuldet dadurch, dass uns nicht mitgeteilt wurde, was in den Wochenbesprechungen zwischen den
+		Teamleitern und Frau Dr. Fehr beredet wurde, sowie dass uns Programmierern die Dokumentationen und Berichte
+		nicht ausgehängigt wurde, als wir danach fragten.
+		
+		Ich denke, dass es für weitere Softwareprojekte wichtig ist, die Teamleitung dazu anzuhalten, sich auch in die
+		Programmierung einzubringen, da ansonsten die Stimmung {\em unweigerlich} kippen {\em muss}. Dennoch denke ich,
+		dass ich durch dieses Softwareprojekt eine Erfahrung fürs Leben gemacht habe --- mehr als es ein Besuch der
+		\href{https://www.inf.fu-berlin.de/w/SE/VorlesungSoftwaretechnik2008}{Vorlesung Softwaretechnik} je könnte.
 		
 	\section{API"=Referenz}
 		\subsection[XML-Lexer]{\hypertarget{XML-Lexer-API}{XML"=Lexer}}
@@ -370,12 +398,10 @@
 			
 			\subsubsection*{Interface}
 				\begin{wrapfigure}{R}{0.3\textwidth}
-					\vspace{-22pt}
 					\caption{Mög\-li\-che Rück\-ga\-be\-wer\-te des State\-ment"=Le\-xers nach Zu\-stand}
 					\fbox{\centering
 						\includegraphics[width=0.3\textwidth]{graphiken/Ausgaben.pdf}
 					}
-					\vspace{-30pt}
 				\end{wrapfigure}
 				
 				Das Interface defininiert in \texttt{NodeType.java} die Arten der zu erkennenden Knoten.
@@ -433,7 +459,83 @@
 			\texttt{hasNext()} angesprochen werden kann.
 	
 		\subsection{Symboltabelle}
-			\TODO
+			Das Interface der Symboltabelle liegt im Package \texttt{de.{\n}fu\_berlin.{\n}compilerbau.{\n}symbolTable}.
+			Die Implementierung ist -- wie der eng verbundene Annotator -- abhängig vom Zielsystem.\footnote
+			{Angemerkt sei hierbei, dass die Implementierungen des Annotators und der Symboltabelle nicht von
+			der konkreten anderen Implementierung abhängig sind.}
+			Meine Implementierung der Symboltabelle hat als Zielsystem Java 1.6. Die konkrete Implementierung
+			liegt in \texttt{de.{\n}fu\_berlin.{\n}compilerbau.{\n}symbolTable.{\n}java}. Die Ausnahmebehandlungsklassen
+			liegen in \texttt{de.{\n}fu\_berlin.{\n}compilerbau.{\n}symbolTable.{\n}exceptions}. Die Exceptions sind
+			ihrerseits unabhängig vom Zielsystem.
+			
+			Die Aufbau der Symboltabelle ist verhältnismäßig komplex. Um die Benutzung zu vereinfachen, habe ich
+			auf ein Factory"=Pattern gesetzt. Aus dem Paket der Implementierung ist nur die Klasse von \texttt{RuntimeFactory}
+			von außen sichtbar. Sämtliche anderen Klassen sind package-private. Diese Klasse wiederum hat nur eine
+			public Methode:
+			\begin{itemize}
+				\item \verb|static Runtime newRuntime(URL[] classpath, URL rtJar)|
+			\end{itemize}
+			Mit dem Parameter \texttt{classpath} kann eine Liste mit JARs übergeben werden, deren Interface bei der Kompilierung
+			verfügbar sein soll. Die Liste entspricht dem Parameter \texttt{-classpath} von \texttt{javac}.
+			Die \texttt{rt.jar} wiederum enthält das Basissystem Javas, vornehmlich die Klassen in \texttt{java.lang}.
+			Aufgrund der Benutzung der Reflexions"=API (siehe Abschnitt unter ,,\hyperlink{Offene_Baustellen_Symboltabelle}{Offene Baustellen}``)
+			muss die übergebene \texttt{rt.jar} dieselbe sein, die die JVM des Compilers verwendet.
+			Dieses Problem durch die Abkehr von der Reflexions"=API behoben werden.
+			
+			\begin{wrapfigure}{R}{0.5\textwidth}
+				\caption[Vererbungshierarchie der Symbole]{Vererbungshierarchie der Symbole: \newline
+					Factories gelblich hinterlegt \newline
+					Metaklassen bläulich hinterlegt \newline
+					qualified Symbols grün umrandet}
+				\fbox{\centering
+					\includegraphics[width=0.5\textwidth]{graphiken/Symboltable-inheritance.pdf}
+				}
+			\end{wrapfigure}
+			
+			Jedes Symbol hat einen Symboltypen. Die Symboltypen sind in der Klasse \texttt{SymbolType} definiert.
+			Die vier bläulich hintergelben Interfaces in der Abbildung 4 haben keinen äquivalenten Symboltyp -- sie sind
+			reine Metaklassen, die nur ein gemeinsames Interface der erbenden Klassen zusammenfassen, wobei
+			es jedoch keine tatsächlichen Instanzen dieser Interfaces geben kann. Alle in der Abbildung grün umrandeten
+			Interfaces erben von \texttt{QualifiedSymbol}.
+			
+			Das Interface der Symboltabelle ist streng hierarchisch aufgebaut. Es gibt die eine Basisklasse, von der
+			alle anderen Interfaces (transitiv) erben. Diese strenge Hierarchie ist jedoch nur im Interface
+			garantiert. In tatsächlichen Implementierungen könnten verschiedene Klassen zusammengefasst werden, um
+			die Programmierung zu vereinfachen, weshalb eine Abfrage, ob ein Objekt Instanz einer bestimmten Symbolart
+			nicht über \texttt{instanceof} erfolgen darf. Aus diesem Grund habe ich die Abfragemethode
+			\verb|Boolean hasType(SymbolType leftType)| eingeführt. Diese gibt das Ergebnis in drei"=wertiger Logik
+			zurück, wobei der Rückgabewert \texttt{null} gleichbedeutend mit unbekannt ist. Das Ergebnis \texttt{null}
+			wird einerseits zurückgegeben, wenn das abgefragte Objekt unqualified ist oder \texttt{leftType} den Wert
+			\texttt{UNQUALIFIED} trägt.
+			
+			Die Bedeutung des Parameters \texttt{leftType} ist hierbei so zu verstehen: Das abgefragte Symbol ist der
+			\texttt{rightType}. Das Methode \texttt{hasType} wiederum entspricht der Implikation. Es wird also
+			\texttt{true} zurückgegeben, falls $leftType\Rightarrow rightType$. Dies ist der Fall, wenn \texttt{leftType}
+			in der Verberbungshierarchie über \texttt{rightType} steht, beziehungsweise, wenn beide Typen gleich sind.
+			
+			Die drei gelblich hinterlegten Interfaces sind Factories und können weitere Elemente erstellen, die
+			sie dann enthalten. Außer durch die Factories können keine Objekte instanziiert werden. Instanzen können
+			nicht an andere Container abgegeben werden. Dies soll versehentlichen Anwendungsfehlern vorbeugen.
+			\begin{itemize}
+				\item \texttt{Runtime}s können \texttt{Package}s erzeugen.
+				\item \texttt{Package}s können \texttt{Class}es und \texttt{Interface}s erzeugen.
+				\item \texttt{Class}es können \texttt{Member}s erzeugen.
+				\item \texttt{Class}es und \texttt{Interface}s können \texttt{Method}s erzeugen, wobei jede Methode einen äußersten
+					\texttt{Scope} enthält, abrufbar mit \texttt{Scope getScope()}.
+				\item \texttt{Scope}s können \texttt{Variable}s erzeugen.
+			\end{itemize}
+			Sämtliche anderen Instanzen werden durch die \texttt{Runtime} erzeugt.
+			
+			Abfragen nach Objekten geschehen in \texttt{SymbolContainer}n und ihren Unterinterfaces. Zu diesem Zweck
+			stellt das Interface die Methode
+			\begin{itemize}
+				\item \verb|Symbol tryGetQualifiedSymbol(PositionString name)|
+			\end{itemize}
+			bereit. Das zurückgegebene Symbol könnte qualified sein, falls das referenzierte Symbol bereits bekannt ist.
+			Sollte das Symbol zum Zeitpunkt des Aufrufes noch nicht bekannt sein, so wird ein \texttt{UnqualifiedSymbol}
+			zurückgegeben. Zu einem späteren Zeitpunkt kann ein unqualified Symbol mittels \texttt{QualifiedSymbol qualify()}
+			qualifiziert werden. Sollte das Symbol dann immer noch nicht bekannt sein, so wird \texttt{null} zurückgegeben.
+			Der Aufrufer muss in diesem Fall geeignet reagieren.
 	
 	\section{Anhang}
 		\subsection{Abbildungs- und Quelltextverzeichnis}
