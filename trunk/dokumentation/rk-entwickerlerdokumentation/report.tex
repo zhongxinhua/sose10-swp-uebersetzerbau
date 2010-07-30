@@ -45,9 +45,9 @@
 	\begin{titlepage}
 		\titlehead{\includegraphics[width=\textwidth]{graphiken/Fub-logo.pdf}}
 		\title{Softwareprojekt Übersetzerbau 2010} 
-		\subtitle{Entwicklerdokumentation}
+		\subtitle{Entwicklerdokumentation --- Abschlussbericht}
 		\author{René Kijewski} 
-		\date{18. Juli 2010 \vfill}
+		\date{30. Juli 2010 \vfill}
 		\maketitle
 	\end{titlepage}
 	
@@ -58,7 +58,8 @@
 		und die Symboltabelle. Es richtet sich an Entwickler und enthält deshalb gegebenenfalls
 		Jargon und versucht auch nicht, Sachverhalte zu vereinfachen.
 		Die entsprechende Kundenpräsentation, die sich nicht an Programmierer richtet, steht unter
-		\link{https://dev.spline.de/svn/ss10-swp-uebersetzerbau/trunk/dokumentation/rk-kundenpraesentation/rk-kundenpraesentation.pdf}
+		\href{https://dev.spline.de/svn/ss10-swp-uebersetzerbau/trunk/dokumentation/rk-kundenpraesentation/rk-kundenpraesentation.pdf}
+		{https://{\n}dev.spline.de/{\n}svn/{\n}ss10-swp-uebersetzerbau/{\n}trunk/dokumentation/{\n}rk-kundenpraesentation/{\n}rk-kundenpraesentation.pdf}
 		zur Verfügung.
 	\end{abstract}
 
@@ -69,7 +70,7 @@
 	}
 	
 	\parskip 7pt plus 5pt minus 3pt
-	\setcounter{page}{1}
+%	\setcounter{page}{1}
 	\section{Einleitung}
 		Das Softwareprojekt Übersetzerbau 2010 machte es sich zur Aufgabe, eine selbst"=erdachte Programmiersprache
 		zu spezifizieren und einen Compiler für diese zu Implementieren.
@@ -393,8 +394,8 @@
 	\section{API"=Referenz}
 		\subsection[XML-Lexer]{\hypertarget{XML-Lexer-API}{XML"=Lexer}}
 			Der XML"=Lexer trennt zwischen Interface und Implementierung.
-			Das Package des Interfaces heißt \texttt{de.{\n}fu\_berlin.{\n}compilerbau.{\n}xmlNodeStream};
-			die Implementierung befindet sich unter \texttt{de.{\n}fu\_berlin.{\n}compilerbau.{\n}xmlNodeStream.{\n}impl}.
+			Das Package des Interfaces heißt \texttt{de.{\n}fu\_berlin.{\n}compilerbau.{\n}xml\-Node\-Stream};
+			die Implementierung befindet sich unter \texttt{de.{\n}fu\_berlin.{\n}compilerbau.{\n}xml\-Node\-Stream.{\n}impl}.
 			
 			\subsubsection*{Interface}
 				\begin{wrapfigure}{R}{0.3\textwidth}
@@ -424,7 +425,7 @@
 				nicht verletzt wird.
 			
 			\subsubsection*{Implementierung}
-				Die Implementierung verfügt nur über eine öffentlich sichtbare Klasse, nämlich \texttt{XmlNodeStreamFactory}.
+				Die Implementierung verfügt nur über eine öffentlich sichtbare Klasse, nämlich \texttt{Xml\-Node\-Stream\-Factory}.
 				Die Klasse verfügt über drei statische Factory"=Methoden
 				\begin{itemize}
 					\item \texttt{static XmlNodeStream createNewInstance(PositionString str);}
@@ -436,7 +437,7 @@
 		\subsection{Statement"=Lexer}
 			Der Statement"=Lexer trennt zwischen Interface und Implementierung.
 			Das Package des Interfaces heißt \texttt{de.{\n}fu\_berlin.{\n}compilerbau.{\n}statementLexer};
-			die Implementierung befindet sich unter \texttt{de.{\n}fu\_berlin.{\n}compilerbau.{\n}statementLexer.{\n}impl}.
+			die Implementierung befindet sich unter \texttt{de.{\n}fu\_berlin.{\n}compilerbau.{\n}statement\-Lexer.{\n}impl}.
 			
 			Das Interface definiert in \texttt{TokenType.java} fünfunddreißig verschiedene Arten von gelesenen Tokens,
 			wobei \texttt{EOF} und \texttt{ERROR} Statusmeldungen darstellen. Die Tokenarten orientieren sich
@@ -454,7 +455,7 @@
 			Wert enthält. \texttt{getNumber()} enthält nur für \texttt{INT} und \texttt{REAL} einen Wert;
 			\texttt{getString()} wiederum nur für \texttt{ID} und \texttt{STRING}.
 			
-			Das Tokenisieren geschieht über die Factory"=Methode \texttt{StatementLexer.tokenize(PositionCharacterStream)},
+			Das Tokenisieren geschieht über die Factory"=Methode \texttt{StatementLexer.tokenize(Position\-Character\-Stream)},
 			wobei der Rückgabewert ein \texttt{Iterable<StatementNode>} ist und somit über die Methoden \texttt{next()} und
 			\texttt{hasNext()} angesprochen werden kann.
 	
