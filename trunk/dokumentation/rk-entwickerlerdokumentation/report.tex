@@ -181,11 +181,11 @@
 				\end{lstlisting}
 				Die Eingabedatei obenstehende XML"=Datei würde folgendermaßen erkannt:
 				\begin{itemize}
-					\item Processing instruction mit dem Namen \verb|xml| und Wert \verb|version="1.0"|.
-					\item Öffendes Tag mit dem Namen \verb|module|.
-					\item Attribute mit dem Namen \verb|name| mit dem Wert \verb|Test|.
-					\item Textknoten mit dem Wert \verb|Inhalt|.
-					\item Schließendes Tag mit dem Namen \verb|module|.
+					\item Processing instruction mit dem Namen ,,\verb|xml|`` und Wert ,,\verb|version="1.0"|``.
+					\item Öffendes Tag mit dem Namen ,,\verb|module|``.
+					\item Attribute mit dem Namen ,,\verb|name|`` mit dem Wert ,,\verb|Test|``.
+					\item Textknoten mit dem Wert ,,\verb|Inhalt|``.
+					\item Schließendes Tag mit dem Namen ,,\verb|module|``.
 				\end{itemize}
 				An diesem Beispiel Erkennt man, dass das jedes eingelesene Token ein Tripel aus
 				Typ, Name und Wert ist, wobei Name und/oder Wert auch leer beziehungsweise \texttt{null} sein können.
@@ -218,7 +218,39 @@
 			als beim XML"=Lexer geschieht.
 	
 		\subsection{Symboltabelle}
-			\TODO
+			Die Symboltabelle ist die zentrale Speicherstelle der in der Eingabe vorkommenden Symbole.
+			Symbole sind hierbei unter anderem Packages, Klassen und Methoden, jedoch auch Scopes und und \texttt{void}.
+			Hiermit steht sie parallel zum Syntaxbaum. Der Annotator stellt die Schnittstelle zwischen beiden
+			Komponenten dar.
+			
+			Ebenso wichtig wie den Einblick in die Symbole des Eingabecodes zu haben, ist die Schnittstelle
+			zum Zielsystem. So ,,kennt`` die Symboltabelle unter anderem die nativen Typen des Zielsystems und
+			,,weiß``, was verbotene Bezeichner sind beziehungsweise kann Bezeichner für das Zielsystem
+			dekorieren. Die Symboltabelle ,,merkt sich`` Referenzierungen von Symbolen, die an der Stelle, in
+			der sie im Quelltext auftraten, noch nicht definiert waren. Diese Symbole bezeichnet man als
+			{\em unqualified}. Dem gegenüber sind bekannte Symbole {\em qualified}. Unqualified Symbols können
+			unter anderem dann auftreten, wenn eine Funktion \texttt{a()} eine Funktion \texttt{b()} aufruft
+			und \texttt{b()} wiederum \texttt{a()}.
+			
+			Die Symboltabelle arbeitet in drei Phasen:
+			\begin{enumerate}
+				\item
+					Aufbau des Grundsystems, das heißt, dass der Sichtbarkeitsraum mit den primitiven
+					Datentypen gefüllt wird --- bei Java also unter anderem \texttt{int} und \texttt{float}.
+					Im nächsten Schritt werden die Symbole des Zielsystems eingelesen, was im Falle von
+					Java unter anderem \texttt{java.lang.String}. Nach dem Einlesen der Symbole des
+					Zielsystems wird der Kontrollfluss an den Builder abgegeben.
+				\item
+					Im nächsten Schritt wird die Symboltabelle mit den Symbolen aus der Eingabedatei befüllt.
+					Die Symboltabelle erkennt an dieser Stelle die Verwendung von ungültigen Bezeichnern und weist
+					sie ab. Nachdem der Struktur der Eingabe in der Symboltabelle wiedergegeben wurde, wird versucht
+					sämtliche Symbole zu qualifizieren.
+				\item
+					Die letzte Phase stellt die Anwendung der Symboltabelle dar, in der der Builder sie unter anderem
+					Benutzt, um die Datentypen von Symbolen zu erkennen, da Operatoren wie \texttt + je nach Datentyp
+					eine andere Bedeutung haben. Sollte in der letzten Phase noch ein unqualified Symbol auftreten
+					so muss dem Benutzer durch den Builder eine geeignete Fehlermeldung ausgegeben werden.
+			\end{enumerate}
 	
 	\section[Arbeitsverlauf]{\hypertarget{Arbeitsverlauf}{Arbeitsverlauf}}
 		Die Programmierung des XML"=Lexers wurde bereits am 30. April begonnen; die Komponente ist deshalb
@@ -226,7 +258,7 @@
 		am 19. Mai begonnen und die Arbeit an der Symboltabelle wurde am 28. Mai aufgenommen,
 		wudurch gerade für die letzte Aufgabe ein erheblicher Zeitdruck bestand.
 		
-		\subsection{XML"=Lexer}
+		\subsection{XML"= und Statement"=Lexer}
 			Die Arbeit am XML"=Lexer verlief verhältnismäßig zielgerichtet. In der Vorlesung
 			Übersetzerbau wurde ausgiebig erklärt, wie ein Parser geschrieben wird, so dass
 			sich die tatsächliche Umsetzung als einfach erwies. Probleme ergaben sich nur,
@@ -235,12 +267,11 @@
 			\href{http://www.graphviz.org/doc/info/lang.html}{DOT} festzuhalten. Zeichnungen auf
 			dem Papier erwiesen sich nicht als sachdienlich.
 		
-			\TODO
-		
-		\subsection{Statement"=Lexer}
-			Der Statement"=Lexer wurde in kurzer Zeit geschrieben.
-			
-			\TODO
+			Der Statement"=Lexer wurde in kurzer Zeit geschrieben, da die Aufgabe wesentlich einfacher als beim
+			XML"=Lexer war. Wo beim XML"=Lexer ein Zustand mitgeführt werden muss, der zum Beispiel vermerkert, ob
+			man sich derzeit in der Mitte zwischen einem ,,\verb|<|`` und ,,\verb|>|`` befindet, existieren solche Schwierigkeiten
+			beim Statement"=Lexer nicht. Die zu implementierenden Operatoren habe ich unserem Notizblatt im
+			\href{http://pad.spline.de/ep/pad/view/ro.v9mc/rev.9252}{Spline"=Pad} entnommen.
 		
 		\subsection{Symboltabelle}
 			Die Arbeit an der Symboltabelle erwies sind als kompliziert. Da die Aufgabe leider sehr spät erst
@@ -251,9 +282,10 @@
 			ich mich jedoch weiter in die Thematik einlas, erwies sich das nicht als möglich, da die verschiedenen
 			Zielsysteme zu unterschiedlich sind. So haben verschiedene Programmiersprachen, selbst wenn man
 			sich auf objektorientierte Programmiersprachen beschränkt, wenig Gemeinsamkeiten. Als Beispiele gegenüber
-			Java sein die funktionale Programmiersprache \href{http://caml.inria.fr/ocaml/}{OCaml} und die prototypen"=basiere
+			Java sei die prototypen"=basiere
 			Programmiersprache \href{http://www.ecma-international.org/publications/standards/Ecma-262.htm}{ECMAScript}
-			angeführt, deren Klassenkonzept keine Gemeinsamkeiten mit Java aufweisen, jedoch sinnvolle Zielsprachen
+			und ihre unterschiedlichen Implementierungen wie Javascript
+			angeführt, deren Klassenkonzept keine Gemeinsamkeiten mit Java aufweist, jedoch sinnvolle Zielsprachen
 			wären.
 			
 			Ich beschränkte mich auf die Umsetzung einer Symboltabelle, die Java 1.6 sowohl für die Ausgabe
@@ -370,21 +402,36 @@
 		Ich für meinen Teil hatte mir erhofft, mehr über die Optimierung von Zwischencode zu lernen; andere Projektmitglieder
 		wiederum wollten eine Programmiersprache mit neuartigen Konzepten schaffen, wobei ich gerade Herrn Rudolfs Konzept einer
 		Zustandsmaschine interessant fand. Ebenso hörte sich das Konzept einer einsteigerfreundlichen Programmiersprache gut an.\footnote
-		{Ich muss gestehen, dass ich den Namen des Diplomstudenten vergessen habe.}
+		{Ich muss gestehen, dass ich den Namen des Diplomstudierenden vergessen habe.}
 		Retrospektiv muss ich sagen, dass wir uns als Gruppe zu wenig Zeit genommmen haben, uns über die Möglichkeiten
 		klarzuwerden. Leider haben wir die Konzeptphase zu schnell abschließen wollen, wobei ich jedoch hoffe, so einen
 		Fehler in Zukunft nicht mehr zu machen.
 		
+		Im Verlauf des Projektes wurde leider klar, was wir die Planung des Projektes überstürzt hatten und viele wichtige
+		Komponenten nicht formell aufgeschrieben oder schlichtweg übersehen haben. Teilweise kam es zu unnötigen Leerlaufphasen,
+		da es scheinbar zu jedem Zeitpunkt keine Aufgabe gab. Erst in weiteren Gesprächen wurde klar, welche Dinge noch zu tun
+		wäre. So wurde unter anderem die Aufgabe der Symboltabelle bei der Aufgabenverteilung erkannt, jedoch nicht vergeben,\footnote
+		{Siehe Stand der Besprechung vom \href{http://pad.spline.de/ep/pad/view/ro.v9mc/rev.7990}{7. Mai} im Spline"=Pad}
+		so dass sie später vergessen wurde. Dass später seitens der Teamleiter angemerkt wurde, dass der generierte Code
+		typensicher sein solle und die Symboltabelle dies sicherstellen soll, war dann ein umso größerer ,,Schock`` für mich.
+		
 		Zur Eskalation am Ende des Projektes hat meinerseits gerade geführt, dass das Projekt nicht die Dinge umfasste,
 		die wir uns am Anfang vorgestellt haben. Ich wollte Probleme offen ansprechen, um sie eventuell besser angehen zu
-		können -- Probleme, die nicht angesprochen werden, werden sich nur vergrößern. Leider ist mein Ton wohl zu aggressiv
-		rübergekommen, wodurch ich jene Problem wohl nur noch verstärkt habe.
-		
-		Ferner hat jedoch die strikte Trennung zwischen ,,Management`` und den Programmieren zur Eskalation beigetragen
-		oder hat sie erst möglich gemacht. Es bestand ein großes Misstrauen zwischen mir und dem ,,Management``,
-		unter anderem geschuldet dadurch, dass uns nicht mitgeteilt wurde, was in den Wochenbesprechungen zwischen den
-		Teamleitern und Frau Dr. Fehr beredet wurde, sowie dass uns Programmierern die Dokumentationen und Berichte
-		nicht ausgehängigt wurde, als wir danach fragten.
+		können --- Probleme, die nicht angesprochen werden, werden sich nur vergrößern. Leider ist mein Ton wohl zu aggressiv
+		rübergekommen,\footnote{Vermutlich war er aggressiv, was jedoch nie meine Intention war.}
+		wodurch ich jene Problem wohl nur noch verstärkt habe. Ferner jedoch hat die strikte Trennung zwischen
+		,,Management`` und den Programmieren zur Eskalation beigetragen oder sie erst möglich gemacht. Es bestand ein großes
+		Misstrauen zwischen uns und dem ,,Management``, unter anderem geschuldet dadurch, dass uns nicht mitgeteilt wurde,
+		was in den Wochenbesprechungen zwischen den Teamleitern und Frau Fehr beredet wurde,\footnote{Meine Haupsorge an dieser
+		Stelle war, dass unsere Bearbeitungsstand als besser als er war weitergegeben wurde, so dass ein mäßiges Ergebnis
+		beim Projektende umso schlechter auf uns zurückfalle würde.} sowie dass uns Programmierern
+		die Dokumentationen und Berichte nicht ausgehängigt wurde,\footnote{Das Spline"=Pad war nie als normativ angedacht,
+		weshalb sich die Teamleiter bereit erklärten sich, eine formelle Definition zu schreiben. Es war deshalb unverständlich
+		für mich, warum uns diese Arbeitsgrundlage vorenthalten wurde.} als wir danach fragten. Die strikte Weigerung der Teamleiter
+		uns ihren Bearbeitungsstand der Dokumentation mitzuteilen erweckte bei uns Entwicklern den Eindruck, das Ansgar und
+		Igor keine Aufgaben im Projekt übernähmen. Die Antwort, dass sie sich jede Woche nach dem Gruppengespräch für eine
+		Stunde mit Frau Fehr träfen, wirkte für mich regelrecht höhnisch. Meines Erachtens ist an dieser Stelle wesentlich
+		mehr Transparenz nötig.
 		
 		Ich denke, dass es für weitere Softwareprojekte wichtig ist, die Teamleitung dazu anzuhalten, sich auch in die
 		Programmierung einzubringen, da ansonsten die Stimmung {\em unweigerlich} kippen {\em muss}. Dennoch denke ich,
@@ -538,6 +585,7 @@
 			qualifiziert werden. Sollte das Symbol dann immer noch nicht bekannt sein, so wird \texttt{null} zurückgegeben.
 			Der Aufrufer muss in diesem Fall geeignet reagieren.
 	
+	\newpage
 	\section{Anhang}
 		\subsection{Abbildungs- und Quelltextverzeichnis}
 			\listoffigures
