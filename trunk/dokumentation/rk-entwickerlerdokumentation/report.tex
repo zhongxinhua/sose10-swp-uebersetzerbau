@@ -15,12 +15,11 @@
 \usepackage{placeins}
 
 \hypersetup{
-	pdftitle={Software Projekt Uebersetzerbau 2010: Entwicklerdokumentation},
+	pdftitle={Software Projekt "Ubersetzerbau 2010: Entwicklerdokumentation / Abschlussbericht},
 	pdfauthor={Rene Kijewski},
 	pdfsubject={},
 	pdfcreator={},
 	pdfproducer={},
-	pdfkeywords={},
 	pdfkeywords={}
 }
 
@@ -37,6 +36,7 @@
 
 \newcommand{\xmlNote}[2]{\footnote{Spezifikation zu \href{http://www.w3.org/TR/2008/REC-xml-20081126/\#{#1}}{\texttt{#2}}.}}
 \newcommand{\link}[1]{\href{#1}{#1}}
+\newcommand{\fnlink}[1]{\footnote{\link{#1}}}
 \newcommand{\TODO}{ {\LARGE\bf\color{crimson} TODO} }
 \newcommand{\n}{\linebreak[1]}
 \newcommand{\java}[1]{\lstinline[language=java,showstringspaces=true]{#1}}
@@ -45,9 +45,9 @@
 	\begin{titlepage}
 		\titlehead{\includegraphics[width=\textwidth]{graphiken/Fub-logo.pdf}}
 		\title{Softwareprojekt Übersetzerbau 2010} 
-		\subtitle{Entwicklerdokumentation --- Abschlussbericht}
+		\subtitle{Entwicklerdokumentation -- Abschlussbericht}
 		\author{René Kijewski} 
-		\date{30. Juli 2010 \vfill}
+		\date{7. August 2010}
 		\maketitle
 	\end{titlepage}
 	
@@ -83,10 +83,10 @@
 			René Kijewski und
 			Stefan Meißner,
 		entschied sich, eine XML"=artige Eingabesprache zu benutzen, die
-		\href{http://java.sun.com/javase/6/}{Java"=SE"=6}"=kompatiblen Sourcecode ausgibt.
+		Java"=SE"=6"=kompatiblen\fnlink{http://java.sun.com/javase/6/} Sourcecode ausgibt.
 		Dementsprechend wurde auch Java 1.6 als Programmiersprache gewählt.
-		Als einheitliche Programmierungebung wurde \href{http://www.eclipse.org/galileo/}{Eclipse Galileo} verwandt.
-		Apache \href{http://subversion.apache.org/}{Subversion}, gehostet bei \href{http://dev.spline.de/}{Spline}, wurde als
+		Als einheitliche Programmierungebung wurde Eclipse Galileo\fnlink{http://www.eclipse.org/galileo/} verwandt.
+		Apache Subversion\fnlink{http://subversion.apache.org/}, gehostet bei Spline\fnlink{http://dev.spline.de/}, wurde als
 		Versionskontrollsystem benutzt. Der Quelltext kann von \link{https://dev.spline.de/svn/ss10-swp-uebersetzerbau/}
 		heruntergeladen werden.
 		
@@ -100,8 +100,8 @@
 		finden Sie weitere Informationen dazu.
 		
 		Um den Einstieg in die Nutzung zu Vereinfachen, verwandte ich ausgiebig die verbreitete Entwurfsmuster,
-		vorrangig das \href{http://c2.com/cgi/wiki?IteratorPattern}{\em Iterator"=Patter} und die
-		\href{http://c2.com/cgi/wiki?FactoryMethodPattern}{\em Factory"=Methode}.
+		vorrangig das {\em Iterator"=Pattern}\fnlink{http://c2.com/cgi/wiki?IteratorPattern} und die
+		{\em Factory"=Methode}\fnlink{http://c2.com/cgi/wiki?FactoryMethodPattern}.
 		Beide Pattern werden im Buch {\em Design Patterns: Elements of Reusable Object"=Oriented Software}%
 		\footnote{ISBN \href{https://portal.d-nb.de/opac.htm?method=simpleSearch&query=0201633612}{0-201-63361-2}}
 		beschrieben und sind vielen Entwicklern von objektorientiertem Code geläufig.
@@ -109,7 +109,7 @@
 		Die einzelnen Komponenten trennen so weit wie möglich zwischen Interface und Implementierung.
 		Dies sollte es bei einer späteren Weiterarbeit am Projekt vereinfachen, die Komponenten
 		auszutauschen. Bei der Spezifikationsphase überlegten wir uns unter anderem, dass auch eine
-		Compilierung in Java"=Bytecode nativ möglich sein sollte.%
+		Kompilierung in Java"=Bytecode nativ möglich sein sollte.%
 		\footnote{Das heißt, dass wir nicht von \texttt{javac} abhängig sein wollten.}
 		Zudem sollte auch die Ausgabesprache auswechselbar sein, so dass nur das Kernstück,
 		der Syntaxbaum, sowie das Interface der weiteren Komponenten, also Symboltabelle und Builder,
@@ -134,7 +134,7 @@
 		die Bedeutung an dieser Stelle wahrscheinlich geringer als bei den Lexern.
 		
 		\subsection[XML"=Lexer]{\hypertarget{Teilprojekte_XML_Lexer}{XML"=Lexer}}
-			Der XML"=Lexer {\em xmlNodeStream} vereinfacht die Arbeit des DOM"=Parsers, indem er die syntaxtischen
+			Der XML"=Lexer {\em xmlNodeStream} vereinfacht die Arbeit des DOM"=Parsers, indem er die syntaktischen
 			Komponenten des Eingabestromes auftrennt, das heißt {\em tokenized}.
 			Die erkannten Komponenten sind Textknoten, Kommentare, Tags, Endtags, Attribute und Processing instructions.
 			
@@ -145,8 +145,8 @@
 			Dieses Beispiel wäre aufgrund des Kleiner"=Als"=Zeichens im Attributewert
 			nach der Spezifikation verboten.\xmlNote{NT-AttValue}{AttValue}
 			
-			Die API des {\em xmlNodeStreams} ist an {\em StAX}, der \href{http://stax.codehaus.org/}{Streaming API for XML},
-			angelehnt. StAX hat sich seit der Spezifikation im \href{http://jcp.org/en/jsr/detail?id=173}{JSR 173} aus
+			Die API des {\em xmlNodeStreams} ist an {\em StAX}, der Streaming API for XML\fnlink{http://stax.codehaus.org/},
+			angelehnt. StAX hat sich seit der Spezifikation im JSR 173\fnlink{http://jcp.org/en/jsr/detail?id=173} aus
 			dem Jahr 2006 als Standard für einfaches Parsen von XML"=Eingaben etabliert.
 			xmlNodeStream besitzt nicht dieselbe Mächtigkeit wie StAX und erfüllt in Folge dessen
 			nicht die komplette Spezifikation des W3-Consortiums, da der XML"=Prolog\xmlNote{xmldoc}{prolog}
@@ -203,16 +203,16 @@
 			
 			Der Statement"=Lexer verwendet das Iterator"=Interface, wobei die Rückgabedaten
 			Tupel aus dem Typen des Datums und eventuell einem zugehörigen Wert, zum Beispiel bei Strings.
-			In der derzeitigen Implementierung gibt es 33 Arten von erkannten Token, sowie zwei
+			In der derzeitigen Implementierung gibt es 33 Arten von erkannten Tokens, sowie zwei
 			Statuscodes für das Eingabeende beziehungsweise bei lexikalisch fehlerhaften Eingaben.
 			Der Umfang der erkannten Eingabefehler ist gering; die Fehlererkennung geschieht im
 			{\em Statement"=Parser}. Als Fehler würde unter anderem ,,\verb|1a|`` erkannt; ,,\verb|a b c|`` hingegen nicht.
 			
 			Die Syntax der Statements lehnt sich an Java\,SE\,6 an. Da Javas Operatoren nur ein oder
 			zwei Zeichen lang sind\footnote{Der Operator \texttt{{>}>{>}} wird nicht verstanden.} und es keine Zustände wie beim
-			Lexen von XML"=Daten wird, wird keine Übergangstabelle benutzt, sondern ein \verb|switch|"= und
+			Lexen von XML"=Daten gibt, wird keine Übergangstabelle benutzt, sondern ein \verb|switch|"= und
 			\verb|if|"=Konstrukt. Dies vereinfacht im Allgemeinen sowohl das Lesen und Schreiben des Lexers,
-			erschwert jedoch Spezialfälle. So wird zum Beispiel zum Erkennen der Token \verb|new| und
+			erschwert jedoch Spezialfälle. So wird zum Beispiel zum Erkennen der Tokens \verb|new| und
 			\verb|null| auf Tricks wie Push"=Back"=Buffer zurückgegriffen.
 			Ein entscheidender Vorteil ist jedoch, dass das Einlesen der Daten wesentlich schneller
 			als beim XML"=Lexer geschieht.
@@ -256,7 +256,7 @@
 		Die Programmierung des XML"=Lexers wurde bereits am 30. April begonnen; die Komponente ist deshalb
 		wohl am ausführlichsten getestet. Die Aufgabe des Statement"=Lexers wiederum wurde
 		am 19. Mai begonnen und die Arbeit an der Symboltabelle wurde am 28. Mai aufgenommen,
-		wudurch gerade für die letzte Aufgabe ein erheblicher Zeitdruck bestand.
+		wodurch gerade für die letzte Aufgabe ein erheblicher Zeitdruck bestand.
 		
 		\subsection{XML"= und Statement"=Lexer}
 			Die Arbeit am XML"=Lexer verlief verhältnismäßig zielgerichtet. In der Vorlesung
@@ -264,14 +264,14 @@
 			sich die tatsächliche Umsetzung als einfach erwies. Probleme ergaben sich nur,
 			wenn ich Übergänge im Zustandsdiagramm (siehe \hyperlink{Uebergangsdiagramm_XML_Lexer}{Abbildung 2})
 			übersah, weshalb ich sehr schnell dazu überging, das Diagramm in der Sprache
-			\href{http://www.graphviz.org/doc/info/lang.html}{DOT} festzuhalten. Zeichnungen auf
+			DOT\fnlink{http://www.graphviz.org/doc/info/lang.html} festzuhalten. Zeichnungen auf
 			dem Papier erwiesen sich nicht als sachdienlich.
 		
 			Der Statement"=Lexer wurde in kurzer Zeit geschrieben, da die Aufgabe wesentlich einfacher als beim
 			XML"=Lexer war. Wo beim XML"=Lexer ein Zustand mitgeführt werden muss, der zum Beispiel vermerkert, ob
 			man sich derzeit in der Mitte zwischen einem ,,\verb|<|`` und ,,\verb|>|`` befindet, existieren solche Schwierigkeiten
 			beim Statement"=Lexer nicht. Die zu implementierenden Operatoren habe ich unserem Notizblatt im
-			\href{http://pad.spline.de/ep/pad/view/ro.v9mc/rev.9252}{Spline"=Pad} entnommen.
+			Spline"=Pad\fnlink{http://pad.spline.de/ep/pad/view/ro.v9mc/rev.9252} entnommen.
 		
 		\subsection{Symboltabelle}
 			Die Arbeit an der Symboltabelle erwies sind als kompliziert. Da die Aufgabe leider sehr spät erst
@@ -283,16 +283,16 @@
 			Zielsysteme zu unterschiedlich sind. So haben verschiedene Programmiersprachen, selbst wenn man
 			sich auf objektorientierte Programmiersprachen beschränkt, wenig Gemeinsamkeiten. Als Beispiele gegenüber
 			Java sei die prototypen"=basiere
-			Programmiersprache \href{http://www.ecma-international.org/publications/standards/Ecma-262.htm}{ECMAScript}
+			Programmiersprache ECMAScript\fnlink{http://www.ecma-international.org/publications/standards/Ecma-262.htm}
 			und ihre unterschiedlichen Implementierungen wie Javascript
 			angeführt, deren Klassenkonzept keine Gemeinsamkeiten mit Java aufweist, jedoch sinnvolle Zielsprachen
 			wären.
 			
 			Ich beschränkte mich auf die Umsetzung einer Symboltabelle, die Java 1.6 sowohl für die Ausgabe
-			nach Quelltext als auch Bytecode beherrt. Das Interface wiederum sollte so generisch gehalten werden,
+			nach Quelltext als auch Bytecode beherrscht. Das Interface wiederum sollte so generisch gehalten werden,
 			dass später weitere Zielsysteme eingeführt werden könnten, wobei sich ein zu generischen Interface
-			als zu kompliziert -- und damit als unbenutzbar -- erwies. Herr Rudolf gab mir des Öfteren hinweise
-			auf Verbesserungsmöglichkeiten am Interface, die mir zuvor nicht einfielen. Wiederum war das Interface
+			als zu kompliziert -- und damit als unbenutzbar -- erwies. Herr Rudolf gab mir des Öfteren sinnvolle hinweise
+			für Verbesserungsmöglichkeiten am Interface, die mir zuvor nicht einfielen. Wiederum war das Interface
 			dadurch während der gesamten Entwicklungszeit einem ständigen Wandel unterlegen, wobei ich mir eigentlich
 			eine schnelle Festlegung wünschte, gegen die ich die konkrete Implementierung entwickeln könnte.
 			Retrospektiv kann ich sagen, dass ich mich anfangs zu wenig mit meinen anderen Teammitgliedern
@@ -300,7 +300,7 @@
 			
 			Bei der Programmierung an der Symboltabelle habe ich einige wertvolle Kenntnisse über die Interna
 			Javas gewonnen. Gerade bei der Reflexion"=API, die einem Programm zur Laufzeit Informationen über
-			das Klassen"= beziehungsweise Typsystem geben soll, habe ich erhebliche Wissensprünge gemacht,
+			das Klassen"= beziehungsweise Typsystem geben soll, habe ich erhebliche Wissenssprünge gemacht,
 			die ich auch für andere Kurse nutzen konnte.\footnote{Siehe zum Beispiel \href
 			{https://dev.spline.de/svn/xmlproject10-group-x/trunk/controller/src/java/de/spline/dev/xmlproject10_group_x/imports/xmlContainers/Container.java}
 			{\texttt{Containers.java}} des XML"=Technologien"=Projekts} Leider erwies sich die sehr einfach zu
@@ -319,9 +319,9 @@
 	
 	\section{Offene Baustellen}
 		Leider blieben aufgrund der geringen Projektdauer noch einige Komponenten fehlerhaft oder unvollständig.
-		Jene Verbesserungsvorschläge, die mir einfielen, hielt ich im \href
-		{https://dev.spline.de/svn/ss10-swp-uebersetzerbau/trunk/dokumentation/Offene\%20Baustellen.txt}
-		{\texttt{Offene Baustellen.txt}} beziehungsweise als \texttt{TODO}s an der Entsprechenden Stelle im
+		Jene Verbesserungsvorschläge, die mir einfielen, hielt ich in 
+		\texttt{Offene Baustellen.txt}\fnlink{https://dev.spline.de/svn/ss10-swp-uebersetzerbau/trunk/dokumentation/Offene\%20Baustellen.txt}
+		beziehungsweise als \texttt{TODO}s an der Entsprechenden Stelle im
 		Quelltext fest. Die einzelnen Teilprojekte sind noch nicht ausreichend durch Unittests überprüft worden.
 		Bei einer Weiterarbeit an dem Projekt täten folgende Programmierer gut daran, zuerst Blackbox-Text
 		der einzelnen Komponenten durchzuführen, um eventuelle Verstöße gegen das Interface festzustellen.
@@ -340,13 +340,13 @@
 			Der Statement"=Lexer enthält noch einen dokumentierten Fehler, dessen Ursache noch nicht ausgemacht werden konnte.
 			Der Bezeichner ,,\texttt{nul}`` ist nicht erlaubt, was mit der Implementierung der Erkennung des Keywords
 			\texttt{null} zusammenhängen wird. Das Erkennen der Schlüsselwörter ist derzeit suboptimal implementiert, da
-			mir leider bei bei der Arbeit an der Symboltabelle ein besserer Algorithmus einfiel.
+			mir leider erst bei bei der Arbeit an der Symboltabelle ein besserer Algorithmus einfiel.
 			
 			Derzeit werden wird die Eingabe mit einem Pushback"=Buffer eingelesen. Sollten Zeichen gelesen werden,
 			die nicht zu dem derzeitigen Token gehören, werden sie wieder in den Eingabestrom zurückgeschrieben.
 			Sollte nur ein Zeichen zurückgeschrieben werden müssen, arbeitet diese Methode performant und ist zudem
-			einfach zu implementieren. Sollten jedoch mehr Zeichen zurückzuschreiben sein, so kann sich diese Methode
-			als kompliziert zu warten erweisen. Zuerst schrieb ich einen Pushback"=Buffer mit einem Zeichen als
+			einfach zu implementieren. Sollten jedoch mehr Zeichen zurück zu schreiben sein, so kann sich diese Methode
+			als kompliziert zu warten erwiesen. Zuerst schrieb ich einen Pushback"=Buffer mit einem Zeichen als
 			Pushback und schrieb ihn im weiteren Arbeitsverlauf zu einem allgemeinen Puffer um, in dem man beliebig
 			viele Zeichen zurückschreiben kann. Vermutlich ist mit dabei ein Fehler unterlaufen, der in den Beobachtung
 			resultiert, dass der Bezeichner ,,\texttt{nul}`` nicht erlaubt ist.
@@ -378,7 +378,7 @@
 			\end{itemize}
 	
 	\section[Abschlussbemerkungen]{\hypertarget{Abschlussbemerkungen}{Abschlussbemerkungen}}
-		Eine Lexion des Projektes war, dass Besprechungen notwendig sind. Noch bevor man eine Idee umsetzt, sollte man
+		Eine Lektion des Projektes war, dass Besprechungen notwendig sind. Noch bevor man eine Idee umsetzt, sollte man
 		sich mit den betroffenen Teammitgliedern zusammen setzten und um gemeinsam die Implikationen abzuschätzen
 		oder Verbesserungsvorschläge einholen zu können. Ebenso lassen sich Beschreibungen wesentlich besser vis"=à"=vis
 		vermitteln als das mit Texten möglich wäre. Als Programmierer ist man häufig zu tief in der Materie drin, als dass
@@ -404,21 +404,21 @@
 		Zustandsmaschine interessant fand. Ebenso hörte sich das Konzept einer einsteigerfreundlichen Programmiersprache gut an.\footnote
 		{Ich muss gestehen, dass ich den Namen des Diplomstudierenden vergessen habe.}
 		Retrospektiv muss ich sagen, dass wir uns als Gruppe zu wenig Zeit genommmen haben, uns über die Möglichkeiten
-		klarzuwerden. Leider haben wir die Konzeptphase zu schnell abschließen wollen, wobei ich jedoch hoffe, so einen
+		klar zu werden. Leider haben wir die Konzeptphase zu schnell abschließen wollen, wobei ich jedoch hoffe, so einen
 		Fehler in Zukunft nicht mehr zu machen.
 		
 		Im Verlauf des Projektes wurde leider klar, was wir die Planung des Projektes überstürzt hatten und viele wichtige
 		Komponenten nicht formell aufgeschrieben oder schlichtweg übersehen haben. Teilweise kam es zu unnötigen Leerlaufphasen,
 		da es scheinbar zu jedem Zeitpunkt keine Aufgabe gab. Erst in weiteren Gesprächen wurde klar, welche Dinge noch zu tun
 		wäre. So wurde unter anderem die Aufgabe der Symboltabelle bei der Aufgabenverteilung erkannt, jedoch nicht vergeben,\footnote
-		{Siehe Stand der Besprechung vom \href{http://pad.spline.de/ep/pad/view/ro.v9mc/rev.7990}{7. Mai} im Spline"=Pad}
+		{Siehe Stand der Besprechung vom 7. Mai im Spline"=Pad: \link{http://pad.spline.de/ep/pad/view/ro.v9mc/rev.7990}}
 		so dass sie später vergessen wurde. Dass später seitens der Teamleiter angemerkt wurde, dass der generierte Code
 		typensicher sein solle und die Symboltabelle dies sicherstellen soll, war dann ein umso größerer ,,Schock`` für mich.
 		
 		Zur Eskalation am Ende des Projektes hat meinerseits gerade geführt, dass das Projekt nicht die Dinge umfasste,
 		die wir uns am Anfang vorgestellt haben. Ich wollte Probleme offen ansprechen, um sie eventuell besser angehen zu
 		können --- Probleme, die nicht angesprochen werden, werden sich nur vergrößern. Leider ist mein Ton wohl zu aggressiv
-		rübergekommen,\footnote{Vermutlich war er aggressiv, was jedoch nie meine Intention war.}
+		herübergekommen,\footnote{Vermutlich war er aggressiv, was jedoch nie meine Intention war.}
 		wodurch ich jene Problem wohl nur noch verstärkt habe. Ferner jedoch hat die strikte Trennung zwischen
 		,,Management`` und den Programmieren zur Eskalation beigetragen oder sie erst möglich gemacht. Es bestand ein großes
 		Misstrauen zwischen uns und dem ,,Management``, unter anderem geschuldet dadurch, dass uns nicht mitgeteilt wurde,
@@ -428,15 +428,15 @@
 		die Dokumentationen und Berichte nicht ausgehängigt wurde,\footnote{Das Spline"=Pad war nie als normativ angedacht,
 		weshalb sich die Teamleiter bereit erklärten sich, eine formelle Definition zu schreiben. Es war deshalb unverständlich
 		für mich, warum uns diese Arbeitsgrundlage vorenthalten wurde.} als wir danach fragten. Die strikte Weigerung der Teamleiter
-		uns ihren Bearbeitungsstand der Dokumentation mitzuteilen erweckte bei uns Entwicklern den Eindruck, das Ansgar und
-		Igor keine Aufgaben im Projekt übernähmen. Die Antwort, dass sie sich jede Woche nach dem Gruppengespräch für eine
+		uns ihren Bearbeitungsstand der Dokumentation mitzuteilen erweckte bei uns Entwicklern den Eindruck, das Herrn Schneider und
+		Merkulow keine Aufgaben im Projekt übernähmen. Die Antwort, dass sie sich jede Woche nach dem Gruppengespräch für eine
 		Stunde mit Frau Fehr träfen, wirkte für mich regelrecht höhnisch. Meines Erachtens ist an dieser Stelle wesentlich
 		mehr Transparenz nötig.
 		
 		Ich denke, dass es für weitere Softwareprojekte wichtig ist, die Teamleitung dazu anzuhalten, sich auch in die
 		Programmierung einzubringen, da ansonsten die Stimmung {\em unweigerlich} kippen {\em muss}. Dennoch denke ich,
 		dass ich durch dieses Softwareprojekt eine Erfahrung fürs Leben gemacht habe --- mehr als es ein Besuch der
-		\href{https://www.inf.fu-berlin.de/w/SE/VorlesungSoftwaretechnik2008}{Vorlesung Softwaretechnik} je könnte.
+		Vorlesung Softwaretechnik\fnlink{https://www.inf.fu-berlin.de/w/SE/VorlesungSoftwaretechnik2008} je könnte.
 		
 	\section{API"=Referenz}
 		\subsection[XML-Lexer]{\hypertarget{XML-Lexer-API}{XML"=Lexer}}
@@ -452,7 +452,7 @@
 					}
 				\end{wrapfigure}
 				
-				Das Interface defininiert in \texttt{NodeType.java} die Arten der zu erkennenden Knoten.
+				Das Interface definiert in \texttt{NodeType.java} die Arten der zu erkennenden Knoten.
 				Dies sind derzeit \texttt{NT\_TEXT}, \texttt{NT\_COMMENT}, \texttt{NT\_TAG}, \texttt{NT\_END\_TAG},
 				\texttt{NT\_ATTR}, \texttt{NT\_PI}, sowie für fehlerhaften Eingaben \texttt{NT\_ERROR}.
 				
@@ -541,7 +541,7 @@
 			\end{wrapfigure}
 			
 			Jedes Symbol hat einen Symboltypen. Die Symboltypen sind in der Klasse \texttt{SymbolType} definiert.
-			Die vier bläulich hintergelben Interfaces in der Abbildung 4 haben keinen äquivalenten Symboltyp -- sie sind
+			Die vier bläulich hinterlegten Interfaces in der Abbildung 4 haben keinen äquivalenten Symboltyp -- sie sind
 			reine Metaklassen, die nur ein gemeinsames Interface der erbenden Klassen zusammenfassen, wobei
 			es jedoch keine tatsächlichen Instanzen dieser Interfaces geben kann. Alle in der Abbildung grün umrandeten
 			Interfaces erben von \texttt{QualifiedSymbol}.
